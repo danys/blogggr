@@ -55,5 +55,19 @@
 		</plugins>
 	</build>
 
-
+	<repositories>
+	<repository>
+		<id>spring-repo</id>
+		<name>Spring Repository</name>
+		<url>https://repo.spring.io/release</url>
+	</repository>
+	<repository>
+		<id>spring-snapshot</id>
+		<name>Spring Snapshot Repository</name>
+		<url>https://repo.spring.io/snapshot</url>
+		<snapshots>
+			<enabled>true</enabled>
+		</snapshots>
+	</repository>
+	</repositories>
 </project>
