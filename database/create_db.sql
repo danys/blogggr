@@ -6,9 +6,9 @@ CREATE TABLE Blogggr.Users (
                 firstName VARCHAR(255) NOT NULL,
                 lastName VARCHAR(255) NOT NULL,
                 Email VARCHAR(255) NOT NULL,
-                PasswordHash VARCHAR(64) NOT NULL,
-                Salt VARCHAR(12) NOT NULL,
-                Challenge VARCHAR(64) NOT NULL,
+                PasswordHash CHAR(64) NOT NULL,
+                Salt CHAR(12) NOT NULL,
+                Challenge CHAR(64) NOT NULL,
                 Status INTEGER NOT NULL,
                 LastChange TIMESTAMP NOT NULL,
                 CONSTRAINT user_pk PRIMARY KEY (userID)
@@ -22,7 +22,7 @@ CREATE SEQUENCE Blogggr.sessions_sessionid_seq;
 CREATE TABLE Blogggr.Sessions (
                 sessionID BIGINT NOT NULL DEFAULT nextval('Blogggr.sessions_sessionid_seq'),
                 userID BIGINT NOT NULL,
-                sessionHash VARCHAR(64) NOT NULL,
+                sessionHash CHAR(64) NOT NULL,
                 lastActionTime TIMESTAMP NOT NULL,
                 validTill TIMESTAMP NOT NULL,
                 CONSTRAINT session_pk PRIMARY KEY (sessionID)

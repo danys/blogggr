@@ -4,8 +4,8 @@
  <print-settings numCopies="1" zoom="1.0" pageNumbersPrinted="true" orientation="1" paperWidth="612.0" paperHeight="792.0" leftBorder="50.0" rightBorder="50.0" topBorder="50.0" bottomBorder="50.0" />
  <project-data-sources>
   <data-source id="DS0">
-   <property key="Logical" value="Blogggr" />
    <property key="Connection Type" value="PostgreSQL" />
+   <property key="Logical" value="PlayPen Database" />
    <property key="JDBC URL" value="jdbc:postgresql://localhost:5432/blogggr" />
    <property key="UID" value="postgres" />
    <property key="PWD" value="root" />
@@ -34,13 +34,13 @@
     <column id="COL5" populated="true" UUID="de313920-d0d6-47e7-808e-5083aa3c4e93" autoIncrement="false" autoIncrementSequenceName="Users_Email_seq" defaultValue="" name="Email" nullable="0" physicalName="Email" precision="255" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
      <remarks></remarks>
     </column>
-    <column id="COL6" populated="true" UUID="a7c83e2c-86b1-4184-ba22-79e272effb0b" autoIncrement="false" autoIncrementSequenceName="Users_PasswordHash_seq" defaultValue="" name="Password Hash" nullable="0" physicalName="PasswordHash" precision="64" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL6" populated="true" UUID="a7c83e2c-86b1-4184-ba22-79e272effb0b" autoIncrement="false" autoIncrementSequenceName="Users_PasswordHash_seq" defaultValue="" name="Password Hash" nullable="0" physicalName="PasswordHash" precision="64" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="1" userDefinedTypeUUID="67ddc63f-5541-4dd1-9236-632d9d155e80" >
      <remarks></remarks>
     </column>
-    <column id="COL7" populated="true" UUID="690544aa-aa53-4fc4-8ed2-ea6cc92c7c80" autoIncrement="false" autoIncrementSequenceName="Users_Salt_seq" defaultValue="" name="Salt" nullable="0" physicalName="Salt" precision="12" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL7" populated="true" UUID="690544aa-aa53-4fc4-8ed2-ea6cc92c7c80" autoIncrement="false" autoIncrementSequenceName="Users_Salt_seq" defaultValue="" name="Salt" nullable="0" physicalName="Salt" precision="12" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="1" userDefinedTypeUUID="67ddc63f-5541-4dd1-9236-632d9d155e80" >
      <remarks></remarks>
     </column>
-    <column id="COL8" populated="true" UUID="dcb4df49-5dde-4101-9238-d36ff135c838" autoIncrement="false" autoIncrementSequenceName="Users_Challenge_seq" defaultValue="" name="Challenge" nullable="0" physicalName="Challenge" precision="64" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL8" populated="true" UUID="dcb4df49-5dde-4101-9238-d36ff135c838" autoIncrement="false" autoIncrementSequenceName="Users_Challenge_seq" defaultValue="" name="Challenge" nullable="0" physicalName="Challenge" precision="64" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="1" userDefinedTypeUUID="67ddc63f-5541-4dd1-9236-632d9d155e80" >
      <remarks></remarks>
     </column>
     <column id="COL9" populated="true" UUID="f62c0423-54b5-4b81-be54-01e4182b14b3" autoIncrement="false" autoIncrementSequenceName="Users_Status_seq" defaultValue="" name="Status" nullable="0" physicalName="Status" precision="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="4" userDefinedTypeUUID="63b011c7-c81f-4c75-8271-632b3c87f727" >
@@ -69,7 +69,7 @@
     <column id="COL15" populated="true" UUID="67f9c59c-9f70-4c36-8f33-7b97904838ac" autoIncrement="false" autoIncrementSequenceName="Sessions_userID_seq" defaultValue="" name="userID" nullable="0" physicalName="userID" precision="0" referenceCount="2" scale="0" sourceDataTypeName="UserDefinedSQLType" type="-5" userDefinedTypeUUID="433cc8af-284d-4abb-8ef7-08ebcb34dbf1" >
      <remarks></remarks>
     </column>
-    <column id="COL16" populated="true" UUID="cc88454c-c623-46f9-93d9-717003c1f3b2" autoIncrement="false" autoIncrementSequenceName="Sessions_sessionHash_seq" defaultValue="" name="sessionHash" nullable="0" physicalName="sessionHash" precision="64" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="12" userDefinedTypeUUID="831ac2d4-0e65-47ec-a0b7-62b7f6b8760a" >
+    <column id="COL16" populated="true" UUID="cc88454c-c623-46f9-93d9-717003c1f3b2" autoIncrement="false" autoIncrementSequenceName="Sessions_sessionHash_seq" defaultValue="" name="sessionHash" nullable="0" physicalName="sessionHash" precision="64" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="1" userDefinedTypeUUID="67ddc63f-5541-4dd1-9236-632d9d155e80" >
      <remarks></remarks>
     </column>
     <column id="COL17" populated="true" UUID="71992cc5-10a1-48a2-abbc-12c1c204bf48" autoIncrement="false" autoIncrementSequenceName="Sessions_lastActionTime_seq" defaultValue="" name="LastAction" nullable="0" physicalName="lastActionTime" precision="0" referenceCount="1" scale="0" sourceDataTypeName="UserDefinedSQLType" type="93" userDefinedTypeUUID="6497d8de-0e00-40d6-a42e-e2adca83be64" >
