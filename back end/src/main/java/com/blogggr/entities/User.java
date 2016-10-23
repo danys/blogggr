@@ -16,10 +16,11 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="USERS_USERID_GENERATOR" )
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="USERS_USERID_GENERATOR")
+	@SequenceGenerator(name="users_userid_seq" )
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="users_userid_seq")
 	private Long userID;
 
+	@Column(columnDefinition = "bpchar(64)")
 	private String challenge;
 
 	private String email;
@@ -30,8 +31,10 @@ public class User implements Serializable {
 
 	private String lastName;
 
+	@Column(columnDefinition = "bpchar(64)")
 	private String passwordHash;
 
+	@Column(columnDefinition = "bpchar(12)")
 	private String salt;
 
 	private Integer status;

@@ -11,17 +11,17 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name="sessions")
-@NamedQuery(name="Session.findAll", query="SELECT s FROM Session s")
 public class Session implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="SESSIONS_SESSIONID_GENERATOR" )
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SESSIONS_SESSIONID_GENERATOR")
+	@SequenceGenerator(name="sessions_sessionid_seq" )
+	@GeneratedValue(strategy=GenerationType.AUTO/*.SEQUENCE*/, generator="sessions_sessionid_seq")
 	private Long sessionID;
 
 	private Timestamp lastActionTime;
 
+	@Column(columnDefinition = "bpchar(64)")
 	private String sessionHash;
 
 	private Timestamp validTill;

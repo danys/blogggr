@@ -12,13 +12,12 @@ import java.util.List;
  */
 @Entity
 @Table(name="posts")
-@NamedQuery(name="Post.findAll", query="SELECT p FROM Post p")
 public class Post implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="POSTS_POSTID_GENERATOR" )
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="POSTS_POSTID_GENERATOR")
+	@SequenceGenerator(name="posts_postid_seq" )
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="posts_postid_seq")
 	private Long postID;
 
 	private String shortTitle;

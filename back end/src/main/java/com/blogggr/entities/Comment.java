@@ -11,13 +11,12 @@ import java.sql.Timestamp;
  */
 @Entity
 @Table(name="comments")
-@NamedQuery(name="Comment.findAll", query="SELECT c FROM Comment c")
 public class Comment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="COMMENTS_COMMENTID_GENERATOR" )
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="COMMENTS_COMMENTID_GENERATOR")
+	@SequenceGenerator(name="comments_commentid_seq" )
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="comments_commentid_seq")
 	private Long commentID;
 
 	private String text;
