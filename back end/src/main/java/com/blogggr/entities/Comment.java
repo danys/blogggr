@@ -15,8 +15,8 @@ public class Comment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="comments_commentid_seq" )
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="comments_commentid_seq")
+	@SequenceGenerator(name="seq",sequenceName="comments_commentid_seq")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
 	private Long commentID;
 
 	private String text;

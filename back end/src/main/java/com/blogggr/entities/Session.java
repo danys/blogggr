@@ -15,8 +15,8 @@ public class Session implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="sessions_sessionid_seq" )
-	@GeneratedValue(strategy=GenerationType.AUTO/*.SEQUENCE*/, generator="sessions_sessionid_seq")
+	@SequenceGenerator(name="seq",sequenceName="sessions_sessionid_seq")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
 	private Long sessionID;
 
 	private Timestamp lastActionTime;
