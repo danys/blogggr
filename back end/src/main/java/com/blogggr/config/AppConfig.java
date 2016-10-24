@@ -22,11 +22,13 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class AppConfig {
 
+    public static final String apiVersion = "1.0";
+
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan(new String[] { "com.blogggr.entities" });
+        em.setPackagesToScan(new String[] {"com.blogggr.entities"});
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(additionalProperties());
@@ -38,8 +40,8 @@ public class AppConfig {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUrl("jdbc:postgresql://localhost/blogggr");
-        dataSource.setUsername( "postgres" );
-        dataSource.setPassword( "root" );
+        dataSource.setUsername("postgres");
+        dataSource.setPassword("root");
         return dataSource;
     }
 
@@ -47,7 +49,6 @@ public class AppConfig {
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf){
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(emf);
-
         return transactionManager;
     }
 
