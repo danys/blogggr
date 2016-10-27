@@ -1,17 +1,11 @@
 package com.blogggr.dao;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import com.blogggr.entities.User;
 
 /**
  * Created by Daniel Sunnen on 25.10.16.
  */
-public class UserDAO {
+public interface UserDAO extends GenericDAO<User>{
 
-    @PersistenceContext
-    EntityManager entityManager;
-
-    User findById(){
-
-    }
+    User getUserByEmail(String email);
 }

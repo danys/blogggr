@@ -11,9 +11,9 @@ import java.util.List;
 public abstract class GenericDAOImpl<T extends Serializable> implements GenericDAO<T>{
 
     @PersistenceContext
-    EntityManager entityManager;
+    protected EntityManager entityManager;
 
-    private Class< T > clazz;
+    protected Class<T> clazz;
 
     public GenericDAOImpl(Class<T> clazz){
         this.clazz = clazz;
