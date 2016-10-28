@@ -10,5 +10,5 @@ public interface PostDAO extends GenericDAO<Post>{
     Post getUserPosts(long userID, int nRowsPerPage, int pageNum);
 
     Post getPostByUserIDandPostID(long userID, long postID, int nRowsPerPage, int pageNum);
-    
+
 }

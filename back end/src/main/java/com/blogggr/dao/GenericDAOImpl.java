@@ -1,5 +1,9 @@
 package com.blogggr.dao;
 
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.Serializable;
@@ -8,12 +12,16 @@ import java.util.List;
 /**
  * Created by Daniel Sunnen on 25.10.16.
  */
-public abstract class GenericDAOImpl<T extends Serializable> implements GenericDAO<T>{
+@Repository
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+public class GenericDAOImpl<T extends Serializable> implements GenericDAO<T>{
 
     @PersistenceContext
     protected EntityManager entityManager;
 
     protected Class<T> clazz;
+
+    public GenericDAOImpl(){};
 
     public GenericDAOImpl(Class<T> clazz){
         this.clazz = clazz;
@@ -41,6 +49,6 @@ public abstract class GenericDAOImpl<T extends Serializable> implements GenericD
 
     public void deleteById(Long entityId){
         T entity = findById(entityId);
-        delete( entity );
+        delete(entity);
     }
 }
