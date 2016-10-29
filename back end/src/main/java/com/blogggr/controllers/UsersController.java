@@ -3,10 +3,13 @@ package com.blogggr.controllers;
 import com.blogggr.config.AppConfig;
 import com.blogggr.entities.User;
 import com.blogggr.services.UserService;
+import com.blogggr.validator.UserDataValidator;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 /**
  * Created by Daniel Sunnen on 24.10.16.
@@ -25,5 +28,14 @@ public class UsersController {
     public User getUser(@PathVariable Long id) {
         if (id==null) return null;
         return userService.getUserById(id);
+    }
+
+    @RequestMapping(path = "/users", method = RequestMethod.POST)
+    public User createUser(Map<String, String> userData){
+        UserDataValidator validator = new UserDataValidator(userData);
+        validator.validate();
+        User user = new User();
+        user.setEmail(validator.getEmail());
+        //TODO
     }
 }
