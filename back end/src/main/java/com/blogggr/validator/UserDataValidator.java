@@ -12,12 +12,16 @@ public class UserDataValidator {
     private final String lastNameField = "lastName";
     private final String emailField = "email";
     private final String passwordField = "password";
+    private final String passwordRepeatField = "passwordRepeat";
 
     //The extracted data
     private String firstName;
     private String lastName;
     private String email;
     private String password;
+    private String passwordRepeat;
+
+    private String errorMessage;
 
     private String extractData(Map<String, String> map, String field){
         if (map.containsKey(field)) return map.get(field);
@@ -30,15 +34,33 @@ public class UserDataValidator {
         lastName = extractData(userData, lastNameField);
         email = extractData(userData, emailField);
         password = extractData(userData, passwordField);
+        passwordRepeat = extractData(userData, passwordRepeatField);
+        errorMessage = ""; //empty message
     }
 
     public boolean validate(){
-        if (firstName == null || lastName == null || email == null || password == null) return false;
-        if (firstName.length()<3 || lastName<3 || password<8) return false;
-        if (!email.contains("@")) return false;
+        if (firstName == null || lastName == null || email == null || password == null) {
+            errorMessage = "Provide all required fields!";
+            return false;
+        }
+        if (firstName.length()<3 || lastName<3 || password<8) {
+            errorMessage = "First name and last name must have at least 3 characters!";
+            return false;
+        }
+        if (!email.contains("@")) {
+            errorMessage = "E-mail address does not validate!";
+            return false;
+        }
         int atIndex = email.indexOf("@");
         int dotIndex = email.indexOf(".",atIndex);
-        if (dotIndex==-1) return false;
+        if (dotIndex==-1) {
+            errorMessage = "E-mail address does not validate!";
+            return false;
+        }
+        if (passwordRepeat.compareTo(password)!=0) {
+            errorMessage = "Submitted passwords must match!";
+            return false;
+        }
         return true;
     }
 
@@ -57,4 +79,7 @@ public class UserDataValidator {
     public String getPassword() {
         return password;
     }
+
+    public String getErrorMessage() {return errorMessage;}
+
 }

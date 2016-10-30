@@ -4,6 +4,9 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.entities.User;
 import com.blogggr.services.UserService;
 import com.blogggr.validator.UserDataValidator;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,11 +34,16 @@ public class UsersController {
     }
 
     @RequestMapping(path = "/users", method = RequestMethod.POST)
-    public User createUser(Map<String, String> userData){
+    public ResponseEntity createUser(Map<String, String> userData){
         UserDataValidator validator = new UserDataValidator(userData);
-        validator.validate();
+        if (!validator.validate()) return new ResponseEntity<String>(validator.getErrorMessage(), HttpStatus.BAD_REQUEST);
         User user = new User();
+        user.setFirstName(validator.getFirstName());
+        user.setLastName(validator.getLastName());
         user.setEmail(validator.getEmail());
-        //TODO
+        //TODO encrypt password
+        user.setPasswordHash(validator.getPassword());
+        //save to db
+        userService.storeUser(user);
     }
 }
