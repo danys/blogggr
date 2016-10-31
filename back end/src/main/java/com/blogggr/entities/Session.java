@@ -15,7 +15,7 @@ public class Session implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="seq",sequenceName="blogggr.sessions_sessionid_seq")
+	@SequenceGenerator(name="seq",sequenceName="blogggr.sessions_sessionid_seq", allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
 	private Long sessionID;
 
