@@ -11,12 +11,12 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name="users")
+@Table(name="users", schema="blogggr")
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="seq",sequenceName="users_userid_seq")
+	@SequenceGenerator(name="seq",sequenceName="blogggr.users_userid_seq")
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
 	private Long userID;
 
@@ -27,9 +27,9 @@ public class User implements Serializable {
 
 	private String firstName;
 
-	private Timestamp lastChange;
-
 	private String lastName;
+
+	private Timestamp lastChange;
 
 	@Column(columnDefinition = "bpchar(64)")
 	private String passwordHash;

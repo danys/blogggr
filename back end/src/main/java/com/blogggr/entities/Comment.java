@@ -10,12 +10,12 @@ import java.sql.Timestamp;
  * 
  */
 @Entity
-@Table(name="comments")
+@Table(name="comments", schema="blogggr")
 public class Comment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="seq",sequenceName="comments_commentid_seq")
+	@SequenceGenerator(name="seq",sequenceName="blogggr.comments_commentid_seq")
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
 	private Long commentID;
 

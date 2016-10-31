@@ -11,12 +11,12 @@ import java.util.List;
  * 
  */
 @Entity
-@Table(name="posts")
+@Table(name="posts", schema="blogggr")
 public class Post implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="seq",sequenceName="posts_postid_seq")
+	@SequenceGenerator(name="seq",sequenceName="blogggr.posts_postid_seq")
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
 	private Long postID;
 

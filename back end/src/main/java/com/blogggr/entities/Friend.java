@@ -9,7 +9,7 @@ import javax.persistence.*;
  * 
  */
 @Entity
-@Table(name="friends")
+@Table(name="friends", schema="blogggr")
 public class Friend implements Serializable {
 	private static final long serialVersionUID = 1L;
 
