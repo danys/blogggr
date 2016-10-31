@@ -17,6 +17,10 @@ CREATE TABLE Blogggr.Users (
 
 ALTER SEQUENCE Blogggr.users_userid_seq OWNED BY Blogggr.Users.userID;
 
+CREATE UNIQUE INDEX users_idx
+ ON Blogggr.Users
+ ( Email ASC );
+
 CREATE SEQUENCE Blogggr.sessions_sessionid_seq;
 
 CREATE TABLE Blogggr.Sessions (
