@@ -43,7 +43,7 @@ public class UserDataValidator {
             errorMessage = "Provide all required fields!";
             return false;
         }
-        if (firstName.length()<3 || lastName<3 || password<8) {
+        if (firstName.length()<3 || lastName.length()<3 || password.length()<8) {
             errorMessage = "First name and last name must have at least 3 characters!";
             return false;
         }

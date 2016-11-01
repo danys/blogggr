@@ -11,6 +11,6 @@ public class DefaultController {
 
     @RequestMapping("/")
     public String hello() {
-        return new String("Hello world");
+        return new String("Blogggr RESTful API - Invalid path");
     }
 }

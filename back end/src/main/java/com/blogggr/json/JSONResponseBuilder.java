@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class JSONResponseBuilder {
 
-    static ObjectNode generateErrorResponse(String errorMessage){
+    public static ObjectNode generateErrorResponse(String errorMessage){
         JsonNodeFactory factory = JsonNodeFactory.instance;
         ObjectNode root = factory.objectNode();
         root.put("apiVersion", AppConfig.apiVersion);
@@ -17,7 +17,7 @@ public class JSONResponseBuilder {
         return root;
     }
 
-    static ObjectNode generateSuccessResponse(Object data){
+    public static ObjectNode generateSuccessResponse(Object data){
         JsonNodeFactory factory = JsonNodeFactory.instance;
         ObjectNode root = factory.objectNode();
         root.put("apiVersion", AppConfig.apiVersion);
