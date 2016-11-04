@@ -1,6 +1,7 @@
 package com.blogggr.services;
 
 import com.blogggr.entities.User;
+import com.blogggr.requestdata.UserPostData;
 import com.blogggr.validator.UserDataValidator;
 
 /**
@@ -9,7 +10,7 @@ import com.blogggr.validator.UserDataValidator;
 public interface UserService {
     User getUserById(long id);
 
-    User getUserByEmail(String email);
+    User createUser(UserPostData userData);
 
-    User storeUser(UserDataValidator userData);
+    //User getUserByEmail(String email);
 }
