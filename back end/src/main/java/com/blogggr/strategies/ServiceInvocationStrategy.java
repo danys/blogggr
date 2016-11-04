@@ -7,5 +7,5 @@ import java.util.Map;
  */
 public interface ServiceInvocationStrategy {
 
-    Object invokeService(Map<String,String> input);
+    Object invokeService(Map<String,String> input, String body);
 }

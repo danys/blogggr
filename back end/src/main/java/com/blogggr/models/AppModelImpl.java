@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 01.11.16.
  */
-public class AppModelImpl {
+public class AppModelImpl implements AppModel{
 
     private final String duplicateKeyError = "Unique key violation";
     private final String exceptionError = "Exceptional error";
@@ -38,13 +38,13 @@ public class AppModelImpl {
         this.responseBehavior = responseStrategy;
     }
 
-    public ResponseEntity execute(Map<String,String> input, Map<String,String> header){
+    public ResponseEntity execute(Map<String,String> input, Map<String,String> header, String body){
         if (!authBehavior.isAuthorized(header)) return responseBehavior.notAuthorizedResponse();
-        if (!validationBehavior.inputIsValid(input)) return responseBehavior.invalidInputResponse(validationBehavior.getError());
+        if (!validationBehavior.inputIsValid(input, body)) return responseBehavior.invalidInputResponse(validationBehavior.getError());
         Object responseData = null;
         //Invoke service and catch the different exceptions that might be raised
         try{
-            responseData = serviceBehavior.invokeService(input);
+            responseData = serviceBehavior.invokeService(input, body);
         }
         catch(DuplicateKeyException e){
             return responseBehavior.exceptionResponse(duplicateKeyError);

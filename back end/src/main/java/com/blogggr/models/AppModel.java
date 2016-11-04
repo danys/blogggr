@@ -8,5 +8,5 @@ import java.util.Map;
  */
 public interface AppModel {
 
-    public ResponseEntity execute(Map<String,String> input, Map<String,String> header);
+    ResponseEntity execute(Map<String,String> input, Map<String,String> header, String body);
 }
