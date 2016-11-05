@@ -4,10 +4,7 @@ import com.blogggr.strategies.AuthorizationStrategy;
 import com.blogggr.strategies.ResponseStrategy;
 import com.blogggr.strategies.ServiceInvocationStrategy;
 import com.blogggr.strategies.ValidationStrategy;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.dao.NonTransientDataAccessException;
-import org.springframework.dao.RecoverableDataAccessException;
-import org.springframework.dao.TransientDataAccessException;
+import org.springframework.dao.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.datasource.init.ScriptException;
 
@@ -46,7 +43,7 @@ public class AppModelImpl implements AppModel{
         try{
             responseData = serviceBehavior.invokeService(input, body);
         }
-        catch(DuplicateKeyException e){
+        catch(DataIntegrityViolationException e){
             return responseBehavior.exceptionResponse(duplicateKeyError);
         }
         catch(NonTransientDataAccessException e){

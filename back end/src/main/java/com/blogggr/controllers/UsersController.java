@@ -3,8 +3,10 @@ package com.blogggr.controllers;
 import com.blogggr.config.AppConfig;
 import com.blogggr.entities.User;
 import com.blogggr.json.JSONResponseBuilder;
+import com.blogggr.models.*;
 import com.blogggr.services.UserService;
 import com.blogggr.validator.UserDataValidator;
+import com.blogggr.validator.UserPostDataValidator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,8 +37,8 @@ public class UsersController {
     }
 
     @RequestMapping(path = "/users", method = RequestMethod.POST)
-    public ResponseEntity createUser(@RequestParam Map<String, String> userData){
-        UserDataValidator validator = new UserDataValidator(userData);
+    public ResponseEntity createUser(@RequestBody String bodyData){
+        /*UserDataValidator validator = new UserDataValidator(userData);
         if (!validator.validate()) return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(validator.getErrorMessage()), HttpStatus.BAD_REQUEST);
         User user = null;
         try{
@@ -52,6 +54,8 @@ public class UsersController {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(userIDStr),responseHeaders,HttpStatus.ACCEPTED);
+        return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(userIDStr),responseHeaders,HttpStatus.ACCEPTED);*/
+        AppModel model = new AppModelImpl(new BasicAuthorization(),new UserPostDataValidator(), new InvokePostUserService(userService), new PostResponse());
+        return model.execute(null,null,bodyData);
     }
 }
