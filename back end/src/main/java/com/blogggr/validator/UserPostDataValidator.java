@@ -50,12 +50,15 @@ public class UserPostDataValidator implements ValidationStrategy {
             return true;
         }
         catch(JsonParseException e){
+            errorMessage = "JSON parse exception";
             return false;
         }
         catch(JsonProcessingException e){
+            errorMessage = "JSON processing exception";
             return false;
         }
         catch(IOException e){
+            errorMessage = "JSON input exception";
             return false;
         }
     }

@@ -23,6 +23,11 @@ import java.util.Properties;
 public class AppConfig {
 
     public static final String apiVersion = "1.0";
+    private  static final String urlPrefix = "/api/v";
+
+    public static final String baseUrl = urlPrefix+apiVersion;
+    public static final String hostUrl = "http://localhost:8080";
+    public static final String fullBaseUrl = hostUrl+baseUrl;
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {

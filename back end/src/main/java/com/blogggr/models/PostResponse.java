@@ -1,7 +1,10 @@
 package com.blogggr.models;
 
+import com.blogggr.config.AppConfig;
+import com.blogggr.controllers.UsersController;
 import com.blogggr.json.JSONResponseBuilder;
 import com.blogggr.strategies.ResponseStrategy;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -26,6 +29,8 @@ public class PostResponse implements ResponseStrategy {
 
     @Override
     public ResponseEntity successResponse(Object data) {
-        return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(data), HttpStatus.ACCEPTED);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", (String) data);
+        return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(""), headers, HttpStatus.CREATED);
     }
 }

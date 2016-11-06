@@ -21,8 +21,10 @@ import java.util.Map;
  * Created by Daniel Sunnen on 24.10.16.
  */
 @RestController
-@RequestMapping("/api/v"+ AppConfig.apiVersion)
+@RequestMapping(AppConfig.baseUrl)
 public class UsersController {
+
+    public static final String userPath = "/users";
 
     private UserService userService;
 
@@ -30,31 +32,16 @@ public class UsersController {
         this.userService = userService;
     }
 
-    @RequestMapping(path = "/users/{id}", method = RequestMethod.GET)
+    //GET /users/id
+    @RequestMapping(path = userPath+"/{id}", method = RequestMethod.GET)
     public User getUser(@PathVariable Long id) {
         if (id==null) return null;
         return userService.getUserById(id);
     }
 
-    @RequestMapping(path = "/users", method = RequestMethod.POST)
+    //POST /users
+    @RequestMapping(path = userPath, method = RequestMethod.POST)
     public ResponseEntity createUser(@RequestBody String bodyData){
-        /*UserDataValidator validator = new UserDataValidator(userData);
-        if (!validator.validate()) return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(validator.getErrorMessage()), HttpStatus.BAD_REQUEST);
-        User user = null;
-        try{
-            user = userService.storeUser(validator);
-        }
-        catch(Exception e){
-            return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
-        }
-        String userIDStr = String.valueOf(user.getUserID());
-        HttpHeaders responseHeaders = new HttpHeaders();
-        try {
-            responseHeaders.setLocation(new URI("http://127.0.0.1:8080/users/"+userIDStr));
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(userIDStr),responseHeaders,HttpStatus.ACCEPTED);*/
         AppModel model = new AppModelImpl(new BasicAuthorization(),new UserPostDataValidator(), new InvokePostUserService(userService), new PostResponse());
         return model.execute(null,null,bodyData);
     }

@@ -7,4 +7,6 @@ import java.util.Map;
  */
 public interface AuthorizationStrategy {
     boolean isAuthorized(Map<String,String> header);
+
+    Long getUserId(Map<String,String> header);
 }

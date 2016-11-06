@@ -1,5 +1,7 @@
 package com.blogggr.models;
 
+import com.blogggr.config.AppConfig;
+import com.blogggr.controllers.UsersController;
 import com.blogggr.entities.User;
 import com.blogggr.requestdata.UserPostData;
 import com.blogggr.services.UserService;
@@ -22,25 +24,24 @@ public class InvokePostUserService implements ServiceInvocationStrategy{
         this.userService = userService;
     }
 
-    public Object invokeService(Map<String,String> input, String body){
-
-
+    public Object invokeService(Map<String,String> input, String body, Long userID){
         ObjectMapper mapper = new ObjectMapper();
-        UserPostData userData = null;
+        UserPostData userData;
         try{
             userData = mapper.readValue(body, UserPostData.class);
-            return userService.createUser(userData);
         }
         catch(JsonParseException e){
-            return false;
+            return null;
         }
         catch(JsonProcessingException e){
-            return false;
+            return null;
         }
         catch(IOException e){
-            return false;
+            return null;
         }
-
+        User user = userService.createUser(userData);
+        //Create location string and return it
+        return AppConfig.fullBaseUrl + UsersController.userPath + "/" + String.valueOf(user.getUserID());
     }
 
 }

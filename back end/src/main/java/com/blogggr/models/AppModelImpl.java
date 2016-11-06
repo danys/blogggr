@@ -38,10 +38,10 @@ public class AppModelImpl implements AppModel{
     public ResponseEntity execute(Map<String,String> input, Map<String,String> header, String body){
         if (!authBehavior.isAuthorized(header)) return responseBehavior.notAuthorizedResponse();
         if (!validationBehavior.inputIsValid(input, body)) return responseBehavior.invalidInputResponse(validationBehavior.getError());
-        Object responseData = null;
+        Object responseData;
         //Invoke service and catch the different exceptions that might be raised
         try{
-            responseData = serviceBehavior.invokeService(input, body);
+            responseData = serviceBehavior.invokeService(input, body, authBehavior.getUserId(header));
         }
         catch(DataIntegrityViolationException e){
             return responseBehavior.exceptionResponse(duplicateKeyError);
