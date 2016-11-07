@@ -4,6 +4,7 @@ import com.blogggr.dao.UserDAO;
 import com.blogggr.entities.User;
 import com.blogggr.requestdata.UserPostData;
 import com.blogggr.utilities.Cryptography;
+import com.blogggr.utilities.TimeUtilities;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,16 +46,10 @@ public class UserServiceImpl implements UserService{
         //Compute a 64 character challenge
         String challenge = Cryptography.computeSHA256Hash(String.valueOf(System.currentTimeMillis()/10)); //UTC time
         user.setChallenge(challenge);
-        Calendar calendar = Calendar.getInstance();
-        java.util.Date now = calendar.getTime();
-        java.sql.Timestamp currentTimestamp = new Timestamp(now.getTime()); //GMT time
+        Timestamp currentTimestamp = TimeUtilities.getCurrentTimestamp();
         user.setLastChange(currentTimestamp);
         user.setStatus(0);
         userDAO.save(user);
         return user;
     }
-
-    /*public User getUserByEmail(String email){
-        return userDAO.getUserByEmail(email);
-    }*/
 }

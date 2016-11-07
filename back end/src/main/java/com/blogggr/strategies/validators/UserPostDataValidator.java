@@ -1,4 +1,4 @@
-package com.blogggr.validator;
+package com.blogggr.strategies.validators;
 
 import com.blogggr.requestdata.UserPostData;
 import com.blogggr.strategies.ValidationStrategy;

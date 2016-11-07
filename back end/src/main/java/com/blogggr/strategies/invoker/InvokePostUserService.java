@@ -1,4 +1,4 @@
-package com.blogggr.models;
+package com.blogggr.strategies.invoker;
 
 import com.blogggr.config.AppConfig;
 import com.blogggr.controllers.UsersController;

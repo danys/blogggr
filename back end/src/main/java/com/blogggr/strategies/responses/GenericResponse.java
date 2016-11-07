@@ -1,20 +1,17 @@
-package com.blogggr.models;
+package com.blogggr.strategies.responses;
 
-import com.blogggr.config.AppConfig;
-import com.blogggr.controllers.UsersController;
 import com.blogggr.json.JSONResponseBuilder;
 import com.blogggr.strategies.ResponseStrategy;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 /**
- * Created by Daniel Sunnen on 05.11.16.
+ * Created by Daniel Sunnen on 07.11.16.
  */
-public class PostResponse implements ResponseStrategy {
+public abstract class GenericResponse implements ResponseStrategy {
     @Override
     public ResponseEntity notAuthorizedResponse() {
-        return new ResponseEntity(JSONResponseBuilder.generateErrorResponse("Not authorized!"), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(JSONResponseBuilder.generateErrorResponse("Not authorized!"), HttpStatus.UNAUTHORIZED);
     }
 
     @Override
@@ -28,9 +25,5 @@ public class PostResponse implements ResponseStrategy {
     }
 
     @Override
-    public ResponseEntity successResponse(Object data) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", (String) data);
-        return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(""), headers, HttpStatus.CREATED);
-    }
+    public abstract ResponseEntity successResponse(Object data);
 }
