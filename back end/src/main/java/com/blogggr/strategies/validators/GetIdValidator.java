@@ -11,7 +11,7 @@ public class GetIdValidator implements ValidationStrategy {
 
     private String errorMessage;
 
-    private final String idName = "id";
+    public static final String idName = "id";
 
     public GetIdValidator(){
         //

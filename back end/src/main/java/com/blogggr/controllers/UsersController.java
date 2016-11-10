@@ -4,9 +4,12 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.models.*;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.auth.BasicAuthorization;
+import com.blogggr.strategies.auth.NoAuthorization;
+import com.blogggr.strategies.invoker.InvokeGetUserService;
 import com.blogggr.strategies.invoker.InvokePostUserService;
 import com.blogggr.strategies.responses.GetResponse;
 import com.blogggr.strategies.responses.PostResponse;
+import com.blogggr.strategies.validators.GetIdValidator;
 import com.blogggr.strategies.validators.UserPostDataValidator;
 import com.blogggr.utilities.HTTPMethod;
 import org.springframework.http.ResponseEntity;
@@ -35,14 +38,14 @@ public class UsersController {
     public ResponseEntity getUser(@PathVariable String id, @RequestHeader Map<String,String> header) {
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new BasicAuthorization(userPath+"/"+id, HTTPMethod.GET), new UserPostDataValidator(), new InvokePostUserService(userService), new GetResponse());
+        AppModel model = new AppModelImpl(new BasicAuthorization(userPath+"/"+id, HTTPMethod.GET), new GetIdValidator(), new InvokeGetUserService(userService), new GetResponse());
         return model.execute(map,header,null);
     }
 
     //POST /users
     @RequestMapping(path = userPath, method = RequestMethod.POST)
     public ResponseEntity createUser(@RequestBody String bodyData){
-        AppModel model = new AppModelImpl(new BasicAuthorization(userPath, HTTPMethod.POST), new UserPostDataValidator(), new InvokePostUserService(userService), new PostResponse());
+        AppModel model = new AppModelImpl(new NoAuthorization(), new UserPostDataValidator(), new InvokePostUserService(userService), new PostResponse());
         return model.execute(null,null,bodyData);
     }
 }
