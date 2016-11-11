@@ -59,9 +59,9 @@ public class AppModelImpl implements AppModel{
         catch(TransientDataAccessException e){
             return responseBehavior.exceptionResponse(transientExceptionError);
         }
-        catch(Exception e){
+        /*catch(Exception e){
             return responseBehavior.exceptionResponse(exceptionError);
-        }
+        }*/
         return responseBehavior.successResponse(responseData);
     }
 }

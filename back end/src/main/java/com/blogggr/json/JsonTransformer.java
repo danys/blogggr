@@ -23,7 +23,7 @@ public class JsonTransformer {
         while(it.hasNext()){
             Map.Entry<String,JsonNode> curNode = it.next();
             if (keysToKeep.contains(curNode.getKey())){
-                root.put(curNode.getKey(),curNode.getValue());
+                root.set(curNode.getKey(),curNode.getValue());
             }
         }
         return root;
