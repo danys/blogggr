@@ -21,8 +21,6 @@ public class GenericDAOImpl<T extends Serializable> implements GenericDAO<T>{
 
     protected Class<T> clazz;
 
-    public GenericDAOImpl(){};
-
     public GenericDAOImpl(Class<T> clazz){
         this.clazz = clazz;
     }

@@ -14,6 +14,7 @@ import javax.persistence.criteria.Root;
 public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
 
     public UserDAOImpl(){
+        super(User.class);
     }
 
     public User getUserByEmail(String email){

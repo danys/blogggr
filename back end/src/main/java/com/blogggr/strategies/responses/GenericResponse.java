@@ -26,4 +26,9 @@ public abstract class GenericResponse implements ResponseStrategy {
 
     @Override
     public abstract ResponseEntity successResponse(Object data);
+
+    @Override
+    public ResponseEntity notFound(String errorMessage){
+        return new ResponseEntity(JSONResponseBuilder.generateErrorResponse(errorMessage), HttpStatus.NOT_FOUND);
+    }
 }

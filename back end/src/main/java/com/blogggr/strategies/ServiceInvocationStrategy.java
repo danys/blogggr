@@ -1,5 +1,7 @@
 package com.blogggr.strategies;
 
+import com.blogggr.exceptions.ResourceNotFoundException;
+
 import java.util.Map;
 
 /**
@@ -7,5 +9,5 @@ import java.util.Map;
  */
 public interface ServiceInvocationStrategy {
 
-    Object invokeService(Map<String,String> input, String body, Long userID);
+    Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException;
 }

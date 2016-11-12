@@ -1,6 +1,7 @@
 package com.blogggr.strategies.invoker;
 
 import com.blogggr.entities.User;
+import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
@@ -21,7 +22,7 @@ public class InvokeGetUserService implements ServiceInvocationStrategy {
         this.userService = userService;
     }
 
-    public Object invokeService(Map<String,String> input, String body, Long userID){
+    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException{
         if (!input.containsKey(GetIdValidator.idName)){
             return null;
         }
@@ -34,6 +35,7 @@ public class InvokeGetUserService implements ServiceInvocationStrategy {
             return null;
         }
         User user = userService.getUserById(id);
+        if (user==null) throw new ResourceNotFoundException();
         //Filter out unwanted fields
         Set<String> filter = new HashSet<>();
         filter.add("email");

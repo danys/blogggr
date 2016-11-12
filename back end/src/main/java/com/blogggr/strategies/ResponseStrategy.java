@@ -13,4 +13,6 @@ public interface ResponseStrategy {
     ResponseEntity exceptionResponse(String exceptionMessage);
 
     ResponseEntity successResponse(Object data);
+
+    ResponseEntity notFound(String errorMessage);
 }

@@ -1,5 +1,6 @@
 package com.blogggr.models;
 
+import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.strategies.AuthorizationStrategy;
 import com.blogggr.strategies.ResponseStrategy;
 import com.blogggr.strategies.ServiceInvocationStrategy;
@@ -22,6 +23,7 @@ public class AppModelImpl implements AppModel{
     private final String recoverableExceptionError = "Recoverable database error, please retry.";
     private final String scriptExceptionError = "Error processing SQL.";
     private final String transientExceptionError = "Transient database error, please retry.";
+    private final String notFoundError = "Resource not found!";
 
     private AuthorizationStrategy authBehavior;
     private ValidationStrategy validationBehavior;
@@ -59,9 +61,12 @@ public class AppModelImpl implements AppModel{
         catch(TransientDataAccessException e){
             return responseBehavior.exceptionResponse(transientExceptionError);
         }
-        /*catch(Exception e){
+        catch(ResourceNotFoundException e){
+            return responseBehavior.notFound(notFoundError);
+        }
+        catch(Exception e){
             return responseBehavior.exceptionResponse(exceptionError);
-        }*/
+        }
         return responseBehavior.successResponse(responseData);
     }
 }
