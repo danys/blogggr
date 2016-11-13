@@ -29,6 +29,10 @@ public class UserServiceImpl implements UserService{
         return userDAO.findById(id);
     }
 
+    public User getUserByEmail(String email){
+        return userDAO.getUserByEmail(email);
+    }
+
     //For POST request
     public User createUser(UserPostData userData){
         //Check that userData does not contain nulls

@@ -35,7 +35,7 @@ public class InvokeGetUserService implements ServiceInvocationStrategy {
             return null;
         }
         User user = userService.getUserById(id);
-        if (user==null) throw new ResourceNotFoundException();
+        if (user==null) throw new ResourceNotFoundException("User not found!");
         //Filter out unwanted fields
         Set<String> filter = new HashSet<>();
         filter.add("email");

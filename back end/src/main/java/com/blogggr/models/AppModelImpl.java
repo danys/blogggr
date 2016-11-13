@@ -23,7 +23,6 @@ public class AppModelImpl implements AppModel{
     private final String recoverableExceptionError = "Recoverable database error, please retry.";
     private final String scriptExceptionError = "Error processing SQL.";
     private final String transientExceptionError = "Transient database error, please retry.";
-    private final String notFoundError = "Resource not found!";
 
     private AuthorizationStrategy authBehavior;
     private ValidationStrategy validationBehavior;
@@ -62,7 +61,7 @@ public class AppModelImpl implements AppModel{
             return responseBehavior.exceptionResponse(transientExceptionError);
         }
         catch(ResourceNotFoundException e){
-            return responseBehavior.notFound(notFoundError);
+            return responseBehavior.notFound(e.getMessage());
         }
         catch(Exception e){
             return responseBehavior.exceptionResponse(exceptionError);

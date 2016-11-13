@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -41,7 +42,10 @@ public class InvokePostUserService implements ServiceInvocationStrategy{
         }
         User user = userService.createUser(userData);
         //Create location string and return it
-        return AppConfig.fullBaseUrl + UsersController.userPath + "/" + String.valueOf(user.getUserID());
+        //Create location string and session id hash. Then return it as a map.
+        Map<String, String> responseMap = new HashMap<>();
+        responseMap.put(AppConfig.locationHeaderKey,AppConfig.fullBaseUrl + UsersController.userPath + "/" + String.valueOf(user.getUserID()));
+        return responseMap;
     }
 
 }
