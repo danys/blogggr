@@ -28,6 +28,9 @@ public class AppConfig {
     public static final String baseUrl = urlPrefix+apiVersion;
     public static final String hostUrl = "http://localhost:8080";
     public static final String fullBaseUrl = hostUrl+baseUrl;
+    public static final String locationHeaderKey = "Location";
+    public static final String authKey = "Auth";
+    public static final long sessionValidityMillis = 1000*60*60*24; //one day
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
