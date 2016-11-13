@@ -27,7 +27,7 @@ CREATE TABLE Blogggr.Sessions (
                 sessionID BIGINT NOT NULL DEFAULT nextval('Blogggr.sessions_sessionid_seq'),
                 userID BIGINT NOT NULL,
                 sessionHash CHAR(64) NOT NULL,
-                lastActionTime TIMESTAMP NOT NULL,
+                valid BOOLEAN NOT NULL,
                 validTill TIMESTAMP NOT NULL,
                 CONSTRAINT session_pk PRIMARY KEY (sessionID)
 );

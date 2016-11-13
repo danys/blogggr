@@ -19,7 +19,7 @@ public class Session implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
 	private Long sessionID;
 
-	private Timestamp lastActionTime;
+	private Boolean valid;
 
 	@Column(columnDefinition = "bpchar(64)")
 	private String sessionHash;
@@ -34,20 +34,20 @@ public class Session implements Serializable {
 	public Session() {
 	}
 
+	public Boolean getValid() {
+		return valid;
+	}
+
+	public void setValid(Boolean valid) {
+		this.valid = valid;
+	}
+
 	public Long getSessionid() {
 		return this.sessionID;
 	}
 
 	public void setSessionid(Long sessionid) {
 		this.sessionID = sessionid;
-	}
-
-	public Timestamp getLastActionTime() {
-		return this.lastActionTime;
-	}
-
-	public void setLastActionTime(Timestamp lastactiontime) {
-		this.lastActionTime = lastactiontime;
 	}
 
 	public String getSessionhash() {
