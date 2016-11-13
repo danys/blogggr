@@ -1,15 +1,14 @@
 package com.blogggr.strategies.validators;
 
 import com.blogggr.strategies.ValidationStrategy;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
 /**
  * Created by Daniel Sunnen on 10.11.16.
  */
-public class GetIdValidator implements ValidationStrategy {
-
-    private String errorMessage;
+public class GetIdValidator extends GenericValidator {
 
     public static final String idName = "id";
 
@@ -17,7 +16,8 @@ public class GetIdValidator implements ValidationStrategy {
         //
     }
 
-    public boolean inputIsValid(Map<String,String> input, String body){
+    @Override
+    protected boolean validate(Map<String,String> input, String body){
         if (!input.containsKey(idName)){
             errorMessage = "Error getting resource id!";
             return false;
@@ -35,7 +35,4 @@ public class GetIdValidator implements ValidationStrategy {
         return true;
     }
 
-    public String getError(){
-        return errorMessage;
-    }
 }
