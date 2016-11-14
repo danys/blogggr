@@ -4,6 +4,7 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.controllers.SessionsController;
 import com.blogggr.entities.Session;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.requestdata.SessionPostData;
 import com.blogggr.services.SessionService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
@@ -27,7 +28,7 @@ public class InvokePostSessionService implements ServiceInvocationStrategy{
     }
 
     @Override
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException{
+    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, WrongPasswordException{
         ObjectMapper mapper = new ObjectMapper();
         SessionPostData sessionData;
         try{

@@ -6,6 +6,7 @@ import com.blogggr.dao.UserDAO;
 import com.blogggr.entities.Session;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.requestdata.SessionPostData;
 import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.TimeUtilities;
@@ -30,10 +31,15 @@ public class SessionServiceImpl implements SessionService{
     }
 
     @Override
-    public Session createSession(SessionPostData sessionData) throws ResourceNotFoundException{
+    public Session createSession(SessionPostData sessionData) throws ResourceNotFoundException, WrongPasswordException{
         Session session = new Session();
         User user = userDAO.getUserByEmail(sessionData.getEmail());
         if (user==null) throw new ResourceNotFoundException("User not found!");
+        //Check that the supplied password is correct
+        String storedPasswordHash = user.getPasswordHash();
+        String storedSalt = user.getSalt();
+        String submitPasswordHash = Cryptography.computeSHA256Hash(sessionData.getPassword()+storedSalt);
+        if (submitPasswordHash.compareTo(storedPasswordHash)!=0) throw new WrongPasswordException("Supplied password is wrong!");
         Timestamp ts = TimeUtilities.getCurrentTimestamp();
         Long millis = ts.getTime();
         Timestamp validTill = new Timestamp(millis+ AppConfig.sessionValidityMillis);

@@ -1,6 +1,7 @@
 package com.blogggr.models;
 
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.strategies.AuthorizationStrategy;
 import com.blogggr.strategies.ResponseStrategy;
 import com.blogggr.strategies.ServiceInvocationStrategy;
@@ -62,6 +63,9 @@ public class AppModelImpl implements AppModel{
         }
         catch(ResourceNotFoundException e){
             return responseBehavior.notFound(e.getMessage());
+        }
+        catch(WrongPasswordException e){
+            return responseBehavior.notAuthorizedResponse(); //TODO: Change HTTP response code
         }
         catch(Exception e){
             return responseBehavior.exceptionResponse(exceptionError);

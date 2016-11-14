@@ -1,6 +1,7 @@
 package com.blogggr.strategies;
 
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.exceptions.WrongPasswordException;
 
 import java.util.Map;
 
@@ -9,5 +10,5 @@ import java.util.Map;
  */
 public interface ServiceInvocationStrategy {
 
-    Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException;
+    Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, WrongPasswordException;
 }
