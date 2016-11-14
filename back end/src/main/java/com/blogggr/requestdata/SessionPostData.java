@@ -9,9 +9,19 @@ public class SessionPostData {
     private String password;
     private Boolean rememberMe;
 
-    public SessionPostData(String email, String password, Boolean rememberMe){
+    public SessionPostData(){
+        //
+    }
+
+    public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setRememberMe(Boolean rememberMe) {
         this.rememberMe = rememberMe;
     }
 
