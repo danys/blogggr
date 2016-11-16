@@ -6,7 +6,6 @@ import com.blogggr.strategies.AuthorizationStrategy;
 import com.blogggr.strategies.ResponseStrategy;
 import com.blogggr.strategies.ServiceInvocationStrategy;
 import com.blogggr.strategies.ValidationStrategy;
-import com.blogggr.utilities.HTTPMethod;
 import org.springframework.dao.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.datasource.init.ScriptException;
@@ -65,7 +64,7 @@ public class AppModelImpl implements AppModel{
             return responseBehavior.notFound(e.getMessage());
         }
         catch(WrongPasswordException e){
-            return responseBehavior.notAuthorizedResponse(); //TODO: Change HTTP response code
+            return responseBehavior.notAuthorizedResponse(); //TODO: May change HTTP response code
         }
         catch(Exception e){
             return responseBehavior.exceptionResponse(exceptionError);
