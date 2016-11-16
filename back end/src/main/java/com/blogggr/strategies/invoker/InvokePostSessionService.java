@@ -48,6 +48,7 @@ public class InvokePostSessionService implements ServiceInvocationStrategy{
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put(AppConfig.locationHeaderKey,AppConfig.fullBaseUrl + SessionsController.sessionPath + "/" + String.valueOf(session.getSessionid()));
         responseMap.put(AppConfig.authKey,session.getSessionhash());
+        responseMap.put(AppConfig.validityUntilKey,session.getValidtill().toString().substring(0,19));
         return responseMap;
     }
 }
