@@ -30,6 +30,7 @@ public class AppConfig {
     public static final String fullBaseUrl = hostUrl+baseUrl;
     public static final String locationHeaderKey = "Location";
     public static final String authKey = "Auth";
+    public static final String validityUntilKey = "ValidUntil";
     public static final long sessionValidityMillis = 1000*60*60*24; //one day
 
     @Bean
