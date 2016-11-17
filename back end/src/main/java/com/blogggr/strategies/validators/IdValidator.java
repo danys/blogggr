@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 10.11.16.
  */
-public class GetIdValidator extends GenericValidator {
+public class IdValidator extends GenericValidator {
 
     public static final String idName = "id";
 

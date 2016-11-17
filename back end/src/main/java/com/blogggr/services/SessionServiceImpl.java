@@ -53,8 +53,7 @@ public class SessionServiceImpl implements SessionService{
     }
 
     @Override
-    public boolean deleteSession(String sessionHash){
-        //TODO
-        return true;
+    public void deleteSession(long sessionId){
+        sessionDAO.deleteById(sessionId);
     }
 }

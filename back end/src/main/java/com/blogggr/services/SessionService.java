@@ -12,5 +12,5 @@ public interface SessionService {
 
     Session createSession(SessionPostData sessionData) throws ResourceNotFoundException, WrongPasswordException;
 
-    boolean deleteSession(String sessionHash);
+    void deleteSession(long sessionId);
 }

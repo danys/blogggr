@@ -32,6 +32,7 @@ public class AppConfig {
     public static final String authKey = "Auth";
     public static final String validityUntilKey = "ValidUntil";
     public static final long sessionValidityMillis = 1000*60*60*24; //one day
+    public static final String headerAuthorizationKey = "Authorization";
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {

@@ -5,7 +5,7 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
-import com.blogggr.strategies.validators.GetIdValidator;
+import com.blogggr.strategies.validators.IdValidator;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.HashSet;
@@ -23,10 +23,10 @@ public class InvokeGetUserService implements ServiceInvocationStrategy {
     }
 
     public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException{
-        if (!input.containsKey(GetIdValidator.idName)){
+        if (!input.containsKey(IdValidator.idName)){
             return null;
         }
-        String idStr = input.get(GetIdValidator.idName);
+        String idStr = input.get(IdValidator.idName);
         Long id;
         try{
             id = Long.parseLong(idStr);

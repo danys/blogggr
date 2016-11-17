@@ -13,4 +13,6 @@ public interface UserService {
     User createUser(UserPostData userData);
 
     User getUserByEmail(String email);
+
+    User getUserBySessionHash(String sessionHash);
 }

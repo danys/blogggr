@@ -9,7 +9,7 @@ import com.blogggr.strategies.invoker.InvokeGetUserService;
 import com.blogggr.strategies.invoker.InvokePostUserService;
 import com.blogggr.strategies.responses.GetResponse;
 import com.blogggr.strategies.responses.PostResponse;
-import com.blogggr.strategies.validators.GetIdValidator;
+import com.blogggr.strategies.validators.IdValidator;
 import com.blogggr.strategies.validators.UserPostDataValidator;
 import com.blogggr.utilities.HTTPMethod;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +38,7 @@ public class UsersController {
     public ResponseEntity getUser(@PathVariable String id, @RequestHeader Map<String,String> header) {
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new BasicAuthorization(userPath+"/"+id, HTTPMethod.GET), new GetIdValidator(), new InvokeGetUserService(userService), new GetResponse());
+        AppModel model = new AppModelImpl(new BasicAuthorization(userPath+"/"+id, HTTPMethod.GET), new IdValidator(), new InvokeGetUserService(userService), new GetResponse());
         return model.execute(map,header,null);
     }
 

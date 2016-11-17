@@ -1,6 +1,8 @@
 package com.blogggr.services;
 
+import com.blogggr.dao.SessionDAO;
 import com.blogggr.dao.UserDAO;
+import com.blogggr.entities.Session;
 import com.blogggr.entities.User;
 import com.blogggr.requestdata.UserPostData;
 import com.blogggr.utilities.Cryptography;
@@ -20,9 +22,11 @@ import java.util.Random;
 public class UserServiceImpl implements UserService{
 
     private UserDAO userDAO;
+    private SessionDAO sessionDAO;
 
-    public UserServiceImpl(UserDAO userDAO){
+    public UserServiceImpl(UserDAO userDAO, SessionDAO sessionDAO){
         this.userDAO = userDAO;
+        this.sessionDAO = sessionDAO;
     }
 
     public User getUserById(long id){
@@ -31,6 +35,12 @@ public class UserServiceImpl implements UserService{
 
     public User getUserByEmail(String email){
         return userDAO.getUserByEmail(email);
+    }
+
+    public User getUserBySessionHash(String sessionHash){
+        Session session = sessionDAO.getSessionBySessionHash(sessionHash);
+        if (session==null) return null;
+        return session.getUser();
     }
 
     //For POST request
