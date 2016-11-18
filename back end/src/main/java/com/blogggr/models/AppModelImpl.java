@@ -1,5 +1,6 @@
 package com.blogggr.models;
 
+import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.strategies.AuthorizationStrategy;
@@ -38,7 +39,7 @@ public class AppModelImpl implements AppModel{
     }
 
     public ResponseEntity execute(Map<String,String> input, Map<String,String> header, String body){
-        if (!authBehavior.isAuthorized(header)) return responseBehavior.notAuthorizedResponse();
+        if (!authBehavior.isAuthorized(header)) return responseBehavior.notAuthenticatedResponse();
         if (!validationBehavior.inputIsValid(input, body)) return responseBehavior.invalidInputResponse(validationBehavior.getError());
         Object responseData;
         //Invoke service and catch the different exceptions that might be raised
@@ -64,7 +65,10 @@ public class AppModelImpl implements AppModel{
             return responseBehavior.notFound(e.getMessage());
         }
         catch(WrongPasswordException e){
-            return responseBehavior.notAuthorizedResponse(); //TODO: May change HTTP response code
+            return responseBehavior.notAuthenticatedResponse(); //TODO: May change HTTP response code
+        }
+        catch(NotAuthorizedException e){
+            return responseBehavior.notAuthorizedResponse(e.getMessage());
         }
         catch(Exception e){
             return responseBehavior.exceptionResponse(exceptionError);

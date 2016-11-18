@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
  * Created by Daniel Sunnen on 01.11.16.
  */
 public interface ResponseStrategy {
-    ResponseEntity notAuthorizedResponse();
+    ResponseEntity notAuthorizedResponse(String exceptionMessage);
+
+    ResponseEntity notAuthenticatedResponse();
 
     ResponseEntity invalidInputResponse(String errorMessage);
 

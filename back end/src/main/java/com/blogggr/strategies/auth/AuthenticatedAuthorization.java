@@ -3,6 +3,7 @@ package com.blogggr.strategies.auth;
 import com.blogggr.config.AppConfig;
 import com.blogggr.entities.User;
 import com.blogggr.services.UserService;
+import com.blogggr.strategies.AuthorizationStrategy;
 
 import java.util.Map;
 
@@ -10,7 +11,7 @@ import java.util.Map;
  * Created by Daniel Sunnen on 07.11.16.
  * Only extracts the userID from the current session
  */
-public class AuthenticatedAuthorization {
+public class AuthenticatedAuthorization implements AuthorizationStrategy {
 
     private UserService userService;
     private User authenticatedUser;
@@ -21,6 +22,7 @@ public class AuthenticatedAuthorization {
         dbCheck = false;
     }
 
+    @Override
     public boolean isAuthorized(Map<String,String> header){
         //Extract the Authorization value
         if (!header.containsKey(AppConfig.headerAuthorizationKey)) return false;
@@ -33,6 +35,7 @@ public class AuthenticatedAuthorization {
         return true;
     }
 
+    @Override
     public Long getUserId(Map<String,String> header){
         if (dbCheck) {
             if (authenticatedUser==null) return null;

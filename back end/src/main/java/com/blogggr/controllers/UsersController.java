@@ -3,7 +3,7 @@ package com.blogggr.controllers;
 import com.blogggr.config.AppConfig;
 import com.blogggr.models.*;
 import com.blogggr.services.UserService;
-import com.blogggr.strategies.auth.BasicAuthorization;
+import com.blogggr.strategies.auth.AuthenticatedAuthorization;
 import com.blogggr.strategies.auth.NoAuthorization;
 import com.blogggr.strategies.invoker.InvokeGetUserService;
 import com.blogggr.strategies.invoker.InvokePostUserService;
@@ -38,7 +38,7 @@ public class UsersController {
     public ResponseEntity getUser(@PathVariable String id, @RequestHeader Map<String,String> header) {
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new BasicAuthorization(userPath+"/"+id, HTTPMethod.GET), new IdValidator(), new InvokeGetUserService(userService), new GetResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetUserService(userService), new GetResponse());
         return model.execute(map,header,null);
     }
 

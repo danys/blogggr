@@ -10,8 +10,13 @@ import org.springframework.http.ResponseEntity;
  */
 public abstract class GenericResponse implements ResponseStrategy {
     @Override
-    public ResponseEntity notAuthorizedResponse() {
-        return new ResponseEntity(JSONResponseBuilder.generateErrorResponse("Not authorized!"), HttpStatus.UNAUTHORIZED);
+    public ResponseEntity notAuthorizedResponse(String errorMessage) {
+        return new ResponseEntity(JSONResponseBuilder.generateErrorResponse(errorMessage), HttpStatus.FORBIDDEN);
+    }
+
+    @Override
+    public ResponseEntity notAuthenticatedResponse() {
+        return new ResponseEntity(JSONResponseBuilder.generateErrorResponse("Not authenticated"), HttpStatus.UNAUTHORIZED);
     }
 
     @Override

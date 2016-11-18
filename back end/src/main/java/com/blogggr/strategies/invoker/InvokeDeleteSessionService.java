@@ -1,5 +1,6 @@
 package com.blogggr.strategies.invoker;
 
+import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.services.SessionService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
@@ -18,7 +19,7 @@ public class InvokeDeleteSessionService implements ServiceInvocationStrategy {
         this.sessionService = sessionService;
     }
 
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException {
+    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, NotAuthorizedException {
         if (!input.containsKey(IdValidator.idName)){
             return null;
         }
@@ -30,6 +31,7 @@ public class InvokeDeleteSessionService implements ServiceInvocationStrategy {
         catch(NumberFormatException e){
             return null;
         }
-        sessionService.deleteSession()
+        sessionService.deleteSession(id,userID);
+        return null;
     }
 }

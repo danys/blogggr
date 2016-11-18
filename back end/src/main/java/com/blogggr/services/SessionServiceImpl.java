@@ -5,6 +5,7 @@ import com.blogggr.dao.SessionDAO;
 import com.blogggr.dao.UserDAO;
 import com.blogggr.entities.Session;
 import com.blogggr.entities.User;
+import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.requestdata.SessionPostData;
@@ -52,8 +53,12 @@ public class SessionServiceImpl implements SessionService{
         return session;
     }
 
+    //Delete a session by its primary key
     @Override
-    public void deleteSession(long sessionId){
+    public void deleteSession(long sessionId, long userID) throws ResourceNotFoundException, NotAuthorizedException{
+        Session session = sessionDAO.findById(sessionId);
+        if (session==null) throw new ResourceNotFoundException("Session not found!");
+        if (session.getUser().getUserID()!=userID) throw new NotAuthorizedException("Invalid session id!");
         sessionDAO.deleteById(sessionId);
     }
 }

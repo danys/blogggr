@@ -12,7 +12,7 @@ public class IdValidator extends GenericValidator {
 
     public static final String idName = "id";
 
-    public GetIdValidator(){
+    public IdValidator(){
         //
     }
 

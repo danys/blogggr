@@ -13,10 +13,12 @@ public class NoAuthorization implements AuthorizationStrategy {
         //
     }
 
+    @Override
     public boolean isAuthorized(Map<String,String> header){
         return true;
     }
 
+    @Override
     public Long getUserId(Map<String,String> header){
         return null;
     }

@@ -7,7 +7,9 @@ import com.blogggr.services.SessionService;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.auth.AuthenticatedAuthorization;
 import com.blogggr.strategies.auth.NoAuthorization;
+import com.blogggr.strategies.invoker.InvokeDeleteSessionService;
 import com.blogggr.strategies.invoker.InvokePostSessionService;
+import com.blogggr.strategies.responses.DeleteResponse;
 import com.blogggr.strategies.responses.PostResponse;
 import com.blogggr.strategies.validators.IdValidator;
 import com.blogggr.strategies.validators.SessionPostDataValidator;
@@ -42,13 +44,13 @@ public class SessionsController {
     }
 
     //PUT /sessions
-    @RequestMapping(path = sessionPath+"/{id}", method = RequestMethod.PUT)
+    /*@RequestMapping(path = sessionPath+"/{id}", method = RequestMethod.PUT)
     public ResponseEntity updateSession(@RequestParam String id, @RequestHeader Map<String,String> header) {
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeUpdateSessionService(sessionService), new PutResponse());
         return model.execute(map,header,null);
-    }
+    }*/
 
     //DELETE /sessions
     @RequestMapping(path = sessionPath+"/{id}", method = RequestMethod.DELETE)
