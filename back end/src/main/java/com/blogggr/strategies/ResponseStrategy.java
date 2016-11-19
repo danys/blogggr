@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 public interface ResponseStrategy {
     ResponseEntity notAuthorizedResponse(String exceptionMessage);
 
-    ResponseEntity notAuthenticatedResponse();
+    ResponseEntity notAuthenticatedResponse(String errorMessage);
 
     ResponseEntity invalidInputResponse(String errorMessage);
 

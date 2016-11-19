@@ -39,7 +39,7 @@ public class AppModelImpl implements AppModel{
     }
 
     public ResponseEntity execute(Map<String,String> input, Map<String,String> header, String body){
-        if (!authBehavior.isAuthorized(header)) return responseBehavior.notAuthenticatedResponse();
+        if (!authBehavior.isAuthorized(header)) return responseBehavior.notAuthenticatedResponse(authBehavior.getError());
         if (!validationBehavior.inputIsValid(input, body)) return responseBehavior.invalidInputResponse(validationBehavior.getError());
         Object responseData;
         //Invoke service and catch the different exceptions that might be raised
@@ -65,7 +65,7 @@ public class AppModelImpl implements AppModel{
             return responseBehavior.notFound(e.getMessage());
         }
         catch(WrongPasswordException e){
-            return responseBehavior.notAuthenticatedResponse(); //TODO: May change HTTP response code
+            return responseBehavior.notAuthenticatedResponse("Wrong password!");
         }
         catch(NotAuthorizedException e){
             return responseBehavior.notAuthorizedResponse(e.getMessage());

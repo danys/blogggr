@@ -9,10 +9,13 @@ import com.blogggr.strategies.auth.AuthenticatedAuthorization;
 import com.blogggr.strategies.auth.NoAuthorization;
 import com.blogggr.strategies.invoker.InvokeDeleteSessionService;
 import com.blogggr.strategies.invoker.InvokePostSessionService;
+import com.blogggr.strategies.invoker.InvokeUpdateSessionService;
 import com.blogggr.strategies.responses.DeleteResponse;
 import com.blogggr.strategies.responses.PostResponse;
+import com.blogggr.strategies.responses.PutResponse;
 import com.blogggr.strategies.validators.IdValidator;
 import com.blogggr.strategies.validators.SessionPostDataValidator;
+import com.blogggr.strategies.validators.SessionPutDataValidator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,17 +47,18 @@ public class SessionsController {
     }
 
     //PUT /sessions
-    /*@RequestMapping(path = sessionPath+"/{id}", method = RequestMethod.PUT)
-    public ResponseEntity updateSession(@RequestParam String id, @RequestHeader Map<String,String> header) {
+    // Used to extend the validity of a session
+    @RequestMapping(path = sessionPath+"/{id}", method = RequestMethod.PUT)
+    public ResponseEntity updateSession(@PathVariable String id, @RequestHeader Map<String,String> header,@RequestBody String bodyData) {
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeUpdateSessionService(sessionService), new PutResponse());
-        return model.execute(map,header,null);
-    }*/
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new SessionPutDataValidator(), new InvokeUpdateSessionService(sessionService), new PutResponse());
+        return model.execute(map,header,bodyData);
+    }
 
     //DELETE /sessions
     @RequestMapping(path = sessionPath+"/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteSession(@RequestParam String id, @RequestHeader Map<String,String> header){
+    public ResponseEntity deleteSession(@PathVariable String id, @RequestHeader Map<String,String> header){
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeDeleteSessionService(sessionService), new DeleteResponse());

@@ -22,4 +22,9 @@ public class NoAuthorization implements AuthorizationStrategy {
     public Long getUserId(Map<String,String> header){
         return null;
     }
+
+    @Override
+    public String getError(){
+        return "";
+    }
 }

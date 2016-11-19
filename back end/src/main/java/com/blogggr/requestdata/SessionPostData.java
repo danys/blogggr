@@ -7,7 +7,6 @@ public class SessionPostData {
 
     private String email;
     private String password;
-    private Boolean rememberMe;
 
     public SessionPostData(){
         //
@@ -21,10 +20,6 @@ public class SessionPostData {
         this.password = password;
     }
 
-    public void setRememberMe(Boolean rememberMe) {
-        this.rememberMe = rememberMe;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -33,7 +28,4 @@ public class SessionPostData {
         return password;
     }
 
-    public Boolean isRememberMe() {
-        return rememberMe;
-    }
 }

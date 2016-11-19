@@ -9,6 +9,7 @@ import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.requestdata.SessionPostData;
+import com.blogggr.requestdata.SessionPutData;
 import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.TimeUtilities;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class SessionServiceImpl implements SessionService{
         if (submitPasswordHash.compareTo(storedPasswordHash)!=0) throw new WrongPasswordException("Supplied password is wrong!");
         Timestamp ts = TimeUtilities.getCurrentTimestamp();
         Long millis = ts.getTime();
-        Timestamp validTill = new Timestamp(millis+ AppConfig.sessionValidityMillis);
+        Timestamp validTill = new Timestamp(millis+AppConfig.sessionValidityMillis);
         session.setUser(user);
         session.setValidtill(validTill);
         session.setValid(true);
@@ -58,7 +59,19 @@ public class SessionServiceImpl implements SessionService{
     public void deleteSession(long sessionId, long userID) throws ResourceNotFoundException, NotAuthorizedException{
         Session session = sessionDAO.findById(sessionId);
         if (session==null) throw new ResourceNotFoundException("Session not found!");
+        //Check if the session user is assigned to this session
         if (session.getUser().getUserID()!=userID) throw new NotAuthorizedException("Invalid session id!");
         sessionDAO.deleteById(sessionId);
+    }
+
+    //Update session by primary key
+    @Override
+    public void updateSession(long sessionId, long userID, SessionPutData sessionData) throws ResourceNotFoundException, NotAuthorizedException{
+        Session session = sessionDAO.findById(sessionId);
+        if (session==null) throw new ResourceNotFoundException("Session not found!");
+        //Check if the session user is assigned to this session
+        if (session.getUser().getUserID()!=userID) throw new NotAuthorizedException("Invalid session id!");
+        session.setValidtill(new Timestamp(sessionData.getValidTill()));
+        sessionDAO.update(session);
     }
 }

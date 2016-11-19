@@ -8,4 +8,5 @@ import com.blogggr.entities.Session;
 public interface SessionDAO extends GenericDAO<Session>{
 
     Session getSessionBySessionHash(String sessionHash);
+
 }

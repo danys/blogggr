@@ -15,8 +15,8 @@ public abstract class GenericResponse implements ResponseStrategy {
     }
 
     @Override
-    public ResponseEntity notAuthenticatedResponse() {
-        return new ResponseEntity(JSONResponseBuilder.generateErrorResponse("Not authenticated"), HttpStatus.UNAUTHORIZED);
+    public ResponseEntity notAuthenticatedResponse(String errorMessage) {
+        return new ResponseEntity(JSONResponseBuilder.generateErrorResponse(errorMessage), HttpStatus.UNAUTHORIZED);
     }
 
     @Override

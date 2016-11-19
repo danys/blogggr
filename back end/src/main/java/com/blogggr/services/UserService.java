@@ -1,6 +1,7 @@
 package com.blogggr.services;
 
 import com.blogggr.entities.User;
+import com.blogggr.exceptions.SessionExpiredException;
 import com.blogggr.requestdata.UserPostData;
 
 /**
@@ -14,5 +15,5 @@ public interface UserService {
 
     User getUserByEmail(String email);
 
-    User getUserBySessionHash(String sessionHash);
+    User getUserBySessionHash(String sessionHash) throws SessionExpiredException;
 }
