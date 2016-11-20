@@ -12,7 +12,7 @@ import com.blogggr.requestdata.SessionPutData;
  */
 public interface SessionService {
 
-    Session createSession(SessionPostData sessionData) throws ResourceNotFoundException, WrongPasswordException;
+    Session createSession(SessionPostData sessionData) throws ResourceNotFoundException, WrongPasswordException; //Resource not found if user cannot be found
 
     void deleteSession(long sessionId, long userID) throws ResourceNotFoundException, NotAuthorizedException;
 
