@@ -7,11 +7,15 @@ import com.blogggr.services.PostService;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.auth.AuthenticatedAuthorization;
 import com.blogggr.strategies.invoker.InvokePostPostService;
+import com.blogggr.strategies.invoker.InvokePostPutService;
 import com.blogggr.strategies.responses.PostResponse;
+import com.blogggr.strategies.responses.PutResponse;
 import com.blogggr.strategies.validators.PostPostDataValidator;
+import com.blogggr.strategies.validators.PostPutDataValidator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,8 +37,17 @@ public class PostsController {
 
     //POST /posts
     @RequestMapping(path = postsPath, method = RequestMethod.POST)
-    public ResponseEntity createUser(@RequestBody String bodyData, @RequestHeader Map<String,String> header){
+    public ResponseEntity createPost(@RequestBody String bodyData, @RequestHeader Map<String,String> header){
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new PostPostDataValidator(), new InvokePostPostService(postService), new PostResponse());
         return model.execute(null,header,bodyData);
+    }
+
+    //PUT /posts
+    @RequestMapping(path = postsPath+"/{id}", method = RequestMethod.PUT)
+    public ResponseEntity updatePost(@PathVariable String id,@RequestBody String bodyData, @RequestHeader Map<String,String> header){
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new PostPutDataValidator(), new InvokePostPutService(postService), new PutResponse());
+        Map<String,String> map = new HashMap<>();
+        map.put("id", id);
+        return model.execute(map,header,bodyData);
     }
 }

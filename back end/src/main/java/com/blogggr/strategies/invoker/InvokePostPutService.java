@@ -1,34 +1,45 @@
 package com.blogggr.strategies.invoker;
 
-import com.blogggr.config.AppConfig;
-import com.blogggr.controllers.PostsController;
 import com.blogggr.entities.Post;
+import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.requestdata.PostData;
 import com.blogggr.services.PostService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.strategies.validators.IdValidator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Daniel Sunnen on 19.11.16.
+ * Created by Daniel Sunnen on 21.11.16.
  */
-public class InvokePostPostService implements ServiceInvocationStrategy {
+public class InvokePostPutService implements ServiceInvocationStrategy{
 
     private PostService postService;
 
-    public InvokePostPostService(PostService postService){
+    public InvokePostPutService(PostService postService){
         this.postService = postService;
     }
 
     @Override
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, WrongPasswordException {
+    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, WrongPasswordException, NotAuthorizedException {
+        if (!input.containsKey(IdValidator.idName)){
+            return null;
+        }
+        String idStr = input.get(IdValidator.idName);
+        Long postID;
+        try{
+            postID = Long.parseLong(idStr);
+        }
+        catch(NumberFormatException e){
+            return null;
+        }
+        //Parse the body and perform the update of the associated record
         ObjectMapper mapper = new ObjectMapper();
         PostData postData;
         try{
@@ -43,11 +54,7 @@ public class InvokePostPostService implements ServiceInvocationStrategy {
         catch(IOException e){
             return null;
         }
-        Post post = postService.createPost(userID, postData);
-        //Create location string and return it
-        //Create location string and session id hash. Then return it as a map.
-        Map<String, String> responseMap = new HashMap<>();
-        responseMap.put(AppConfig.locationHeaderKey,AppConfig.fullBaseUrl + PostsController.postsPath + "/" + String.valueOf(post.getPostid()));
-        return responseMap;
+        postService.updatePost(postID, userID, postData);
+        return null;
     }
 }

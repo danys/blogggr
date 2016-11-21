@@ -13,9 +13,24 @@ import java.util.Map;
  *
  * Class used to validate POST and PUT requests
  */
-public class PostPostDataValidator extends GenericValidator{
+public class PostPutDataValidator extends GenericValidator{
 
     protected boolean validate(Map<String, String> input, String body) throws JsonParseException, JsonProcessingException, IOException{
+        //Check that the post ID is present and is a number
+        if (!input.containsKey(IdValidator.idName)){
+            errorMessage = "Post id missing!";
+            return false;
+        }
+        String idStr = input.get(IdValidator.idName);
+        Long postID;
+        try{
+            postID = Long.parseLong(idStr);
+        }
+        catch(NumberFormatException e){
+            errorMessage = "Post id not a valid number!";
+            return false;
+        }
+        //Check the request body
         ObjectMapper mapper = new ObjectMapper();
         PostData postPostData = mapper.readValue(body, PostData.class);
         //Check that all fields are present

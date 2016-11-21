@@ -3,12 +3,12 @@ package com.blogggr.requestdata;
 /**
  * Created by Daniel Sunnen on 19.11.16.
  */
-public class PostPostData {
+public class PostData {
 
     private String title;
     private String textBody;
 
-    public PostPostData(){
+    public PostData(){
         //
     }
 
