@@ -34,17 +34,17 @@ public class PostPutDataValidator extends GenericValidator{
         ObjectMapper mapper = new ObjectMapper();
         PostData postPostData = mapper.readValue(body, PostData.class);
         //Check that all fields are present
-        if (postPostData.getTextBody()==null || postPostData.getTitle()==null){
-            errorMessage = "All fields need to be filled!";
+        if (postPostData.getTextBody()==null && postPostData.getTitle()==null){
+            errorMessage = "At least one field must be filled!";
             return false;
         }
         //Check title length
-        if (postPostData.getTitle().length()<=3){
+        if (postPostData.getTitle()!=null && postPostData.getTitle().length()<=3){
             errorMessage = "Title is a little short!";
             return false;
         }
         //Check text length
-        if (postPostData.getTextBody().length()<=10){
+        if (postPostData.getTextBody()!=null && postPostData.getTextBody().length()<=10){
             errorMessage = "Text is a little short!";
             return false;
         }

@@ -50,9 +50,11 @@ public class PostServiceImpl implements PostService{
         if (post.getUser().getUserID()!=userID) throw new NotAuthorizedException("No authorization to modify this post!");
         //Update timestamp
         post.setTimestamp(TimeUtilities.getCurrentTimestamp());
-        post.setTextbody(postData.getTextBody());
-        post.setTitle(postData.getTitle());
-        post.setShorttitle(StringUtilities.compactTitle(postData.getTitle()));
+        if (postData.getTextBody()!=null) post.setTextbody(postData.getTextBody());
+        if (postData.getTitle()!=null) {
+            post.setTitle(postData.getTitle());
+            post.setShorttitle(StringUtilities.compactTitle(postData.getTitle()));
+        }
         postDAO.save(post);
         return post;
     }
