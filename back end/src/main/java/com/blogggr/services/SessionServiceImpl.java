@@ -7,6 +7,7 @@ import com.blogggr.entities.Session;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.exceptions.SessionExpiredException;
 import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.requestdata.SessionPostData;
 import com.blogggr.requestdata.SessionPutData;
@@ -66,11 +67,16 @@ public class SessionServiceImpl implements SessionService{
 
     //Update session by primary key
     @Override
-    public void updateSession(long sessionId, long userID, SessionPutData sessionData) throws ResourceNotFoundException, NotAuthorizedException{
+    public void updateSession(long sessionId, long userID, SessionPutData sessionData) throws ResourceNotFoundException, NotAuthorizedException, SessionExpiredException{
         Session session = sessionDAO.findById(sessionId);
         if (session==null) throw new ResourceNotFoundException("Session not found!");
         //Check if the session user is assigned to this session
         if (session.getUser().getUserID()!=userID) throw new NotAuthorizedException("Invalid session id!");
+        //Check that the session as not yet expired
+        Timestamp ts = TimeUtilities.getCurrentTimestamp();
+        if (session.getValidtill().compareTo(ts)<0){
+            throw new SessionExpiredException();
+        }
         session.setValidtill(new Timestamp(sessionData.getValidTill()));
         sessionDAO.update(session);
     }

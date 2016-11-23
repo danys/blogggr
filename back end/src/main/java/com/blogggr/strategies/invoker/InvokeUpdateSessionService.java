@@ -2,10 +2,12 @@ package com.blogggr.strategies.invoker;
 
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.exceptions.SessionExpiredException;
 import com.blogggr.requestdata.SessionPutData;
 import com.blogggr.requestdata.UserPostData;
 import com.blogggr.services.SessionService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.strategies.auth.AuthenticatedAuthorization;
 import com.blogggr.strategies.validators.IdValidator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,7 +54,12 @@ public class InvokeUpdateSessionService implements ServiceInvocationStrategy {
         catch(IOException e){
             return null;
         }
-        sessionService.updateSession(id,userID,sessionPutData);
+        try {
+            sessionService.updateSession(id, userID, sessionPutData);
+        }
+        catch(SessionExpiredException e){
+            throw new NotAuthorizedException(AuthenticatedAuthorization.sessionExpiredText);
+        }
         return null;
     }
 }

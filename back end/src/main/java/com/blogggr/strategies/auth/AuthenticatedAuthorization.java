@@ -20,6 +20,10 @@ public class AuthenticatedAuthorization implements AuthorizationStrategy {
 
     private String errorMessage;
 
+    public static final String sessionExpiredText = "Session is expired!";
+    public static final String invalidSessionText = "Invalid session token!";
+    public static final String notAuthenticatedText = "Not authenticated!";
+
     public AuthenticatedAuthorization(UserService userService){
         this.userService = userService;
         dbCheck = false;
@@ -30,7 +34,7 @@ public class AuthenticatedAuthorization implements AuthorizationStrategy {
     public boolean isAuthorized(Map<String,String> header){
         //Extract the Authorization value
         if (!header.containsKey(AppConfig.headerAuthorizationKey)) {
-            errorMessage = "Not authenticated!";
+            errorMessage = notAuthenticatedText;
             return false;
         }
         String authHash = header.get(AppConfig.headerAuthorizationKey);
@@ -40,12 +44,12 @@ public class AuthenticatedAuthorization implements AuthorizationStrategy {
             user = userService.getUserBySessionHash(authHash);
         }
         catch(SessionExpiredException e){
-            errorMessage = "Session is expired!";
+            errorMessage = sessionExpiredText;
             return false;
         }
         dbCheck = true; //executed DB call to find the current user
         if (user==null) {
-            errorMessage = "Invalid session token!";
+            errorMessage = invalidSessionText;
             return false;
         }
         authenticatedUser = user;
