@@ -4,6 +4,7 @@ import com.blogggr.dao.SessionDAO;
 import com.blogggr.dao.UserDAO;
 import com.blogggr.entities.Session;
 import com.blogggr.entities.User;
+import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.SessionExpiredException;
 import com.blogggr.requestdata.UserPostData;
 import com.blogggr.utilities.Cryptography;
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService{
         return userDAO.getUserByEmail(email);
     }
 
-    public User getUserBySessionHash(String sessionHash){
+    public User getUserBySessionHash(String sessionHash) throws DBException, SessionExpiredException{
         Session session = sessionDAO.getSessionBySessionHash(sessionHash);
         //Check if user session is expired
         Timestamp ts = TimeUtilities.getCurrentTimestamp();

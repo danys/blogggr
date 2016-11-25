@@ -2,6 +2,7 @@ package com.blogggr.strategies.auth;
 
 import com.blogggr.config.AppConfig;
 import com.blogggr.entities.User;
+import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.SessionExpiredException;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.AuthorizationStrategy;
@@ -47,7 +48,10 @@ public class AuthenticatedAuthorization implements AuthorizationStrategy {
             errorMessage = sessionExpiredText;
             return false;
         }
-        catch()
+        catch(DBException e){
+            errorMessage = e.getMessage();
+            return false;
+        }
         dbCheck = true; //executed DB call to find the current user
         if (user==null) {
             errorMessage = invalidSessionText;
