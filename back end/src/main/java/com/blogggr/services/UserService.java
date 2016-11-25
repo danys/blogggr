@@ -15,5 +15,5 @@ public interface UserService {
 
     User getUserByEmail(String email);
 
-    User getUserBySessionHash(String sessionHash) throws SessionExpiredException;
+    User getUserBySessionHash(String sessionHash) throws Exception;
 }

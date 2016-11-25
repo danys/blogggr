@@ -47,6 +47,7 @@ public class AuthenticatedAuthorization implements AuthorizationStrategy {
             errorMessage = sessionExpiredText;
             return false;
         }
+        catch()
         dbCheck = true; //executed DB call to find the current user
         if (user==null) {
             errorMessage = invalidSessionText;

@@ -18,20 +18,11 @@ public class SessionDAOImpl extends GenericDAOImpl<Session> implements SessionDA
         super(Session.class);
     }
 
-    public Session getSessionBySessionHash(String sessionHash){
+    public Session getSessionBySessionHash(String sessionHash) throws RuntimeException{
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Session> query = cb.createQuery(Session.class);
         Root<Session> root = query.from(Session.class);
         query.where(cb.equal(root.get("sessionHash"),sessionHash));
-        try {
-            return entityManager.createQuery(query).getSingleResult();
-        }
-        catch(NoResultException e){
-            return null;
-        }
-        catch(Exception e){ //Catches all other exceptions of the entityManager
-            //TODO may change this catch structure
-            return null;
-        }
+        return entityManager.createQuery(query).getSingleResult();
     }
 }

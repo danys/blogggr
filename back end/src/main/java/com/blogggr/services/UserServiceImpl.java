@@ -38,9 +38,8 @@ public class UserServiceImpl implements UserService{
         return userDAO.getUserByEmail(email);
     }
 
-    public User getUserBySessionHash(String sessionHash) throws SessionExpiredException{
+    public User getUserBySessionHash(String sessionHash){
         Session session = sessionDAO.getSessionBySessionHash(sessionHash);
-        if (session==null) return null;
         //Check if user session is expired
         Timestamp ts = TimeUtilities.getCurrentTimestamp();
         if (session.getValidtill().compareTo(ts)<0){
