@@ -28,6 +28,8 @@ public class Post implements Serializable {
 
 	private String title;
 
+	private Boolean isGlobal;
+
 	//bi-directional many-to-one association to Comment
 	@OneToMany(mappedBy="post")
 	private List<Comment> comments;
@@ -78,6 +80,14 @@ public class Post implements Serializable {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public Boolean getGlobal() {
+		return isGlobal;
+	}
+
+	public void setGlobal(Boolean global) {
+		isGlobal = global;
 	}
 
 	public List<Comment> getComments() {

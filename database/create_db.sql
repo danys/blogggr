@@ -27,7 +27,7 @@ CREATE TABLE Blogggr.Sessions (
                 sessionID BIGINT NOT NULL DEFAULT nextval('Blogggr.sessions_sessionid_seq'),
                 userID BIGINT NOT NULL,
                 sessionHash CHAR(64) NOT NULL,
-                valid BOOLEAN NOT NULL,
+                lastActionTime TIMESTAMP NOT NULL,
                 validTill TIMESTAMP NOT NULL,
                 CONSTRAINT session_pk PRIMARY KEY (sessionID)
 );
@@ -44,6 +44,7 @@ CREATE TABLE Blogggr.Posts (
                 shortTitle VARCHAR(100) NOT NULL,
                 textBody TEXT NOT NULL,
                 timeStamp TIMESTAMP NOT NULL,
+                isGlobal BOOLEAN NOT NULL,
                 CONSTRAINT post_pk PRIMARY KEY (postID)
 );
 
