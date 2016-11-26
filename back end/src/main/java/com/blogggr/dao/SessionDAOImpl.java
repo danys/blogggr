@@ -2,6 +2,7 @@ package com.blogggr.dao;
 
 import com.blogggr.entities.Session;
 import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -15,11 +16,13 @@ import javax.persistence.criteria.Root;
 @Repository
 public class SessionDAOImpl extends GenericDAOImpl<Session> implements SessionDAO{
 
+    public static final String invalidSessionText = "Invalid session token!";
+
     public SessionDAOImpl(){
         super(Session.class);
     }
 
-    public Session getSessionBySessionHash(String sessionHash) throws DBException {
+    public Session getSessionBySessionHash(String sessionHash) throws ResourceNotFoundException, DBException {
         try {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<Session> query = cb.createQuery(Session.class);
@@ -28,7 +31,7 @@ public class SessionDAOImpl extends GenericDAOImpl<Session> implements SessionDA
             return entityManager.createQuery(query).getSingleResult();
         }
         catch(NoResultException e){
-            throw new DBException("Database record not found!");
+            throw new ResourceNotFoundException(invalidSessionText);
         }
         catch(Exception e){
             throw new DBException("Database exception!");

@@ -1,10 +1,7 @@
 package com.blogggr.services;
 
 import com.blogggr.entities.Session;
-import com.blogggr.exceptions.NotAuthorizedException;
-import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.exceptions.SessionExpiredException;
-import com.blogggr.exceptions.WrongPasswordException;
+import com.blogggr.exceptions.*;
 import com.blogggr.requestdata.SessionPostData;
 import com.blogggr.requestdata.SessionPutData;
 
@@ -13,7 +10,7 @@ import com.blogggr.requestdata.SessionPutData;
  */
 public interface SessionService {
 
-    Session createSession(SessionPostData sessionData) throws ResourceNotFoundException, WrongPasswordException; //Resource not found if user cannot be found
+    Session createSession(SessionPostData sessionData) throws ResourceNotFoundException, DBException, WrongPasswordException; //Resource not found if user cannot be found
 
     void deleteSession(long sessionId, long userID) throws ResourceNotFoundException, NotAuthorizedException;
 

@@ -5,10 +5,7 @@ import com.blogggr.dao.SessionDAO;
 import com.blogggr.dao.UserDAO;
 import com.blogggr.entities.Session;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.NotAuthorizedException;
-import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.exceptions.SessionExpiredException;
-import com.blogggr.exceptions.WrongPasswordException;
+import com.blogggr.exceptions.*;
 import com.blogggr.requestdata.SessionPostData;
 import com.blogggr.requestdata.SessionPutData;
 import com.blogggr.utilities.Cryptography;
@@ -34,10 +31,9 @@ public class SessionServiceImpl implements SessionService{
     }
 
     @Override
-    public Session createSession(SessionPostData sessionData) throws ResourceNotFoundException, WrongPasswordException{
+    public Session createSession(SessionPostData sessionData) throws ResourceNotFoundException, DBException, WrongPasswordException{
         Session session = new Session();
         User user = userDAO.getUserByEmail(sessionData.getEmail());
-        if (user==null) throw new ResourceNotFoundException("User not found!");
         //Check that the supplied password is correct
         String storedPasswordHash = user.getPasswordHash();
         String storedSalt = user.getSalt();

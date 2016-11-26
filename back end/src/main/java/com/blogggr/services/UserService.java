@@ -2,6 +2,7 @@ package com.blogggr.services;
 
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.SessionExpiredException;
 import com.blogggr.requestdata.UserPostData;
 
@@ -14,7 +15,7 @@ public interface UserService {
 
     User createUser(UserPostData userData);
 
-    User getUserByEmail(String email);
+    User getUserByEmail(String email) throws ResourceNotFoundException, DBException;
 
-    User getUserBySessionHash(String sessionHash) throws DBException, SessionExpiredException;
+    User getUserBySessionHash(String sessionHash) throws ResourceNotFoundException, DBException, SessionExpiredException;
 }
