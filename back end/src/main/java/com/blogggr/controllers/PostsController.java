@@ -6,10 +6,13 @@ import com.blogggr.models.AppModelImpl;
 import com.blogggr.services.PostService;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.auth.AuthenticatedAuthorization;
+import com.blogggr.strategies.invoker.InvokeDeletePostService;
 import com.blogggr.strategies.invoker.InvokePostPostService;
 import com.blogggr.strategies.invoker.InvokePostPutService;
+import com.blogggr.strategies.responses.DeleteResponse;
 import com.blogggr.strategies.responses.PostResponse;
 import com.blogggr.strategies.responses.PutResponse;
+import com.blogggr.strategies.validators.IdValidator;
 import com.blogggr.strategies.validators.PostPostDataValidator;
 import com.blogggr.strategies.validators.PostPutDataValidator;
 import org.springframework.http.ResponseEntity;
@@ -49,5 +52,14 @@ public class PostsController {
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         return model.execute(map,header,bodyData);
+    }
+
+    //DELETE /posts
+    @RequestMapping(path = postsPath+"/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deletePost(@PathVariable String id, @RequestHeader Map<String,String> header){
+        Map<String,String> map = new HashMap<>();
+        map.put("id", id);
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeDeletePostService(postService), new DeleteResponse());
+        return model.execute(map,header,null);
     }
 }

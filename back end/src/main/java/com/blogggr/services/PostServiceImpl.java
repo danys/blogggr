@@ -22,6 +22,9 @@ public class PostServiceImpl implements PostService{
     private PostDAO postDAO;
     private UserDAO userDAO;
 
+    private final String postNotFound = "Post not found!";
+    private final String noAuthorization = "No authorization to modify this post!";
+
     public PostServiceImpl(PostDAO postDAO, UserDAO userDAO){
         this.postDAO = postDAO;
         this.userDAO = userDAO;
@@ -46,8 +49,8 @@ public class PostServiceImpl implements PostService{
     @Override
     public Post updatePost(long postID, long userID, PostData postData) throws ResourceNotFoundException, NotAuthorizedException{
         Post post = postDAO.findById(postID);
-        if (post==null) throw new ResourceNotFoundException("Post not found!");
-        if (post.getUser().getUserID()!=userID) throw new NotAuthorizedException("No authorization to modify this post!");
+        if (post==null) throw new ResourceNotFoundException(postNotFound);
+        if (post.getUser().getUserID()!=userID) throw new NotAuthorizedException(noAuthorization);
         //Update timestamp
         post.setTimestamp(TimeUtilities.getCurrentTimestamp());
         if (postData.getTextBody()!=null) post.setTextbody(postData.getTextBody());
@@ -57,5 +60,14 @@ public class PostServiceImpl implements PostService{
         }
         postDAO.save(post);
         return post;
+    }
+
+    //Delete a session by its primary key
+    @Override
+    public void deletePost(long postId, long userID) throws ResourceNotFoundException, NotAuthorizedException{
+        Post post = postDAO.findById(postId);
+        if (post==null) throw new ResourceNotFoundException(postNotFound);
+        if (post.getUser().getUserID()!=userID) throw new NotAuthorizedException(noAuthorization);
+        postDAO.deleteById(postId);
     }
 }

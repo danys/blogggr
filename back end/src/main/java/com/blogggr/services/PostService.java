@@ -13,4 +13,6 @@ public interface PostService {
     Post createPost(long userID, PostData postData) throws ResourceNotFoundException;
 
     Post updatePost(long postID, long userID, PostData postData) throws ResourceNotFoundException, NotAuthorizedException;
+
+    void deletePost(long postId, long userID) throws ResourceNotFoundException, NotAuthorizedException;
 }
