@@ -7,6 +7,7 @@ public class PostData {
 
     private String title;
     private String textBody;
+    private Boolean isGlobal;
 
     public PostData(){
         //
@@ -26,5 +27,13 @@ public class PostData {
 
     public void setTextBody(String textBody) {
         this.textBody = textBody;
+    }
+
+    public Boolean getGlobal() {
+        return isGlobal;
+    }
+
+    public void setGlobal(Boolean global) {
+        isGlobal = global;
     }
 }

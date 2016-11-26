@@ -42,6 +42,7 @@ public class PostServiceImpl implements PostService{
         post.setTextbody(postData.getTextBody());
         post.setTimestamp(TimeUtilities.getCurrentTimestamp());
         post.setShorttitle(StringUtilities.compactTitle(postData.getTitle()));
+        post.setGlobal(postData.getGlobal());
         postDAO.save(post);
         return post;
     }
@@ -58,6 +59,7 @@ public class PostServiceImpl implements PostService{
             post.setTitle(postData.getTitle());
             post.setShorttitle(StringUtilities.compactTitle(postData.getTitle()));
         }
+        if (postData.getGlobal()!=null) post.setGlobal(postData.getGlobal());
         postDAO.save(post);
         return post;
     }

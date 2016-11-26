@@ -34,7 +34,7 @@ public class PostPutDataValidator extends GenericValidator{
         ObjectMapper mapper = new ObjectMapper();
         PostData postPostData = mapper.readValue(body, PostData.class);
         //Check that all fields are present
-        if (postPostData.getTextBody()==null && postPostData.getTitle()==null){
+        if (postPostData.getTextBody()==null && postPostData.getTitle()==null && postPostData.getGlobal()==null){
             errorMessage = "At least one field must be filled!";
             return false;
         }
