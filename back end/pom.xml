@@ -44,6 +44,10 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -56,18 +60,22 @@
 	</build>
 
 	<repositories>
-	<repository>
-		<id>spring-repo</id>
-		<name>Spring Repository</name>
-		<url>https://repo.spring.io/release</url>
-	</repository>
-	<repository>
-		<id>spring-snapshot</id>
-		<name>Spring Snapshot Repository</name>
-		<url>https://repo.spring.io/snapshot</url>
-		<snapshots>
-			<enabled>true</enabled>
-		</snapshots>
-	</repository>
+		<repository>
+			<id>JBoss repository</id>
+			<url>http://repository.jboss.com</url>
+		</repository>
+		<repository>
+			<id>spring-repo</id>
+			<name>Spring Repository</name>
+			<url>https://repo.spring.io/release</url>
+		</repository>
+		<repository>
+			<id>spring-snapshot</id>
+			<name>Spring Snapshot Repository</name>
+			<url>https://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 </project>
