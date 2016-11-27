@@ -1,6 +1,7 @@
 package com.blogggr.dao;
 
 import com.blogggr.entities.User;
+import com.blogggr.entities.User_;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Repository;
@@ -28,7 +29,7 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<User> query = cb.createQuery(User.class);
             Root<User> root = query.from(User.class);
-            query.where(cb.equal(root.get("email"), email));
+            query.where(cb.equal(root.get(User_.email), email));
             return entityManager.createQuery(query).getSingleResult();
         }
         catch(NoResultException e){

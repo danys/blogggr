@@ -1,6 +1,7 @@
 package com.blogggr.dao;
 
 import com.blogggr.entities.Session;
+import com.blogggr.entities.Session_;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Repository;
@@ -27,7 +28,7 @@ public class SessionDAOImpl extends GenericDAOImpl<Session> implements SessionDA
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<Session> query = cb.createQuery(Session.class);
             Root<Session> root = query.from(Session.class);
-            query.where(cb.equal(root.get("sessionHash"), sessionHash));
+            query.where(cb.equal(root.get(Session_.sessionHash), sessionHash));
             return entityManager.createQuery(query).getSingleResult();
         }
         catch(NoResultException e){
