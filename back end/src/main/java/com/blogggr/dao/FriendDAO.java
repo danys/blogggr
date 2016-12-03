@@ -1,6 +1,9 @@
 package com.blogggr.dao;
 
 import com.blogggr.entities.Friend;
+import com.blogggr.entities.User;
+import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -9,5 +12,5 @@ import java.util.List;
  */
 public interface FriendDAO extends GenericDAO<Friend> {
 
-    List<Friend> getUserFriends(long userID);
+    List<User> getUserFriends(long userID) throws ResourceNotFoundException, DBException;
 }

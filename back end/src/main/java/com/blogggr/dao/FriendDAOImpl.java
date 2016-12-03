@@ -1,6 +1,9 @@
 package com.blogggr.dao;
 
 import com.blogggr.entities.Friend;
+import com.blogggr.entities.Friend_;
+import com.blogggr.entities.User;
+import com.blogggr.entities.User_;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Repository;
@@ -8,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
@@ -23,23 +27,34 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO{
         super(Friend.class);
     }
 
-    public List<Friend> getUserFriends(long userID){
-        //select * from blogggr.friends f join blogggr.users u1 on f.useroneid=u1.userid join blogggr.users u2 on f.usertwoid=u2.userid where f.status=2;
-        /*try {
+    public List<User> getUserFriends(long userID) throws ResourceNotFoundException, DBException{
+        /**
+         * SQL to produce:
+         * SELECT u2.* FROM blogggr.friends f
+         * JOIN blogggr.users u1 ON f.useroneid=u1.userid
+         * JOIN blogggr.users u2 ON f.usertwoid=u2.userid
+         * WHERE f.status=2 AND u1.userID=userID;
+         */
+        try {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Friend> query = cb.createQuery(Friend.class);
-            Root<Friend> friend = query.from(Friend.class);
-            Join<Friend> user1 = friend.join("user1");
-            query.where(cb.equal(root.get("sessionHash"), sessionHash));
-            return entityManager.createQuery(query).getSingleResult();
+            CriteriaQuery<User> query = cb.createQuery(User.class);
+            Root<Friend> root = query.from(Friend.class);
+            Join<Friend, User> user1Join = root.join(Friend_.user1);
+            Join<Friend, User> user2Join = root.join(Friend_.user2);
+            query.where(
+                    cb.and(
+                            cb.equal(root.get(Friend_.status),2),
+                            cb.equal(user1Join.get(User_.userID),userID)
+                            )
+            );
+            return entityManager.createQuery(query).getResultList();
         }
         catch(NoResultException e){
             throw new ResourceNotFoundException(noResult);
         }
         catch(Exception e){
             throw new DBException("Database exception!");
-        }*/
+        }
         //TODO
-        return null;
     }
 }

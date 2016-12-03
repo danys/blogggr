@@ -64,11 +64,11 @@ public class PostsController {
     }
 
     //GET /posts/id
-    /*@RequestMapping(path = postsPath+"/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = postsPath+"/{id}", method = RequestMethod.GET)
     public ResponseEntity getPost(@PathVariable String id, @RequestHeader Map<String,String> header){
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetPostService(postService), new GetResponse());
         return model.execute(map,header,null);
-    }*/
+    }
 }

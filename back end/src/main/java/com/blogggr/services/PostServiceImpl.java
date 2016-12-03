@@ -72,4 +72,17 @@ public class PostServiceImpl implements PostService{
         if (post.getUser().getUserID()!=userID) throw new NotAuthorizedException(noAuthorization);
         postDAO.deleteById(postId);
     }
+
+    public Post getPostById(long postId, long userID) throws ResourceNotFoundException{
+        Post post = postDAO.findById(postId);
+        if (post==null) throw new ResourceNotFoundException(postNotFound);
+        User postAuthor = post.getUser();
+        //1. Post can be viewed if current session user is the owner or the post has global flag
+        if (postAuthor.getUserID()==userID || post.getGlobal()) return post;
+        //2. Post can be viewed if the current user is friends with the poster
+
+
+        //TODO
+        return null;
+    }
 }

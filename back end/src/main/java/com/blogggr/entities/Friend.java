@@ -16,6 +16,13 @@ public class Friend implements Serializable {
 	@EmbeddedId
 	private FriendPK id;
 
+	/**
+	 * Status meaning:
+	 * 0 = pending
+	 * 1 = accepted
+	 * 2 = declined
+	 * 3 = blocked
+	 */
 	private Integer status;
 
 	//bi-directional many-to-one association to User
@@ -31,7 +38,7 @@ public class Friend implements Serializable {
 	//bi-directional many-to-one association to User
 	@ManyToOne
 	@JoinColumn(name="actionuserid")
-	private User user3;
+	private User user3; //user that most recently changed the status column
 
 	public Friend() {
 	}
