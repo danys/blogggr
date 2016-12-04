@@ -1,6 +1,7 @@
 package com.blogggr.services;
 
 import com.blogggr.entities.Post;
+import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.requestdata.PostData;
@@ -15,4 +16,6 @@ public interface PostService {
     Post updatePost(long postID, long userID, PostData postData) throws ResourceNotFoundException, NotAuthorizedException;
 
     void deletePost(long postId, long userID) throws ResourceNotFoundException, NotAuthorizedException;
+
+    Post getPostById(long postId, long userID) throws ResourceNotFoundException, DBException, NotAuthorizedException;
 }
