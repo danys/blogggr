@@ -6,6 +6,7 @@ import com.blogggr.entities.User;
 import com.blogggr.entities.User_;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -27,6 +28,7 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO{
         super(Friend.class);
     }
 
+    @Override
     public List<User> getUserFriends(long userID) throws ResourceNotFoundException, DBException{
         /**
          * SQL to produce:
@@ -52,9 +54,31 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO{
         catch(NoResultException e){
             throw new ResourceNotFoundException(noResult);
         }
-        catch(Exception e){
+        catch(Exception e) {
             throw new DBException("Database exception!");
         }
-        //TODO
+    }
+
+    @Override
+    public Friend getFriendByUserIDs(long userID1, long userID2) throws ResourceNotFoundException, DBException{
+        try{
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Friend> query = cb.createQuery(Friend.class);
+            Root<Friend> root = query.from(Friend.class);
+            query.where(
+                    cb.and(
+                            cb.equal(root.get(Friend_.user1),userID1),
+                            cb.equal(root.get(Friend_.user2),userID2),
+                            cb.equal(root.get(Friend_.status),2)
+                    )
+            );
+            return entityManager.createQuery(query).getSingleResult();
+        }
+        catch(NoResultException e){
+            throw new ResourceNotFoundException(noResult);
+        }
+        catch(Exception e) {
+            throw new DBException("Database exception!");
+        }
     }
 }

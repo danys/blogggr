@@ -1,6 +1,10 @@
 package com.blogggr.dao;
 
 import com.blogggr.entities.Post;
+import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.ResourceNotFoundException;
+
+import java.util.List;
 
 /**
  * Created by Daniel Sunnen on 27.10.16.
@@ -11,4 +15,5 @@ public interface PostDAO extends GenericDAO<Post>{
 
     //Post getPostByUserIDandPostID(long userID, long postID, int nRowsPerPage, int pageNum);
 
+    List<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility) throws DBException, ResourceNotFoundException;
 }

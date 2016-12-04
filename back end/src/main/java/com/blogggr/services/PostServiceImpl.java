@@ -81,12 +81,17 @@ public class PostServiceImpl implements PostService{
     }
 
     //Simple function to check that this user is friends with the poster
-    //TODO can be done simplier with select * from friend f where f.userID1=userID and f.userID2=postUserID and f.status=2;
-    //If entry exists => friend otherwise not
-    private boolean isFriendOfUser(long postUserID, long userID) throws ResourceNotFoundException, DBException{
-        List<User> friends = friendDAO.getUserFriends(userID);
-        for(User user: friends) if (user.getUserID()==postUserID) return true;
-        return false;
+    private boolean isFriendOfUser(long postUserID, long userID) throws DBException{
+        try {
+            long smallNum, bigNum;
+            smallNum = (postUserID < userID) ? postUserID : userID;
+            bigNum = (postUserID >= userID) ? postUserID : userID;
+            friendDAO.getFriendByUserIDs(smallNum, bigNum);
+            return true;
+        }
+        catch(ResourceNotFoundException e){
+            return false;
+        }
     }
 
     @Override
@@ -101,4 +106,6 @@ public class PostServiceImpl implements PostService{
         //Otherwise access denied
         throw new NotAuthorizedException(noReadAuthorization);
     }
+
+
 }
