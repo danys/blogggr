@@ -2,6 +2,7 @@ package com.blogggr.services;
 
 import com.blogggr.dao.FriendDAO;
 import com.blogggr.dao.PostDAO;
+import com.blogggr.dao.PostDAOImpl;
 import com.blogggr.dao.UserDAO;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
@@ -107,5 +108,8 @@ public class PostServiceImpl implements PostService{
         throw new NotAuthorizedException(noReadAuthorization);
     }
 
-
+    @Override
+    public List<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility) throws ResourceNotFoundException, DBException{
+        return postDAO.getPosts(userID, postUserID, title, visibility);
+    }
 }

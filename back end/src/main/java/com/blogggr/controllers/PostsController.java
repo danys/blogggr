@@ -6,14 +6,12 @@ import com.blogggr.models.AppModelImpl;
 import com.blogggr.services.PostService;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.auth.AuthenticatedAuthorization;
-import com.blogggr.strategies.invoker.InvokeDeletePostService;
-import com.blogggr.strategies.invoker.InvokeGetPostService;
-import com.blogggr.strategies.invoker.InvokePostPostService;
-import com.blogggr.strategies.invoker.InvokePostPutService;
+import com.blogggr.strategies.invoker.*;
 import com.blogggr.strategies.responses.DeleteResponse;
 import com.blogggr.strategies.responses.GetResponse;
 import com.blogggr.strategies.responses.PostResponse;
 import com.blogggr.strategies.responses.PutResponse;
+import com.blogggr.strategies.validators.GetPostsValidator;
 import com.blogggr.strategies.validators.IdValidator;
 import com.blogggr.strategies.validators.PostPostDataValidator;
 import com.blogggr.strategies.validators.PostPutDataValidator;
@@ -72,5 +70,12 @@ public class PostsController {
         map.put("id", id);
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetPostService(postService), new GetResponse());
         return model.execute(map,header,null);
+    }
+
+    //GET /posts
+    @RequestMapping(path = postsPath, method = RequestMethod.GET)
+    public ResponseEntity getPosts(@RequestParam Map<String,String> params, @RequestHeader Map<String,String> header){
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new GetPostsValidator(), new InvokeGetPostsService(postService), new GetResponse());
+        return model.execute(params,header,null);
     }
 }

@@ -34,10 +34,6 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
     private final int friendAccepted = 2;
 
     //Get posts by userID, title and visibility
-    // Visibility = 0 (default) => global + friends + current user
-    // Visibility = 1 => only friends
-    // Visibility = 2 => only global
-    // Visibility = 3 => only current user
     @Override
     public List<Post> getPosts(long userID, Long postUserID, String title, Visibility visibility) throws DBException, ResourceNotFoundException{
         try {
@@ -54,7 +50,10 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             List<Predicate> predicatesOr1 = new LinkedList<>();
             List<Predicate> predicatesOr2 = new LinkedList<>();
             Predicate titleCondition = null;
-            if (title != null) titleCondition = cb.like(root.get(Post_.title), title);
+            if (title != null) {
+                title = "%"+title+"%"; //substring of title is enough for a match
+                titleCondition = cb.like(root.get(Post_.title), title);
+            }
             Predicate postUserCondition = null;
             if (postUserID != null)
                 postUserCondition = cb.equal(postUserJoin.get(User_.userID), postUserID.longValue());
