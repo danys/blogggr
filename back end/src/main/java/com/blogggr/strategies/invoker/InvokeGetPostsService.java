@@ -32,7 +32,7 @@ public class InvokeGetPostsService implements ServiceInvocationStrategy {
                 posterID = new Long(idp);
             }
             catch(NumberFormatException e){
-                //Will not be triggered
+                //Will not be triggered: this is already checked in the validator
             }
         }
         //Check if titleKey is present
