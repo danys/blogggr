@@ -7,10 +7,13 @@ import com.blogggr.strategies.auth.AuthenticatedAuthorization;
 import com.blogggr.strategies.auth.NoAuthorization;
 import com.blogggr.strategies.invoker.InvokeGetUserService;
 import com.blogggr.strategies.invoker.InvokePostUserService;
+import com.blogggr.strategies.invoker.InvokePutUserService;
 import com.blogggr.strategies.responses.GetResponse;
 import com.blogggr.strategies.responses.PostResponse;
+import com.blogggr.strategies.responses.PutResponse;
 import com.blogggr.strategies.validators.IdValidator;
 import com.blogggr.strategies.validators.UserPostDataValidator;
+import com.blogggr.strategies.validators.UserPutDataValidator;
 import com.blogggr.utilities.HTTPMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,5 +50,14 @@ public class UsersController {
     public ResponseEntity createUser(@RequestBody String bodyData){
         AppModel model = new AppModelImpl(new NoAuthorization(), new UserPostDataValidator(), new InvokePostUserService(userService), new PostResponse());
         return model.execute(null,null,bodyData);
+    }
+
+    //PUT /users/id
+    @RequestMapping(path = userPath+"/{id}", method = RequestMethod.PUT)
+    public ResponseEntity updateUser(@PathVariable String id,@RequestBody String bodyData, @RequestHeader Map<String,String> header){
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new UserPutDataValidator(), new InvokePutUserService(userService), new PutResponse());
+        Map<String,String> map = new HashMap<>();
+        map.put("id", id);
+        return model.execute(map,header,bodyData);
     }
 }
