@@ -5,6 +5,7 @@ import com.blogggr.dao.UserDAO;
 import com.blogggr.entities.Session;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.SessionExpiredException;
 import com.blogggr.requestdata.UserPostData;
@@ -32,14 +33,17 @@ public class UserServiceImpl implements UserService{
         this.sessionDAO = sessionDAO;
     }
 
+    @Override
     public User getUserById(long id){
         return userDAO.findById(id);
     }
 
+    @Override
     public User getUserByEmail(String email) throws ResourceNotFoundException, DBException{
         return userDAO.getUserByEmail(email);
     }
 
+    @Override
     public User getUserBySessionHash(String sessionHash) throws ResourceNotFoundException, DBException, SessionExpiredException{
         Session session = sessionDAO.getSessionBySessionHash(sessionHash);
         //Check if user session is expired
@@ -51,6 +55,7 @@ public class UserServiceImpl implements UserService{
     }
 
     //For POST request
+    @Override
     public User createUser(UserPostData userData){
         //Check that userData does not contain nulls
         if ((userData.getFirstName()==null) || (userData.getLastName()==null)
@@ -72,5 +77,25 @@ public class UserServiceImpl implements UserService{
         user.setStatus(0);
         userDAO.save(user);
         return user;
+    }
+
+    @Override
+    public void updateUser(long userResourceID, long userID, UserPostData userData) throws ResourceNotFoundException, DBException, NotAuthorizedException{
+        try {
+            User user = userDAO.findById(userResourceID);
+            if (user == null) throw new ResourceNotFoundException("User not found!");
+            //A user can only change his own data
+            if (user.getUserID() != userID) throw new NotAuthorizedException("Not authorized to change this user!");
+            if (userData.getPassword() != null)
+                user.setPasswordHash(Cryptography.computeSHA256Hash(userData.getPassword() + user.getSalt()));
+            if (userData.getEmail() != null) user.setEmail(userData.getEmail());
+            if (userData.getLastName() != null) user.setLastName(userData.getLastName());
+            if (userData.getFirstName() != null) user.setFirstName(userData.getFirstName());
+            user.setLastChange(TimeUtilities.getCurrentTimestamp());
+            userDAO.save(user);
+        }
+        catch(Exception e){
+            throw new DBException("Database exception while updating user!");
+        }
     }
 }
