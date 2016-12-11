@@ -48,7 +48,7 @@ public class PostsController {
     //PUT /posts
     @RequestMapping(path = postsPath+"/{id}", method = RequestMethod.PUT)
     public ResponseEntity updatePost(@PathVariable String id,@RequestBody String bodyData, @RequestHeader Map<String,String> header){
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new PostPutDataValidator(), new InvokePostPutService(postService), new PutResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new PostPutDataValidator(), new InvokePutPostService(postService), new PutResponse());
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         return model.execute(map,header,bodyData);
