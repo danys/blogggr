@@ -1,25 +1,26 @@
 package com.blogggr.strategies.invoker;
 
+import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.services.PostService;
+import com.blogggr.services.CommentService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
 import com.blogggr.strategies.validators.IdValidator;
 
 import java.util.Map;
 
 /**
- * Created by Daniel Sunnen on 26.11.16.
+ * Created by Daniel Sunnen on 11.12.16.
  */
-public class InvokeDeletePostService implements ServiceInvocationStrategy{
+public class InvokeDeleteCommentService implements ServiceInvocationStrategy {
 
-    private PostService postService;
+    private CommentService commentService;
 
-    public InvokeDeletePostService(PostService postService){
-        this.postService = postService;
+    public InvokeDeleteCommentService(CommentService commentService){
+        this.commentService = commentService;
     }
 
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, NotAuthorizedException {
+    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, NotAuthorizedException, DBException {
         if (!input.containsKey(IdValidator.idName)){
             return null;
         }
@@ -31,7 +32,7 @@ public class InvokeDeletePostService implements ServiceInvocationStrategy{
         catch(NumberFormatException e){
             return null;
         }
-        postService.deletePost(id,userID);
+        commentService.deleteComment(id,userID);
         return null;
     }
 }
