@@ -4,9 +4,10 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.models.AppModel;
 import com.blogggr.models.AppModelImpl;
 import com.blogggr.services.CommentService;
+import com.blogggr.services.PostService;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.auth.AuthenticatedAuthorization;
-import com.blogggr.strategies.invoker.InvokePostCommentService;
+import com.blogggr.strategies.invoker.*;
 import com.blogggr.strategies.responses.DeleteResponse;
 import com.blogggr.strategies.responses.GetResponse;
 import com.blogggr.strategies.responses.PostResponse;
@@ -30,10 +31,12 @@ public class CommentsController {
     public static final String commentsPath = "/comments";
 
     private UserService userService;
+    private PostService postService;
     private CommentService commentService;
 
-    public CommentsController(UserService userService, CommentService commentService){
+    public CommentsController(UserService userService, PostService postService, CommentService commentService){
         this.userService = userService;
+        this.postService = postService;
         this.commentService = commentService;
     }
 
@@ -47,7 +50,7 @@ public class CommentsController {
     //PUT /comments
     @RequestMapping(path = commentsPath+"/{id}", method = RequestMethod.PUT)
     public ResponseEntity updateComment(@PathVariable String id,@RequestBody String bodyData, @RequestHeader Map<String,String> header){
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new CommentPutDataValidator(), new InvokeCommentPutService(commentService), new PutResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new CommentPutDataValidator(), new InvokePutCommentService(commentService), new PutResponse());
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         return model.execute(map,header,bodyData);
@@ -58,7 +61,7 @@ public class CommentsController {
     public ResponseEntity deleteComment(@PathVariable String id, @RequestHeader Map<String,String> header){
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeDeleteCommentService(postService), new DeleteResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeDeleteCommentService(commentService), new DeleteResponse());
         return model.execute(map,header,null);
     }
 
@@ -67,7 +70,7 @@ public class CommentsController {
     public ResponseEntity getComment(@PathVariable String id, @RequestHeader Map<String,String> header){
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetCommentService(postService), new GetResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetCommentService(commentService), new GetResponse());
         return model.execute(map,header,null);
     }
 
@@ -76,7 +79,7 @@ public class CommentsController {
     public ResponseEntity getCommentsByPostId(@PathVariable String id, @RequestHeader Map<String,String> header){
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetCommentsService(postService), new GetResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetCommentsService(postService, commentService), new GetResponse());
         return model.execute(map,header,null);
     }
 
