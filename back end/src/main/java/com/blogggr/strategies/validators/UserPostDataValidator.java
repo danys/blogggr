@@ -18,6 +18,24 @@ public class UserPostDataValidator extends GenericValidator {
         //
     }
 
+    public static String validateUserData(UserPostData userData){
+        if (userData.getFirstName().length()<3 || userData.getLastName().length()<3 || userData.getPassword().length()<8) {
+            return "First name and last name must have at least 3 characters!";
+        }
+        if (!userData.getEmail().contains("@")) {
+            return "E-mail address does not validate!";
+        }
+        int atIndex = userData.getEmail().indexOf("@");
+        int dotIndex = userData.getEmail().indexOf(".",atIndex);
+        if (dotIndex==-1) {
+            return "E-mail address does not validate!";
+        }
+        if (userData.getPasswordRepeat().compareTo(userData.getPassword())!=0) {
+            return "Submitted passwords must match!";
+        }
+        return "";
+    }
+
     @Override
     protected boolean validate(Map<String,String> input, String body) throws JsonProcessingException,JsonParseException, IOException{
         ObjectMapper mapper = new ObjectMapper();
@@ -26,22 +44,9 @@ public class UserPostDataValidator extends GenericValidator {
             errorMessage = "Provide all required fields!";
             return false;
         }
-        if (userData.getFirstName().length()<3 || userData.getLastName().length()<3 || userData.getPassword().length()<8) {
-            errorMessage = "First name and last name must have at least 3 characters!";
-            return false;
-        }
-        if (!userData.getEmail().contains("@")) {
-            errorMessage = "E-mail address does not validate!";
-            return false;
-        }
-        int atIndex = userData.getEmail().indexOf("@");
-        int dotIndex = userData.getEmail().indexOf(".",atIndex);
-        if (dotIndex==-1) {
-            errorMessage = "E-mail address does not validate!";
-            return false;
-        }
-        if (userData.getPasswordRepeat().compareTo(userData.getPassword())!=0) {
-            errorMessage = "Submitted passwords must match!";
+        String valRes = validateUserData(userData);
+        if (!valRes.isEmpty()) {
+            errorMessage = valRes;
             return false;
         }
         return true;

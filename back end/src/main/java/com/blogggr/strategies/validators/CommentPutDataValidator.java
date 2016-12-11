@@ -14,6 +14,20 @@ import java.util.Map;
 public class CommentPutDataValidator extends GenericValidator{
 
     protected boolean validate(Map<String, String> input, String body) throws JsonParseException, JsonProcessingException, IOException {
+        //Check if id is present
+        if (!input.containsKey(IdValidator.idName)){
+            errorMessage = "Comment id not provided!";
+            return false;
+        }
+        String idStr = input.get(IdValidator.idName);
+        try{
+           Long.parseLong(idStr);
+        }
+        catch(NumberFormatException e){
+            errorMessage = "Comment must be identified by its id!";
+            return false;
+        }
+
         ObjectMapper mapper = new ObjectMapper();
         CommentData postCommentData = mapper.readValue(body, CommentData.class);
         //Only check that the text field is present, ignore the post id field
