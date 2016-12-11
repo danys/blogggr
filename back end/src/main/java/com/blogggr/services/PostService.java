@@ -1,5 +1,6 @@
 package com.blogggr.services;
 
+import com.blogggr.dao.FriendDAO;
 import com.blogggr.dao.PostDAOImpl;
 import com.blogggr.entities.Post;
 import com.blogggr.exceptions.DBException;
