@@ -43,6 +43,7 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO{
             Root<Friend> root = query.from(Friend.class);
             Join<Friend, User> user1Join = root.join(Friend_.user1);
             Join<Friend, User> user2Join = root.join(Friend_.user2);
+            query.select(user2Join);
             query.where(
                     cb.and(
                             cb.equal(root.get(Friend_.status),2),
