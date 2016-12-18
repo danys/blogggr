@@ -20,7 +20,7 @@ public class UserPostDataValidator extends GenericValidator {
 
     public static String validateUserData(UserPostData userData){
         if (userData.getFirstName().length()<3 || userData.getLastName().length()<3 || userData.getPassword().length()<8) {
-            return "First name and last name must have at least 3 characters!";
+            return "First name and last name must have at least 3 characters. Password must have 8 characters!";
         }
         if (!userData.getEmail().contains("@")) {
             return "E-mail address does not validate!";
