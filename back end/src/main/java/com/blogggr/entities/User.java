@@ -1,5 +1,7 @@
 package com.blogggr.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -40,26 +42,32 @@ public class User implements Serializable {
 	private Integer status;
 
 	//bi-directional many-to-one association to Comment
+	@JsonIgnore
 	@OneToMany(mappedBy="user")
 	private List<Comment> comments;
 
 	//bi-directional many-to-one association to Friend
+	@JsonIgnore
 	@OneToMany(mappedBy="user1")
 	private List<Friend> friends1;
 
 	//bi-directional many-to-one association to Friend
+	@JsonIgnore
 	@OneToMany(mappedBy="user2")
 	private List<Friend> friends2;
 
 	//bi-directional many-to-one association to Friend
+	@JsonIgnore
 	@OneToMany(mappedBy="user3")
 	private List<Friend> friends3;
 
 	//bi-directional many-to-one association to Post
+	@JsonIgnore
 	@OneToMany(mappedBy="user")
 	private List<Post> posts;
 
 	//bi-directional many-to-one association to Session
+	@JsonIgnore
 	@OneToMany(mappedBy="user")
 	private List<Session> sessions;
 
