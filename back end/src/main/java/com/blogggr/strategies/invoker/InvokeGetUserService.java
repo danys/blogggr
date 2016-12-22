@@ -38,6 +38,7 @@ public class InvokeGetUserService implements ServiceInvocationStrategy {
         if (user==null) throw new ResourceNotFoundException("User not found!");
         //Filter out unwanted fields
         Set<String> filter = new HashSet<>();
+        filter.add("userID");
         filter.add("email");
         filter.add("lastName");
         filter.add("firstName");
