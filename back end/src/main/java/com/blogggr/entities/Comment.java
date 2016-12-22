@@ -1,5 +1,7 @@
 package com.blogggr.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -24,6 +26,7 @@ public class Comment implements Serializable {
 	private Timestamp timestamp;
 
 	//bi-directional many-to-one association to Post
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="postid")
 	private Post post;
