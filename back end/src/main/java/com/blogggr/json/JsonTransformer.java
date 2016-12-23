@@ -28,4 +28,19 @@ public class JsonTransformer {
         }
         return root;
     }
+
+    public static JsonNode filterFieldsOfTwoLevelObject(Object data, Map<String, Set<String>> keysToKeep){
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node = mapper.convertValue(data, JsonNode.class);
+        JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
+        ObjectNode root = nodeFactory.objectNode();
+        Iterator<Map.Entry<String,JsonNode>>  it = node.fields();
+        while(it.hasNext()){
+            Map.Entry<String,JsonNode> curNode = it.next();
+            if (keysToKeep.containsKey(curNode.getKey())){
+                root.set(curNode.getKey(),filterFieldsOfFlatObject(curNode.getValue(),keysToKeep.get(curNode.getKey())));
+            }
+        }
+        return root;
+    }
 }
