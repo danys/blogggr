@@ -35,10 +35,13 @@ public class JsonTransformer {
         JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
         ObjectNode root = nodeFactory.objectNode();
         Iterator<Map.Entry<String,JsonNode>>  it = node.fields();
+        Set<String> keySet;
         while(it.hasNext()){
             Map.Entry<String,JsonNode> curNode = it.next();
             if (keysToKeep.containsKey(curNode.getKey())){
-                root.set(curNode.getKey(),filterFieldsOfFlatObject(curNode.getValue(),keysToKeep.get(curNode.getKey())));
+                keySet = keysToKeep.get(curNode.getKey());
+                if (keySet==null) root.set(curNode.getKey(),curNode.getValue());
+                else root.set(curNode.getKey(),filterFieldsOfFlatObject(curNode.getValue(),keysToKeep.get(curNode.getKey())));
             }
         }
         return root;
