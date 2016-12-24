@@ -42,27 +42,27 @@ public class Post implements Serializable {
 	public Post() {
 	}
 
-	public Long getPostid() {
+	public Long getPostID() {
 		return this.postID;
 	}
 
-	public void setPostid(Long postid) {
+	public void setPostID(Long postid) {
 		this.postID = postid;
 	}
 
-	public String getShorttitle() {
+	public String getShortTitle() {
 		return this.shortTitle;
 	}
 
-	public void setShorttitle(String shorttitle) {
+	public void setShortTitle(String shorttitle) {
 		this.shortTitle = shorttitle;
 	}
 
-	public String getTextbody() {
+	public String getTextBody() {
 		return this.textBody;
 	}
 
-	public void setTextbody(String textbody) {
+	public void setTextBody(String textbody) {
 		this.textBody = textbody;
 	}
 

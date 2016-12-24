@@ -39,11 +39,11 @@ public class Comment implements Serializable {
 	public Comment() {
 	}
 
-	public Long getCommentid() {
+	public Long getCommentID() {
 		return this.commentID;
 	}
 
-	public void setCommentid(Long commentid) {
+	public void setCommentID(Long commentid) {
 		this.commentID = commentid;
 	}
 
