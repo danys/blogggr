@@ -47,9 +47,9 @@ public class PostServiceImpl implements PostService{
         Post post = new Post();
         post.setUser(user);
         post.setTitle(postData.getTitle());
-        post.setTextbody(postData.getTextBody());
+        post.setTextBody(postData.getTextBody());
         post.setTimestamp(TimeUtilities.getCurrentTimestamp());
-        post.setShorttitle(StringUtilities.compactTitle(postData.getTitle()));
+        post.setShortTitle(StringUtilities.compactTitle(postData.getTitle()));
         post.setGlobal(postData.getGlobal());
         postDAO.save(post);
         return post;
@@ -62,10 +62,10 @@ public class PostServiceImpl implements PostService{
         if (post.getUser().getUserID()!=userID) throw new NotAuthorizedException(noModifyAuthorization);
         //Update timestamp
         post.setTimestamp(TimeUtilities.getCurrentTimestamp());
-        if (postData.getTextBody()!=null) post.setTextbody(postData.getTextBody());
+        if (postData.getTextBody()!=null) post.setTextBody(postData.getTextBody());
         if (postData.getTitle()!=null) {
             post.setTitle(postData.getTitle());
-            post.setShorttitle(StringUtilities.compactTitle(postData.getTitle()));
+            post.setShortTitle(StringUtilities.compactTitle(postData.getTitle()));
         }
         if (postData.getGlobal()!=null) post.setGlobal(postData.getGlobal());
         postDAO.save(post);

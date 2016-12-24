@@ -43,8 +43,8 @@ public class CommentServiceImpl implements CommentService{
         User user = userDAO.findById(userID);
         if (user==null) throw new ResourceNotFoundException("User not found!");
         Post post = postDAO.findById(commentData.getPostID());
-        //If post is not global then user must be friends with the poster
-        if (!post.getGlobal()){
+        //If post is not global then user must be friends with the poster (or be the poster)
+        if (!post.getGlobal() && post.getUser().getUserID()!=userID){
             long posterUserID = post.getUser().getUserID();
             long smaller = (posterUserID<userID)?posterUserID:userID;
             long bigger = (posterUserID>=userID)?posterUserID:userID;
