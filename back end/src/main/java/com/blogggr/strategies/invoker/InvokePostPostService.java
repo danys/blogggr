@@ -47,7 +47,7 @@ public class InvokePostPostService implements ServiceInvocationStrategy {
         //Create location string and return it
         //Create location string and session id hash. Then return it as a map.
         Map<String, String> responseMap = new HashMap<>();
-        responseMap.put(AppConfig.locationHeaderKey,AppConfig.fullBaseUrl + PostsController.postsPath + "/" + String.valueOf(post.getPostid()));
+        responseMap.put(AppConfig.locationHeaderKey,AppConfig.fullBaseUrl + PostsController.postsPath + "/" + String.valueOf(post.getPostID()));
         return responseMap;
     }
 }
