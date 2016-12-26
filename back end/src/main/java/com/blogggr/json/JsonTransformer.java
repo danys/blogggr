@@ -34,11 +34,20 @@ public class JsonTransformer {
         JsonNode node = mapper.convertValue(data, JsonNode.class);
         JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
         ObjectNode root = nodeFactory.objectNode();
-        Iterator<Map.Entry<String,JsonNode>>  it = node.fields();
+        Iterator<Map.Entry<String,JsonNode>> it = node.fields();
         Set<String> keySet;
         while(it.hasNext()){
             Map.Entry<String,JsonNode> curNode = it.next();
-            if (keysToKeep.containsKey(curNode.getKey())){
+            if (curNode.getValue().isArray()){
+                //The current json item is an array
+                if (keysToKeep.containsKey(curNode.getKey()+"Array")){
+                    keySet = keysToKeep.get(curNode.getKey());
+                    if (keySet==null) root.set(curNode.getKey(),curNode.getValue());
+                    else root.set(curNode.getKey(),filterFieldsOfFlatObject(curNode.getValue(),keysToKeep.get(curNode.getKey())));
+                }
+            }
+            else if (keysToKeep.containsKey(curNode.getKey())){
+                //The current json item is NOT an array
                 keySet = keysToKeep.get(curNode.getKey());
                 if (keySet==null) root.set(curNode.getKey(),curNode.getValue());
                 else root.set(curNode.getKey(),filterFieldsOfFlatObject(curNode.getValue(),keysToKeep.get(curNode.getKey())));

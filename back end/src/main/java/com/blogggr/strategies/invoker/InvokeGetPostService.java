@@ -58,7 +58,7 @@ public class InvokeGetPostService implements ServiceInvocationStrategy {
         commentFilter.add("commentID");
         commentFilter.add("text");
         commentFilter.add("timestamp");
-        filterMap.put("comments",commentFilter);
+        filterMap.put("commentsArray",commentFilter);
         JsonNode node = JsonTransformer.filterFieldsOfTwoLevelObject(post,filterMap);
         return node;
     }
