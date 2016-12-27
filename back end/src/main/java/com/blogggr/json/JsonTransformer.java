@@ -56,28 +56,40 @@ public class JsonTransformer {
         return arrayRoot;
     }
 
-    public static JsonNode filterFieldsOfTwoLevelObject(Object data, Map<String, Set<String>> keysToKeep){
+    public static JsonNode filterFieldsOfMultiLevelObject(Object data, JsonFilter keysFilter){
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.convertValue(data, JsonNode.class);
         JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
         ObjectNode root = nodeFactory.objectNode();
         Iterator<Map.Entry<String,JsonNode>> it = node.fields();
-        Set<String> keySet;
+        JsonFilter filter;
         while(it.hasNext()){
             Map.Entry<String,JsonNode> curNode = it.next();
             if (curNode.getValue().isArray()){
                 //The current json item is an array
-                if (keysToKeep.containsKey(curNode.getKey()+arrayMarker)){
-                    keySet = keysToKeep.get(curNode.getKey()+arrayMarker);
-                    if (keySet==null) root.set(curNode.getKey(),curNode.getValue());
-                    else root.set(curNode.getKey(),filterFieldsOfFlatArrayObject(curNode.getValue(),keySet));
+                if (keysFilter.containsKey(curNode.getKey()+arrayMarker)){
+                    filter = keysFilter.get(curNode.getKey()+arrayMarker);
+                    JsonNode tempNode = curNode.getValue();
+                    if(filter!=null) {
+                        ArrayNode aNode = (ArrayNode)tempNode;
+                        ArrayNode arrayRoot = nodeFactory.arrayNode(aNode.size());
+                        JsonNode currentArrayNode;
+                        //Loop through the array
+                        for(int i=0;i<aNode.size();i++){
+                            currentArrayNode = aNode.get(i);
+                            arrayRoot.add(filterFieldsOfMultiLevelObject(currentArrayNode,filter));
+                        }
+                        tempNode = arrayRoot;
+                    }
+                    root.set(curNode.getKey(),tempNode);
                 }
             }
-            else if (keysToKeep.containsKey(curNode.getKey())){
+            else if (keysFilter.containsKey(curNode.getKey())){
                 //The current json item is NOT an array
-                keySet = keysToKeep.get(curNode.getKey());
-                if (keySet==null) root.set(curNode.getKey(),curNode.getValue());
-                else root.set(curNode.getKey(),filterFieldsOfFlatObject(curNode.getValue(),keySet));
+                filter = keysFilter.get(curNode.getKey());
+                JsonNode tempNode = curNode.getValue();
+                if(filter!=null) tempNode = filterFieldsOfMultiLevelObject(curNode.getValue(),filter);
+                root.set(curNode.getKey(),tempNode);
             }
         }
         return root;
