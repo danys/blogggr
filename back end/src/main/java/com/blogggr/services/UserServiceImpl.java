@@ -81,21 +81,16 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public void updateUser(long userResourceID, long userID, UserPostData userData) throws ResourceNotFoundException, DBException, NotAuthorizedException{
-        try {
-            User user = userDAO.findById(userResourceID);
-            if (user == null) throw new ResourceNotFoundException("User not found!");
-            //A user can only change his own data
-            if (user.getUserID() != userID) throw new NotAuthorizedException("Not authorized to change this user!");
-            if (userData.getPassword() != null)
+        User user = userDAO.findById(userResourceID);
+        if (user == null) throw new ResourceNotFoundException("User not found!");
+        //A user can only change his own data
+        if (user.getUserID() != userID) throw new NotAuthorizedException("Not authorized to change this user!");
+        if (userData.getPassword() != null)
                 user.setPasswordHash(Cryptography.computeSHA256Hash(userData.getPassword() + user.getSalt()));
-            if (userData.getEmail() != null) user.setEmail(userData.getEmail());
-            if (userData.getLastName() != null) user.setLastName(userData.getLastName());
-            if (userData.getFirstName() != null) user.setFirstName(userData.getFirstName());
-            user.setLastChange(TimeUtilities.getCurrentTimestamp());
-            userDAO.save(user);
-        }
-        catch(Exception e){
-            throw new DBException("Database exception while updating user!");
-        }
+        if (userData.getEmail() != null) user.setEmail(userData.getEmail());
+        if (userData.getLastName() != null) user.setLastName(userData.getLastName());
+        if (userData.getFirstName() != null) user.setFirstName(userData.getFirstName());
+        user.setLastChange(TimeUtilities.getCurrentTimestamp());
+        userDAO.save(user);
     }
 }
