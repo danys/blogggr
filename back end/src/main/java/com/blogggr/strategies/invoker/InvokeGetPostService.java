@@ -41,8 +41,7 @@ public class InvokeGetPostService implements ServiceInvocationStrategy {
         }
         Post post = postService.getPostById(id, userID);
         if (post==null) throw new ResourceNotFoundException("Post not found!");
-        //Filter fields of the post => return post directly
-
+        //Filter fields of the post
         Map<String, JsonFilter> filterMap = new HashMap<>();
         filterMap.put("postID",null);
         filterMap.put("shortTitle",null);
