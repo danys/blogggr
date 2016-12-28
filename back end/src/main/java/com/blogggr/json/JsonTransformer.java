@@ -60,6 +60,18 @@ public class JsonTransformer {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.convertValue(data, JsonNode.class);
         JsonNodeFactory nodeFactory = JsonNodeFactory.instance;
+        //In case the data to be transformed is an array
+        if (node.isArray()) {
+            ArrayNode dataArray = (ArrayNode) node;
+            ArrayNode filteredDataRoot = nodeFactory.arrayNode(dataArray.size());
+            JsonNode res;
+            for(int i=0;i<dataArray.size();i++){
+                res = filterFieldsOfMultiLevelObject(dataArray.get(i), keysFilter);
+                filteredDataRoot.add(res);
+            }
+            return filteredDataRoot;
+        }
+        //Otherwise the data to be transformed is NOT an array
         ObjectNode root = nodeFactory.objectNode();
         Iterator<Map.Entry<String,JsonNode>> it = node.fields();
         JsonFilter filter;
