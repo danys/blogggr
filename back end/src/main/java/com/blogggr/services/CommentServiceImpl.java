@@ -43,6 +43,7 @@ public class CommentServiceImpl implements CommentService{
         User user = userDAO.findById(userID);
         if (user==null) throw new ResourceNotFoundException("User not found!");
         Post post = postDAO.findById(commentData.getPostID());
+        if (post==null) throw new ResourceNotFoundException("Post not found!");
         //If post is not global then user must be friends with the poster (or be the poster)
         if (!post.getGlobal() && post.getUser().getUserID()!=userID){
             long posterUserID = post.getUser().getUserID();
@@ -55,7 +56,6 @@ public class CommentServiceImpl implements CommentService{
                 throw new NotAuthorizedException("User must be friends with poster as post is not globally visible!");
             }
         }
-        if (post==null) throw new ResourceNotFoundException("Post not found!");
         Comment comment = new Comment();
         comment.setUser(user);
         comment.setPost(post);
