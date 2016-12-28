@@ -3,10 +3,14 @@ package com.blogggr.strategies.invoker;
 import com.blogggr.entities.Comment;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.json.JsonFilter;
+import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.CommentService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
 import com.blogggr.strategies.validators.IdValidator;
+import com.fasterxml.jackson.databind.JsonNode;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,7 +38,20 @@ public class InvokeGetCommentService implements ServiceInvocationStrategy {
         }
         Comment comment = commentService.getCommentById(id, userID);
         if (comment==null) throw new ResourceNotFoundException("Comment not found!");
-        //No fields of the post are filtered => return post directly
-        return comment;
+        //Filter comment fields
+        Map<String, JsonFilter> filterMap = new HashMap<>();
+        filterMap.put("commentID",null);
+        filterMap.put("text",null);
+        filterMap.put("timestamp",null);
+        Map<String, JsonFilter> userFilterMap = new HashMap<>();
+        userFilterMap.put("userID",null);
+        userFilterMap.put("email",null);
+        userFilterMap.put("lastName",null);
+        userFilterMap.put("firstName",null);
+        JsonFilter userFilter = new JsonFilter(userFilterMap);
+        filterMap.put("user",userFilter);
+        JsonFilter jsonFilter = new JsonFilter(filterMap);
+        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(comment,jsonFilter);
+        return node;
     }
 }
