@@ -19,18 +19,25 @@ public class UserPostDataValidator extends GenericValidator {
     }
 
     public static String validateUserData(UserPostData userData){
-        if (userData.getFirstName().length()<3 || userData.getLastName().length()<3 || userData.getPassword().length()<8) {
+        //Check firstname, lastname and password
+        if ((userData.getFirstName()!=null && userData.getFirstName().length()<3) ||
+                (userData.getLastName()!=null && userData.getLastName().length()<3) ||
+                (userData.getPassword()!=null && userData.getPassword().length()<8)) {
             return "First name and last name must have at least 3 characters. Password must have 8 characters!";
         }
-        if (!userData.getEmail().contains("@")) {
-            return "E-mail address does not validate!";
+        //Check email
+        if (userData.getEmail()!=null){
+            if (!userData.getEmail().contains("@")) {
+                return "E-mail address does not validate!";
+            }
+            int atIndex = userData.getEmail().indexOf("@");
+            int dotIndex = userData.getEmail().indexOf(".",atIndex);
+            if (dotIndex==-1) {
+                return "E-mail address does not validate!";
+            }
         }
-        int atIndex = userData.getEmail().indexOf("@");
-        int dotIndex = userData.getEmail().indexOf(".",atIndex);
-        if (dotIndex==-1) {
-            return "E-mail address does not validate!";
-        }
-        if (userData.getPasswordRepeat().compareTo(userData.getPassword())!=0) {
+        //Check provided passwords
+        if (userData.getPassword()!=null && userData.getPasswordRepeat()!=null && userData.getPasswordRepeat().compareTo(userData.getPassword())!=0) {
             return "Submitted passwords must match!";
         }
         return "";
