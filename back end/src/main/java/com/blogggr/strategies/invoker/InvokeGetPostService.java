@@ -4,6 +4,7 @@ import com.blogggr.entities.Post;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonFilter;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.PostService;
@@ -42,29 +43,7 @@ public class InvokeGetPostService implements ServiceInvocationStrategy {
         Post post = postService.getPostById(id, userID);
         if (post==null) throw new ResourceNotFoundException("Post not found!");
         //Filter fields of the post
-        Map<String, JsonFilter> filterMap = new HashMap<>();
-        filterMap.put("postID",null);
-        filterMap.put("shortTitle",null);
-        filterMap.put("textBody",null);
-        filterMap.put("timestamp",null);
-        filterMap.put("title",null);
-        filterMap.put("global",null);
-        Map<String, JsonFilter> userFilterMap = new HashMap<>();
-        userFilterMap.put("userID",null);
-        userFilterMap.put("email",null);
-        userFilterMap.put("lastName",null);
-        userFilterMap.put("firstName",null);
-        JsonFilter userFilter = new JsonFilter(userFilterMap);
-        filterMap.put("user",userFilter);
-        Map<String, JsonFilter> commentFilterMap = new HashMap<>();
-        commentFilterMap.put("commentID",null);
-        commentFilterMap.put("text",null);
-        commentFilterMap.put("timestamp",null);
-        commentFilterMap.put("user",userFilter);
-        JsonFilter commentFilter = new JsonFilter(commentFilterMap);
-        filterMap.put("commentsArray",commentFilter);
-        JsonFilter jsonFilter = new JsonFilter(filterMap);
-        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(post,jsonFilter);
+        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(post, FilterFactory.getPostFilter());
         return node;
     }
 }

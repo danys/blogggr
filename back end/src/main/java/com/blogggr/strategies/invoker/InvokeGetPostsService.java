@@ -4,10 +4,15 @@ import com.blogggr.dao.PostDAOImpl;
 import com.blogggr.entities.Post;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.json.FilterFactory;
+import com.blogggr.json.JsonFilter;
+import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.PostService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
 import com.blogggr.strategies.validators.GetPostsValidator;
+import com.fasterxml.jackson.databind.JsonNode;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +28,7 @@ public class InvokeGetPostsService implements ServiceInvocationStrategy {
     }
 
     public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, DBException {
+        //Check if the poster id is present
         String idStr = null;
         Long posterID = null;
         if (input.containsKey(GetPostsValidator.posterUserIDKey)) {
@@ -52,8 +58,10 @@ public class InvokeGetPostsService implements ServiceInvocationStrategy {
             else if (visibility.compareTo("onlyFriends")!=0) visi = PostDAOImpl.Visibility.onlyFriends;
             else if (visibility.compareTo("onlyCurrentUser")!=0) visi = PostDAOImpl.Visibility.onlyCurrentUser;
         }
+        else if (visibility==null) visi = PostDAOImpl.Visibility.all;
         List<Post> posts = postService.getPosts(userID,posterID,title,visi);
-        //No fields of the post are filtered => return post directly
-        return posts;
+        //Filter attributes of the posts
+        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(posts, FilterFactory.getPostFilter());
+        return node;
     }
 }

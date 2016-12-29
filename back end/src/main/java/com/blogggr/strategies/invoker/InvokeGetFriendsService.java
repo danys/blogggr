@@ -24,6 +24,7 @@ public class InvokeGetFriendsService implements ServiceInvocationStrategy {
         List<User> friends = friendService.getFriends(userID);
         //Filter out unwanted fields
         Set<String> filter = new HashSet<>();
+        filter.add("userID");
         filter.add("email");
         filter.add("lastName");
         filter.add("firstName");
