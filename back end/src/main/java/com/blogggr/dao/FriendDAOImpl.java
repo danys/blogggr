@@ -30,6 +30,7 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO{
 
     @Override
     public List<User> getUserFriends(long userID) throws ResourceNotFoundException, DBException{
+        //Combine users from two queries
         List<User> friends = getUserFriendsHalf(userID,true);
         friends.addAll(getUserFriendsHalf(userID,false));
         return friends;
