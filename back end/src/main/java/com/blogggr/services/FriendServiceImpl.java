@@ -3,6 +3,7 @@ package com.blogggr.services;
 import com.blogggr.dao.FriendDAO;
 import com.blogggr.dao.UserDAO;
 import com.blogggr.entities.Friend;
+import com.blogggr.entities.FriendPK;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
@@ -32,7 +33,7 @@ public class FriendServiceImpl implements FriendService{
     public Friend createFriend(long userID, FriendData friendData) throws ResourceNotFoundException, NotAuthorizedException {
         long userID1 = friendData.getUserID1();
         long userID2 = friendData.getUserID2();
-        if (userID1!=userID || userID2!=userID) throw new NotAuthorizedException("Current user must be a part of the new friendship!");
+        if (userID1!=userID && userID2!=userID) throw new NotAuthorizedException("Current user must be a part of the new friendship!");
         else if (userID1==userID2) throw new NotAuthorizedException("Can not be befriended with oneself!");
         long small, big;
         small = (userID1<userID2)?userID1:userID2;
@@ -48,6 +49,10 @@ public class FriendServiceImpl implements FriendService{
         friend.setStatus(0); //initial status => pending friendship state
         if (userSmall.getUserID()==userID) friend.setUser3(userSmall);
         else friend.setUser3(userBig);
+        FriendPK fPk = new FriendPK();
+        fPk.setuserOneID(userSmall.getUserID());
+        fPk.setuserTwoID(userBig.getUserID());
+        friend.setId(fPk);
         friendDAO.save(friend);
         return friend;
     }
