@@ -79,30 +79,6 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO{
         }
     }
 
-    /*private List<User> getUserFriendsByUser1(long userID) throws ResourceNotFoundException, DBException{
-        try {
-            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-            CriteriaQuery<User> query = cb.createQuery(User.class);
-            Root<Friend> root = query.from(Friend.class);
-            Join<Friend, User> user1Join = root.join(Friend_.user1);
-            Join<Friend, User> user2Join = root.join(Friend_.user2);
-            query.select(user1Join);
-            query.where(
-                    cb.and(
-                            cb.equal(root.get(Friend_.status),1),
-                            cb.equal(user2Join.get(User_.userID),userID)
-                    )
-            );
-            return entityManager.createQuery(query).getResultList();
-        }
-        catch(NoResultException e){
-            throw new ResourceNotFoundException(noResult);
-        }
-        catch(Exception e) {
-            throw new DBException("Database exception!");
-        }
-    }*/
-
     @Override
     public Friend getFriendByUserIDs(long userID1, long userID2) throws ResourceNotFoundException, DBException{
         try{
