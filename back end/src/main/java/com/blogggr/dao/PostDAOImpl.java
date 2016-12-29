@@ -31,7 +31,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
     }
 
     private final String noResult = "Did not find any posts!";
-    private final int friendAccepted = 2;
+    private final int friendAccepted = 1;
 
     //Get posts by userID, title and visibility
     @Override
@@ -39,13 +39,14 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         try {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<Post> query = cb.createQuery(Post.class);
+            query.distinct(true);
             Root<Post> root = query.from(Post.class);
             //Join from Post over User over Friend over User
             Join<Post, User> postUserJoin = root.join(Post_.user);
-            Join<User, Friend> userFriendJoin1 = postUserJoin.join(User_.friends1);
-            Join<Friend, User> friendUserJoin2 = userFriendJoin1.join(Friend_.user2);
-            Join<User, Friend> userFriendJoin2 = postUserJoin.join(User_.friends2);
-            Join<Friend, User> friendUserJoin1 = userFriendJoin2.join(Friend_.user1);
+            Join<User, Friend> userFriendJoin1 = postUserJoin.join(User_.friends1,JoinType.LEFT);
+            Join<Friend, User> friendUserJoin2 = userFriendJoin1.join(Friend_.user2,JoinType.LEFT);
+            Join<User, Friend> userFriendJoin2 = postUserJoin.join(User_.friends2,JoinType.LEFT);
+            Join<Friend, User> friendUserJoin1 = userFriendJoin2.join(Friend_.user1,JoinType.LEFT);
             //Predicates lists
             List<Predicate> predicatesOr1 = new LinkedList<>();
             List<Predicate> predicatesOr2 = new LinkedList<>();
