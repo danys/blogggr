@@ -28,11 +28,13 @@ public class Friend implements Serializable {
 	//bi-directional many-to-one association to User
 	@ManyToOne
 	@JoinColumn(name="useroneid")
+	@MapsId("userOneID")
 	private User user1;
 
 	//bi-directional many-to-one association to User
 	@ManyToOne
 	@JoinColumn(name="usertwoid")
+	@MapsId("userTwoID")
 	private User user2;
 
 	//bi-directional many-to-one association to User
