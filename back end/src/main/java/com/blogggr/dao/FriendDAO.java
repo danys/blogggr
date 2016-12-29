@@ -15,4 +15,6 @@ public interface FriendDAO extends GenericDAO<Friend> {
     List<User> getUserFriends(long userID) throws ResourceNotFoundException, DBException;
 
     Friend getFriendByUserIDs(long userID1, long userID2) throws ResourceNotFoundException, DBException;
+
+    Friend getFriendByUserIDsAndState(long userID1, long userID2, int state) throws ResourceNotFoundException, DBException;
 }

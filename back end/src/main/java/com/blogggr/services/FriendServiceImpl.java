@@ -59,13 +59,13 @@ public class FriendServiceImpl implements FriendService{
 
     @Override
     public void updateFriend(long userID, long user1, long user2, FriendData friendData) throws ResourceNotFoundException, NotAuthorizedException, DBException{
-        if (user1!=userID || user2!=userID) throw new NotAuthorizedException("Current user must be a part of the new friendship!");
+        if (user1!=userID && user2!=userID) throw new NotAuthorizedException("Current user must be a part of the new friendship!");
         long small, big;
         small = (user1<user2)?user1:user2;
         big = (user1>user2)?user1:user2;
         Friend friend = friendDAO.getFriendByUserIDs(small,big);
         if (friend==null) throw new ResourceNotFoundException("Friendship not found!");
-        if (friend.getUser1().getUserID()!=userID || friend.getUser2().getUserID()!=userID) throw new NotAuthorizedException("Not authorized to change this friendship!");
+        if (friend.getUser1().getUserID()!=userID && friend.getUser2().getUserID()!=userID) throw new NotAuthorizedException("Not authorized to change this friendship!");
         User currentUser = userDAO.findById(userID);
         if (currentUser==null) throw new ResourceNotFoundException("User not found!");
         if (friend.getStatus()==0 && friendData.getAction()!=0){ //accept friend request
@@ -89,7 +89,7 @@ public class FriendServiceImpl implements FriendService{
                 friendDAO.update(friend);
             }
         }
-        throw new NotAuthorizedException("Cannot update friend status!");
+        else throw new NotAuthorizedException("Cannot update friend status!");
     }
 
     @Override

@@ -75,6 +75,7 @@ public class AppModelImpl implements AppModel{
             return responseBehavior.exceptionResponse(e.getMessage());
         }
         catch(Exception e){
+            e.printStackTrace();
             return responseBehavior.exceptionResponse(exceptionError);
         }
         return responseBehavior.successResponse(responseData);

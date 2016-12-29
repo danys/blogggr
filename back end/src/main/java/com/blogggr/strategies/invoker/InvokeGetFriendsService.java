@@ -16,7 +16,7 @@ import java.util.*;
 public class InvokeGetFriendsService implements ServiceInvocationStrategy {
     private FriendService friendService;
 
-    public InvokeGetFriendsService(FriendService userService){
+    public InvokeGetFriendsService(FriendService friendService){
         this.friendService = friendService;
     }
 

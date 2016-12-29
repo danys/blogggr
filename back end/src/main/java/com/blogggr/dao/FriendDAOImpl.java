@@ -30,8 +30,14 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO{
 
     @Override
     public List<User> getUserFriends(long userID) throws ResourceNotFoundException, DBException{
+        List<User> friends = getUserFriendsHalf(userID,true);
+        friends.addAll(getUserFriendsHalf(userID,false));
+        return friends;
+    }
+
+    private List<User> getUserFriendsHalf(long userID, boolean userOne) throws ResourceNotFoundException, DBException{
         /**
-         * SQL to produce:
+         * SQL to produce (userOne boolean selects whether user one or two is selected):
          * SELECT u2.* FROM blogggr.friends f
          * JOIN blogggr.users u1 ON f.useroneid=u1.userid
          * JOIN blogggr.users u2 ON f.usertwoid=u2.userid
@@ -43,13 +49,25 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO{
             Root<Friend> root = query.from(Friend.class);
             Join<Friend, User> user1Join = root.join(Friend_.user1);
             Join<Friend, User> user2Join = root.join(Friend_.user2);
-            query.select(user2Join);
-            query.where(
-                    cb.and(
-                            cb.equal(root.get(Friend_.status),2),
-                            cb.equal(user1Join.get(User_.userID),userID)
-                            )
-            );
+            if (!userOne)
+            {
+                query.select(user2Join);
+                query.where(
+                        cb.and(
+                                cb.equal(root.get(Friend_.status), 1),
+                                cb.equal(user1Join.get(User_.userID), userID)
+                        )
+                );
+            }
+            else{
+                query.select(user1Join);
+                query.where(
+                        cb.and(
+                                cb.equal(root.get(Friend_.status), 1),
+                                cb.equal(user2Join.get(User_.userID), userID)
+                        )
+                );
+            }
             return entityManager.createQuery(query).getResultList();
         }
         catch(NoResultException e){
@@ -60,6 +78,30 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO{
         }
     }
 
+    /*private List<User> getUserFriendsByUser1(long userID) throws ResourceNotFoundException, DBException{
+        try {
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<User> query = cb.createQuery(User.class);
+            Root<Friend> root = query.from(Friend.class);
+            Join<Friend, User> user1Join = root.join(Friend_.user1);
+            Join<Friend, User> user2Join = root.join(Friend_.user2);
+            query.select(user1Join);
+            query.where(
+                    cb.and(
+                            cb.equal(root.get(Friend_.status),1),
+                            cb.equal(user2Join.get(User_.userID),userID)
+                    )
+            );
+            return entityManager.createQuery(query).getResultList();
+        }
+        catch(NoResultException e){
+            throw new ResourceNotFoundException(noResult);
+        }
+        catch(Exception e) {
+            throw new DBException("Database exception!");
+        }
+    }*/
+
     @Override
     public Friend getFriendByUserIDs(long userID1, long userID2) throws ResourceNotFoundException, DBException{
         try{
@@ -69,8 +111,30 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO{
             query.where(
                     cb.and(
                             cb.equal(root.get(Friend_.user1),userID1),
+                            cb.equal(root.get(Friend_.user2),userID2)
+                    )
+            );
+            return entityManager.createQuery(query).getSingleResult();
+        }
+        catch(NoResultException e){
+            throw new ResourceNotFoundException(noResult);
+        }
+        catch(Exception e) {
+            throw new DBException("Database exception!");
+        }
+    }
+
+    @Override
+    public Friend getFriendByUserIDsAndState(long userID1, long userID2, int state) throws ResourceNotFoundException, DBException{
+        try{
+            CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Friend> query = cb.createQuery(Friend.class);
+            Root<Friend> root = query.from(Friend.class);
+            query.where(
+                    cb.and(
+                            cb.equal(root.get(Friend_.user1),userID1),
                             cb.equal(root.get(Friend_.user2),userID2),
-                            cb.equal(root.get(Friend_.status),2)
+                            cb.equal(root.get(Friend_.status),state)
                     )
             );
             return entityManager.createQuery(query).getSingleResult();
