@@ -2,6 +2,7 @@ package com.blogggr.strategies.invoker;
 
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
@@ -37,12 +38,7 @@ public class InvokeGetUserService implements ServiceInvocationStrategy {
         User user = userService.getUserById(id);
         if (user==null) throw new ResourceNotFoundException("User not found!");
         //Filter out unwanted fields
-        Set<String> filter = new HashSet<>();
-        filter.add("userID");
-        filter.add("email");
-        filter.add("lastName");
-        filter.add("firstName");
-        JsonNode node = JsonTransformer.filterFieldsOfFlatObject(user,filter);
+        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(user, FilterFactory.getUserFilter());
         return node;
     }
 }

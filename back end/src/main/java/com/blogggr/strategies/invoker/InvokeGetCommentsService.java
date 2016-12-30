@@ -4,6 +4,7 @@ import com.blogggr.entities.Comment;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonFilter;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.CommentService;
@@ -44,19 +45,7 @@ public class InvokeGetCommentsService implements ServiceInvocationStrategy {
         List<Comment> comments = commentService.getCommentsByPostId(id, userID);
         if (comments==null) throw new ResourceNotFoundException("Comments not found!");
         //Filter comment fields
-        Map<String, JsonFilter> filterMap = new HashMap<>();
-        filterMap.put("commentID",null);
-        filterMap.put("text",null);
-        filterMap.put("timestamp",null);
-        Map<String, JsonFilter> userFilterMap = new HashMap<>();
-        userFilterMap.put("userID",null);
-        userFilterMap.put("email",null);
-        userFilterMap.put("lastName",null);
-        userFilterMap.put("firstName",null);
-        JsonFilter userFilter = new JsonFilter(userFilterMap);
-        filterMap.put("user",userFilter);
-        JsonFilter jsonFilter = new JsonFilter(filterMap);
-        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(comments,jsonFilter);
+        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(comments, FilterFactory.getCommentFilter());
         return node;
     }
 }

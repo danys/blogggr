@@ -3,6 +3,7 @@ package com.blogggr.strategies.invoker;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.FriendService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
@@ -23,15 +24,7 @@ public class InvokeGetFriendsService implements ServiceInvocationStrategy {
     public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, DBException {
         List<User> friends = friendService.getFriends(userID);
         //Filter out unwanted fields
-        Set<String> filter = new HashSet<>();
-        filter.add("userID");
-        filter.add("email");
-        filter.add("lastName");
-        filter.add("firstName");
-        List<JsonNode> nodes = new ArrayList<>();
-        for(User user: friends){
-            nodes.add(JsonTransformer.filterFieldsOfFlatObject(user,filter));
-        }
+        JsonNode nodes = JsonTransformer.filterFieldsOfMultiLevelObject(friends, FilterFactory.getUserFilter());
         return nodes;
     }
 }
