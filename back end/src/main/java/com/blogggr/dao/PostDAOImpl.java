@@ -50,10 +50,12 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             //Predicates lists
             List<Predicate> predicatesOr1 = new LinkedList<>();
             List<Predicate> predicatesOr2 = new LinkedList<>();
+            List<Predicate> predicatesOr3 = new LinkedList<>();
+            List<Predicate> predicatesOr4 = new LinkedList<>();
             Predicate titleCondition = null;
             if (title != null) {
-                title = "%"+title+"%"; //substring of title is enough for a match
-                titleCondition = cb.like(root.get(Post_.title), title);
+                title = "%"+title.toLowerCase()+"%"; //substring of title is enough for a match
+                titleCondition = cb.like(cb.lower(root.get(Post_.title)), title);
             }
             Predicate postUserCondition = null;
             if (postUserID != null)
@@ -121,25 +123,37 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
                 //OR predicate 2
                 predicatesOr2.add(cb.equal(friendUserJoin1.get(User_.userID), userID)); //only friends
                 predicatesOr2.add(cb.equal(userFriendJoin1.get(Friend_.status), friendAccepted)); //status accepted
+                //OR predicate 3
+                predicatesOr3.add(cb.equal(postUserJoin.get(User_.userID), userID)); //either current user
+                //OR predicate 4
+                predicatesOr4.add(cb.equal(root.get(Post_.isGlobal), true)); //either global post
                 //Other conditions like the title and the filter on the poster's userID
                 if (postUserCondition != null) {
                     predicatesOr1.add(postUserCondition);
                     predicatesOr2.add(postUserCondition);
+                    predicatesOr3.add(postUserCondition);
+                    predicatesOr4.add(postUserCondition);
                 }
                 if (titleCondition != null) {
                     predicatesOr1.add(titleCondition);
                     predicatesOr2.add(titleCondition);
+                    predicatesOr3.add(titleCondition);
+                    predicatesOr4.add(titleCondition);
                 }
                 Predicate[] predicatesOr1Array = new Predicate[predicatesOr1.size()];
                 Predicate[] predicatesOr2Array = new Predicate[predicatesOr2.size()];
+                Predicate[] predicatesOr3Array = new Predicate[predicatesOr3.size()];
+                Predicate[] predicatesOr4Array = new Predicate[predicatesOr4.size()];
                 predicatesOr1.toArray(predicatesOr1Array);
                 predicatesOr2.toArray(predicatesOr2Array);
+                predicatesOr3.toArray(predicatesOr3Array);
+                predicatesOr4.toArray(predicatesOr4Array);
                 query.where(
                         cb.or(
                                 cb.and(predicatesOr1Array), //either a friend relationship 1
                                 cb.and(predicatesOr2Array), //either a friend relationship 2
-                                cb.and(cb.equal(postUserJoin.get(User_.userID), userID)),  //either current user
-                                cb.and(cb.equal(root.get(Post_.isGlobal), true)) //either global post
+                                cb.and(predicatesOr3Array), //either current user
+                                cb.and(predicatesOr4Array) //either global post
                         )
                 );
             }
