@@ -33,4 +33,30 @@ public class FilterFactory {
         JsonFilter jsonFilter = new JsonFilter(filterMap);
         return jsonFilter;
     }
+
+    public static JsonFilter getCommentFilter(){
+        Map<String, JsonFilter> filterMap = new HashMap<>();
+        filterMap.put("commentID",null);
+        filterMap.put("text",null);
+        filterMap.put("timestamp",null);
+        Map<String, JsonFilter> userFilterMap = new HashMap<>();
+        userFilterMap.put("userID",null);
+        userFilterMap.put("email",null);
+        userFilterMap.put("lastName",null);
+        userFilterMap.put("firstName",null);
+        JsonFilter userFilter = new JsonFilter(userFilterMap);
+        filterMap.put("user",userFilter);
+        JsonFilter jsonFilter = new JsonFilter(filterMap);
+        return jsonFilter;
+    }
+
+    public static JsonFilter getUserFilter(){
+        Map<String, JsonFilter> userFilterMap = new HashMap<>();
+        userFilterMap.put("userID",null);
+        userFilterMap.put("email",null);
+        userFilterMap.put("lastName",null);
+        userFilterMap.put("firstName",null);
+        JsonFilter jsonFilter = new JsonFilter(userFilterMap);
+        return jsonFilter;
+    }
 }
