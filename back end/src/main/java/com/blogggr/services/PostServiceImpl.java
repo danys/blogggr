@@ -109,7 +109,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility) throws ResourceNotFoundException, DBException{
-        return postDAO.getPosts(userID, postUserID, title, visibility);
+    public List<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws ResourceNotFoundException, DBException{
+        return postDAO.getPosts(userID, postUserID, title, visibility, before, after, limit);
     }
 }
