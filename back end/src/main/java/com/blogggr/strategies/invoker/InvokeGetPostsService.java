@@ -59,7 +59,22 @@ public class InvokeGetPostsService implements ServiceInvocationStrategy {
             else if (visibility.compareTo("onlyCurrentUser")!=0) visi = PostDAOImpl.Visibility.onlyCurrentUser;
         }
         else if (visibility==null) visi = PostDAOImpl.Visibility.all;
-        List<Post> posts = postService.getPosts(userID,posterID,title,visi);
+        //Before key
+        Long before = null;
+        if (input.containsKey(GetPostsValidator.beforeKey)){
+            before = Long.parseLong(input.get(GetPostsValidator.beforeKey));
+        }
+        //After key
+        Long after = null;
+        if (input.containsKey(GetPostsValidator.afterKey)){
+            after = Long.parseLong(input.get(GetPostsValidator.afterKey));
+        }
+        //After limit
+        Integer limit = null;
+        if (input.containsKey(GetPostsValidator.limitKey)){
+            limit = Integer.parseInt(input.get(GetPostsValidator.limitKey));
+        }
+        List<Post> posts = postService.getPosts(userID,posterID,title,visi,before,after,limit);
         //Filter attributes of the posts
         JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(posts, FilterFactory.getPostFilter());
         return node;
