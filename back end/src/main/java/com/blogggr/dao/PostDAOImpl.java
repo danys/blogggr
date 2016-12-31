@@ -9,6 +9,7 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,10 +33,11 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
 
     private final String noResult = "Did not find any posts!";
     private final int friendAccepted = 1;
+    private final int defaultLimit = 50;
 
     //Get posts by userID, title and visibility
     @Override
-    public List<Post> getPosts(long userID, Long postUserID, String title, Visibility visibility) throws DBException, ResourceNotFoundException{
+    public List<Post> getPosts(long userID, Long postUserID, String title, Visibility visibility, Long before, Long after, Integer limit) throws DBException, ResourceNotFoundException{
         try {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
             CriteriaQuery<Post> query = cb.createQuery(Post.class);
@@ -52,28 +54,42 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             List<Predicate> predicatesOr2 = new LinkedList<>();
             List<Predicate> predicatesOr3 = new LinkedList<>();
             List<Predicate> predicatesOr4 = new LinkedList<>();
+            //Title condition
             Predicate titleCondition = null;
             if (title != null) {
                 title = "%"+title.toLowerCase()+"%"; //substring of title is enough for a match
                 titleCondition = cb.like(cb.lower(root.get(Post_.title)), title);
             }
+            //Post user condition
             Predicate postUserCondition = null;
             if (postUserID != null)
                 postUserCondition = cb.equal(postUserJoin.get(User_.userID), postUserID.longValue());
+            //After postID condition
+            Predicate postAfterCondition = null;
+            if (after != null)
+                postAfterCondition = cb.greaterThan(root.get(Post_.postID), after);
+            //Before postID condition
+            Predicate postBeforeCondition = null;
+            if (before != null)
+                postBeforeCondition = cb.lessThan(root.get(Post_.postID), before);
+            //Check and maybe adjust limit, set default limit
+            if (limit==null) limit = Integer.valueOf(defaultLimit);
+            else if (limit.intValue()>defaultLimit) limit = Integer.valueOf(defaultLimit);
             //Visibility global => return all global posts
             if (visibility == Visibility.onlyGlobal) {
+                predicatesOr1.add(cb.equal(root.get(Post_.isGlobal), true)); //filter on global posts
+                if (titleCondition!=null) predicatesOr1.add(titleCondition); //filter on title
+                if (postUserCondition!=null) predicatesOr1.add(postUserCondition); //filter on userID of poster
+                if (postAfterCondition!=null) predicatesOr1.add(postAfterCondition);
+                if (postBeforeCondition!=null) predicatesOr1.add(postBeforeCondition);
+                Predicate[] predicatesOr1Array = new Predicate[predicatesOr1.size()];
+                predicatesOr1.toArray(predicatesOr1Array);
                 query.where(
-                        cb.and(
-                                cb.equal(root.get(Post_.isGlobal), true), //filter on global posts
-                                titleCondition, //filter on title
-                                postUserCondition //filter on userID of poster
-
-                        )
+                        cb.and(predicatesOr1Array)
                 );
-                return entityManager.createQuery(query).getResultList();
             }
             //Visibility current user
-            if (visibility == Visibility.onlyCurrentUser) {
+            else if (visibility == Visibility.onlyCurrentUser) {
                 query.where(
                         cb.and(
                                 cb.equal(postUserJoin.get(User_.userID), userID), //filter on current user
@@ -140,6 +156,18 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
                     predicatesOr3.add(titleCondition);
                     predicatesOr4.add(titleCondition);
                 }
+                if (postAfterCondition!=null){
+                    predicatesOr1.add(postAfterCondition);
+                    predicatesOr2.add(postAfterCondition);
+                    predicatesOr3.add(postAfterCondition);
+                    predicatesOr4.add(postAfterCondition);
+                }
+                if (postBeforeCondition!=null){
+                    predicatesOr1.add(postBeforeCondition);
+                    predicatesOr2.add(postBeforeCondition);
+                    predicatesOr3.add(postBeforeCondition);
+                    predicatesOr4.add(postBeforeCondition);
+                }
                 Predicate[] predicatesOr1Array = new Predicate[predicatesOr1.size()];
                 Predicate[] predicatesOr2Array = new Predicate[predicatesOr2.size()];
                 Predicate[] predicatesOr3Array = new Predicate[predicatesOr3.size()];
@@ -157,7 +185,9 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
                         )
                 );
             }
-            return entityManager.createQuery(query).getResultList();
+            //Order by post ID and eventually limit
+            query.orderBy(cb.asc(root.get(Post_.postID)));
+            return entityManager.createQuery(query).setMaxResults(limit).getResultList();
         }
         catch(NoResultException e){
             throw new ResourceNotFoundException(noResult);
