@@ -14,6 +14,9 @@ public class GetPostsValidator extends GenericValidator {
     public static final String titleKey = "title";
     public static final String posterUserIDKey = "posterUserID";
     public static final String visibilityKey = "visibility"; //can be "onlyGlobal", "all", "onlyFriends", "onlyCurrentUser"
+    public static final String beforeKey = "before";
+    public static final String afterKey = "after";
+    public static final String limitKey = "limit";
 
     @Override
     protected boolean validate(Map<String,String> input, String body){
@@ -50,6 +53,42 @@ public class GetPostsValidator extends GenericValidator {
                     (visibility.compareTo("onlyFriends")!=0) &&
                     (visibility.compareTo("onlyCurrentUser")!=0)){
                 errorMessage = "If provided visibility must be either of: 'onlyGlobal', 'all', 'onlyFriends', 'onlyCurrentUser'!";
+                return false;
+            }
+        }
+        //Check before post ID number
+        if (input.containsKey(beforeKey)){
+            String beforeStr = input.get(beforeKey);
+            try{
+                Long.parseLong(beforeStr);
+            }
+            catch(NumberFormatException e){
+                //Not a valid number
+                errorMessage = "Before parameter must be a valid number!";
+                return false;
+            }
+        }
+        //Check after post ID number
+        if (input.containsKey(afterKey)){
+            String afterStr = input.get(afterKey);
+            try{
+                Long.parseLong(afterStr);
+            }
+            catch(NumberFormatException e){
+                //Not a valid number
+                errorMessage = "After parameter must be a valid number!";
+                return false;
+            }
+        }
+        //Check limit number
+        if (input.containsKey(limitKey)){
+            String limitStr = input.get(limitKey);
+            try{
+                Long.parseLong(limitStr);
+            }
+            catch(NumberFormatException e){
+                //Not a valid number
+                errorMessage = "Limit parameter must be a valid number!";
                 return false;
             }
         }
