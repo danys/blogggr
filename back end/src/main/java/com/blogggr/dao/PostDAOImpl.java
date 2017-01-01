@@ -34,6 +34,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
     private final String noResult = "Did not find any posts!";
     private final int friendAccepted = 1;
     private final int defaultLimit = 50;
+    private final long defaultMinimumID = -1;
 
     //Get posts by userID, title and visibility
     @Override
@@ -59,6 +60,13 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             if (title != null) {
                 title = "%"+title.toLowerCase()+"%"; //substring of title is enough for a match
                 titleCondition = cb.like(cb.lower(root.get(Post_.title)), title);
+            }
+            if (before==null && after==null){
+                after = defaultMinimumID;
+            }
+            if (before!=null && after!=null){
+                //Can have either before or after but not both set
+                before = null;
             }
             //Post user condition
             Predicate postUserCondition = null;
