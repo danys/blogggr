@@ -69,7 +69,7 @@ public class InvokeGetPostsService implements ServiceInvocationStrategy {
         if (input.containsKey(GetPostsValidator.afterKey)){
             after = Long.parseLong(input.get(GetPostsValidator.afterKey));
         }
-        //After limit
+        //Limit key
         Integer limit = null;
         if (input.containsKey(GetPostsValidator.limitKey)){
             limit = Integer.parseInt(input.get(GetPostsValidator.limitKey));
