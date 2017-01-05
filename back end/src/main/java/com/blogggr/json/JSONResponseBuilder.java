@@ -9,19 +9,28 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class JSONResponseBuilder {
 
-    public static ObjectNode generateErrorResponse(String errorMessage){
+    public static ObjectNode basicObject(){
         JsonNodeFactory factory = JsonNodeFactory.instance;
         ObjectNode root = factory.objectNode();
         root.put("apiVersion", AppConfig.apiVersion);
+        return root;
+    }
+
+    public static ObjectNode generateErrorResponse(String errorMessage){
+        ObjectNode root = basicObject();
         root.put("error",errorMessage);
         return root;
     }
 
     public static ObjectNode generateSuccessResponse(Object data){
-        JsonNodeFactory factory = JsonNodeFactory.instance;
-        ObjectNode root = factory.objectNode();
-        root.put("apiVersion", AppConfig.apiVersion);
+        ObjectNode root = basicObject();
         root.putPOJO("data",data);
+        return root;
+    }
+
+    public static ObjectNode generatePageSuccessResponse(Object data, PageData pageData){
+        ObjectNode root = generateSuccessResponse(data);
+        root.putPOJO("paging",pageData);
         return root;
     }
 }
