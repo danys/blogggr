@@ -17,5 +17,5 @@ public interface PostDAO extends GenericDAO<Post>{
 
     List<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws DBException, ResourceNotFoundException;
 
-    Long getPostsCount(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws DBException, ResourceNotFoundException;
+    Long getPostsCount(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility) throws DBException, ResourceNotFoundException;
 }
