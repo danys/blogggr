@@ -6,6 +6,7 @@ import com.blogggr.entities.Post;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.models.GenericPage;
 import com.blogggr.requestdata.PostData;
 
 import java.util.List;
@@ -23,5 +24,5 @@ public interface PostService {
 
     Post getPostById(long postId, long userID) throws ResourceNotFoundException, DBException, NotAuthorizedException;
 
-    List<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws ResourceNotFoundException, DBException;
+    GenericPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws ResourceNotFoundException, DBException;
 }

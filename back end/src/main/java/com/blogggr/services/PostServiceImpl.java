@@ -9,12 +9,15 @@ import com.blogggr.entities.User;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.json.PageData;
+import com.blogggr.models.GenericPage;
 import com.blogggr.requestdata.PostData;
 import com.blogggr.utilities.StringUtilities;
 import com.blogggr.utilities.TimeUtilities;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -109,7 +112,8 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public List<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws ResourceNotFoundException, DBException{
-        return postDAO.getPosts(userID, postUserID, title, visibility, before, after, limit);
+    public GenericPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws ResourceNotFoundException, DBException{
+        GenericPage<Post> postsPage = postDAO.getPosts(userID, postUserID, title, visibility, before, after, limit);
+        return postsPage;
     }
 }
