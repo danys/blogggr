@@ -1,16 +1,22 @@
 package com.blogggr.dao;
 
+import com.blogggr.config.AppConfig;
+import com.blogggr.controllers.PostsController;
 import com.blogggr.entities.*;
 import com.blogggr.entities.Friend_;
 import com.blogggr.entities.Post_;
 import com.blogggr.entities.User_;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.json.PageData;
+import com.blogggr.models.GenericPage;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,27 +44,38 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
 
     //Get posts by userID, title and visibility
     @Override
-    public List<Post> getPosts(long userID, Long postUserID, String title, Visibility visibility, Long before, Long after, Integer limit) throws DBException, ResourceNotFoundException {
+    public GenericPage<Post> getPosts(long userID, Long postUserID, String title, Visibility visibility, Long before, Long after, Integer limit) throws DBException, ResourceNotFoundException {
         try {
             //Check and maybe adjust limit, set default limit
             if (limit == null) limit = Integer.valueOf(defaultLimit);
             else if (limit.intValue() > defaultLimit) limit = Integer.valueOf(defaultLimit);
             //Generate query
             CriteriaQuery<Post> postsQuery = generateQuery(userID, postUserID, title, visibility, before, after, false);
-            return entityManager.createQuery(postsQuery).setMaxResults(limit).getResultList();
-        } catch (NoResultException e) {
-            throw new ResourceNotFoundException(noResult);
-        } catch (Exception e) {
-            throw new DBException("Database exception!");
-        }
-    }
+            List<Post> posts = entityManager.createQuery(postsQuery).setMaxResults(limit).getResultList();
+            CriteriaQuery<Long> postsCountQuery = generateQuery(userID, postUserID, title, visibility, null, null, true);
+            Long totalCount = entityManager.createQuery(postsCountQuery).getSingleResult();
+            Collections.sort(posts, (p1,p2)->(int)(p1.getPostID()-p2.getPostID())); //sort such that post id are in ascending order
+            Integer numberPageItems = posts.size();
+            Long next = null;
+            Long previous = null;
+            //Figure out if a post is before or after the posts of this page
+            if (totalCount>0 && posts.size()>0){
+                CriteriaQuery<Post> beforePostQuery = generateQuery(userID, postUserID, title, visibility, posts.get(0).getPostID(), null, false);
+                List<Post> beforePosts = entityManager.createQuery(beforePostQuery).setMaxResults(1).getResultList();
+                if (beforePosts.size()==1) previous = beforePosts.get(0).getPostID();
 
-    //Get posts by userID, title and visibility
-    @Override
-    public Long getPostsCount(long userID, Long postUserID, String title, Visibility visibility) throws DBException, ResourceNotFoundException {
-        try {
-            CriteriaQuery<Long> postsQuery = generateQuery(userID, postUserID, title, visibility, null, null, true);
-            return entityManager.createQuery(postsQuery).getSingleResult();
+                CriteriaQuery<Post> afterPostQuery = generateQuery(userID, postUserID, title, visibility, null, posts.get(posts.size()-1).getPostID(), false);
+                List<Post> afterPosts = entityManager.createQuery(afterPostQuery).setMaxResults(1).getResultList();
+                if (afterPosts.size()==1) next = afterPosts.get(0).getPostID();
+            }
+            PageData pData = new PageData();
+            pData.setPageCount(numberPageItems);
+            pData.setTotalCount(totalCount);
+            if (next!=null) pData.setNext(AppConfig.fullBaseUrl + PostsController.postsPath + "/" + String.valueOf(next));
+            if (previous!=null) pData.setPrevious(AppConfig.fullBaseUrl + PostsController.postsPath + "/" + String.valueOf(previous));
+            GenericPage<Post> page = new GenericPage<>(posts,pData);
+            return page;
+
         } catch (NoResultException e) {
             throw new ResourceNotFoundException(noResult);
         } catch (Exception e) {
@@ -237,6 +254,10 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         }
         //Order by post ID and eventually limit
         if (countOnly) query.select(cb.count(query.from(Post.class)));
-        return query.orderBy(cb.asc(root.get(Post_.postID)));
+        else{
+            if (after!=null) query.orderBy(cb.asc(root.get(Post_.postID)));
+            else query.orderBy(cb.desc(root.get(Post_.postID)));
+        }
+        return query;
     }
 }

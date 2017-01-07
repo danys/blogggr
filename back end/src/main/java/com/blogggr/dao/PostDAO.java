@@ -3,6 +3,7 @@ package com.blogggr.dao;
 import com.blogggr.entities.Post;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.models.GenericPage;
 
 import java.util.List;
 
@@ -11,11 +12,5 @@ import java.util.List;
  */
 public interface PostDAO extends GenericDAO<Post>{
 
-    //Post getUserPosts(long userID, int nRowsPerPage, int pageNum);
-
-    //Post getPostByUserIDandPostID(long userID, long postID, int nRowsPerPage, int pageNum);
-
-    List<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws DBException, ResourceNotFoundException;
-
-    Long getPostsCount(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility) throws DBException, ResourceNotFoundException;
+    GenericPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws DBException, ResourceNotFoundException;
 }
