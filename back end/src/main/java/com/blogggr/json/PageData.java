@@ -6,9 +6,13 @@ package com.blogggr.json;
 public class PageData {
 
     private Long totalCount;
-    private Long pageCount;
+    private Integer pageCount;
     private String next;
     private String previous;
+
+    public PageData(){
+        //
+    }
 
     public Long getTotalCount() {
         return totalCount;
@@ -18,11 +22,11 @@ public class PageData {
         this.totalCount = totalCount;
     }
 
-    public Long getPageCount() {
+    public Integer getPageCount() {
         return pageCount;
     }
 
-    public void setPageCount(Long pageCount) {
+    public void setPageCount(Integer pageCount) {
         this.pageCount = pageCount;
     }
 
