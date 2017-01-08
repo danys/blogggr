@@ -79,7 +79,7 @@ public class InvokeGetPostsService implements ServiceInvocationStrategy {
         GenericPage<Post> page = postService.getPosts(userID,posterID,title,visi,before,after,limit);
         List<Post> posts = page.getPageItems();
         //Filter attributes of the posts
-        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(posts, FilterFactory.getPostFilter());
+        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(posts, FilterFactory.getReducedPostFilter());
         ObjectMapper mapper = new ObjectMapper();
         List<Object> trimmedPosts = mapper.convertValue(node,List.class);
         GenericPage<Object> resultPage = new GenericPage<>(trimmedPosts,page.getPageData());
