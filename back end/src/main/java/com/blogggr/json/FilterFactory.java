@@ -34,6 +34,25 @@ public class FilterFactory {
         return jsonFilter;
     }
 
+    public static JsonFilter getReducedPostFilter(){
+        Map<String, JsonFilter> filterMap = new HashMap<>();
+        filterMap.put("postID",null);
+        filterMap.put("shortTitle",null);
+        filterMap.put("textBody",null);
+        filterMap.put("timestamp",null);
+        filterMap.put("title",null);
+        filterMap.put("global",null);
+        Map<String, JsonFilter> userFilterMap = new HashMap<>();
+        userFilterMap.put("userID",null);
+        userFilterMap.put("email",null);
+        userFilterMap.put("lastName",null);
+        userFilterMap.put("firstName",null);
+        JsonFilter userFilter = new JsonFilter(userFilterMap);
+        filterMap.put("user",userFilter);
+        JsonFilter jsonFilter = new JsonFilter(filterMap);
+        return jsonFilter;
+    }
+
     public static JsonFilter getCommentFilter(){
         Map<String, JsonFilter> filterMap = new HashMap<>();
         filterMap.put("commentID",null);
