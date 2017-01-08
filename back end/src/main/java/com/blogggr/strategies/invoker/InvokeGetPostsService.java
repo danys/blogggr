@@ -12,6 +12,7 @@ import com.blogggr.services.PostService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
 import com.blogggr.strategies.validators.GetPostsValidator;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -79,7 +80,9 @@ public class InvokeGetPostsService implements ServiceInvocationStrategy {
         List<Post> posts = page.getPageItems();
         //Filter attributes of the posts
         JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(posts, FilterFactory.getPostFilter());
-        //TODO
-        return node;
+        ObjectMapper mapper = new ObjectMapper();
+        List<Object> trimmedPosts = mapper.convertValue(node,List.class);
+        GenericPage<Object> resultPage = new GenericPage<>(trimmedPosts,page.getPageData());
+        return resultPage;
     }
 }

@@ -253,7 +253,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             }
         }
         //Order by post ID and eventually limit
-        if (countOnly) query.select(cb.count(query.from(Post.class)));
+        if (countOnly) query.select(cb.countDistinct(query.from(Post.class)));
         else{
             if (after!=null) query.orderBy(cb.asc(root.get(Post_.postID)));
             else query.orderBy(cb.desc(root.get(Post_.postID)));
