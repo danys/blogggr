@@ -88,7 +88,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         CriteriaQuery query;
         if (!countOnly) query = cb.createQuery(Post.class);
         else query = cb.createQuery(Long.class);
-        query.distinct(true);
+        if (!countOnly) query.distinct(true);
         Root<Post> root = query.from(Post.class);
         //Join from Post over User over Friend over User
         Join<Post, User> postUserJoin = root.join(Post_.user);
