@@ -1,5 +1,8 @@
 package com.blogggr.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 /**
  * Created by Daniel Sunnen on 06.01.17.
  */
@@ -7,7 +10,11 @@ public class PageData {
 
     private Long totalCount;
     private Integer pageCount;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String next;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String previous;
 
     public PageData(){
