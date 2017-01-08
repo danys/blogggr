@@ -10,6 +10,7 @@ import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.PageData;
 import com.blogggr.models.GenericPage;
+import com.blogggr.strategies.validators.GetPostsValidator;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -56,23 +57,23 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             Long totalCount = entityManager.createQuery(postsCountQuery).getSingleResult();
             Collections.sort(posts, (p1,p2)->(int)(p1.getPostID()-p2.getPostID())); //sort such that post id are in ascending order
             Integer numberPageItems = posts.size();
-            Long next = null;
-            Long previous = null;
+            Long nextAfter = null;
+            Long nextBefore = null;
             //Figure out if a post is before or after the posts of this page
             if (totalCount>0 && posts.size()>0){
                 CriteriaQuery<Post> beforePostQuery = generateQuery(userID, postUserID, title, visibility, posts.get(0).getPostID(), null, false);
                 List<Post> beforePosts = entityManager.createQuery(beforePostQuery).setMaxResults(1).getResultList();
-                if (beforePosts.size()==1) previous = beforePosts.get(0).getPostID();
+                if (beforePosts.size()==1) nextBefore = posts.get(0).getPostID();
 
                 CriteriaQuery<Post> afterPostQuery = generateQuery(userID, postUserID, title, visibility, null, posts.get(posts.size()-1).getPostID(), false);
                 List<Post> afterPosts = entityManager.createQuery(afterPostQuery).setMaxResults(1).getResultList();
-                if (afterPosts.size()==1) next = afterPosts.get(0).getPostID();
+                if (afterPosts.size()==1) nextAfter = posts.get(posts.size()-1).getPostID();
             }
             PageData pData = new PageData();
             pData.setPageCount(numberPageItems);
             pData.setTotalCount(totalCount);
-            if (next!=null) pData.setNext(AppConfig.fullBaseUrl + PostsController.postsPath + "/" + String.valueOf(next));
-            if (previous!=null) pData.setPrevious(AppConfig.fullBaseUrl + PostsController.postsPath + "/" + String.valueOf(previous));
+            if (nextAfter!=null) pData.setNext(buildNextPageUrl(nextAfter,limit));
+            if (nextBefore!=null) pData.setPrevious(buildPreviousPageUrl(nextBefore,limit));
             GenericPage<Post> page = new GenericPage<>(posts,pData);
             return page;
 
@@ -259,5 +260,17 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             else query.orderBy(cb.desc(root.get(Post_.postID)));
         }
         return query;
+    }
+
+    private String buildNextPageUrl(Long next, Integer limit){
+        if (next==null || limit==null) throw new IllegalArgumentException("Next and limit should not be null!");
+        return AppConfig.fullBaseUrl + PostsController.postsPath + "?" + GetPostsValidator.afterKey
+                + "=" + String.valueOf(next) + "&" + GetPostsValidator.limitKey + "=" + limit;
+    }
+
+    private String buildPreviousPageUrl(Long previous, Integer limit){
+        if (previous==null || limit==null) throw new IllegalArgumentException("Previous and limit should not be null!");
+        return AppConfig.fullBaseUrl + PostsController.postsPath + "?" + GetPostsValidator.beforeKey
+                + "=" + String.valueOf(previous) + "&" + GetPostsValidator.limitKey + "=" + limit;
     }
 }
