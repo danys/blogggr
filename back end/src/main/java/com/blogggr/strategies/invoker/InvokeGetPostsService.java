@@ -5,7 +5,6 @@ import com.blogggr.entities.Post;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.FilterFactory;
-import com.blogggr.json.JsonFilter;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.models.GenericPage;
 import com.blogggr.services.PostService;
@@ -14,7 +13,6 @@ import com.blogggr.strategies.validators.GetPostsValidator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,10 +53,10 @@ public class InvokeGetPostsService implements ServiceInvocationStrategy {
             visibility = input.get(GetPostsValidator.visibilityKey);
         }
         if (visibility!=null){
-            if (visibility.compareTo("onlyGlobal")!=0) visi = PostDAOImpl.Visibility.onlyGlobal;
-            else if (visibility.compareTo("all")!=0) visi = PostDAOImpl.Visibility.all;
-            else if (visibility.compareTo("onlyFriends")!=0) visi = PostDAOImpl.Visibility.onlyFriends;
-            else if (visibility.compareTo("onlyCurrentUser")!=0) visi = PostDAOImpl.Visibility.onlyCurrentUser;
+            if (visibility.compareTo(PostDAOImpl.Visibility.onlyGlobal.name())!=0) visi = PostDAOImpl.Visibility.onlyGlobal;
+            else if (visibility.compareTo(PostDAOImpl.Visibility.all.name())!=0) visi = PostDAOImpl.Visibility.all;
+            else if (visibility.compareTo(PostDAOImpl.Visibility.onlyFriends.name())!=0) visi = PostDAOImpl.Visibility.onlyFriends;
+            else if (visibility.compareTo(PostDAOImpl.Visibility.onlyCurrentUser.name())!=0) visi = PostDAOImpl.Visibility.onlyCurrentUser;
         }
         else if (visibility==null) visi = PostDAOImpl.Visibility.all;
         //Before key
