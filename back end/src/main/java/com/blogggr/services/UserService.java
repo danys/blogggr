@@ -7,6 +7,8 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.SessionExpiredException;
 import com.blogggr.requestdata.UserPostData;
 
+import java.util.List;
+
 /**
  * Created by Daniel Sunnen on 28.10.16.
  */
@@ -21,4 +23,6 @@ public interface UserService {
     User getUserBySessionHash(String sessionHash) throws ResourceNotFoundException, DBException, SessionExpiredException;
 
     void updateUser(long userResourceID, long userID, UserPostData userData) throws ResourceNotFoundException, DBException, NotAuthorizedException;
+
+    List<User> getUsers(String searchString);
 }

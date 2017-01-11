@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -92,5 +93,10 @@ public class UserServiceImpl implements UserService{
         if (userData.getFirstName() != null) user.setFirstName(userData.getFirstName());
         user.setLastChange(TimeUtilities.getCurrentTimestamp());
         userDAO.save(user);
+    }
+
+    @Override
+    public List<User> getUsers(String searchString){
+        return null;
     }
 }

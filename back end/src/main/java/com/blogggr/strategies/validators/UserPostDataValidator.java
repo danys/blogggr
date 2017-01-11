@@ -18,6 +18,7 @@ public class UserPostDataValidator extends GenericValidator {
         //
     }
 
+    //Shared code used to validate email, first name and last name
     public static String validateUserData(UserPostData userData){
         //Check firstname, lastname and password
         if ((userData.getFirstName()!=null && userData.getFirstName().length()<3) ||

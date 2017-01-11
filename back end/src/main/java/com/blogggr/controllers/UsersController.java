@@ -11,6 +11,7 @@ import com.blogggr.strategies.invoker.InvokePutUserService;
 import com.blogggr.strategies.responses.GetResponse;
 import com.blogggr.strategies.responses.PostResponse;
 import com.blogggr.strategies.responses.PutResponse;
+import com.blogggr.strategies.validators.GetUsersValidator;
 import com.blogggr.strategies.validators.IdValidator;
 import com.blogggr.strategies.validators.UserPostDataValidator;
 import com.blogggr.strategies.validators.UserPutDataValidator;
@@ -34,6 +35,13 @@ public class UsersController {
 
     public UsersController(UserService userService){
         this.userService = userService;
+    }
+
+    //GET /users
+    @RequestMapping(path = userPath, method = RequestMethod.GET)
+    public ResponseEntity getUsers(@RequestParam Map<String,String> params, @RequestHeader Map<String,String> header){
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new GetUsersValidator(), new InvokeGetUsersService(userService), new GetResponse());
+        return model.execute(params,header,null);
     }
 
     //GET /users/id
