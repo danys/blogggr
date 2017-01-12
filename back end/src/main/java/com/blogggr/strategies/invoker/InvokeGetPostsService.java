@@ -6,7 +6,7 @@ import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
-import com.blogggr.models.GenericPage;
+import com.blogggr.models.PrevNextListPage;
 import com.blogggr.services.PostService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
 import com.blogggr.strategies.validators.GetPostsValidator;
@@ -74,13 +74,13 @@ public class InvokeGetPostsService implements ServiceInvocationStrategy {
         if (input.containsKey(GetPostsValidator.limitKey)){
             limit = Integer.parseInt(input.get(GetPostsValidator.limitKey));
         }
-        GenericPage<Post> page = postService.getPosts(userID,posterID,title,visi,before,after,limit);
+        PrevNextListPage<Post> page = postService.getPosts(userID,posterID,title,visi,before,after,limit);
         List<Post> posts = page.getPageItems();
         //Filter attributes of the posts
         JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(posts, FilterFactory.getReducedPostFilter());
         ObjectMapper mapper = new ObjectMapper();
         List<Object> trimmedPosts = mapper.convertValue(node,List.class);
-        GenericPage<Object> resultPage = new GenericPage<>(trimmedPosts,page.getPageData());
+        PrevNextListPage<Object> resultPage = new PrevNextListPage<>(trimmedPosts,page.getPageData());
         return resultPage;
     }
 }

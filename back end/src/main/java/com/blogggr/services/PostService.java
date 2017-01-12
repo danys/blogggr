@@ -1,15 +1,12 @@
 package com.blogggr.services;
 
-import com.blogggr.dao.FriendDAO;
 import com.blogggr.dao.PostDAOImpl;
 import com.blogggr.entities.Post;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.models.GenericPage;
+import com.blogggr.models.PrevNextListPage;
 import com.blogggr.requestdata.PostData;
-
-import java.util.List;
 
 /**
  * Created by Daniel Sunnen on 19.11.16.
@@ -24,5 +21,5 @@ public interface PostService {
 
     Post getPostById(long postId, long userID) throws ResourceNotFoundException, DBException, NotAuthorizedException;
 
-    GenericPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws ResourceNotFoundException, DBException;
+    PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws ResourceNotFoundException, DBException;
 }

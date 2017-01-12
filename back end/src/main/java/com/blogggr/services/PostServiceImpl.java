@@ -10,7 +10,7 @@ import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.PageData;
-import com.blogggr.models.GenericPage;
+import com.blogggr.models.PrevNextListPage;
 import com.blogggr.requestdata.PostData;
 import com.blogggr.utilities.StringUtilities;
 import com.blogggr.utilities.TimeUtilities;
@@ -112,8 +112,8 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public GenericPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws ResourceNotFoundException, DBException{
-        GenericPage<Post> postsPage = postDAO.getPosts(userID, postUserID, title, visibility, before, after, limit);
+    public PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws ResourceNotFoundException, DBException{
+        PrevNextListPage<Post> postsPage = postDAO.getPosts(userID, postUserID, title, visibility, before, after, limit);
         return postsPage;
     }
 }

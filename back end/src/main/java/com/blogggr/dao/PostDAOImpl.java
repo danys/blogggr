@@ -9,15 +9,13 @@ import com.blogggr.entities.User_;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.PageData;
-import com.blogggr.models.GenericPage;
+import com.blogggr.models.PrevNextListPage;
 import com.blogggr.strategies.validators.GetPostsValidator;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,7 +43,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
 
     //Get posts by userID, title and visibility
     @Override
-    public GenericPage<Post> getPosts(long userID, Long postUserID, String title, Visibility visibility, Long before, Long after, Integer limit) throws DBException, ResourceNotFoundException {
+    public PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title, Visibility visibility, Long before, Long after, Integer limit) throws DBException, ResourceNotFoundException {
         try {
             //Check and maybe adjust limit, set default limit
             if (limit == null) limit = Integer.valueOf(defaultLimit);
@@ -74,7 +72,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             pData.setTotalCount(totalCount);
             if (nextAfter!=null) pData.setNext(buildNextPageUrl(nextAfter,limit));
             if (nextBefore!=null) pData.setPrevious(buildPreviousPageUrl(nextBefore,limit));
-            GenericPage<Post> page = new GenericPage<>(posts,pData);
+            PrevNextListPage<Post> page = new PrevNextListPage<>(posts,pData);
             return page;
 
         } catch (NoResultException e) {

@@ -7,12 +7,12 @@ import java.util.List;
 /**
  * Created by Daniel Sunnen on 07.01.17.
  */
-public class GenericPage<T> {
+public class PrevNextListPage<T> {
 
     List<T> pageItems;
     PageData pageData;
 
-    public GenericPage(List<T> pageItems, PageData pageData){
+    public PrevNextListPage(List<T> pageItems, PageData pageData){
         this.pageItems = pageItems;
         this.pageData = pageData;
     }

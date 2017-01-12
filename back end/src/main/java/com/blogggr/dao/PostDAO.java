@@ -3,7 +3,7 @@ package com.blogggr.dao;
 import com.blogggr.entities.Post;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.models.GenericPage;
+import com.blogggr.models.PrevNextListPage;
 
 import java.util.List;
 
@@ -12,5 +12,5 @@ import java.util.List;
  */
 public interface PostDAO extends GenericDAO<Post>{
 
-    GenericPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws DBException, ResourceNotFoundException;
+    PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws DBException, ResourceNotFoundException;
 }
