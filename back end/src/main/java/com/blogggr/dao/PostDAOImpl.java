@@ -74,10 +74,8 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             if (nextBefore!=null) pData.setPrevious(buildPreviousPageUrl(nextBefore,limit));
             PrevNextListPage<Post> page = new PrevNextListPage<>(posts,pData);
             return page;
-
-        } catch (NoResultException e) {
-            throw new ResourceNotFoundException(noResult);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new DBException("Database exception!");
         }
     }
@@ -87,7 +85,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         CriteriaQuery query;
         if (!countOnly) query = cb.createQuery(Post.class);
         else query = cb.createQuery(Long.class);
-        if (!countOnly) query.distinct(true);
+        if (!countOnly) query.distinct(true); //for count: query must be select count (distinct column name), not select distinct column name...
         Root<Post> root = query.from(Post.class);
         //Join from Post over User over Friend over User
         Join<Post, User> postUserJoin = root.join(Post_.user);

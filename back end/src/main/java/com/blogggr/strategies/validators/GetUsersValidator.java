@@ -12,6 +12,8 @@ public class GetUsersValidator extends GenericValidator  {
     }
 
     public static final String searchKey = "search";
+    public static final String pageKey = "page";
+    public static final String limitKey = "limit";
 
     private final int minimumSearchLen = 3;
 
@@ -22,6 +24,7 @@ public class GetUsersValidator extends GenericValidator  {
             if (searchString.length()<minimumSearchLen) return false;
         }
         //If no string has been provided the input is also accepted => wildcard search
+        //TODO check pageKey and limitKey
         return true;
     }
 }

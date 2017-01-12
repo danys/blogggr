@@ -1,6 +1,7 @@
 package com.blogggr.strategies.invoker;
 
 import com.blogggr.entities.User;
+import com.blogggr.exceptions.DBException;
 import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.models.RandomAccessListPage;
@@ -24,12 +25,15 @@ public class InvokeGetUsersService implements ServiceInvocationStrategy {
         this.userService = userService;
     }
 
-    public Object invokeService(Map<String,String> input, String body, Long userID){
+    public Object invokeService(Map<String,String> input, String body, Long userID) throws DBException{
         String searchString = null;
+        Integer limit = null;
+        Integer pageNum = null;
         if (input.containsKey(GetUsersValidator.searchKey)){
             searchString = input.get(GetUsersValidator.searchKey);
         }
-        RandomAccessListPage<User> usersPage = userService.getUsers(searchString);
+        //TOOD limit and pageNum
+        RandomAccessListPage<User> usersPage = userService.getUsers(searchString,limit,pageNum);
         //Filter out unwanted fields
         JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(usersPage.getPageItems(), FilterFactory.getUserFilter());
         ObjectMapper mapper = new ObjectMapper();

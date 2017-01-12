@@ -97,8 +97,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public RandomAccessListPage<User> getUsers(String searchString){
-        RandomAccessListPage<User> usersPage = userDAO.getUsers(searchString);
+    public RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber) throws DBException{
+        RandomAccessListPage<User> usersPage = userDAO.getUsers(searchString,limit,pageNumber);
         return usersPage;
     }
 }

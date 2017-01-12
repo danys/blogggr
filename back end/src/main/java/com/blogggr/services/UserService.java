@@ -25,5 +25,5 @@ public interface UserService {
 
     void updateUser(long userResourceID, long userID, UserPostData userData) throws ResourceNotFoundException, DBException, NotAuthorizedException;
 
-    RandomAccessListPage<User> getUsers(String searchString);
+    RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber) throws DBException;
 }

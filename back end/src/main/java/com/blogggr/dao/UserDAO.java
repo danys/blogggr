@@ -12,5 +12,5 @@ public interface UserDAO extends GenericDAO<User>{
 
     User getUserByEmail(String email) throws DBException, ResourceNotFoundException;
 
-    RandomAccessListPage<User> getUsers(String searchString);
+    RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber) throws DBException;
 }
