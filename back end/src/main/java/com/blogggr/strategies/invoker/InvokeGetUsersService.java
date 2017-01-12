@@ -3,10 +3,12 @@ package com.blogggr.strategies.invoker;
 import com.blogggr.entities.User;
 import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
+import com.blogggr.models.RandomAccessListPage;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
 import com.blogggr.strategies.validators.GetUsersValidator;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -27,9 +29,12 @@ public class InvokeGetUsersService implements ServiceInvocationStrategy {
         if (input.containsKey(GetUsersValidator.searchKey)){
             searchString = input.get(GetUsersValidator.searchKey);
         }
-        List<User> users = userService.getUsers(searchString);
+        RandomAccessListPage<User> usersPage = userService.getUsers(searchString);
         //Filter out unwanted fields
-        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(users, FilterFactory.getUserFilter());
-        return node;
+        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(usersPage.getPageItems(), FilterFactory.getUserFilter());
+        ObjectMapper mapper = new ObjectMapper();
+        List<Object> trimmedUsers = mapper.convertValue(node,List.class);
+        RandomAccessListPage<Object> resultPage = new RandomAccessListPage<>(trimmedUsers,usersPage.getPageData());
+        return resultPage;
     }
 }

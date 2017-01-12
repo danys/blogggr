@@ -8,6 +8,7 @@ import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.SessionExpiredException;
+import com.blogggr.models.RandomAccessListPage;
 import com.blogggr.requestdata.UserPostData;
 import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.TimeUtilities;
@@ -96,8 +97,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<User> getUsers(String searchString){
-
-        return null;
+    public RandomAccessListPage<User> getUsers(String searchString){
+        RandomAccessListPage<User> usersPage = userDAO.getUsers(searchString);
+        return usersPage;
     }
 }

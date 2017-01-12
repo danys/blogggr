@@ -4,6 +4,7 @@ import com.blogggr.entities.User;
 import com.blogggr.entities.User_;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.models.RandomAccessListPage;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -38,5 +39,10 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
         catch(Exception e){
             throw new DBException(dbException);
         }
+    }
+
+    public RandomAccessListPage<User> getUsers(String searchString){
+        //TODO
+        return null;
     }
 }

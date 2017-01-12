@@ -5,6 +5,7 @@ import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.SessionExpiredException;
+import com.blogggr.models.RandomAccessListPage;
 import com.blogggr.requestdata.UserPostData;
 
 import java.util.List;
@@ -24,5 +25,5 @@ public interface UserService {
 
     void updateUser(long userResourceID, long userID, UserPostData userData) throws ResourceNotFoundException, DBException, NotAuthorizedException;
 
-    List<User> getUsers(String searchString);
+    RandomAccessListPage<User> getUsers(String searchString);
 }
