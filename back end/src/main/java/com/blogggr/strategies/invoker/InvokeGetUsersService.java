@@ -32,7 +32,12 @@ public class InvokeGetUsersService implements ServiceInvocationStrategy {
         if (input.containsKey(GetUsersValidator.searchKey)){
             searchString = input.get(GetUsersValidator.searchKey);
         }
-        //TOOD limit and pageNum
+        if (input.containsKey(GetUsersValidator.limitKey)){
+            limit = Integer.parseInt(input.get(GetUsersValidator.limitKey));
+        }
+        if (input.containsKey(GetUsersValidator.pageKey)){
+            pageNum = Integer.parseInt(input.get(GetUsersValidator.pageKey));
+        }
         RandomAccessListPage<User> usersPage = userService.getUsers(searchString,limit,pageNum);
         //Filter out unwanted fields
         JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(usersPage.getPageItems(), FilterFactory.getUserFilter());
