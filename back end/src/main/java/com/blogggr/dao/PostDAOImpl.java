@@ -68,7 +68,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
                 if (afterPosts.size()==1) nextAfter = posts.get(posts.size()-1).getPostID();
             }
             PageData pData = new PageData();
-            pData.setPageCount(numberPageItems);
+            pData.setPageItemsCount(numberPageItems);
             pData.setTotalCount(totalCount);
             if (nextAfter!=null) pData.setNext(buildNextPageUrl(nextAfter,limit));
             if (nextBefore!=null) pData.setPrevious(buildPreviousPageUrl(nextBefore,limit));
@@ -250,7 +250,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             }
         }
         //Order by post ID and eventually limit
-        if (countOnly) query.select(cb.countDistinct(query.from(Post.class)));
+        if (countOnly) query.select(cb.countDistinct(root));
         else{
             if (after!=null) query.orderBy(cb.asc(root.get(Post_.postID)));
             else query.orderBy(cb.desc(root.get(Post_.postID)));
