@@ -14,6 +14,17 @@ public abstract class GenericValidator implements ValidationStrategy{
 
     protected String errorMessage;
 
+    public boolean stringIsNumber(String numStr){
+        try{
+            Long.parseLong(numStr);
+        }
+        catch(NumberFormatException e){
+            //Not a valid number
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public boolean inputIsValid(Map<String, String> input, String body) {
         try{
