@@ -24,7 +24,14 @@ public class GetUsersValidator extends GenericValidator  {
             if (searchString.length()<minimumSearchLen) return false;
         }
         //If no string has been provided the input is also accepted => wildcard search
-        //TODO check pageKey and limitKey
+        if (input.containsKey(pageKey) && !stringIsNumber(input.get(pageKey))) {
+            errorMessage = "Page parameter is not a valid number!";
+            return false;
+        }
+        if (input.containsKey(limitKey) && !stringIsNumber(input.get(limitKey))) {
+            errorMessage = "Limit parameter is not a valid number!";
+            return false;
+        }
         return true;
     }
 }
