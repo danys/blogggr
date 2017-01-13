@@ -69,8 +69,22 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
             int nPages = (int)((count/limit)+1);
             pageMetaData.setnPages(nPages);
             pageMetaData.setPageCount(pageNumber);
-            //TODO and add limit and pageNumber to input hash map
-            pageMetaData.setPageUrl(AppConfig.fullBaseUrl + UsersController.userPath + "?"+ GetUsersValidator.searchKey+"="+searchString+"");
+            StringBuilder sb = new StringBuilder();
+            sb.append(AppConfig.fullBaseUrl);
+            sb.append(UsersController.userPath);
+            sb.append("?");
+            sb.append(GetUsersValidator.searchKey);
+            sb.append("=");
+            sb.append(searchString);
+            sb.append("&");
+            sb.append(GetUsersValidator.pageKey);
+            sb.append("=");
+            sb.append(Integer.toString(pageNumber));
+            sb.append("&");
+            sb.append(GetUsersValidator.limitKey);
+            sb.append("=");
+            sb.append(Integer.toString(limit));
+            pageMetaData.setPageUrl(sb.toString());
             RandomAccessListPage<User> page = new RandomAccessListPage<>(users,pageMetaData);
             return page;
         }
