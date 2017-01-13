@@ -21,7 +21,10 @@ public class GetUsersValidator extends GenericValidator  {
     protected boolean validate(Map<String,String> input, String body){
         if (input.containsKey(searchKey)){
             String searchString = input.get(searchKey);
-            if (searchString.length()<minimumSearchLen) return false;
+            if (searchString.length()<minimumSearchLen) {
+                errorMessage = "Search string has a minimum length of "+minimumSearchLen+"!";
+                return false;
+            }
         }
         //If no string has been provided the input is also accepted => wildcard search
         if (input.containsKey(pageKey) && !stringIsNumber(input.get(pageKey))) {
