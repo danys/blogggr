@@ -66,17 +66,20 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
             Long count = entityManager.createQuery(userCountQuery).getSingleResult();
             PageMetaData pageMetaData = new PageMetaData();
             pageMetaData.setTotalCount(count);
-            int nPages = (int)((count/limit)+1);
+            int nPages = (count%limit==0)? (int)(count/limit): (int)((count/limit)+1);
             pageMetaData.setnPages(nPages);
-            pageMetaData.setPageCount(pageNumber);
+            pageMetaData.setPageId(pageNumber);
+            pageMetaData.setPageItemsCount(users.size());
             StringBuilder sb = new StringBuilder();
             sb.append(AppConfig.fullBaseUrl);
             sb.append(UsersController.userPath);
             sb.append("?");
-            sb.append(GetUsersValidator.searchKey);
-            sb.append("=");
-            sb.append(searchString);
-            sb.append("&");
+            if (searchString!=null && searchString.length()>0) {
+                sb.append(GetUsersValidator.searchKey);
+                sb.append("=");
+                sb.append(searchString);
+                sb.append("&");
+            }
             sb.append(GetUsersValidator.pageKey);
             sb.append("=");
             sb.append(Integer.toString(pageNumber));
@@ -100,16 +103,17 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
         else query = cb.createQuery(Long.class);
         if (!countOnly) query.distinct(true); //for count: query must be select count (distinct column name), not select distinct column name...
         Root<User> root = query.from(User.class);
-
-        String searchVar = "%"+searchString+"%";
-        query.where(
-                cb.or(
-                        cb.like(cb.lower(root.get(User_.email)),searchVar),
-                        cb.like(cb.lower(root.get(User_.firstName)),searchVar),
-                        cb.like(cb.lower(root.get(User_.lastName)),searchVar)
-                )
-        );
-        if (countOnly) query.select(cb.countDistinct(query.from(User.class)));
+        if (searchString!=null && searchString.length()>0) {
+            String searchVar = "%" + searchString.toLowerCase() + "%";
+            query.where(
+                    cb.or(
+                            cb.like(cb.lower(root.get(User_.email)), searchVar),
+                            cb.like(cb.lower(root.get(User_.firstName)), searchVar),
+                            cb.like(cb.lower(root.get(User_.lastName)), searchVar)
+                    )
+            );
+        }
+        if (countOnly) query.select(cb.countDistinct(root));
         else query.orderBy(cb.asc(root.get(User_.userID)));
         return query;
     }
