@@ -7,13 +7,22 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 public class PageMetaData {
 
-    private Long totalCount;
-    private Integer pageCount;
-    private Integer nPages;
-    private String pageUrl;
+    private Long totalCount; //total count of items
+    private Integer pageItemsCount; //items per page
+    private Integer pageId; //the page id
+    private Integer nPages; //number of pages
+    private String pageUrl; //this page url
 
     public PageMetaData(){
         //
+    }
+
+    public Integer getPageItemsCount() {
+        return pageItemsCount;
+    }
+
+    public void setPageItemsCount(Integer pageItemsCount) {
+        this.pageItemsCount = pageItemsCount;
     }
 
     public Long getTotalCount() {
@@ -24,12 +33,12 @@ public class PageMetaData {
         this.totalCount = totalCount;
     }
 
-    public Integer getPageCount() {
-        return pageCount;
+    public Integer getPageId() {
+        return pageId;
     }
 
-    public void setPageCount(Integer pageCount) {
-        this.pageCount = pageCount;
+    public void setPageId(Integer pageId) {
+        this.pageId = pageId;
     }
 
     public Integer getnPages() {
