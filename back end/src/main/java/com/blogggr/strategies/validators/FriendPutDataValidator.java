@@ -21,13 +21,7 @@ public class FriendPutDataValidator extends GenericValidator{
             errorMessage = "Error getting resource ids!";
             return false;
         }
-        String idStr = input.get(idName);
-        String id2Str = input.get(id2Name);
-        try{
-            Long.parseLong(idStr);
-            Long.parseLong(id2Str);
-        }
-        catch(NumberFormatException e){
+        if (!stringIsNumber(input.get(idName)) || !stringIsNumber(input.get(id2Name))){
             errorMessage = "Resource id not a valid number!";
             return false;
         }
