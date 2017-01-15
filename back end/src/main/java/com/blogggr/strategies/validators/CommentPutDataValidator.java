@@ -19,11 +19,7 @@ public class CommentPutDataValidator extends GenericValidator{
             errorMessage = "Comment id not provided!";
             return false;
         }
-        String idStr = input.get(IdValidator.idName);
-        try{
-           Long.parseLong(idStr);
-        }
-        catch(NumberFormatException e){
+        if (!stringIsNumber(input.get(IdValidator.idName))){
             errorMessage = "Comment must be identified by its id!";
             return false;
         }
