@@ -19,11 +19,7 @@ public class UserPutDataValidator extends GenericValidator{
             errorMessage = "User id not provided!";
             return false;
         }
-        String idStr = input.get(IdValidator.idName);
-        try{
-            Long.parseLong(idStr);
-        }
-        catch(NumberFormatException e){
+        if (!stringIsNumber(input.get(IdValidator.idName))){
             errorMessage = "User must be identified by its id!";
             return false;
         }

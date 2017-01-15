@@ -22,12 +22,7 @@ public class IdValidator extends GenericValidator {
             errorMessage = "Error getting resource id!";
             return false;
         }
-        String idStr = input.get(idName);
-        Long id;
-        try{
-            id = Long.parseLong(idStr);
-        }
-        catch(NumberFormatException e){
+        if  (!stringIsNumber(input.get(idName))){
             errorMessage = "Resource id not a valid number!";
             return false;
         }

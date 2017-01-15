@@ -21,12 +21,7 @@ public class PostPutDataValidator extends GenericValidator{
             errorMessage = "Post id missing!";
             return false;
         }
-        String idStr = input.get(IdValidator.idName);
-        Long postID;
-        try{
-            postID = Long.parseLong(idStr);
-        }
-        catch(NumberFormatException e){
+        if (!stringIsNumber(input.get(IdValidator.idName))){
             errorMessage = "Post id not a valid number!";
             return false;
         }

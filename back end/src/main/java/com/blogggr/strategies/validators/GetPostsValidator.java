@@ -22,17 +22,10 @@ public class GetPostsValidator extends GenericValidator {
     protected boolean validate(Map<String,String> input, String body){
         String idStr = null;
         Long id = null;
-        if (input.containsKey(posterUserIDKey)) {
-            idStr = input.get(posterUserIDKey);
-            try{
-                long idp = Long.parseLong(idStr);
-                id = new Long(idp);
-            }
-            catch(NumberFormatException e){
-                //Not a valid number
-                errorMessage = "Poster user ID not a valid number!";
-                return false;
-            }
+        if (input.containsKey(posterUserIDKey) && (!stringIsNumber(input.get(posterUserIDKey)))) {
+            //Not a valid number
+            errorMessage = "Poster user ID not a valid number!";
+            return false;
         }
         //Check if titleKey is present
         String title = null;
@@ -57,40 +50,21 @@ public class GetPostsValidator extends GenericValidator {
             }
         }
         //Check before post ID number
-        if (input.containsKey(beforeKey)){
-            String beforeStr = input.get(beforeKey);
-            try{
-                Long.parseLong(beforeStr);
-            }
-            catch(NumberFormatException e){
-                //Not a valid number
-                errorMessage = "Before parameter must be a valid number!";
-                return false;
-            }
+        if (input.containsKey(beforeKey) && (!stringIsNumber(input.get(beforeKey)))){
+            errorMessage = "Before parameter must be a valid number!";
+            return false;
         }
         //Check after post ID number
-        if (input.containsKey(afterKey)){
-            String afterStr = input.get(afterKey);
-            try{
-                Long.parseLong(afterStr);
-            }
-            catch(NumberFormatException e){
-                //Not a valid number
-                errorMessage = "After parameter must be a valid number!";
-                return false;
-            }
+        if (input.containsKey(afterKey)  && (!stringIsNumber(input.get(afterKey)))){
+            //Not a valid number
+            errorMessage = "After parameter must be a valid number!";
+            return false;
         }
         //Check limit number
-        if (input.containsKey(limitKey)){
-            String limitStr = input.get(limitKey);
-            try{
-                Long.parseLong(limitStr);
-            }
-            catch(NumberFormatException e){
-                //Not a valid number
-                errorMessage = "Limit parameter must be a valid number!";
-                return false;
-            }
+        if (input.containsKey(limitKey)  && (!stringIsNumber(input.get(limitKey)))){
+            //Not a valid number
+            errorMessage = "Limit parameter must be a valid number!";
+            return false;
         }
         return true;
     }
