@@ -31,13 +31,7 @@ public class InvokePutUserService implements ServiceInvocationStrategy {
             return null;
         }
         String idStr = input.get(IdValidator.idName);
-        Long userResourceID;
-        try{
-            userResourceID = Long.parseLong(idStr);
-        }
-        catch(NumberFormatException e){
-            return null;
-        }
+        Long userResourceID = Long.parseLong(idStr);
         //Parse the body and perform the update of the associated record
         ObjectMapper mapper = new ObjectMapper();
         UserPostData userData;

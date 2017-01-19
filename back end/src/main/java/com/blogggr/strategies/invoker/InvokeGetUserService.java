@@ -28,13 +28,7 @@ public class InvokeGetUserService implements ServiceInvocationStrategy {
             return null;
         }
         String idStr = input.get(IdValidator.idName);
-        Long id;
-        try{
-            id = Long.parseLong(idStr);
-        }
-        catch(NumberFormatException e){
-            return null;
-        }
+        Long id = Long.parseLong(idStr);
         User user = userService.getUserById(id);
         if (user==null) throw new ResourceNotFoundException("User not found!");
         //Filter out unwanted fields

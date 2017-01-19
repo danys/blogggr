@@ -34,13 +34,8 @@ public class InvokePutFriendService implements ServiceInvocationStrategy {
         String idStr = input.get(FriendPutDataValidator.idName);
         String id2Str = input.get(FriendPutDataValidator.id2Name);
         long id1,id2;
-        try{
-            id1 = Long.parseLong(idStr);
-            id2 = Long.parseLong(id2Str);
-        }
-        catch(NumberFormatException e){
-            return null;
-        }
+        id1 = Long.parseLong(idStr);
+        id2 = Long.parseLong(id2Str);
         //Parse the body and perform the update of the associated record
         ObjectMapper mapper = new ObjectMapper();
         FriendData friendData;

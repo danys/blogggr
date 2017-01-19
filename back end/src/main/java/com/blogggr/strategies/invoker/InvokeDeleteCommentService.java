@@ -25,13 +25,7 @@ public class InvokeDeleteCommentService implements ServiceInvocationStrategy {
             return null;
         }
         String idStr = input.get(IdValidator.idName);
-        Long id;
-        try{
-            id = Long.parseLong(idStr);
-        }
-        catch(NumberFormatException e){
-            return null;
-        }
+        Long id = Long.parseLong(idStr);
         commentService.deleteComment(id,userID);
         return null;
     }

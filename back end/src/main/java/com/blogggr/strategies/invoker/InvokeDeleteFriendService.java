@@ -16,7 +16,7 @@ public class InvokeDeleteFriendService implements ServiceInvocationStrategy {
 
     private FriendService friendService;
 
-    public InvokeDeleteFriendService(FriendService commentService){
+    public InvokeDeleteFriendService(FriendService friendService){
         this.friendService = friendService;
     }
 
@@ -25,13 +25,7 @@ public class InvokeDeleteFriendService implements ServiceInvocationStrategy {
             return null;
         }
         String idStr = input.get(IdValidator.idName);
-        Long id;
-        try{
-            id = Long.parseLong(idStr);
-        }
-        catch(NumberFormatException e){
-            return null;
-        }
+        Long id = Long.parseLong(idStr);
         friendService.deleteFriend(id,userID);
         return null;
     }

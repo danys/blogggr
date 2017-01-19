@@ -30,13 +30,7 @@ public class InvokeGetCommentService implements ServiceInvocationStrategy {
             return null;
         }
         String idStr = input.get(IdValidator.idName);
-        Long id;
-        try{
-            id = Long.parseLong(idStr);
-        }
-        catch(NumberFormatException e){
-            return null;
-        }
+        Long id = Long.parseLong(idStr);
         Comment comment = commentService.getCommentById(id, userID);
         if (comment==null) throw new ResourceNotFoundException("Comment not found!");
         //Filter comment fields

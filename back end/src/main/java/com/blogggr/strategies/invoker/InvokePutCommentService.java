@@ -30,13 +30,7 @@ public class InvokePutCommentService implements ServiceInvocationStrategy {
             return null;
         }
         String idStr = input.get(IdValidator.idName);
-        Long commentID;
-        try{
-            commentID = Long.parseLong(idStr);
-        }
-        catch(NumberFormatException e){
-            return null;
-        }
+        Long commentID = Long.parseLong(idStr);
         //Parse the body and perform the update of the associated record
         ObjectMapper mapper = new ObjectMapper();
         CommentData commentData;
