@@ -2,13 +2,11 @@ package com.blogggr.controllers;
 
 import com.blogggr.config.AppConfig;
 import com.blogggr.models.*;
+import com.blogggr.services.PostService;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.auth.AuthenticatedAuthorization;
 import com.blogggr.strategies.auth.NoAuthorization;
-import com.blogggr.strategies.invoker.InvokeGetUserService;
-import com.blogggr.strategies.invoker.InvokeGetUsersService;
-import com.blogggr.strategies.invoker.InvokePostUserService;
-import com.blogggr.strategies.invoker.InvokePutUserService;
+import com.blogggr.strategies.invoker.*;
 import com.blogggr.strategies.responses.GetResponse;
 import com.blogggr.strategies.responses.PostResponse;
 import com.blogggr.strategies.responses.PutResponse;
@@ -33,9 +31,11 @@ public class UsersController {
     public static final String userPath = "/users";
 
     private UserService userService;
+    private PostService postService;
 
-    public UsersController(UserService userService){
+    public UsersController(UserService userService, PostService postService){
         this.userService = userService;
+        this.postService = postService;
     }
 
     //GET /users
@@ -51,6 +51,15 @@ public class UsersController {
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetUserService(userService), new GetResponse());
+        return model.execute(map,header,null);
+    }
+
+    //GET /users/id/posts
+    @RequestMapping(path = userPath+"/{id}/posts", method = RequestMethod.GET)
+    public ResponseEntity getUserPosts(@PathVariable String id, @RequestHeader Map<String,String> header) {
+        Map<String,String> map = new HashMap<>();
+        map.put("id", id);
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetUserPostsService(postService), new GetResponse());
         return model.execute(map,header,null);
     }
 
