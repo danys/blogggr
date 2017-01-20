@@ -1,5 +1,7 @@
 package com.blogggr.entities;
 
+import com.blogggr.json.JsonTransformer;
+
 import java.io.Serializable;
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -42,6 +44,10 @@ public class Post implements Serializable {
 	public Post() {
 	}
 
+	public String getTimestamp(){
+		return JsonTransformer.timestampToString(timestamp);
+	}
+
 	public Long getPostID() {
 		return this.postID;
 	}
@@ -64,10 +70,6 @@ public class Post implements Serializable {
 
 	public void setTextBody(String textbody) {
 		this.textBody = textbody;
-	}
-
-	public Timestamp getTimestamp() {
-		return this.timestamp;
 	}
 
 	public void setTimestamp(Timestamp timestamp) {
