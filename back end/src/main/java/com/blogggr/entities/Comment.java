@@ -1,5 +1,6 @@
 package com.blogggr.entities;
 
+import com.blogggr.json.JsonTransformer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
@@ -55,8 +56,8 @@ public class Comment implements Serializable {
 		this.text = text;
 	}
 
-	public Timestamp getTimestamp() {
-		return this.timestamp;
+	public String getTimestamp(){
+		return JsonTransformer.timestampToString(timestamp);
 	}
 
 	public void setTimestamp(Timestamp timestamp) {
