@@ -5,12 +5,22 @@
   "author": "Daniel Sünnen",
   "license" : "MIT",
   "scripts": {
-    "scss": "node-sass --output-style compressed -o dist/css scss"
+    "scss": "./node-scripts/sass-compiler.js",
+    "mini-css": "./node-scripts/mini-css.js",
+    "copy-js": "./node-scripts/copy-js.js",
+    "copy-vendor": "./node-scripts/copy-vendor.js",
+    "mini-js": "./node-scripts/mini-js.js",
+    "dev": "./node-scripts/dev.js",
+    "all": "./node-scripts/all.js"
   },
   "devDependencies": {
     "browser-sync": "^2.18.6",
-    "bootstrap-sass": "~3.3.7",
-    "node-sass": "~4.3.0"
+    "bootstrap": "~3.3.7",
+    "node-sass": "~4.3.0",
+    "nodemon":"~1.11.0",
+    "clean-css": "~4.0.2",
+    "uglify-js": "~2.7.5",
+    "ncp": "~2.0.0"
   },
   "repository": {
     "type": "git",
