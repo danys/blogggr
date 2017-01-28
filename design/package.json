@@ -10,8 +10,8 @@
     "copy-js": "./node-scripts/copy-js.js",
     "copy-vendor": "./node-scripts/copy-vendor.js",
     "mini-js": "./node-scripts/mini-js.js",
-    "dev": "./node-scripts/dev.js",
-    "all": "./node-scripts/all.js"
+    "dev": "./node-scripts/dev.sh",
+    "prod": "./node-scripts/prod.sh"
   },
   "devDependencies": {
     "browser-sync": "^2.18.6",
