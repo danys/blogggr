@@ -19,17 +19,7 @@ if (error) {
   else {
 
     console.log('Compilation success');
-    fs.writeFile(cssOutputFile, result.css, function(err){
-    	if(!err){
-    		console.log('Wrote file!');
-    	}
-    	else console.log('Error writing output file!');
-    });
-    fs.writeFile(scssMapOutputFile, result.map, function(err){
-    	if(!err){
-    		console.log('Wrote map file!');
-    	}
-    	else console.log('Error writing scss map output file!');
-    });
+    fs.writeFileSync(cssOutputFile, result.css);
+    fs.writeFileSync(scssMapOutputFile, result.map);
   }
 });
