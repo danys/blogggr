@@ -6,5 +6,13 @@ ncp('./node_modules/bootstrap/dist/', './vendor/bootstrap/', options, function (
  if (err) {
    return console.error(err);
  }
- console.log('done!');
+ console.log('Done copying Bootstap!');
+});
+
+options['filter'] = new RegExp('dist$|dist/.*min\.js$','m');
+ncp('./node_modules/jquery/dist/', './vendor/jquery/', options, function (err) {
+  if (err) {
+    return console.error(err);
+  }
+  console.log('Done copying jquery!');
 });
