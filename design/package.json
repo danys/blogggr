@@ -12,7 +12,7 @@
     "mini-js": "./node-scripts/mini-js.js",
     "dev": "./node-scripts/dev.sh",
     "prod": "./node-scripts/prod.sh",
-    "watch-sass": "nodemon -e scss -w public/sass -x 'npm run sass'"
+    "watch-scss": "nodemon -e scss --watch scss -x 'npm run scss'"
   },
   "devDependencies": {
     "browser-sync": "^2.18.6",
