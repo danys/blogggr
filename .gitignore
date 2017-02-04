@@ -21,3 +21,7 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+#Design
+design/vendor/
+design/node_modules/
