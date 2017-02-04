@@ -1,7 +1,145 @@
 body {
-    padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+    padding-top: 0px; // Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes.
 }
 
 footer {
-    margin: 50px 0;
+  margin: 50px 0;
 }
+
+  @import "variables.scss";
+
+  // Global Styles
+
+  body {
+    //background-color: $gray-lightest;
+  }
+
+  // Wrappers
+
+
+  .navbar-top-links li {
+    display: inline-block;
+  }
+
+  .navbar-top-links li:last-child {
+    margin-right: 15px;
+  }
+
+  .navbar-top-links li a {
+    padding: 15px;
+    min-height: 50px;
+  }
+
+  .navbar-top-links .dropdown-menu li {
+    display: block;
+  }
+
+  /*.navbar-top-links .dropdown-menu li:last-child {
+    margin-right: 0;
+  }*/
+
+  .navbar-top-links .dropdown-menu li a {
+    padding: 3px 20px;
+    min-height: 0;
+  }
+
+  .navbar-top-links .dropdown-menu li a div {
+    white-space: normal;
+  }
+
+  .navbar-top-links .dropdown-messages,
+  .navbar-top-links .dropdown-tasks,
+  .navbar-top-links .dropdown-alerts {
+    width: 310px;
+    min-width: 0;
+  }
+
+  .navbar-top-links .dropdown-user {
+    right: 0;
+    left: auto;
+  }
+
+.navbar-default {
+  background-color: $navBgColor;
+  border-color: $navBgColorHighlight;
+  .navbar-brand {
+    color: $navColumnColor;
+    &:hover, &:focus {
+      color: $navColumnColorHighlight;
+    }
+  }
+
+  .navbar-header{
+    position: absolute;
+    left:50%;
+    margin-left: -1px * ($twbs_Width/2);
+  }
+
+  .navbar-right{
+    position: absolute;
+    right:50%;
+    margin-right: -1px * ($twbs_Width/2);
+  }
+
+  //Text use this class like "<p class="navbar-text">Signed in as Mark Otto</p>"
+  .navbar-text {
+    color: $navColumnColor;
+  }
+
+  .nav {
+    > li {
+      > a {
+        color: $navColumnColor;
+        background-color: $navBgColor;
+        &:hover,  &:focus {
+          color: $navColumnColorHighlight;
+          background-color: $navBgColorHighlight;
+        }
+      }
+    }
+    > .active {
+      > a, > a:hover, > a:focus {
+        color: $navColumnColorHighlight;
+        background-color: $navBgColorHighlight;
+      }
+    }
+  }
+  /*.navbar-toggle {
+    border-color: $bgHighlight;
+    &:hover, &:focus {
+      background-color: $bgHighlight;
+    }
+    .icon-bar {
+      background-color: $colDefault;
+    }
+  }
+  .navbar-collapse,
+  .navbar-form {
+    border-color: $colDefault;
+  }
+  .navbar-link {
+    color: $colDefault;
+    &:hover {
+      color: $colHighlight;
+    }
+  }*/
+}
+
+/*
+@media (max-width: 767px) {
+  .navbar-default .navbar-nav .open .dropdown-menu {
+    > li > a {
+      color: $colDefault;
+      &:hover, &:focus {
+        color: $colHighlight;
+      }
+    }
+    > .active {
+      > a, > a:hover, > a:focus {
+        color: $colHighlight;
+        background-color: $bgHighlight;
+      }
+    }
+  }
+}
+*/
