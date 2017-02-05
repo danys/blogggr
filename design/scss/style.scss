@@ -6,58 +6,55 @@ footer {
   margin: 50px 0;
 }
 
-  @import "variables.scss";
+@import "variables.scss";
 
-  // Global Styles
+// Global Styles
 
-  body {
-    //background-color: $gray-lightest;
-  }
+body {
+  //background-color: $gray-lightest;
+}
 
-  // Wrappers
+.navbar-top-links li {
+  display: inline-block;
+}
 
+.navbar-top-links li:last-child {
+  margin-right: 15px;
+}
 
-  .navbar-top-links li {
-    display: inline-block;
-  }
+.navbar-top-links li a {
+  padding: 15px;
+  min-height: 50px;
+}
 
-  .navbar-top-links li:last-child {
-    margin-right: 15px;
-  }
+.navbar-top-links .dropdown-menu li {
+  display: block;
+}
 
-  .navbar-top-links li a {
-    padding: 15px;
-    min-height: 50px;
-  }
+/*.navbar-top-links .dropdown-menu li:last-child {
+  margin-right: 0;
+}*/
 
-  .navbar-top-links .dropdown-menu li {
-    display: block;
-  }
+.navbar-top-links .dropdown-menu li a {
+  padding: 3px 20px;
+  min-height: 0;
+}
 
-  /*.navbar-top-links .dropdown-menu li:last-child {
-    margin-right: 0;
-  }*/
+.navbar-top-links .dropdown-menu li a div {
+  white-space: normal;
+}
 
-  .navbar-top-links .dropdown-menu li a {
-    padding: 3px 20px;
-    min-height: 0;
-  }
+.navbar-top-links .dropdown-messages,
+.navbar-top-links .dropdown-tasks,
+.navbar-top-links .dropdown-alerts {
+  width: 310px;
+  min-width: 0;
+}
 
-  .navbar-top-links .dropdown-menu li a div {
-    white-space: normal;
-  }
-
-  .navbar-top-links .dropdown-messages,
-  .navbar-top-links .dropdown-tasks,
-  .navbar-top-links .dropdown-alerts {
-    width: 310px;
-    min-width: 0;
-  }
-
-  .navbar-top-links .dropdown-user {
-    right: 0;
-    left: auto;
-  }
+.navbar-top-links .dropdown-user {
+  right: 0;
+  left: auto;
+}
 
 .navbar-default {
   background-color: $navBgColor;
@@ -69,16 +66,46 @@ footer {
     }
   }
 
-  .navbar-header{
-    position: absolute;
-    left:50%;
-    margin-left: -1px * ($twbs_Width/2);
+  @media (min-width: $twbs_bp_small){
+    .navbar-header{
+      position: absolute;
+      left:50%;
+      margin-left: -1px * ($twbs_width_small/2);
+    }
+
+    .navbar-right{
+      position: absolute;
+      right:50%;
+      margin-right: -1px * ($twbs_width_small/2);
+    }
   }
 
-  .navbar-right{
-    position: absolute;
-    right:50%;
-    margin-right: -1px * ($twbs_Width/2);
+  @media (min-width: $twbs_bp_medium){
+    .navbar-header{
+      position: absolute;
+      left:50%;
+      margin-left: -1px * ($twbs_width_medium/2);
+    }
+
+    .navbar-right{
+      position: absolute;
+      right:50%;
+      margin-right: -1px * ($twbs_width_medium/2);
+    }
+  }
+
+  @media (min-width: $twbs_bp_large){
+    .navbar-header{
+      position: absolute;
+      left:50%;
+      margin-left: -1px * ($twbs_width_large/2);
+    }
+
+    .navbar-right{
+      position: absolute;
+      right:50%;
+      margin-right: -1px * ($twbs_width_large/2);
+    }
   }
 
   //Text use this class like "<p class="navbar-text">Signed in as Mark Otto</p>"
