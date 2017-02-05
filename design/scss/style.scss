@@ -8,10 +8,22 @@ footer {
 
 @import "variables.scss";
 
-// Global Styles
+.navbar-brand{
+  width: 150px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
 
-body {
-  //background-color: $gray-lightest;
+.blogggr_logo{
+  background-image: url(../img/logo.png);
+  background-size: auto;
+  background-repeat: no-repeat;
+  display: inline-block;
+  width: 120px;
+  height: 30px;
+  u{
+    visibility: hidden;
+  }
 }
 
 .navbar-top-links li {
@@ -30,10 +42,6 @@ body {
 .navbar-top-links .dropdown-menu li {
   display: block;
 }
-
-/*.navbar-top-links .dropdown-menu li:last-child {
-  margin-right: 0;
-}*/
 
 .navbar-top-links .dropdown-menu li a {
   padding: 3px 20px;
