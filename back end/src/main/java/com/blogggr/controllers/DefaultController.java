@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DefaultController {
 
     @RequestMapping("/")
-    public String hello() {
+    public String defaultPage() {
         return new String("Blogggr RESTful API - Invalid path");
     }
 }
