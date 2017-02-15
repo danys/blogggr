@@ -119,55 +119,60 @@
                 <!-- Blog Search Well -->
                 <div class="well">
                     <h4>Blog Search</h4>
-                    <div class="input-group">
-                        <input type="text" class="form-control">
+                    <div class="form-group">
+                      <label for="titleSearchKey">Blog title</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Title" id="titleSearchKey">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="button">
                                 <span class="glyphicon glyphicon-search"></span>
-                        </button>
+                            </button>
                         </span>
+                      </div>
                     </div>
-                    <!-- /.input-group -->
-                </div>
-
-                <!-- Blog Categories Well -->
-                <div class="well">
-                    <h4>Blog Categories</h4>
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <ul class="list-unstyled">
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- /.col-lg-6 -->
-                        <div class="col-lg-6">
-                            <ul class="list-unstyled">
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                                <li><a href="#">Category Name</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- /.col-lg-6 -->
+                    <div class="form-group">
+                      <label for="posterSearchKey">Blog poster</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" placeholder="User name" id="posterSearchKey">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                      </div>
                     </div>
-                    <!-- /.row -->
-                </div>
+                  <div class="form-group">
+                    <label for="posterSearchKey">Post visibility</label>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="searchVisibilityAll" id="searchVisibilityAll" value="all" checked>
+                        All posts
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="searchVisibilityOnlyGlobal" id="searchVisibilityOnlyGlobal" value="onlyGlobal">
+                        Only global
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="searchVisibilityOnlyFriends" id="searchVisibilityOnlyFriends" value="onlyFriends">
+                        Only friends
+                      </label>
+                    </div>
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="searchVisibilityOnlyMe" id="searchVisibilityOnlyMe" value="onlyMe">
+                        Only your posts
+                      </label>
+                    </div>
+                    <button type="button" class="btn btn-lg btn-primary btn-block">Search</button>
 
-                <!-- Side Widget Well -->
-                <div class="well">
-                    <h4>Side Widget Well</h4>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore, perspiciatis adipisci accusamus laudantium odit aliquam repellat tempore quos aspernatur vero.</p>
+                  </div>
+
+
+
                 </div>
 
             </div>
