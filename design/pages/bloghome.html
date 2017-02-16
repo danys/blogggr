@@ -17,7 +17,7 @@
     <![endif]-->
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+    <nav class="navbar navbar-default navbar-static-top" role="navigation">
       <div class="navbar-header">
         <a class="navbar-brand" href="/">
           <i class="blogggr_logo">
@@ -47,12 +47,7 @@
         <div class="row">
             <!-- Blog Entries Column -->
             <div class="col-md-8">
-
-                <h1 class="page-header">
-                    Page Heading
-                    <small>Secondary Text</small>
-                </h1>
-
+                <h1 class="page-header">Blog posts home</h1>
                 <!-- First Blog Post -->
                 <h2>
                     <a href="blogpost.html">Blog Post Title</a>
@@ -101,7 +96,6 @@
 
                 <hr>
 
-                <!-- Pager -->
                 <ul class="pager">
                     <li class="previous">
                         <a href="#">&larr; Older</a>
@@ -112,87 +106,58 @@
                 </ul>
 
             </div>
-
-            <!-- Blog Sidebar Widgets Column -->
             <div class="col-md-4">
-
-                <!-- Blog Search Well -->
                 <div class="well">
                     <h4>Blog Search</h4>
                     <div class="form-group">
                       <label for="titleSearchKey">Blog title</label>
-                      <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Title" id="titleSearchKey">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
-                      </div>
+                      <input type="text" class="form-control" placeholder="Title" id="titleSearchKey">
                     </div>
                     <div class="form-group">
                       <label for="posterSearchKey">Blog poster</label>
-                      <div class="input-group">
-                        <input type="text" class="form-control" placeholder="User name" id="posterSearchKey">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button">
-                                <span class="glyphicon glyphicon-search"></span>
-                            </button>
-                        </span>
+                      <input type="text" class="form-control" placeholder="User name" id="posterSearchKey">
+                    </div>
+                    <div class="form-group">
+                      <label for="posterSearchKey">Post visibility</label>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="searchVisibility" id="searchVisibilityAll" value="all" checked>
+                        All posts
+                        </label>
+                      </div>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="searchVisibility" id="searchVisibilityOnlyGlobal" value="onlyGlobal">
+                        Only global
+                        </label>
+                      </div>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="searchVisibility" id="searchVisibilityOnlyFriends" value="onlyFriends">
+                        Only friends
+                        </label>
+                      </div>
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="searchVisibility" id="searchVisibilityOnlyMe" value="onlyMe">
+                        Only your posts
+                        </label>
                       </div>
                     </div>
-                  <div class="form-group">
-                    <label for="posterSearchKey">Post visibility</label>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="searchVisibilityAll" id="searchVisibilityAll" value="all" checked>
-                        All posts
-                      </label>
-                    </div>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="searchVisibilityOnlyGlobal" id="searchVisibilityOnlyGlobal" value="onlyGlobal">
-                        Only global
-                      </label>
-                    </div>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="searchVisibilityOnlyFriends" id="searchVisibilityOnlyFriends" value="onlyFriends">
-                        Only friends
-                      </label>
-                    </div>
-                    <div class="radio">
-                      <label>
-                        <input type="radio" name="searchVisibilityOnlyMe" id="searchVisibilityOnlyMe" value="onlyMe">
-                        Only your posts
-                      </label>
-                    </div>
-                    <button type="button" class="btn btn-lg btn-primary btn-block">Search</button>
-
-                  </div>
-
-
-
+                    <button type="button" class="btn btn-sm btn-primary btn-block">
+                      <span class="glyphicon glyphicon-search"> Search</span>
+                    </button>
                 </div>
-
             </div>
-
         </div>
-        <!-- /.row -->
-
         <hr>
-
-        <!-- Footer -->
         <footer>
             <div class="row">
                 <div class="col-lg-12">
                     <p>Copyright &copy; 2017</p>
                 </div>
-                <!-- /.col-lg-12 -->
             </div>
-            <!-- /.row -->
         </footer>
-
     </div>
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
