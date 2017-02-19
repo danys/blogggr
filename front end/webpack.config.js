@@ -1,4 +1,5 @@
 var path = require('path');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const config = {
     entry: './src/index.js',
@@ -25,8 +26,17 @@ const config = {
     devtool: 'source-map',
     devServer: {
         inline: true,
-        hot: true
-    }
+        hot: true,
+        proxy:{
+            "/api/**": "http://localhost:8080"
+        }
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            title:"Blogggr",
+            template: 'src/index.ejs'
+        })
+    ]
 };
 
 module.exports = config;
