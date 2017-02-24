@@ -10,7 +10,7 @@ export default class App extends React.Component{
     }
 
     render(){
-        const isLoggedIn = this.props.loggedin ==='true' ? true : false;
+        const isLoggedIn = this.props.loggedin === 'true' ? true : false;
         let content;
         if (isLoggedIn) content = (
             <Page loggedin="true" main={<BlogHome/>} highlight="home"/>
