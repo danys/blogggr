@@ -13,18 +13,18 @@ export default class Navbar extends React.Component{
                 loginFunctionality = (
                     <ul className="nav navbar-top-links navbar-right">
                         <li className="active"><a href="/">Home</a></li>
-                        <li><a href="friends.html">Friends</a></li>
+                        <li><a href="/friends">Friends</a></li>
                         <li className="dropdown">
                             <a className="dropdown-toggle" data-toggle="dropdown" href="#">
                                 <i className="fa fa-user fa-fw"></i> <i className="fa fa-caret-down"></i>
                             </a>
                             <ul className="dropdown-menu dropdown-user">
-                                <li><a href="user.html"><i className="fa fa-user fa-fw"></i> User Profile</a>
+                                <li><a href="/user"><i className="fa fa-user fa-fw"></i> User Profile</a>
                                 </li>
-                                <li><a href="settings.html"><i className="fa fa-gear fa-fw"></i> Settings</a>
+                                <li><a href="/settings"><i className="fa fa-gear fa-fw"></i> Settings</a>
                                 </li>
                                 <li className="divider"></li>
-                                <li><a href="login.html"><i className="fa fa-sign-out fa-fw"></i> Logout</a>
+                                <li><a href="/logout"><i className="fa fa-sign-out fa-fw"></i> Logout</a>
                                 </li>
                             </ul>
                         </li>
@@ -35,18 +35,18 @@ export default class Navbar extends React.Component{
                 loginFunctionality = (
                     <ul className="nav navbar-top-links navbar-right">
                         <li><a href="/">Home</a></li>
-                        <li className="active"><a href="friends.html">Friends</a></li>
+                        <li className="active"><a href="/friends">Friends</a></li>
                         <li className="dropdown">
                             <a className="dropdown-toggle" data-toggle="dropdown" href="#">
                                 <i className="fa fa-user fa-fw"></i> <i className="fa fa-caret-down"></i>
                             </a>
                             <ul className="dropdown-menu dropdown-user">
-                                <li><a href="user.html"><i className="fa fa-user fa-fw"></i> User Profile</a>
+                                <li><a href="/user"><i className="fa fa-user fa-fw"></i> User Profile</a>
                                 </li>
-                                <li><a href="settings.html"><i className="fa fa-gear fa-fw"></i> Settings</a>
+                                <li><a href="/settings"><i className="fa fa-gear fa-fw"></i> Settings</a>
                                 </li>
                                 <li className="divider"></li>
-                                <li><a href="login.html"><i className="fa fa-sign-out fa-fw"></i> Logout</a>
+                                <li><a href="/logout"><i className="fa fa-sign-out fa-fw"></i> Logout</a>
                                 </li>
                             </ul>
                         </li>
@@ -57,18 +57,18 @@ export default class Navbar extends React.Component{
                 loginFunctionality = (
                     <ul className="nav navbar-top-links navbar-right">
                         <li><a href="/">Home</a></li>
-                        <li><a href="friends.html">Friends</a></li>
+                        <li><a href="/friends">Friends</a></li>
                         <li className="dropdown active">
                             <a className="dropdown-toggle" data-toggle="dropdown" href="#">
                                 <i className="fa fa-user fa-fw"></i> <i className="fa fa-caret-down"></i>
                             </a>
                             <ul className="dropdown-menu dropdown-user">
-                                <li><a href="user.html"><i className="fa fa-user fa-fw"></i> User Profile</a>
+                                <li><a href="/user"><i className="fa fa-user fa-fw"></i> User Profile</a>
                                 </li>
-                                <li><a href="settings.html"><i className="fa fa-gear fa-fw"></i> Settings</a>
+                                <li><a href="/settings"><i className="fa fa-gear fa-fw"></i> Settings</a>
                                 </li>
                                 <li className="divider"></li>
-                                <li><a href="login.html"><i className="fa fa-sign-out fa-fw"></i> Logout</a>
+                                <li><a href="/login"><i className="fa fa-sign-out fa-fw"></i> Logout</a>
                                 </li>
                             </ul>
                         </li>
