@@ -27,6 +27,7 @@ const config = {
     devServer: {
         inline: true,
         hot: true,
+        historyApiFallback: true,
         proxy:{
             "/api/**": "http://localhost:8080"
         }
