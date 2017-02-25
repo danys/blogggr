@@ -10,7 +10,7 @@ export default class Signup extends React.Component{
 
     render(){
         return (
-            <Page loggedin="true" main={<SignupForm/>} highlight="home" />
+            <Page loggedin="false" main={<SignupForm/>} highlight="home" />
         );
     }
 }
