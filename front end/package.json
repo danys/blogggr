@@ -14,7 +14,10 @@
     "react-dom": "~15.4.2",
     "react-router": "~3.0.2",
     "react-redux": "~5.0.2",
-    "redux": "~3.6.0"
+    "redux": "~3.6.0",
+    "bootstrap": "~3.3.7",
+    "jquery": "~3.1.1",
+    "font-awesome": "~4.7.0"
   },
   "devDependencies": {
     "babel-cli": "^6.0.0",
@@ -24,7 +27,12 @@
     "babel-core": "~6.23.1",
     "webpack": "~2.2.1",
     "webpack-dev-server": "~2.3.0",
-    "html-webpack-plugin": "~2.28.0"
+    "html-webpack-plugin": "~2.28.0",
+    "style-loader": "~0.13.2",
+    "css-loader": "~0.26.0",
+    "file-loader": "~0.10.1",
+    "url-loader": "~0.5.8",
+    "extract-text-webpack-plugin": "~2.0.0"
   },
   "author": "Daniel Sünnen",
   "license": "ISC"
