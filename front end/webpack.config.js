@@ -1,11 +1,16 @@
 var path = require('path');
+var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 const config = {
-    entry: './src/index.js',
+    entry: {
+        app: './src/index.js',
+        vendor: './src/vendor.js'
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'webpack.bundle.js'
+        filename: '[name].bundle.js'
     },
     module: {
         rules: [
@@ -20,6 +25,36 @@ const config = {
                         }
                     }
                 ],
+            },
+            {
+                test: /\.css$/,
+                use: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: "css-loader"
+                })
+            },
+            {
+                test: /\.(svg|woff|woff2|otf|eot|ttf)$/,
+                use:[
+                    {
+                        loader: "url-loader",
+                        options: {
+                            limit: 65000,
+                            name: '[name].[ext]'
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.png$/,
+                use:[
+                    {
+                        loader: "file-loader",
+                        options: {
+                            name: '[name].[ext]'
+                        }
+                    }
+                ]
             }
         ]
     },
@@ -36,7 +71,12 @@ const config = {
         new HtmlWebpackPlugin({
             title:"Blogggr",
             template: 'src/index.ejs'
-        })
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: ['app', 'vendor'],
+            minChunk: Infinity
+        }),
+        new ExtractTextPlugin("styles.css")
     ]
 };
 
