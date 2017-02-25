@@ -11,7 +11,7 @@ const SignupForm = () => (
                     <form role="form">
                         <fieldset>
                             <div className="form-group">
-                                <input className="form-control" placeholder="First name" name="firstName" type="text" autofocus />
+                                <input className="form-control" placeholder="First name" name="firstName" type="text" autoFocus />
                             </div>
                             <div className="form-group">
                                 <input className="form-control" placeholder="Last name" name="lastName" type="text" />
