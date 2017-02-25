@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Router, Route, browserHistory } from 'react-router'
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+
 import App from './modules/App'
 import Login from './modules/Login'
 import Signup from './modules/Signup'
-import { Provider } from 'react-redux'
-import { createStore } from 'redux'
 import {loginDetails} from './reducers/reducer'
 
 const store = createStore(loginDetails);
