@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import jQuery from 'jquery'
 
-export default class LoginForm extends React.Component {
+import { connect } from 'react-redux'
+import { loginAction } from '../actions/action'
+
+export class LoginForm extends React.Component {
 
     constructor(props){
         super(props);
@@ -22,10 +25,13 @@ export default class LoginForm extends React.Component {
             data: JSON.stringify(requestData),
             dataType: 'json',
             contentType: "application/json; charset=utf-8",
+            context: this,
             success: function(data, status){
-                console.log("Data = "+JSON.parse(data));
-                console.log("Status = "+status);
-            },
+                //Extract the auth token, update the redux store and redirect the user
+                let authToken = data.data.Auth;
+                this.props.storeToken(authToken);
+                this.props.router.push('/');
+            }.bind(this),
             error: function(){
                 alert("Error!");
             }
@@ -45,19 +51,20 @@ export default class LoginForm extends React.Component {
                                 <fieldset>
                                     <div className="form-group">
                                         <input className="form-control" placeholder="E-mail" name="email" type="email"
-                                               autoFocus/>
+                                               autoFocus tabIndex="1" />
                                     </div>
                                     <div className="form-group">
                                         <input className="form-control" placeholder="Password" name="password"
-                                               type="password" />
+                                               type="password" tabIndex="2" />
                                     </div>
                                     <div className="checkbox">
                                         <label>
-                                            <input name="remember" type="checkbox" value="Remember Me"/>Remember Me
+                                            <input name="remember" type="checkbox" value="Remember Me" tabIndex="3"/>Remember Me
                                         </label>
                                     </div>
-                                    <a onClick={this.handleLoginClick} className="btn btn-lg btn-success btn-block">Login</a>
-                                    <a href="/" className="btn btn-sm btn-primary btn-block">Back</a>
+
+                                    <a href="#" onClick={this.handleLoginClick} className="btn btn-lg btn-success btn-block" tabIndex="4">Login</a>
+                                    <a href="/" className="btn btn-sm btn-primary btn-block" tabIndex="5">Back</a>
                                 </fieldset>
                             </form>
                         </div>
@@ -67,3 +74,22 @@ export default class LoginForm extends React.Component {
         );
     }
 }
+
+LoginForm.propTypes = {
+    storeToken: PropTypes.func.isRequired
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        storeToken: (token) => {
+            dispatch(loginAction(token))
+        }
+    }
+}
+
+const LoginDispatcher = connect(
+    null,
+    mapDispatchToProps
+)(LoginForm)
+
+export default LoginDispatcher

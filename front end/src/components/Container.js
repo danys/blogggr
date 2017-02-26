@@ -11,7 +11,7 @@ export default class Container extends React.Component{
         return (
             <div className="container">
                 {this.props.main}
-                <Footer/>
+                <Footer />
             </div>
         );
     }

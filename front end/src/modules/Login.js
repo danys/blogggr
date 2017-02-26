@@ -10,7 +10,7 @@ export default class Login extends React.Component{
 
     render(){
         return (
-            <Page loggedin="false" main={<LoginForm/>} highlight="home" />
+            <Page loggedin="false" main={<LoginForm router={this.props.router} />} highlight="home" />
         );
     }
 }
