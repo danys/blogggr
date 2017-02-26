@@ -16,4 +16,10 @@ import jQuery from 'jquery'
 
 //Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.min.js'
+
+//Font awesome
+import 'font-awesome/css/font-awesome.min.css'
+
+//App styles
 import './styling/css/style.css'
