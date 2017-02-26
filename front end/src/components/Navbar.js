@@ -1,9 +1,18 @@
 import React from 'react'
 
-export default class Navbar extends React.Component{
+import { connect } from 'react-redux'
+import { logoutAction } from '../actions/action'
+
+export class Navbar extends React.Component{
 
     constructor(props){
         super(props);
+        this.handleLogoutClick = this.handleLogoutClick.bind(this);
+    }
+
+    handleLogoutClick(){
+        this.props.removeToken();
+        this.props.router.push('/');
     }
 
     render(){
@@ -24,7 +33,7 @@ export default class Navbar extends React.Component{
                                 <li><a href="/settings"><i className="fa fa-gear fa-fw"></i> Settings</a>
                                 </li>
                                 <li className="divider"></li>
-                                <li><a href="/logout"><i className="fa fa-sign-out fa-fw"></i> Logout</a>
+                                <li><a href="#" onClick={this.handleLogoutClick}><i className="fa fa-sign-out fa-fw"></i> Logout</a>
                                 </li>
                             </ul>
                         </li>
@@ -46,7 +55,7 @@ export default class Navbar extends React.Component{
                                 <li><a href="/settings"><i className="fa fa-gear fa-fw"></i> Settings</a>
                                 </li>
                                 <li className="divider"></li>
-                                <li><a href="/logout"><i className="fa fa-sign-out fa-fw"></i> Logout</a>
+                                <li><a href="#" onClick={this.handleLogoutClick}><i className="fa fa-sign-out fa-fw"></i> Logout</a>
                                 </li>
                             </ul>
                         </li>
@@ -68,7 +77,7 @@ export default class Navbar extends React.Component{
                                 <li><a href="/settings"><i className="fa fa-gear fa-fw"></i> Settings</a>
                                 </li>
                                 <li className="divider"></li>
-                                <li><a href="/login"><i className="fa fa-sign-out fa-fw"></i> Logout</a>
+                                <li><a href="#" onClick={this.handleLogoutClick}><i className="fa fa-sign-out fa-fw"></i> Logout</a>
                                 </li>
                             </ul>
                         </li>
@@ -90,3 +99,18 @@ export default class Navbar extends React.Component{
         );
     }
 }
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        removeToken: () => {
+            dispatch(logoutAction())
+        }
+    }
+}
+
+const LogoutDispatcher = connect(
+    null,
+    mapDispatchToProps
+)(Navbar)
+
+export default LogoutDispatcher
