@@ -39,15 +39,15 @@ export default class BlogHome extends React.Component{
                     <div className="well">
                         <h4>Blog Search</h4>
                         <div className="form-group">
-                            <label for="titleSearchKey">Blog title</label>
+                            <label htmlFor="titleSearchKey">Blog title</label>
                             <input type="text" className="form-control" placeholder="Title" id="titleSearchKey"/>
                         </div>
                         <div className="form-group">
-                            <label for="posterSearchKey">Blog poster</label>
+                            <label htmlFor="posterSearchKey">Blog poster</label>
                             <input type="text" className="form-control" placeholder="User name" id="posterSearchKey"/>
                         </div>
                         <div className="form-group">
-                            <label for="posterSearchKey">Post visibility</label>
+                            <label htmlFor="posterSearchKey">Post visibility</label>
                             <div className="radio">
                                 <label>
                                     <input type="radio" name="searchVisibility" id="searchVisibilityAll" value="all" checked/>
