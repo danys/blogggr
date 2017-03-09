@@ -60,6 +60,7 @@ const config = {
     },
     devtool: 'source-map',
     devServer: {
+        port: 9000,
         inline: true,
         hot: true,
         historyApiFallback: true,
