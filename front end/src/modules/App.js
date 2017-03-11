@@ -1,25 +1,37 @@
 import React from 'react'
-import Welcome from '../components/Welcome'
-import Page from '../components/Page'
-import BlogHome from '../components/BlogHome'
+import Navbar from '../components/Navbar'
 import { connect } from 'react-redux'
+import Footer from '../components/Footer'
 
 export class App extends React.Component{
 
     constructor(props){
         super(props);
+        const isLoggedIn = this.props.loggedin === 'true' ? true : false;
+        this.state = {
+            loggedin: isLoggedIn,
+            navHighlight: "home"
+        }
+    }
+
+    componentWillReceiveProps(nextProps){
+        const isLoggedIn = nextProps.loggedin === 'true' ? true : false;
+        this.setState({
+            loggedin: isLoggedIn,
+            navHighlight: nextProps.navHighlight
+        });
     }
 
     render(){
-        const isLoggedIn = this.props.loggedin === 'true' ? true : false;
-        let content;
-        if (isLoggedIn) content = (
-            <Page loggedin="true" main={<BlogHome/>} highlight="home"/>
+        return (
+        <div>
+            <Navbar loggedin={this.state.loggedin} highlight={this.state.navHighlight}/>
+            <div className="container">
+                {this.props.children}
+                <Footer />
+            </div>
+        </div>
         );
-        else content = (
-            <Page loggedin="false" main={<Welcome/>} highlight="home"/>
-        );
-        return content;
     }
 }
 
@@ -31,9 +43,7 @@ const mapDispatchToProps = (dispatch) => ({
     //
 })
 
-const LoginState = connect(
+export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(App)
-
-export default LoginState

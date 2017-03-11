@@ -17,7 +17,7 @@ export class Navbar extends React.Component{
 
     render(){
         let loginFunctionality = '';
-        if (this.props.loggedin==='true') {
+        if (this.props.loggedin) {
             if (this.props.highlight==='home') {
                 loginFunctionality = (
                     <ul className="nav navbar-top-links navbar-right">
@@ -108,9 +108,7 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-const LogoutDispatcher = connect(
+export default connect(
     null,
     mapDispatchToProps
 )(Navbar)
-
-export default LogoutDispatcher
