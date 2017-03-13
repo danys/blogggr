@@ -8,14 +8,14 @@ export class BlogHome extends React.Component{
 
     constructor(props){
         super(props);
-        const isLoggedIn = this.props.loggedin ? true : false;
+        const isLoggedIn = this.props.loggedin;
         this.state = {
             loggedin: isLoggedIn
         }
     }
 
     componentWillReceiveProps(nextProps){
-        const isLoggedIn = this.props.loggedin ? true : false;
+        const isLoggedIn = nextProps.loggedin;
         this.setState({
             loggedin: isLoggedIn
         });
