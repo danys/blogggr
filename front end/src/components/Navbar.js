@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {PropTypes} from 'react'
 
 import { connect } from 'react-redux'
 import { logoutAction } from '../actions/action'
@@ -7,18 +7,30 @@ export class Navbar extends React.Component{
 
     constructor(props){
         super(props);
+        this.state = {
+            loggedin: this.props.loggedin,
+            highlight: this.props.highlight
+        };
         this.handleLogoutClick = this.handleLogoutClick.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            loggedin: nextProps.loggedin,
+            highlight: nextProps.highlight
+        });
     }
 
     handleLogoutClick(){
         this.props.removeToken();
         this.props.router.push('/');
+
     }
 
     render(){
         let loginFunctionality = '';
-        if (this.props.loggedin) {
-            if (this.props.highlight==='home') {
+        if (this.state.loggedin) {
+            if (this.state.highlight==='home') {
                 loginFunctionality = (
                     <ul className="nav navbar-top-links navbar-right">
                         <li className="active"><a href="/">Home</a></li>
@@ -40,7 +52,7 @@ export class Navbar extends React.Component{
                     </ul>
                 );
             }
-            else if (this.props.highlight==='friends'){
+            else if (this.state.highlight==='friends'){
                 loginFunctionality = (
                     <ul className="nav navbar-top-links navbar-right">
                         <li><a href="/">Home</a></li>
@@ -62,7 +74,7 @@ export class Navbar extends React.Component{
                     </ul>
                 );
             }
-            else if (this.props.highlight==='user'){
+            else if (this.state.highlight==='user'){
                 loginFunctionality = (
                     <ul className="nav navbar-top-links navbar-right">
                         <li><a href="/">Home</a></li>
@@ -100,6 +112,14 @@ export class Navbar extends React.Component{
     }
 }
 
+Navbar.propTypes = {
+    removeToken: PropTypes.func.isRequired
+}
+
+const mapStateToProps = (state) => ({
+ loggedin: state.loggedin
+ })
+
 const mapDispatchToProps = (dispatch) => {
     return {
         removeToken: () => {
@@ -109,6 +129,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 export default connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps
 )(Navbar)
