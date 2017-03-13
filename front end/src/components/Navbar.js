@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react'
 
 import { connect } from 'react-redux'
 import { logoutAction } from '../actions/action'
+import {del} from '../utils/ajax'
 
 export class Navbar extends React.Component{
 
@@ -9,7 +10,9 @@ export class Navbar extends React.Component{
         super(props);
         this.state = {
             loggedin: this.props.loggedin,
-            highlight: this.props.highlight
+            highlight: this.props.highlight,
+            sessionURL: this.props.sessionURL,
+            token: this.props.token
         };
         this.handleLogoutClick = this.handleLogoutClick.bind(this);
     }
@@ -17,14 +20,17 @@ export class Navbar extends React.Component{
     componentWillReceiveProps(nextProps){
         this.setState({
             loggedin: nextProps.loggedin,
-            highlight: nextProps.highlight
+            highlight: nextProps.highlight,
+            sessionURL: nextProps.sessionURL,
+            token: nextProps.token
         });
     }
 
     handleLogoutClick(){
         this.props.removeToken();
         this.props.router.push('/');
-
+        console.log("SessionURL: "+this.state.sessionURL);
+        del(this.state.sessionURL,()=>{console.log("Success deleting session!")},()=>{alert("Error deleting session!")},{'Authorization': this.state.token});
     }
 
     render(){
@@ -117,7 +123,9 @@ Navbar.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
- loggedin: state.loggedin
+ loggedin: state.loggedin,
+ sessionURL: state.sessionURL,
+ token: state.token
  })
 
 const mapDispatchToProps = (dispatch) => {

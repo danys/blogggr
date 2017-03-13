@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react'
 import { connect } from 'react-redux'
 import {loginAction} from '../actions/action'
+import {post} from '../utils/ajax'
 
 export class Login extends React.Component{
 
@@ -17,23 +18,14 @@ export class Login extends React.Component{
             "email": email,
             "password": password
         };
-        jQuery.ajax({
-            url: this.sessionsURL,
-            method: 'POST',
-            data: JSON.stringify(requestData),
-            dataType: 'json',
-            contentType: "application/json; charset=utf-8",
-            context: this,
-            success: function(data, status){
-                //Extract the auth token, update the redux store and redirect the user
-                let authToken = data.data.Auth;
-                this.props.storeToken(authToken);
-                this.props.router.push('/');
-            }.bind(this),
-            error: function(){
-                alert("Error!");
-            }
-        });
+        post(this.sessionsURL, requestData,
+            (data, status, request)=>{
+            //Extract the auth token, update the redux store and redirect the user
+            let authToken = data.data.Auth;
+            const sessionURL = request.getResponseHeader('Location');
+            this.props.storeToken(authToken, sessionURL);
+            this.props.router.push('/');
+        }, ()=>{alert("Error")});
     }
 
     render() {
@@ -80,7 +72,7 @@ Login.propTypes = {
 const mapDispatchToProps = (dispatch) => {
     return {
         storeToken: (token) => {
-            dispatch(loginAction(token))
+            dispatch(loginAction(token, sessionURL))
         }
     }
 };

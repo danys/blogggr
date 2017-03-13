@@ -1,16 +1,18 @@
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 
-export function loginAction(token){
+export function loginAction(token, sessionURL){
     return {
       type: LOGIN,
-      token: token
+      token: token,
+      sessionsURL: sessionURL
     };
 }
 
 export function logoutAction(){
     return {
         type: LOGOUT,
-        token: ''
+        token: '',
+        sessionURL: ''
     };
 }
