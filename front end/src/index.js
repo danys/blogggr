@@ -21,9 +21,10 @@ ReactDOM.render(
     <Provider store={store}>
         <Router history={browserHistory}>
             <Route path="/" component={App}>
-                <IndexRoute component={BlogHome}/>
-                <Route path="/login" component={Login}/>
-                <Route path="/signup" component={Signup}/>
+                <IndexRoute component={BlogHome} name="home"/>
+                <Route path="/login" component={Login} name="login"/>
+                <Route path="/signup" component={Signup} name="signup"/>
+                /* TODO: "friends", "user" path names to specify */
             </Route>
         </Router>
     </Provider>,
