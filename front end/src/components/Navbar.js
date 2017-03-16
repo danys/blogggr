@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { logoutAction } from '../actions/action'
 import {del} from '../utils/ajax'
 
-export class Navbar extends React.Component{
+class Navbar extends React.Component{
 
     constructor(props){
         super(props);
@@ -29,8 +29,7 @@ export class Navbar extends React.Component{
     handleLogoutClick(){
         this.props.removeToken();
         this.props.router.push('/');
-        console.log("SessionURL: "+this.state.sessionURL);
-        del(this.state.sessionURL,()=>{console.log("Success deleting session!")},()=>{alert("Error deleting session!")},{'Authorization': this.state.token});
+        del(this.state.sessionURL,()=>{},()=>{alert("Error deleting session!")},{'Authorization': this.state.token});
     }
 
     render(){
@@ -120,13 +119,13 @@ export class Navbar extends React.Component{
 
 Navbar.propTypes = {
     removeToken: PropTypes.func.isRequired
-}
+};
 
 const mapStateToProps = (state) => ({
  loggedin: state.loggedin,
  sessionURL: state.sessionURL,
  token: state.token
- })
+ });
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -134,9 +133,9 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(logoutAction())
         }
     }
-}
+};
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Navbar)
+)(Navbar);
