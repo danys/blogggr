@@ -5,7 +5,7 @@ export function loginAction(token, sessionURL){
     return {
       type: LOGIN,
       token: token,
-      sessionsURL: sessionURL
+      sessionURL: sessionURL
     };
 }
 
