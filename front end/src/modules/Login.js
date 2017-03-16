@@ -22,7 +22,9 @@ export class Login extends React.Component{
             (data, status, request)=>{
             //Extract the auth token, update the redux store and redirect the user
             let authToken = data.data.Auth;
-            const sessionURL = request.getResponseHeader('Location');
+            let sessionURL = request.getResponseHeader('Location');
+            let pos = sessionURL.indexOf('/api');
+            sessionURL = sessionURL.substr(pos);
             this.props.storeToken(authToken, sessionURL);
             this.props.router.push('/');
         }, ()=>{alert("Error")});
@@ -71,7 +73,7 @@ Login.propTypes = {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        storeToken: (token) => {
+        storeToken: (token, sessionURL) => {
             dispatch(loginAction(token, sessionURL))
         }
     }
