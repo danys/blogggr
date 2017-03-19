@@ -22,7 +22,7 @@ public class SessionPostDataValidator extends GenericValidator{
         ObjectMapper mapper = new ObjectMapper();
         SessionPostData sessionPostData = mapper.readValue(body, SessionPostData.class);
         //Check that all fields are present
-        if (sessionPostData.getEmail()==null || sessionPostData.getPassword()==null){
+        if (sessionPostData.getEmail()==null || sessionPostData.getPassword()==null || sessionPostData.getRememberMe()==null){
             errorMessage = "All fields need to be filled!";
             return false;
         }
