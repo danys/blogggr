@@ -14,9 +14,11 @@ export class Login extends React.Component{
     handleLoginClick(){
         const email = jQuery("input[name=email]").val();
         const password = jQuery("input[name=password]").val();
+        const rememberMe = jQuery("input[name=remember]").is(':checked');
         let requestData = {
             "email": email,
-            "password": password
+            "password": password,
+            "rememberMe": rememberMe
         };
         post(this.sessionsURL, requestData,
             (data, status, request)=>{
