@@ -41,7 +41,8 @@ public class SessionServiceImpl implements SessionService{
         if (submitPasswordHash.compareTo(storedPasswordHash)!=0) throw new WrongPasswordException("Supplied password is wrong!");
         Timestamp ts = TimeUtilities.getCurrentTimestamp();
         Long millis = ts.getTime();
-        Timestamp validTill = new Timestamp(millis+AppConfig.sessionValidityMillis);
+        long millisOffset = (!sessionData.getRememberMe())?AppConfig.sessionValidityMillis:AppConfig.sessionValidityMillis*10;
+        Timestamp validTill = new Timestamp(millis+millisOffset);
         session.setUser(user);
         session.setValidtill(validTill);
         session.setValid(true);
