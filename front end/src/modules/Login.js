@@ -9,6 +9,9 @@ export class Login extends React.Component{
         super(props);
         this.handleLoginClick = this.handleLoginClick.bind(this);
         this.sessionsURL = "/api/v1.0/sessions";
+        this.state = {
+          error: ''
+        };
     }
 
     handleLoginClick(){
@@ -29,12 +32,28 @@ export class Login extends React.Component{
             sessionURL = sessionURL.substr(pos);
             this.props.storeToken(authToken, sessionURL);
             this.props.router.push('/');
-        }, ()=>{alert("Error")});
+        }, (jqXHR)=>{this.setState({error: JSON.stringify(JSON.parse(jqXHR.responseText).error)});$('#errorModal').modal('show');}
+        );
     }
 
     render() {
         return (
             <div className="row">
+                <div id="errorModal" className="modal fade" tabindex="-1" role="dialog">
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 className="modal-title">Modal title</h4>
+                            </div>
+                            <div className="modal-body">
+                                {this.state.error}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div className="col-md-4 col-md-offset-4">
                     <div className="login-panel panel panel-default">
                         <div className="panel-heading">
