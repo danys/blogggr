@@ -14,6 +14,10 @@ export class Login extends React.Component{
         };
     }
 
+    componentDidMount(){
+        $('#errorModal').on('hidden.bs.modal', () => {this.setState({error:''})});
+    }
+
     handleLoginClick(){
         const email = jQuery("input[name=email]").val();
         const password = jQuery("input[name=password]").val();
@@ -32,7 +36,12 @@ export class Login extends React.Component{
             sessionURL = sessionURL.substr(pos);
             this.props.storeToken(authToken, sessionURL);
             this.props.router.push('/');
-        }, (jqXHR)=>{this.setState({error: JSON.stringify(JSON.parse(jqXHR.responseText).error)});$('#errorModal').modal('show');}
+        }, (jqXHR)=>{
+            let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+            errorMsg = errorMsg.substring(1,errorMsg.length-1);
+            this.setState({error: errorMsg});
+            $('#errorModal').modal('show');
+            }
         );
     }
 
