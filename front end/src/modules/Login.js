@@ -37,10 +37,13 @@ export class Login extends React.Component{
             this.props.storeToken(authToken, sessionURL);
             this.props.router.push('/');
         }, (jqXHR)=>{
-            let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-            errorMsg = errorMsg.substring(1,errorMsg.length-1);
-            this.setState({error: errorMsg});
-            $('#errorModal').modal('show');
+                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+                errorMsg = errorMsg.substring(1,errorMsg.length-1);
+                this.setState({error: errorMsg});
+                $('#errorModal').modal('show');
+                jQuery("input[name=email]").val('');
+                jQuery("input[name=password]").val('');
+                jQuery("input[name=remember]").prop('checked',false);
             }
         );
     }
@@ -48,7 +51,7 @@ export class Login extends React.Component{
     render() {
         return (
             <div className="row">
-                <div id="errorModal" className="modal fade" tabindex="-1" role="dialog">
+                <div id="errorModal" className="modal fade" tabIndex="-1" role="dialog">
                     <div className="modal-dialog" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -61,8 +64,6 @@ export class Login extends React.Component{
                         </div>
                     </div>
                 </div>
-
-
                 <div className="col-md-4 col-md-offset-4">
                     <div className="login-panel panel panel-default">
                         <div className="panel-heading">
