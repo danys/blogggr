@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react'
 import { connect } from 'react-redux'
 import {loginAction} from '../actions/action'
 import {post} from '../utils/ajax'
+import {Modal} from '../components/Modal'
 
 export class Login extends React.Component{
 
@@ -51,19 +52,7 @@ export class Login extends React.Component{
     render() {
         return (
             <div className="row">
-                <div id="errorModal" className="modal fade" tabIndex="-1" role="dialog">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 className="modal-title">Error</h4>
-                            </div>
-                            <div className="modal-body">
-                                {this.state.error}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <Modal title='Error' body={this.state.error} />
                 <div className="col-md-4 col-md-offset-4">
                     <div className="login-panel panel panel-default">
                         <div className="panel-heading">
