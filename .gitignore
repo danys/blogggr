@@ -26,4 +26,4 @@ nbdist/
 design/vendor/
 design/node_modules/
 frontend/vendor/
-frontend/node_modules/
+frontend/node_modules/*
