@@ -52,7 +52,7 @@ export class Login extends React.Component{
     render() {
         return (
             <div className="row">
-                <Modal title='Error' body={this.state.error} />
+                <Modal title='Error' body={this.state.error} modalId='errorModal' color='#ff3333'/>
                 <div className="col-md-4 col-md-offset-4">
                     <div className="login-panel panel panel-default">
                         <div className="panel-heading">
@@ -63,11 +63,11 @@ export class Login extends React.Component{
                                 <fieldset>
                                     <div className="form-group">
                                         <input className="form-control" placeholder="E-mail" name="email" type="email"
-                                               autoFocus tabIndex="1" />
+                                               autoFocus tabIndex="1" required />
                                     </div>
                                     <div className="form-group">
                                         <input className="form-control" placeholder="Password" name="password"
-                                               type="password" tabIndex="2" />
+                                               type="password" tabIndex="2" required />
                                     </div>
                                     <div className="checkbox">
                                         <label>

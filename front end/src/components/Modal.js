@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {PropTypes} from 'react'
 
 export class Modal extends React.Component {
 
@@ -7,11 +7,14 @@ export class Modal extends React.Component {
     }
 
     render(){
+        const idAttr = {id: this.props.modalId};
+        const color = 'background-color:'+this.props.color;
+        const headerColorStyle = {style: color};
         return (
-        <div id="errorModal" className="modal fade" tabIndex="-1" role="dialog">
+        <div {...idAttr} className="modal fade" tabIndex="-1" role="dialog">
             <div className="modal-dialog" role="document">
                 <div className="modal-content">
-                    <div className="modal-header">
+                    <div className="modal-header" {...headerColorStyle}>
                         <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 className="modal-title">{this.props.title}</h4>
                     </div>
@@ -23,4 +26,14 @@ export class Modal extends React.Component {
         </div>
         );
     }
+}
+
+Modal.propTypes = {
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired
+}
+
+Modal.defaultProps = {
+    title: 'Title',
+    body: 'Body text'
 }
