@@ -51,7 +51,7 @@ export class Signup extends React.Component{
         };
         post(this.signUpURL, requestData,
             (data, status, request)=>{
-                this.setState({modalMsg: 'Successfully created user!', modalTitle: 'Error', color: '#00802b'});
+                this.setState({modalMsg: 'Successfully created user!', modalTitle: 'Error', color: '#4cae4c'});
                 $('#modal').modal('show');
                 this.resetForm();
             }, (jqXHR)=>{
