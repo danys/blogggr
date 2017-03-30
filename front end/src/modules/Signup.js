@@ -1,6 +1,7 @@
 import React from 'react'
 import {Modal} from '../components/Modal'
 import {post} from '../utils/ajax'
+import {red, green}  from '../consts/Constants'
 
 export class Signup extends React.Component{
 
@@ -12,7 +13,7 @@ export class Signup extends React.Component{
         this.state = {
             modalMsg: '',
             modalTitle: '',
-            color: '#00802b'
+            color: green
         };
     }
 
@@ -51,13 +52,13 @@ export class Signup extends React.Component{
         };
         post(this.signUpURL, requestData,
             (data, status, request)=>{
-                this.setState({modalMsg: 'Successfully created user!', modalTitle: 'Error', color: '#4cae4c'});
+                this.setState({modalMsg: 'Successfully created user!', modalTitle: 'Error', color: green});
                 $('#modal').modal('show');
                 this.resetForm();
             }, (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
                 errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.setState({modalMsg: errorMsg, modalTitle: 'Error', color: '#ff3333'});
+                this.setState({modalMsg: errorMsg, modalTitle: 'Error', color: red});
                 $('#modal').modal('show');
                 this.resetForm();
             }

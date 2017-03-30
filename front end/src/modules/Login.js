@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import {loginAction} from '../actions/action'
 import {post} from '../utils/ajax'
 import {Modal} from '../components/Modal'
+import {red}  from '../consts/Constants'
 
 export class Login extends React.Component{
 
@@ -52,7 +53,7 @@ export class Login extends React.Component{
     render() {
         return (
             <div className="row">
-                <Modal title='Error' body={this.state.error} modalId='errorModal' color='#ff3333'/>
+                <Modal title='Login error' body={this.state.error} modalId='errorModal' color={red}/>
                 <div className="col-md-4 col-md-offset-4">
                     <div className="login-panel panel panel-default">
                         <div className="panel-heading">
