@@ -8,7 +8,7 @@ import {loadState, saveState} from './utils/localStorage';
 import App from './modules/App';
 import Login from './modules/Login';
 import {Signup} from './modules/Signup';
-import BlogHome from './components/BlogHome';
+import BlogHome from './modules/BlogHome';
 import {loginDetails} from './reducers/reducer';
 
 const persistedState = loadState();
