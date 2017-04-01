@@ -8,7 +8,12 @@ export class BlogHome extends React.Component{
 
     constructor(props){
         super(props);
-        const isLoggedIn = this.props.loggedin;
+        let isLoggedIn = this.props.loggedin;
+        let validTillDateTime = moment(this.props.validUntil,"YYYY-MM-DD HH:mm:ss");
+        if (moment().isAfter(validTillDateTime)){
+            //TODO
+        }
+
         this.state = {
             loggedin: isLoggedIn
         }
@@ -30,10 +35,9 @@ export class BlogHome extends React.Component{
 }
 
 const mapStateToProps = (state) => {
-    //TODO remove
-    console.log("State "+JSON.stringify(state));
     return {
-        loggedin: state.loggedin
+        loggedin: state.loggedin,
+        validUntil: state.validUntil
     }
 }
 

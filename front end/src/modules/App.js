@@ -34,7 +34,7 @@ export default class App extends React.Component{
         });
         return (
         <div>
-            <Navbar highlight={this.props.children.props.route.name} router={this.props.router}/>
+            <Navbar highlight={this.props.children.props.route.name} showOverlayMsg={this.showOverlayMsg} router={this.props.router}/>
             <div className="container">
                 {childrenWithProps}
                 <Footer />

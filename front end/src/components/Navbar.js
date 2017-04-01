@@ -3,6 +3,7 @@ import React, {PropTypes} from 'react'
 import { connect } from 'react-redux'
 import { logoutAction } from '../actions/action'
 import {del} from '../utils/ajax'
+import {red}  from '../consts/Constants'
 
 class Navbar extends React.Component{
 
@@ -29,7 +30,7 @@ class Navbar extends React.Component{
     handleLogoutClick(){
         this.props.removeToken();
         this.props.router.push('/');
-        del(this.state.sessionURL,()=>{},()=>{alert("Error deleting session!")},{'Authorization': this.state.token});
+        del(this.state.sessionURL,()=>{},()=>{this.props.showOverlayMsg('Error logging out', 'Error deleting session', red);},{'Authorization': this.state.token});
     }
 
     render(){
