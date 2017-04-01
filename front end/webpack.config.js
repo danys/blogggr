@@ -81,7 +81,8 @@ const config = {
         new webpack.ProvidePlugin({
             jQuery: 'jquery',
             $: 'jquery',
-            jquery: 'jquery'
+            jquery: 'jquery',
+            moment: 'moment'
         })
     ]
 };
