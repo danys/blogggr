@@ -1,5 +1,4 @@
 import React from 'react'
-import {Modal} from '../components/Modal'
 import {post} from '../utils/ajax'
 import {red, green}  from '../consts/Constants'
 
@@ -10,11 +9,6 @@ export class Signup extends React.Component{
         this.handleSignupClick = this.handleSignupClick.bind(this);
         this.resetForm = this.resetForm.bind(this);
         this.signUpURL = "/api/v1.0/users";
-        this.state = {
-            modalMsg: '',
-            modalTitle: '',
-            color: green
-        };
     }
 
     resetForm(){
@@ -34,13 +28,11 @@ export class Signup extends React.Component{
         const password = jQuery("input[name=password]").val();
         const passwordRepeat = jQuery("input[name=passwordRepeat]").val();
         if (email!==emailRepeat){
-            this.setState({modalMsg:'E-mail addresses must match!', modalTitle: 'Form validation error'});
-            $('#modal').modal('show');
+            this.props.showOverlayMsg('Form validation error', 'E-mail addresses must match!', red);
             return;
         }
         if (password!==passwordRepeat){
-            this.setState({modalMsg:'Passwords must match!', modalTitle: 'Form validation error'});
-            $('#modal').modal('show');
+            this.props.showOverlayMsg('Form validation error', 'Passwords must match!', red);
             return;
         }
         let requestData = {
@@ -52,27 +44,20 @@ export class Signup extends React.Component{
         };
         post(this.signUpURL, requestData,
             (data, status, request)=>{
-                this.setState({modalMsg: 'Successfully created user!', modalTitle: 'Error', color: green});
-                $('#modal').modal('show');
-                this.resetForm();
+            this.props.showOverlayMsg('Success', 'Successfully created user!', green);
+            this.resetForm();
             }, (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
                 errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.setState({modalMsg: errorMsg, modalTitle: 'Error', color: red});
-                $('#modal').modal('show');
+                this.props.showOverlayMsg('Error creating user', errorMsg, red);
                 this.resetForm();
             }
         );
     }
 
-    componentDidMount(){
-        $('#modal').on('hidden.bs.modal', () => {this.setState({modalMsg:'', modalTitle:''})});
-    }
-
     render(){
         return (
             <div className="row">
-                <Modal title={this.state.modalTitle} body={this.state.modalMsg} modalId='modal' color={this.state.color}/>
                 <div className="col-md-4 col-md-offset-4">
                     <div className="login-panel panel panel-default">
                         <div className="panel-heading">

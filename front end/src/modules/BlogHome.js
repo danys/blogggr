@@ -29,9 +29,13 @@ export class BlogHome extends React.Component{
     }
 }
 
-const mapStateToProps = (state) => ({
-    loggedin: state.loggedin
-})
+const mapStateToProps = (state) => {
+    //TODO remove
+    console.log("State "+JSON.stringify(state));
+    return {
+        loggedin: state.loggedin
+    }
+}
 
 const mapDispatchToProps = (dispatch) => ({
     //

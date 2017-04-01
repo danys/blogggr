@@ -14,6 +14,8 @@ import { createStore } from 'redux'
 //jQuery
 import jQuery from 'jquery'
 
+import moment from 'moment'
+
 //Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min.js'

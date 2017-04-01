@@ -2,7 +2,6 @@ import React, {PropTypes} from 'react'
 import { connect } from 'react-redux'
 import {loginAction} from '../actions/action'
 import {post} from '../utils/ajax'
-import {Modal} from '../components/Modal'
 import {red}  from '../consts/Constants'
 
 export class Login extends React.Component{
@@ -11,13 +10,6 @@ export class Login extends React.Component{
         super(props);
         this.handleLoginClick = this.handleLoginClick.bind(this);
         this.sessionsURL = "/api/v1.0/sessions";
-        this.state = {
-          error: ''
-        };
-    }
-
-    componentDidMount(){
-        $('#errorModal').on('hidden.bs.modal', () => {this.setState({error:''})});
     }
 
     handleLoginClick(){
@@ -36,13 +28,12 @@ export class Login extends React.Component{
             let sessionURL = request.getResponseHeader('Location');
             let pos = sessionURL.indexOf('/api');
             sessionURL = sessionURL.substr(pos);
-            this.props.storeToken(authToken, sessionURL);
+            this.props.storeToken(authToken, sessionURL, data.data.ValidUntil);
             this.props.router.push('/');
         }, (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
                 errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.setState({error: errorMsg});
-                $('#errorModal').modal('show');
+                this.props.showOverlayMsg('Login error', errorMsg, red);
                 jQuery("input[name=email]").val('');
                 jQuery("input[name=password]").val('');
                 jQuery("input[name=remember]").prop('checked',false);
@@ -53,7 +44,6 @@ export class Login extends React.Component{
     render() {
         return (
             <div className="row">
-                <Modal title='Login error' body={this.state.error} modalId='errorModal' color={red}/>
                 <div className="col-md-4 col-md-offset-4">
                     <div className="login-panel panel panel-default">
                         <div className="panel-heading">
@@ -94,8 +84,8 @@ Login.propTypes = {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        storeToken: (token, sessionURL) => {
-            dispatch(loginAction(token, sessionURL))
+        storeToken: (token, sessionURL, validUntil) => {
+            dispatch(loginAction(token, sessionURL, validUntil))
         }
     }
 };
