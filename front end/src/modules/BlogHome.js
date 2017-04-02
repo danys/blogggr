@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 
 import HomePosts from '../components/HomePosts'
 import Welcome from '../components/Welcome'
+import { logoutAction } from '../actions/action'
 
 export class BlogHome extends React.Component{
 
@@ -10,10 +11,10 @@ export class BlogHome extends React.Component{
         super(props);
         let isLoggedIn = this.props.loggedin;
         let validTillDateTime = moment(this.props.validUntil,"YYYY-MM-DD HH:mm:ss");
-        if (moment().isAfter(validTillDateTime)){
-            //TODO
+        if ((isLoggedIn===true) && (moment().isAfter(validTillDateTime))) {
+            isLoggedIn = false;
+            this.props.removeToken();
         }
-
         this.state = {
             loggedin: isLoggedIn
         }
@@ -41,9 +42,13 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-    //
-})
+const mapDispatchToProps = (dispatch) => {
+    return {
+        removeToken: () => {
+            dispatch(logoutAction())
+        }
+    }
+};
 
 export default connect(
     mapStateToProps,
