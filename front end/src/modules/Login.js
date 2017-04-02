@@ -9,6 +9,7 @@ export class Login extends React.Component{
     constructor(props){
         super(props);
         this.handleLoginClick = this.handleLoginClick.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
         this.sessionsURL = "/api/v1.0/sessions";
     }
 
@@ -41,6 +42,10 @@ export class Login extends React.Component{
         );
     }
 
+    handleKeyPress(event) {
+        if (event.key == 'Enter') this.handleLoginClick();
+    }
+
     render() {
         return (
             <div className="row">
@@ -58,11 +63,11 @@ export class Login extends React.Component{
                                     </div>
                                     <div className="form-group">
                                         <input className="form-control" placeholder="Password" name="password"
-                                               type="password" tabIndex="2" required />
+                                               type="password" tabIndex="2" required onKeyPress={this.handleKeyPress}/>
                                     </div>
                                     <div className="checkbox">
                                         <label>
-                                            <input name="remember" type="checkbox" value="Remember Me" tabIndex="3"/>Remember Me
+                                            <input name="remember" type="checkbox" value="Remember Me" tabIndex="3" />Remember Me
                                         </label>
                                     </div>
 
