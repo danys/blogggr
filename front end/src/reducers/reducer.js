@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT } from '../actions/action'
+import { LOGIN, LOGOUT, RENEW_SESSION } from '../actions/action'
 
 const initialState = {
     loggedin: false,
@@ -10,10 +10,12 @@ const initialState = {
 
 export function loginDetails(state = initialState, action) {
     switch (action.type) {
-        case 'LOGIN':
+        case LOGIN:
             return Object.assign({}, state, {loggedin: true, token: action.token, sessionURL: action.sessionURL, validUntil: action.validUntil});
-        case 'LOGOUT':
+        case LOGOUT:
             return Object.assign({}, state, {loggedin: false, token: action.token, sessionURL: action.sessionURL, validUntil: action.validUntil});
+        case RENEW_SESSION:
+            return Object.assign({}, state, {validUntil: action.validUntil});
         default:
             return state;
     }
