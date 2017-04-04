@@ -1,9 +1,21 @@
 import React from 'react'
 
+import Sidebar from './SearchSidebar'
+import {get} from '../utils/ajax'
+
 export default class HomePosts extends React.Component {
 
     constructor(props){
         super(props);
+        this.searchPosts = this.searchPosts.bind(this);
+    }
+
+    componentWillMount(){
+        //TODO
+    }
+
+    searchPosts(title, postAuthor, visibility){
+        //TODO
     }
 
     render() {
@@ -46,51 +58,7 @@ export default class HomePosts extends React.Component {
                     <hr/>
                 </div>
                 <div className="col-md-4">
-                    <div className="well">
-                        <h4>Blog Search</h4>
-                        <div className="form-group">
-                            <label htmlFor="titleSearchKey">Blog title</label>
-                            <input type="text" className="form-control" placeholder="Title" id="titleSearchKey"/>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="posterSearchKey">Blog poster</label>
-                            <input type="text" className="form-control" placeholder="User name" id="posterSearchKey"/>
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="posterSearchKey">Post visibility</label>
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" name="searchVisibility" id="searchVisibilityAll" value="all"
-                                           checked/>
-                                    All posts
-                                </label>
-                            </div>
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" name="searchVisibility" id="searchVisibilityOnlyGlobal"
-                                           value="onlyGlobal"/>
-                                    Only global
-                                </label>
-                            </div>
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" name="searchVisibility" id="searchVisibilityOnlyFriends"
-                                           value="onlyFriends"/>
-                                    Only friends
-                                </label>
-                            </div>
-                            <div className="radio">
-                                <label>
-                                    <input type="radio" name="searchVisibility" id="searchVisibilityOnlyMe"
-                                           value="onlyMe"/>
-                                    Only your posts
-                                </label>
-                            </div>
-                        </div>
-                        <button type="button" className="btn btn-sm btn-primary btn-block">
-                            <span className="glyphicon glyphicon-search"> Search</span>
-                        </button>
-                    </div>
+                    <Sidebar handleSearch={this.searchPosts}/>
                 </div>
             </div>
         );
