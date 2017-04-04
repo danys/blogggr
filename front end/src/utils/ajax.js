@@ -11,6 +11,19 @@ export function post(url, requestData, successHandler, errorHandler, headers={})
     });
 }
 
+export function get(url, requestData, successHandler, errorHandler, headers={}) {
+    jQuery.ajax({
+        url: url,
+        method: 'GET',
+        data: JSON.stringify(requestData),
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        headers: headers,
+        success: successHandler,
+        error: errorHandler
+    });
+}
+
 export function del(url, successHandler, errorHandler, headers={}) {
     jQuery.ajax({
         url: url,
