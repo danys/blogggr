@@ -2,20 +2,37 @@ import React from 'react'
 
 import Sidebar from './SearchSidebar'
 import {get} from '../utils/ajax'
+import { connect } from 'react-redux'
+import {red}  from '../consts/Constants'
 
-export default class HomePosts extends React.Component {
+export class HomePosts extends React.Component {
 
     constructor(props){
         super(props);
         this.searchPosts = this.searchPosts.bind(this);
+        this.postsURL = "/api/v1.0/posts";
+        this.state = {
+        }
     }
 
     componentWillMount(){
-        //TODO
+        this.searchPosts();
     }
 
     searchPosts(title, postAuthor, visibility){
-        //TODO
+        let requestData = {};
+        requestData['title']=title;
+        //request['posterUserID']=postAuthor;
+        requestData['visibility']=visibility;
+        requestData['limit']=10;
+        get(this.postsURL,
+            requestData,
+            (data)=>{this.setState({postsData: data});},
+            (jqXHR)=>{
+                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+                errorMsg = errorMsg.substring(1,errorMsg.length-1);
+                this.props.showOverlayMsg('Posts search error', errorMsg, red);
+            },{'Authorization': this.props.token});
     }
 
     render() {
@@ -39,6 +56,8 @@ export default class HomePosts extends React.Component {
                         corrupti debitis ipsum officiis rerum.</p>
                     <a className="btn btn-primary" href="#">Read More <span
                         className="glyphicon glyphicon-chevron-right"></span></a>
+
+
                     <hr/>
                     <h2>
                         <a href="#">Blog Post Title</a>
@@ -64,3 +83,20 @@ export default class HomePosts extends React.Component {
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    token: state.token
+});
+
+/*const mapDispatchToProps = (dispatch) => {
+    return {
+        abc: () => {
+            dispatch(...action)
+        }
+    }
+};*/
+
+export default connect(
+    mapStateToProps,
+    null
+)(HomePosts);
