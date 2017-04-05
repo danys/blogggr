@@ -28,7 +28,7 @@ export class BlogHome extends React.Component{
     }
 
     render(){
-        let content =  (this.state.loggedin)?<HomePosts/>:<Welcome/>;
+        let content =  (this.state.loggedin)?<HomePosts showOverlayMsg={this.props.showOverlayMsg}/>:<Welcome/>;
         return (
             content
         );
