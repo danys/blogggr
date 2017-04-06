@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {PropTypes} from 'react'
 
 export class HomePost extends React.Component {
 
@@ -8,23 +8,31 @@ export class HomePost extends React.Component {
 
     render(){
         return (
-            <div>
-        <h2>
-            <a href="blogpost.html">Blog Post Title</a>
-        </h2>
-        <p className="lead">
-            by <a href="index.php">Start Bootstrap</a>
-        </p>
-        <p><span className="glyphicon glyphicon-time"></span> Posted on August 28, 2013 at 10:00 PM</p>
-        <hr/>
-        <img className="img-responsive" src="/dist/blogBgImage.png" alt=""/>
+        <div>
+            <h2>
+                <a href={this.props.postURL}>{this.props.title}</a>
+            </h2>
+            <p className="lead">
+                by <a href={this.props.authorProfileURL}>{this.props.author}</a>
+            </p>
+            <p><span className="glyphicon glyphicon-time"></span>Posted on {this.props.timestamp}</p>
             <hr/>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolore, veritatis, tempora,
-            necessitatibus inventore nisi quam quia repellat ut tempore laborum possimus eum dicta id animi
-        corrupti debitis ipsum officiis rerum.</p>
-        <a className="btn btn-primary" href="#">Read More <span
-        className="glyphicon glyphicon-chevron-right"></span></a>
-                </div>
+            <img className="img-responsive" src="/dist/blogBgImage.png" alt=""/>
+            <hr/>
+            <p>{this.props.textBody}</p>
+            <a className="btn btn-primary" href={this.props.postURL}>Read More <span
+            className="glyphicon glyphicon-chevron-right"></span></a>
+            {this.props.hr}
+        </div>
         );
     }
+}
+
+HomePost.propTypes = {
+    title: React.PropTypes.string.isRequired,
+    author: React.PropTypes.string.isRequired,
+    authorProfileURL: React.PropTypes.string.isRequired,
+    timestamp: React.PropTypes.string.isRequired,
+    textBody: React.PropTypes.string.isRequired,
+    postURL: React.PropTypes.string.isRequired
 }
