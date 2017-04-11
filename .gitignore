@@ -23,7 +23,7 @@ nbdist/
 .nb-gradle/
 
 #Design
-design/vendor/
-design/node_modules/
+resources/design/vendor/
+resources/design/node_modules/
 frontend/vendor/
-frontend/node_modules/*
+frontend/node_modules/
