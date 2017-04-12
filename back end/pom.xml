@@ -72,7 +72,7 @@
                             <encoding>UTF-8</encoding>
                             <resources>
                                 <resource>
-                                    <directory>../frontend/dist</directory>
+                                    <directory>../front end/dist</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>
