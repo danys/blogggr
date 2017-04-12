@@ -40,7 +40,7 @@
                         <configuration>
                             <executable>npm</executable>
                             <arguments>
-                                <argument>start</argument>
+                                <argument>dev</argument>
                             </arguments>
                         </configuration>
                         <goals>

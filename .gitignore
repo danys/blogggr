@@ -25,5 +25,7 @@ nbdist/
 #Design
 resources/design/vendor/
 resources/design/node_modules/
-frontend/vendor/
-frontend/node_modules/
+front end/vendor/
+front end/node_modules/
+back end/mvnw
+back end/mvnw.cmd
