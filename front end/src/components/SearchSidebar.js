@@ -1,21 +1,29 @@
-import React,{PropTypes} from 'react'
+import React from 'react'
 
 export default class SearchSidebar extends React.Component{
 
     constructor(props){
         super(props);
         this.handleSearch = this.handleSearch.bind(this);
+        this.updateTitle = this.updateTitle.bind(this);
+        this.updatePoster = this.updatePoster.bind(this);
+        this.handleRadio = this.handleRadio.bind(this);
     }
 
     handleSearch(){
-        const title = jQuery("#titleSearchKey").val();
-        const postAuthor = jQuery("#posterSearchKey").val();
-        let visibility;
-        if (jQuery("#searchVisibilityAll").is(":checked")) visibility = 'all';
-        else if (jQuery("#searchVisibilityOnlyGlobal").is(":checked")) visibility = 'onlyGlobal';
-        else if (jQuery("#searchVisibilityOnlyFriends").is(":checked")) visibility = 'onlyFriends';
-        else if (jQuery("#onlyMe").is(":checked")) visibility = 'onlyCurrentUser';
-        this.props.handleSearch(title, postAuthor, visibility);
+        this.props.handleSearch();
+    }
+
+    updateTitle(event){
+        this.props.updateTitle(event.target.value);
+    }
+
+    updatePoster(event){
+        this.props.updatePoster(event.target.value);
+    }
+
+    handleRadio(event){
+        this.props.updateVisibility(event.target.value);
     }
 
     render(){
@@ -24,39 +32,39 @@ export default class SearchSidebar extends React.Component{
             <h4>Blog Search</h4>
             <div className="form-group">
                 <label htmlFor="titleSearchKey">Blog title</label>
-                <input type="text" className="form-control" placeholder="Title" id="titleSearchKey"/>
+                <input type="text" className="form-control" placeholder="Title" id="titleSearchKey" onChange={this.updateTitle} value={this.props.title}/>
             </div>
             <div className="form-group">
                 <label htmlFor="posterSearchKey">Blog poster</label>
-                <input type="text" className="form-control" placeholder="User name" id="posterSearchKey"/>
+                <input type="text" className="form-control" placeholder="User name" id="posterSearchKey" onChange={this.updatePoster} value={this.props.postUserID}/>
             </div>
             <div className="form-group">
                 <label htmlFor="posterSearchKey">Post visibility</label>
                 <div className="radio">
                     <label>
                         <input type="radio" name="searchVisibility" id="searchVisibilityAll" value="all"
-                               checked/>
+                               checked={this.props.visibility==='all'} onChange={this.handleRadio}/>
                         All posts
                     </label>
                 </div>
                 <div className="radio">
                     <label>
                         <input type="radio" name="searchVisibility" id="searchVisibilityOnlyGlobal"
-                               value="onlyGlobal"/>
+                               value="onlyGlobal" checked={this.props.visibility==='onlyGlobal'} onChange={this.handleRadio}/>
                         Only global
                     </label>
                 </div>
                 <div className="radio">
                     <label>
                         <input type="radio" name="searchVisibility" id="searchVisibilityOnlyFriends"
-                               value="onlyFriends"/>
+                               value="onlyFriends" checked={this.props.visibility==='onlyFriends'} onChange={this.handleRadio}/>
                         Only friends
                     </label>
                 </div>
                 <div className="radio">
                     <label>
                         <input type="radio" name="searchVisibility" id="searchVisibilityOnlyMe"
-                               value="onlyMe"/>
+                               value="onlyMe" checked={this.props.visibility==='onlyMe'} onChange={this.handleRadio}/>
                         Only your posts
                     </label>
                 </div>
@@ -67,8 +75,4 @@ export default class SearchSidebar extends React.Component{
         </div>
         );
     }
-}
-
-SearchSidebar.propTypes = {
-    handleSearch: React.PropTypes.func
 }
