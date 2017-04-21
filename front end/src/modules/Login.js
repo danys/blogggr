@@ -1,6 +1,6 @@
-import React, {PropTypes} from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
-import {loginAction} from '../actions/action'
+import {loginAction} from '../actions/SessionActions'
 import {post} from '../utils/ajax'
 import {red}  from '../consts/Constants'
 
@@ -81,10 +81,6 @@ export class Login extends React.Component{
             </div>
         );
     }
-}
-
-Login.propTypes = {
-    storeToken: PropTypes.func.isRequired
 }
 
 const mapDispatchToProps = (dispatch) => {
