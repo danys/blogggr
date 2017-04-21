@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react'
 
 import { connect } from 'react-redux'
-import { logoutAction } from '../actions/action'
+import { logoutAction } from '../actions/SessionActions'
 import {del} from '../utils/ajax'
 import {red}  from '../consts/Constants'
 
@@ -123,9 +123,9 @@ Navbar.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
- loggedin: state.loggedin,
- sessionURL: state.sessionURL,
- token: state.token
+ loggedin: state.session.loggedin,
+ sessionURL: state.session.sessionURL,
+ token: state.session.token
  });
 
 const mapDispatchToProps = (dispatch) => {
