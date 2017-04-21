@@ -10,10 +10,7 @@ import com.blogggr.strategies.invoker.*;
 import com.blogggr.strategies.responses.GetResponse;
 import com.blogggr.strategies.responses.PostResponse;
 import com.blogggr.strategies.responses.PutResponse;
-import com.blogggr.strategies.validators.GetUsersValidator;
-import com.blogggr.strategies.validators.IdValidator;
-import com.blogggr.strategies.validators.UserPostDataValidator;
-import com.blogggr.strategies.validators.UserPutDataValidator;
+import com.blogggr.strategies.validators.*;
 import com.blogggr.utilities.HTTPMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,8 +42,15 @@ public class UsersController {
         return model.execute(params,header,null);
     }
 
+    //GET /users/me
+    @RequestMapping(path = userPath+"/me", method = RequestMethod.GET)
+    public ResponseEntity getCurrentUser(@RequestHeader Map<String,String> header){
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new NoCheckValidator(), new InvokeGetUserMeService(userService), new GetResponse());
+        return model.execute(null,header,null);
+    }
+
     //GET /users/id
-    @RequestMapping(path = userPath+"/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = userPath+"/{id:[\\d]+}", method = RequestMethod.GET)
     public ResponseEntity getUser(@PathVariable String id, @RequestHeader Map<String,String> header) {
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
