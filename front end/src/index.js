@@ -9,10 +9,10 @@ import App from './modules/App';
 import Login from './modules/Login';
 import {Signup} from './modules/Signup';
 import BlogHome from './modules/BlogHome';
-import {loginDetails} from './reducers/reducer';
+import reducer from './reducers/index';
 
 const persistedState = loadState();
-const store = createStore(loginDetails, persistedState);
+const store = createStore(reducer, persistedState);
 store.subscribe(()=>{
     saveState(store.getState())
 });
