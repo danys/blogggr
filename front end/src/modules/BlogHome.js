@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import HomePosts from '../components/HomePosts'
 import Welcome from '../components/Welcome'
-import { logoutAction } from '../actions/action'
+import { logoutAction } from '../actions/SessionActions'
 
 export class BlogHome extends React.Component{
 
@@ -37,8 +37,8 @@ export class BlogHome extends React.Component{
 
 const mapStateToProps = (state) => {
     return {
-        loggedin: state.loggedin,
-        validUntil: state.validUntil
+        loggedin: state.session.loggedin,
+        validUntil: state.session.validUntil
     }
 }
 
