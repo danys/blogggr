@@ -1,6 +1,9 @@
-import React from 'react'
+import React from 'react';
+import Select from 'react-select'
+import {get} from '../utils/ajax'
+import { connect } from 'react-redux'
 
-export default class SearchSidebar extends React.Component{
+export class SearchSidebar extends React.Component{
 
     constructor(props){
         super(props);
@@ -8,6 +11,8 @@ export default class SearchSidebar extends React.Component{
         this.updateTitle = this.updateTitle.bind(this);
         this.updatePoster = this.updatePoster.bind(this);
         this.handleRadio = this.handleRadio.bind(this);
+        this.getOptions = this.getOptions.bind(this);
+        this.usersURL = "/api/v1.0/users?search=";
     }
 
     handleSearch(){
@@ -26,6 +31,22 @@ export default class SearchSidebar extends React.Component{
         this.props.updateVisibility(event.target.value);
     }
 
+    getOptions(input, callback) {
+        setTimeout(() => {
+            get(this.usersURL+input,
+                {},
+                (data)=>{
+                    const selectOptions = data.data.pageItems.map((obj)=>{let val = {};val['label']=obj.firstName+' '+obj.lastName;val['value']=obj.userID;return val;});
+                    callback(null, {
+                        options: selectOptions
+                    })
+                },
+                (jqXHR)=>{
+                    console.log("Error getting matching users");
+                },{'Authorization': this.props.token});
+        }, 500);
+    };
+
     render(){
         return (
         <div className="well">
@@ -36,7 +57,11 @@ export default class SearchSidebar extends React.Component{
             </div>
             <div className="form-group">
                 <label htmlFor="posterSearchKey">Blog poster</label>
-                <input type="text" className="form-control" placeholder="User name" id="posterSearchKey" onChange={this.updatePoster} value={this.props.postUserID}/>
+                <Select.Async
+                    name="user-select"
+                    value={this.props.postUserName}
+                    loadOptions={this.getOptions}
+                />
             </div>
             <div className="form-group">
                 <label htmlFor="posterSearchKey">Post visibility</label>
@@ -76,3 +101,12 @@ export default class SearchSidebar extends React.Component{
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    token: state.session.token
+});
+
+export default connect(
+    mapStateToProps,
+    null
+)(SearchSidebar);

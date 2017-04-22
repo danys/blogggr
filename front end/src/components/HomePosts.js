@@ -105,6 +105,7 @@ export class HomePosts extends React.Component {
                              updateVisibility={this.searchVisibilityUpdate}
                              title={this.state.title}
                              postUserID={this.state.postUserID}
+                             postUserName={this.state.postUserName}
                              visibility={this.state.visibility}
                     />
                 </div>
