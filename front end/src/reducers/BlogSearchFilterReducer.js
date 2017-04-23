@@ -2,9 +2,8 @@ import { SET_TITLE, SET_POSTER, SET_VISIBILITY } from '../actions/BlogSearchFilt
 
 const initialState = {
     title: '',
-    postUserID: '',
-    postUserName: '',
-    visibility: 'all',
+    poster: null,
+    visibility: 'all'
 };
 
 export function BlogSearchFilterReducer(state = initialState, action) {
@@ -12,7 +11,7 @@ export function BlogSearchFilterReducer(state = initialState, action) {
         case SET_TITLE:
             return Object.assign({}, state, {title: action.title});
         case SET_POSTER:
-            return Object.assign({}, state, {postUserID: action.postUserID, postUserName: action.postUserName});
+            return Object.assign({}, state, {poster: action.poster});
         case SET_VISIBILITY:
             return Object.assign({}, state, {visibility: action.visibility});
         default:
