@@ -2,6 +2,7 @@ import React from 'react';
 import Select from 'react-select'
 import {get} from '../utils/ajax'
 import { connect } from 'react-redux'
+import debounce from 'lodash/debounce'
 
 export class SearchSidebar extends React.Component{
 
@@ -12,6 +13,8 @@ export class SearchSidebar extends React.Component{
         this.updatePoster = this.updatePoster.bind(this);
         this.handleRadio = this.handleRadio.bind(this);
         this.getOptions = this.getOptions.bind(this);
+        this.updatePoster = this.updatePoster.bind(this);
+        this.debouncedOptions = debounce(this.getOptions,500);
         this.usersURL = "/api/v1.0/users?search=";
     }
 
@@ -23,8 +26,8 @@ export class SearchSidebar extends React.Component{
         this.props.updateTitle(event.target.value);
     }
 
-    updatePoster(event){
-        this.props.updatePoster(event.target.value);
+    updatePoster(value){
+        this.props.updatePoster(value); //value has label and value keys
     }
 
     handleRadio(event){
@@ -32,22 +35,23 @@ export class SearchSidebar extends React.Component{
     }
 
     getOptions(input, callback) {
-        setTimeout(() => {
-            get(this.usersURL+input,
-                {},
-                (data)=>{
-                    const selectOptions = data.data.pageItems.map((obj)=>{let val = {};val['label']=obj.firstName+' '+obj.lastName;val['value']=obj.userID;return val;});
-                    callback(null, {
-                        options: selectOptions
-                    })
-                },
-                (jqXHR)=>{
-                    console.log("Error getting matching users");
-                },{'Authorization': this.props.token});
-        }, 500);
+        if (input.length<3) return;
+        get(this.usersURL+input,
+            {},
+            (data)=>{
+                const selectOptions = data.data.pageItems.map((obj)=>{let val = {};val['label']=obj.firstName+' '+obj.lastName;val['value']=obj.userID;return val;});
+                callback(null, {
+                    options: selectOptions,
+                    complete: true
+                })
+            },
+            (jqXHR)=>{
+                console.log("Error getting matching users");
+            },{'Authorization': this.props.token});
     };
 
     render(){
+        const posterLabel = ('label' in this.props.poster)?this.props.poster.label:'';
         return (
         <div className="well">
             <h4>Blog Search</h4>
@@ -59,8 +63,12 @@ export class SearchSidebar extends React.Component{
                 <label htmlFor="posterSearchKey">Blog poster</label>
                 <Select.Async
                     name="user-select"
-                    value={this.props.postUserName}
-                    loadOptions={this.getOptions}
+                    multi={false}
+                    value={posterLabel}
+                    loadOptions={this.debouncedOptions}
+                    onChange={this.updatePoster}
+                    valueKey="label"
+                    autoload={false}
                 />
             </div>
             <div className="form-group">
