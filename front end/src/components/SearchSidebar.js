@@ -54,7 +54,7 @@ export class SearchSidebar extends React.Component{
         const posterLabel = ('label' in this.props.poster)?this.props.poster.label:'';
         return (
         <div className="well">
-            <h4>Blog Search</h4>
+            <h4>Search for blog posts</h4>
             <div className="form-group">
                 <label htmlFor="titleSearchKey">Blog title</label>
                 <input type="text" className="form-control" placeholder="Title" id="titleSearchKey" onChange={this.updateTitle} value={this.props.title}/>
@@ -102,8 +102,13 @@ export class SearchSidebar extends React.Component{
                     </label>
                 </div>
             </div>
-            <button type="button" className="btn btn-sm btn-primary btn-block" onClick={this.handleSearch}>
+            <button type="button" className="btn btn-md btn-primary btn-block" onClick={this.handleSearch}>
                 <span className="glyphicon glyphicon-search"> Search</span>
+            </button>
+            <br/>
+            <h4>Create a new blog post</h4>
+            <button type="button" className="btn btn-md btn-primary btn-block" onClick={this.showNewPostModal}>
+                New post
             </button>
         </div>
         );

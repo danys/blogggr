@@ -78,7 +78,7 @@ export class HomePosts extends React.Component {
     }
 
     render() {
-        const homePosts = (this.state.postsData==null)?null:this.state.postsData.pageItems.map(
+        const homePosts = (this.state.postsData==null || this.state.postsData.pageItems.length==0)?'No matching posts found!':this.state.postsData.pageItems.map(
             (post,index) => {return <HomePost key={index} title={post.title}
                                  author={post.user.firstName+' '+post.user.lastName}
                                  authorProfileURL={'/users/'+post.user.userID}
@@ -92,7 +92,7 @@ export class HomePosts extends React.Component {
         return (
             <div className="row">
                 <div className="col-md-8">
-                    <h2>Hi, {userFirst} {userLast}</h2>
+                    <div className="userHomeName">Hello, {userFirst} {userLast}</div>
                     <h1 className="page-header">Blog posts</h1>
                     {homePosts}
                 </div>
