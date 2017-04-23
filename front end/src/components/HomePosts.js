@@ -21,8 +21,7 @@ export class HomePosts extends React.Component {
         this.userMeURL = "/api/v1.0/users/me";
         this.state = {
             title: this.props.title,
-            postUserID: this.props.posterUserID,
-            postUserName: '', //TODO
+            poster: {}, //gets label and value keys
             visibility: this.props.visibility,
             limit: 10
         }
@@ -51,11 +50,10 @@ export class HomePosts extends React.Component {
         this.props.setSearchTitle(newTitle);
     }
 
-    searchBlogPosterUpdate(blogPoster){
-        //Perform a search for blogPoster and retrieve names and IDS
-        this.setState({posterUserID: blogPoster});
-        //this.props.setSearchPoster(blogPoster);
-        //TODO set postername AND ID
+    searchBlogPosterUpdate(selectedValue){
+        if (selectedValue==null) selectedValue = {};
+        this.setState({poster: selectedValue});
+        this.props.setSearchPoster(selectedValue);
     }
 
     searchVisibilityUpdate(visibility){
@@ -66,7 +64,7 @@ export class HomePosts extends React.Component {
     searchPosts(){
         let requestData = {};
         if (this.state.title!=undefined && this.state.title!=='') requestData['title']=this.state.title;
-        if (this.state.postUserID!=undefined && this.state.postUserID!='') requestData['posterUserID']=this.state.postUserID;
+        if (this.state.poster!=undefined && 'value' in this.state.poster) requestData['posterUserID']=this.state.poster.value;
         if (this.state.visibility!=undefined && this.state.visibility!='') requestData['visibility']=this.state.visibility;
         if (this.state.limit!=undefined && this.state.limit!='') requestData['limit']=this.state.limit;
         get(this.postsURL,
@@ -104,8 +102,7 @@ export class HomePosts extends React.Component {
                              updatePoster={this.searchBlogPosterUpdate}
                              updateVisibility={this.searchVisibilityUpdate}
                              title={this.state.title}
-                             postUserID={this.state.postUserID}
-                             postUserName={this.state.postUserName}
+                             poster={this.state.poster}
                              visibility={this.state.visibility}
                     />
                 </div>
@@ -116,7 +113,8 @@ export class HomePosts extends React.Component {
 
 const mapStateToProps = (state) => ({
     token: state.session.token,
-    posterUserID: state.blogSearchFilter.posterUserID,
+    posterUserID: state.blogSearchFilter.postUserID,
+    posterUserName: state.blogSearchFilter.postUserName,
     title: state.blogSearchFilter.title,
     visibility: state.blogSearchFilter.visibility,
 });
@@ -129,8 +127,8 @@ const mapDispatchToProps = (dispatch) => {
         setSearchTitle: (title) => {
             dispatch(setTitle(title))
         },
-        setSearchPoster: (posterID, posterName) => {
-            dispatch(setPoster(posterID, posterName))
+        setSearchPoster: (poster) => {
+            dispatch(setPoster(poster))
         },
         setSearchVisibility: (visibility) => {
             dispatch(setVisibility(visibility))
