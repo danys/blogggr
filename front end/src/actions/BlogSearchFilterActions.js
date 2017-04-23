@@ -9,11 +9,10 @@ export function setTitle(title){
     };
 };
 
-export function setPoster(posterID, posterName){
+export function setPoster(poster){
     return {
         type: SET_POSTER,
-        postUserID: posterID,
-        postUserName: posterName
+        poster: poster
     };
 };
 
