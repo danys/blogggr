@@ -107,7 +107,7 @@ export class SearchSidebar extends React.Component{
             </button>
             <br/>
             <h4>Create a new blog post</h4>
-            <button type="button" className="btn btn-md btn-primary btn-block" onClick={this.showNewPostModal}>
+            <button type="button" className="btn btn-md btn-primary btn-block" onClick={this.props.showNewPostModal}>
                 New post
             </button>
         </div>

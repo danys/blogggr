@@ -7,6 +7,9 @@ import {red}  from '../consts/Constants'
 import {HomePost} from './HomePost'
 import { updateUserData } from '../actions/UserDataActions'
 import { setTitle, setPoster, setVisibility } from '../actions/BlogSearchFilterActions'
+import {Modal} from '../components/Modal'
+import {blue} from '../consts/Constants'
+import CreatePostForm from '../components/CreatePostForm'
 
 export class HomePosts extends React.Component {
 
@@ -77,6 +80,10 @@ export class HomePosts extends React.Component {
             },{'Authorization': this.props.token});
     }
 
+    showCreatePost(){
+        $('#newPostModal').modal('show');
+    }
+
     render() {
         const homePosts = (this.state.postsData==null || this.state.postsData.pageItems.length==0)?'No matching posts found!':this.state.postsData.pageItems.map(
             (post,index) => {return <HomePost key={index} title={post.title}
@@ -90,22 +97,26 @@ export class HomePosts extends React.Component {
         const userFirst = (this.state.userData==null || this.state.userData.firstName==null)?null:this.state.userData.firstName;
         const userLast = (this.state.userData==null || this.state.userData.lastName==null)?null:this.state.userData.lastName;
         return (
-            <div className="row">
-                <div className="col-md-8">
-                    <div className="userHomeName">Hello, {userFirst} {userLast}</div>
-                    <h1 className="page-header">Blog posts</h1>
-                    {homePosts}
+            <div>
+                <div className="row">
+                    <div className="col-md-8">
+                        <div className="userHomeName">Hello, {userFirst} {userLast}</div>
+                        <h1 className="page-header">Blog posts</h1>
+                        {homePosts}
+                    </div>
+                    <div className="col-md-4">
+                        <Sidebar handleSearch={this.searchPosts}
+                                 updateTitle={this.searchTitleUpdate}
+                                 updatePoster={this.searchBlogPosterUpdate}
+                                 updateVisibility={this.searchVisibilityUpdate}
+                                 title={this.state.title}
+                                 poster={this.state.poster}
+                                 visibility={this.state.visibility}
+                                 showNewPostModal={this.showCreatePost}
+                        />
+                    </div>
                 </div>
-                <div className="col-md-4">
-                    <Sidebar handleSearch={this.searchPosts}
-                             updateTitle={this.searchTitleUpdate}
-                             updatePoster={this.searchBlogPosterUpdate}
-                             updateVisibility={this.searchVisibilityUpdate}
-                             title={this.state.title}
-                             poster={this.state.poster}
-                             visibility={this.state.visibility}
-                    />
-                </div>
+                <Modal title={'Create a new post'} body={CreatePostForm} modalId='newPostModal' color={blue} hasFooter={true}/>
             </div>
         );
     }

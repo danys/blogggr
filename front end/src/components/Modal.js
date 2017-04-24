@@ -9,6 +9,12 @@ export class Modal extends React.Component {
     render(){
         const idAttr = {id: this.props.modalId};
         const headerColorStyle = {backgroundColor: this.props.color};
+        const footerCode = (
+            <div className="modal-footer">
+                <button type="button" className="btn btn-default" data-dismiss="modal">{this.props.footerButtonCaption}</button>
+            </div>
+        );
+        const footer = (this.props.hasFooter)?footerCode:null;
         return (
         <div {...idAttr} className="modal fade" tabIndex="-1" role="dialog">
             <div className="modal-dialog" role="document">
@@ -20,6 +26,7 @@ export class Modal extends React.Component {
                     <div className="modal-body">
                         {this.props.body}
                     </div>
+                    {footer}
                 </div>
             </div>
         </div>
@@ -29,10 +36,12 @@ export class Modal extends React.Component {
 
 Modal.propTypes = {
     title: PropTypes.string.isRequired,
-    body: PropTypes.string.isRequired
+    //body: PropTypes.node
 }
 
 Modal.defaultProps = {
     title: 'Title',
-    body: 'Body text'
+    //body: 'Text body',
+    hasFooter: false,
+    footerButtonCaption: 'Save'
 }
