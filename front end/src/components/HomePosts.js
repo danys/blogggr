@@ -116,7 +116,7 @@ export class HomePosts extends React.Component {
                         />
                     </div>
                 </div>
-                <Modal title={'Create a new post'} body={CreatePostForm} modalId='newPostModal' color={blue} hasFooter={true}/>
+                <Modal title={'Create a new post'} body={<CreatePostForm/>} modalId='newPostModal' color={blue} hasFooter={true}/>
             </div>
         );
     }

@@ -98,7 +98,7 @@ export class SearchSidebar extends React.Component{
                     <label>
                         <input type="radio" name="searchVisibility" id="searchVisibilityOnlyMe"
                                value="onlyMe" checked={this.props.visibility==='onlyMe'} onChange={this.handleRadio}/>
-                        Only your posts
+                        Only my posts
                     </label>
                 </div>
             </div>
