@@ -1,15 +1,14 @@
 import React from 'react'
 
 import Sidebar from './SearchSidebar'
-import {get} from '../utils/ajax'
+import {get,post} from '../utils/ajax'
 import { connect } from 'react-redux'
-import {red}  from '../consts/Constants'
+import {red, green, blue}  from '../consts/Constants'
 import {HomePost} from './HomePost'
 import { updateUserData } from '../actions/UserDataActions'
 import { setTitle, setPoster, setVisibility } from '../actions/BlogSearchFilterActions'
 import {Modal} from '../components/Modal'
-import {blue} from '../consts/Constants'
-import CreatePostForm from '../components/CreatePostForm'
+import {CreatePostForm} from '../components/CreatePostForm'
 
 export class HomePosts extends React.Component {
 
@@ -84,6 +83,23 @@ export class HomePosts extends React.Component {
         $('#newPostModal').modal('show');
     }
 
+    createPost(data){
+        let requestData = {};
+        requestData.title=data.title;
+        requestData.textBody=data.textBody;
+        requestData.global = (requestData['isGlobal']==='isGlobal')?true:false;
+        post(this.postsURL, requestData,
+            (data)=>{
+                this.props.showOverlayMsg('Success', 'Successfully created post!', green);
+                this.searchPosts();
+            },
+            (jqXHR)=>{
+                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+                errorMsg = errorMsg.substring(1,errorMsg.length-1);
+                this.props.showOverlayMsg('Error creating post', errorMsg, red);
+            },{'Authorization': this.props.token});
+    }
+
     render() {
         const homePosts = (this.state.postsData==null || this.state.postsData.pageItems.length==0)?'No matching posts found!':this.state.postsData.pageItems.map(
             (post,index) => {return <HomePost key={index} title={post.title}
@@ -116,7 +132,7 @@ export class HomePosts extends React.Component {
                         />
                     </div>
                 </div>
-                <Modal title={'Create a new post'} body={<CreatePostForm/>} modalId='newPostModal' color={blue} hasFooter={true}/>
+                <Modal title={'Create a new post'} body={<CreatePostForm/>} footerAction={this.createPost.bind(this)} modalId='newPostModal' footerButtonCaption='Save' color={blue} hasFooter={true}/>
             </div>
         );
     }

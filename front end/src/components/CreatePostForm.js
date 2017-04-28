@@ -1,9 +1,13 @@
 import React from 'react'
 
-export default class CreatePostForm extends React.Component {
+export class CreatePostForm extends React.Component {
 
     constructor(props){
         super(props);
+    }
+
+    handleChange(key, event){
+        this.props.onChange(key, event.target.value);
     }
 
     render(){
@@ -12,12 +16,19 @@ export default class CreatePostForm extends React.Component {
             <form>
                 <div className="form-group">
                     <label htmlFor="createPostTitle">Post's title</label>
-                    <input type="text" className="form-control" id="createPostTitle" placeholder="Title" />
+                    <input type="text" className="form-control" id="createPostTitle" placeholder="Title" onChange={this.handleChange.bind(this, 'title')} />
                 </div>
                 <div className="form-group">
                     <label htmlFor="createPostText">Post's text</label>
-                    <textarea rows="20" className="form-control" id="createPostText" placeholder="Text">
+                    <textarea rows="20" className="form-control" id="createPostText" placeholder="Text" onChange={this.handleChange.bind(this, 'textBody')}>
                     </textarea>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="createPostVisibility">Post visibility</label>
+                    <select className="form-control" id="createPostVisibility" onChange={this.handleChange.bind(this, 'isGlobal')}>
+                        <option>Global</option>
+                        <option>Restricted</option>
+                    </select>
                 </div>
             </form>
         );
