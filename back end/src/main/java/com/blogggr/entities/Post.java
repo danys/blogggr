@@ -33,7 +33,7 @@ public class Post implements Serializable {
 	private Boolean isGlobal;
 
 	//bi-directional many-to-one association to Comment
-	@OneToMany(mappedBy="post")
+	@OneToMany(mappedBy="post", fetch=FetchType.LAZY)
 	private List<Comment> comments;
 
 	//bi-directional many-to-one association to User

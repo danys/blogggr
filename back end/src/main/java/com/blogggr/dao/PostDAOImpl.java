@@ -76,6 +76,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             return page;
         }
         catch (Exception e) {
+            e.printStackTrace();
             throw new DBException("Database exception!");
         }
     }
@@ -113,7 +114,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         }
         //Post user condition
         Predicate postUserCondition = null;
-        if (postUserID != null)
+        if (postUserID != null && visibility!=Visibility.onlyCurrentUser)
             postUserCondition = cb.equal(postUserJoin.get(User_.userID), postUserID.longValue());
         Predicate postAfterCondition = null;
         Predicate postBeforeCondition = null;
@@ -141,14 +142,14 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         //Visibility current user
         else if (visibility == Visibility.onlyCurrentUser) { //postUserID is ignored
             predicatesOr1.add(cb.equal(postUserJoin.get(User_.userID), userID)); //filter on current user
-            predicatesOr1.add(titleCondition); //filter on title
+            if (titleCondition!=null) predicatesOr1.add(titleCondition); //filter on title
             if (!countOnly){
                 if (postAfterCondition!=null) predicatesOr1.add(postAfterCondition);
                 else predicatesOr1.add(postBeforeCondition);
             }
             predicatesOr1Array = new Predicate[predicatesOr1.size()];
             query.where(
-                    cb.and(cb.and(predicatesOr1Array))
+                    cb.and(predicatesOr1Array)
             );
         }
         //Visibility is friend

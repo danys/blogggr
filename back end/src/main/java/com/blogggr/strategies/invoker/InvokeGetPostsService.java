@@ -47,10 +47,10 @@ public class InvokeGetPostsService implements ServiceInvocationStrategy {
             visibility = input.get(GetPostsValidator.visibilityKey);
         }
         if (visibility!=null){
-            if (visibility.compareTo(PostDAOImpl.Visibility.onlyGlobal.name())!=0) visi = PostDAOImpl.Visibility.onlyGlobal;
-            else if (visibility.compareTo(PostDAOImpl.Visibility.all.name())!=0) visi = PostDAOImpl.Visibility.all;
-            else if (visibility.compareTo(PostDAOImpl.Visibility.onlyFriends.name())!=0) visi = PostDAOImpl.Visibility.onlyFriends;
-            else if (visibility.compareTo(PostDAOImpl.Visibility.onlyCurrentUser.name())!=0) visi = PostDAOImpl.Visibility.onlyCurrentUser;
+            if (visibility.compareTo(PostDAOImpl.Visibility.onlyGlobal.name())==0) visi = PostDAOImpl.Visibility.onlyGlobal;
+            else if (visibility.compareTo(PostDAOImpl.Visibility.all.name())==0) visi = PostDAOImpl.Visibility.all;
+            else if (visibility.compareTo(PostDAOImpl.Visibility.onlyFriends.name())==0) visi = PostDAOImpl.Visibility.onlyFriends;
+            else if (visibility.compareTo(PostDAOImpl.Visibility.onlyCurrentUser.name())==0) visi = PostDAOImpl.Visibility.onlyCurrentUser;
         }
         else if (visibility==null) visi = PostDAOImpl.Visibility.all;
         //Before key
