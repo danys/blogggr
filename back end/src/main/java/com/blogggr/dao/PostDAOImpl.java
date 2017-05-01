@@ -76,8 +76,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             return page;
         }
         catch (Exception e) {
-            e.printStackTrace();
-            throw new DBException("Database exception!");
+            throw new DBException("Database exception!",e);
         }
     }
 
