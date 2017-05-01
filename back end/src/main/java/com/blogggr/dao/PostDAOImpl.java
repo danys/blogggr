@@ -148,6 +148,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
                 else predicatesOr1.add(postBeforeCondition);
             }
             predicatesOr1Array = new Predicate[predicatesOr1.size()];
+            predicatesOr1.toArray(predicatesOr1Array);
             query.where(
                     cb.and(predicatesOr1Array)
             );
