@@ -35,7 +35,14 @@ export class SearchSidebar extends React.Component{
     }
 
     getOptions(input, callback) {
-        if (input.length<3) return;
+        if (input.length<3) {
+            console.log("OK here we are!");
+            callback(null, {
+                options: [],
+                complete: true
+            });
+            return;
+        }
         get(this.usersURL+input,
             {},
             (data)=>{
@@ -43,7 +50,7 @@ export class SearchSidebar extends React.Component{
                 callback(null, {
                     options: selectOptions,
                     complete: true
-                })
+                });
             },
             (jqXHR)=>{
                 console.log("Error getting matching users");
@@ -68,6 +75,8 @@ export class SearchSidebar extends React.Component{
                     loadOptions={this.debouncedOptions}
                     onChange={this.updatePoster}
                     valueKey="label"
+                    ignoreAccents={false}
+                    ignoreCase={true}
                     autoload={false}
                 />
             </div>
