@@ -25,7 +25,8 @@ export class HomePosts extends React.Component {
             title: this.props.title,
             poster: {}, //gets label and value keys
             visibility: this.props.visibility,
-            limit: 10
+            limit: 10,
+            newPost: {isGlobal: 'Global'}
         }
     }
 
@@ -83,7 +84,8 @@ export class HomePosts extends React.Component {
         $('#newPostModal').modal('show');
     }
 
-    createPost(data){
+    createPost(){
+        const data = this.state.newPost;
         let requestData = {};
         requestData.title=data.title;
         requestData.textBody=data.textBody;
@@ -91,6 +93,8 @@ export class HomePosts extends React.Component {
         post(this.postsURL, requestData,
             (data)=>{
                 this.props.showOverlayMsg('Success', 'Successfully created post!', green);
+                const initVisibility = {isGlobal: 'Global'};
+                this.setState({newPost: initVisibility});
                 this.searchPosts();
             },
             (jqXHR)=>{
@@ -98,6 +102,12 @@ export class HomePosts extends React.Component {
                 errorMsg = errorMsg.substring(1,errorMsg.length-1);
                 this.props.showOverlayMsg('Error creating post', errorMsg, red);
             },{'Authorization': this.props.token});
+    }
+
+    updateNewPost(key, value){
+        const newPost = this.state.newPost;
+        newPost[key] = value;
+        this.setState({newPost: newPost});
     }
 
     render() {
@@ -132,7 +142,7 @@ export class HomePosts extends React.Component {
                         />
                     </div>
                 </div>
-                <Modal title={'Create a new post'} body={<CreatePostForm/>} footerAction={this.createPost.bind(this)} modalId='newPostModal' footerButtonCaption='Save' color={blue} hasFooter={true}/>
+                <Modal title={'Create a new post'} body={<CreatePostForm data={this.state.newPost} onChange={this.updateNewPost.bind(this)}/>} footerAction={this.createPost.bind(this)} modalId='newPostModal' footerButtonCaption='Save' color={blue} hasFooter={true}/>
             </div>
         );
     }

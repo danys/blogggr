@@ -4,16 +4,10 @@ export class Modal extends React.Component {
 
     constructor(props){
         super(props);
-        this.state={
-        };
     }
 
     handleButton(){
-        this.props.footerAction(this.state);
-    }
-
-    getBodyState(key, value){
-        this.setState({[key]:value});
+        this.props.footerAction();
     }
 
     render(){
@@ -25,7 +19,6 @@ export class Modal extends React.Component {
             </div>
         );
         const footer = (this.props.hasFooter)?footerCode:null;
-        const body = (typeof this.props.body==='undefined' || typeof this.props.body==='string')?this.props.body:React.cloneElement(this.props.body,{onChange: this.getBodyState.bind(this)});
         return (
         <div {...idAttr} className="modal fade" tabIndex="-1" role="dialog">
             <div className="modal-dialog" role="document">
@@ -35,7 +28,7 @@ export class Modal extends React.Component {
                         <h4 className="modal-title">{this.props.title}</h4>
                     </div>
                     <div className="modal-body">
-                        {body}
+                        {this.props.body}
                     </div>
                     {footer}
                 </div>
