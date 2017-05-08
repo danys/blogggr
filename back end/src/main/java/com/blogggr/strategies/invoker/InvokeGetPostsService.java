@@ -1,5 +1,6 @@
 package com.blogggr.strategies.invoker;
 
+import com.blogggr.config.AppConfig;
 import com.blogggr.dao.PostDAOImpl;
 import com.blogggr.entities.Post;
 import com.blogggr.exceptions.DBException;
@@ -70,6 +71,10 @@ public class InvokeGetPostsService implements ServiceInvocationStrategy {
         }
         PrevNextListPage<Post> page = postService.getPosts(userID,posterID,title,visi,before,after,limit);
         List<Post> posts = page.getPageItems();
+        posts.forEach(post->{
+            if (post.getTextBody()!=null && post.getTextBody().length()>AppConfig.maxPostBodyLength)
+            post.setTextBody(post.getTextBody().substring(0, AppConfig.maxPostBodyLength)+"...");
+        });
         //Filter attributes of the posts
         JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(posts, FilterFactory.getReducedPostFilter());
         ObjectMapper mapper = new ObjectMapper();
