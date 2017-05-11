@@ -8,6 +8,7 @@ import {loadState, saveState} from './utils/localStorage';
 import App from './modules/App';
 import Login from './modules/Login';
 import {Signup} from './modules/Signup';
+import Post from './modules/Post';
 import BlogHome from './modules/BlogHome';
 import reducer from './reducers/index';
 
@@ -24,6 +25,7 @@ ReactDOM.render(
                 <IndexRoute component={BlogHome} name="home"/>
                 <Route path="/login" component={Login} name="login"/>
                 <Route path="/signup" component={Signup} name="signup"/>
+                <Route path="/posts/:postName" component={Post} name="post"/>
                 /* TODO: "friends", "user" path names to specify */
             </Route>
         </Router>
