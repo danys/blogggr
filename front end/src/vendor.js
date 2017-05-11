@@ -29,3 +29,4 @@ import 'react-select/dist/react-select.css'
 
 //Img
 import './styling/img/blogBgImage.png'
+import './styling/img/blogCommentImage.png'
