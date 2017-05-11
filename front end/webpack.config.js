@@ -10,7 +10,8 @@ const config = {
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: '[name].bundle.js'
+        filename: '[name].bundle.js',
+        publicPath: '/'
     },
     module: {
         rules: [
@@ -71,7 +72,8 @@ const config = {
     plugins: [
         new HtmlWebpackPlugin({
             title:"Blogggr",
-            template: 'src/index.ejs'
+            template: 'src/index.ejs',
+            publicPath: '/'
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: ['app', 'vendor'],
