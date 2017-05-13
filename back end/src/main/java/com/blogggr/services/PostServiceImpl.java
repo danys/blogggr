@@ -17,6 +17,7 @@ import com.blogggr.utilities.TimeUtilities;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class PostServiceImpl implements PostService{
     private final String postNotFound = "Post not found!";
     private final String noModifyAuthorization = "No authorization to modify this post!";
     private final String noReadAuthorization = "No authorization to view this post!";
+    private final String dbException = "Database exception!";
 
     public PostServiceImpl(PostDAO postDAO, UserDAO userDAO, FriendDAO friendDAO){
         this.postDAO = postDAO;
@@ -115,5 +117,24 @@ public class PostServiceImpl implements PostService{
     public PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws ResourceNotFoundException, DBException{
         PrevNextListPage<Post> postsPage = postDAO.getPosts(userID, postUserID, title, visibility, before, after, limit);
         return postsPage;
+    }
+
+    @Override
+    public Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle) throws ResourceNotFoundException, DBException, NotAuthorizedException{
+        try{
+            Post post = postDAO.getPostByUserAndLabel(userID, postUserID, postShortTitle);
+            //1. Post can be viewed if current session user is the owner or the post has global flag
+            if (post.getUser().getUserID()==userID || post.getGlobal()) return post;
+            //2. Post can be viewed if the current user is friends with the poster
+            if (isFriendOfUser(post.getUser().getUserID(),userID)) return post;
+            //Otherwise access denied
+            throw new NotAuthorizedException(noReadAuthorization);
+        }
+        catch(NoResultException e){
+            throw new ResourceNotFoundException(postNotFound);
+        }
+        catch(RuntimeException e){
+            throw new DBException(dbException, e);
+        }
     }
 }

@@ -22,4 +22,6 @@ public interface PostService {
     Post getPostById(long postId, long userID) throws ResourceNotFoundException, DBException, NotAuthorizedException;
 
     PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws ResourceNotFoundException, DBException;
+
+    Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle) throws ResourceNotFoundException, DBException, NotAuthorizedException;
 }
