@@ -270,4 +270,19 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         return AppConfig.fullBaseUrl + PostsController.postsPath + "?" + GetPostsValidator.beforeKey
                 + "=" + String.valueOf(previous) + "&" + GetPostsValidator.limitKey + "=" + limit;
     }
+
+    @Override
+    public Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle){
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Post> query = cb.createQuery(Post.class);
+        Root<Post> root = query.from(Post.class);
+        Join<Post, User> postUserJoin = root.join(Post_.user, JoinType.LEFT);
+        query.where(
+                cb.and(
+                        cb.equal(root.get(Post_.shortTitle),postShortTitle),
+                        cb.equal(postUserJoin.get(User_.userID),postUserID)
+                )
+        );
+        return entityManager.createQuery(query).getSingleResult();
+    }
 }
