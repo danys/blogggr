@@ -11,10 +11,7 @@ import com.blogggr.strategies.responses.DeleteResponse;
 import com.blogggr.strategies.responses.GetResponse;
 import com.blogggr.strategies.responses.PostResponse;
 import com.blogggr.strategies.responses.PutResponse;
-import com.blogggr.strategies.validators.GetPostsValidator;
-import com.blogggr.strategies.validators.IdValidator;
-import com.blogggr.strategies.validators.PostPostDataValidator;
-import com.blogggr.strategies.validators.PostPutDataValidator;
+import com.blogggr.strategies.validators.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,6 +66,16 @@ public class PostsController {
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetPostService(postService), new GetResponse());
+        return model.execute(map,header,null);
+    }
+
+    //GET /users/{userID}/posts/{post-short-name}
+    @RequestMapping(path = UsersController.userPath+"/{userID}/posts/{postShortName}", method = RequestMethod.GET)
+    public ResponseEntity getPost(@PathVariable String userID, @PathVariable String postShortName, @RequestHeader Map<String,String> header){
+        Map<String,String> map = new HashMap<>();
+        map.put("userID", userID);
+        map.put("postShortName", postShortName);
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new GetPostByLabelValidator(), new InvokeGetPostByLabelService(postService), new GetResponse());
         return model.execute(map,header,null);
     }
 
