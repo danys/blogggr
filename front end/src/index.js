@@ -25,7 +25,7 @@ ReactDOM.render(
                 <IndexRoute component={BlogHome} name="home"/>
                 <Route path="/login" component={Login} name="login"/>
                 <Route path="/signup" component={Signup} name="signup"/>
-                <Route path="/posts/:postName" component={Post} name="post"/>
+                <Route path="/users/:userID/posts/:postName" component={Post} name="post"/>
                 /* TODO: "friends", "user" path names to specify */
             </Route>
         </Router>

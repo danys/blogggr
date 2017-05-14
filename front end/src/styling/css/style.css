@@ -169,4 +169,8 @@ footer {
 .userHomeName{
   size: 10px;
 }
+
+textarea {
+  resize: none;
+}
 /*# sourceMappingURL=style.css.map */

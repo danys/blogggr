@@ -1,81 +1,95 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
+import {get, post} from '../utils/ajax'
 
 class Post extends React.Component{
 
     constructor(props){
         super(props);
-        this.postsURL = "/api/v1.0/posts";
+        this.postsURL = "/api/v1.0/users/";
+        this.commentsURL = "/api/v1.0/comments";
+        this.state = {
+            commentText: ''
+        };
+        this.fetchPost = this.fetchPost.bind(this);
+    }
+
+    fetchPost(){
+        get(this.postsURL+this.props.params.userID+'/posts/'+this.props.params.postName,
+            {},
+            (data)=>{this.setState({postData: data.data})},
+            (jqXHR)=>{
+                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+                errorMsg = errorMsg.substring(1,errorMsg.length-1);
+                this.props.showOverlayMsg('Error retrieving details of the post!', errorMsg, red);
+            },{'Authorization': this.props.token});
     }
 
     componentDidMount(){
-        //Fetch const postName = this.props.params.postName;
-        //Populate post
+        this.fetchPost();
+    }
+
+    postComment(){
+        let requestData={};
+        requestData['postID']=(this.state.postData)?this.state.postData.postID:'';
+        requestData['text']=(this.state.postData)?this.state.commentText:'';
+        post(this.commentsURL,
+            requestData,
+            ()=>{this.fetchPost()},
+            (jqXHR)=>{
+                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+                errorMsg = errorMsg.substring(1,errorMsg.length-1);
+                this.props.showOverlayMsg('Error posting comment!', errorMsg, red);
+            },{'Authorization': this.props.token});
+    }
+
+    handlePostCommentChange(event){
+        this.setState({commentText: event.target.value});
     }
 
     render() {
+        const posterURL = (this.state.postData?'/users/'+this.state.postData.user.userID:'');
+        let comments = (this.state.postData?this.state.postData.comments.map((comment)=>{
+            return (
+                <div className="media">
+                    <a className="pull-left" href="#">
+                        <img className="media-object" src="/dist/blogCommentImage.png" alt="" />
+                    </a>
+                    <div className="media-body">
+                        <h4 className="media-heading">{comment.user.firstName+' '+comment.user.lastName}
+                            <small>{comment.timestamp}</small>
+                        </h4>
+                        {comment.text}
+                    </div>
+                </div>
+            )
+            }):null);
         return (
             <div className="row">
                 <div className="col-lg-8">
-                    <h1>Blog Post Title</h1>
+                    <h1>{this.state.postData?this.state.postData.title:null}</h1>
                     <p className="lead">
-                        by <a href="#">Author</a>
+                        by <a href={posterURL}>{this.state.postData?this.state.postData.user.firstName+' '+this.state.postData.user.lastName:null}</a>
                     </p>
                     <hr />
-                    <p><span className="glyphicon glyphicon-time"></span> Posted on August 24, 2013 at 9:00 PM</p>
+                    <p><span className="glyphicon glyphicon-time"></span> Posted on {this.state.postData?this.state.postData.timestamp:null}</p>
                     <hr />
                     <img className="img-responsive" src="/dist/blogBgImage.png" alt="" />
                     <hr />
-                    <p className="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus, vero, obcaecati, aut, error quam sapiente nemo saepe quibusdam sit excepturi nam quia corporis eligendi eos magni recusandae laborum minus inventore?</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ut, tenetur natus doloremque laborum quos iste ipsum rerum obcaecati impedit odit illo dolorum ab tempora nihil dicta earum fugiat. Temporibus, voluptatibus.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos, doloribus, dolorem iusto blanditiis unde eius illum consequuntur neque dicta incidunt ullam ea hic porro optio ratione repellat perspiciatis. Enim, iure!</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Error, nostrum, aliquid, animi, ut quas placeat totam sunt tempora commodi nihil ullam alias modi dicta saepe minima ab quo voluptatem obcaecati?</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum, dolor quis. Sunt, ut, explicabo, aliquam tenetur ratione tempore quidem voluptates cupiditate voluptas illo saepe quaerat numquam recusandae? Qui, necessitatibus, est!</p>
+                    <p className="lead">{this.state.postData?this.state.postData.textBody:null}</p>
                     <hr />
                     <div className="well">
                         <h4>Leave a Comment:</h4>
                         <form role="form">
                             <div className="form-group">
-                                <textarea className="form-control" rows="3"></textarea>
+                                <textarea className="form-control" rows="3" value={this.state.commentText} onChange={this.handlePostCommentChange.bind(this)}></textarea>
                             </div>
-                            <button type="submit" className="btn btn-primary">Submit</button>
+                            <button type="submit" className="btn btn-primary" onClick={this.postComment}>Submit</button>
                         </form>
                     </div>
                     <hr />
-                    <div className="media">
-                        <a className="pull-left" href="#">
-                            <img className="media-object" src="http://placehold.it/64x64" alt="" />
-                        </a>
-                        <div className="media-body">
-                            <h4 className="media-heading">Start Bootstrap
-                                <small>August 25, 2014 at 9:30 PM</small>
-                            </h4>
-                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                        </div>
-                    </div>
-                    <div className="media">
-                        <a className="pull-left" href="#">
-                            <img className="media-object" src="http://placehold.it/64x64" alt="" />
-                        </a>
-                        <div className="media-body">
-                            <h4 className="media-heading">Start Bootstrap
-                                <small>August 25, 2014 at 9:30 PM</small>
-                            </h4>
-                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                            <div className="media">
-                                <a className="pull-left" href="#">
-                                    <img className="media-object" src="http://placehold.it/64x64" alt="" />
-                                </a>
-                                <div className="media-body">
-                                    <h4 className="media-heading">Nested Start Bootstrap
-                                        <small>August 25, 2014 at 9:30 PM</small>
-                                    </h4>
-                                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {comments}
                 </div>
             </div>
         );

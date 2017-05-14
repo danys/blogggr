@@ -117,7 +117,7 @@ export class HomePosts extends React.Component {
                                  authorProfileURL={'/users/'+post.user.userID}
                                  timestamp={post.timestamp}
                                  textBody={post.textBody}
-                                 postURL={'/posts/'+post.shortTitle}
+                                 postURL={'/users/'+post.user.userID+'/posts/'+post.shortTitle}
                                  hr={(index==this.state.postsData.pageItems.length-1)?'':<hr/>}/>}
         );
         const userFirst = (this.state.userData==null || this.state.userData.firstName==null)?null:this.state.userData.firstName;
