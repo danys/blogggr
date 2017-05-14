@@ -9,7 +9,6 @@ import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.PostService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
 import com.blogggr.strategies.validators.GetPostByLabelValidator;
-import com.blogggr.strategies.validators.IdValidator;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Map;
