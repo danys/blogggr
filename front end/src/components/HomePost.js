@@ -17,7 +17,7 @@ export class HomePost extends React.Component {
             </p>
             <p><span className="glyphicon glyphicon-time"></span>Posted on {this.props.timestamp}</p>
             <hr/>
-            <img className="img-responsive" src="/dist/blogBgImage.png" alt=""/>
+            <img className="img-responsive" src="/blogBgImage.png" alt=""/>
             <hr/>
             <p>{this.props.textBody}</p>
             <a className="btn btn-primary" href={this.props.postURL}>Read More <span
