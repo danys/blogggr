@@ -36,9 +36,10 @@ class Post extends React.Component{
         requestData['text']=(this.state.postData)?this.state.commentText:'';
         post(this.commentsURL,
             requestData,
-            ()=>{this.fetchPost()},
+            ()=>{this.setState({commentText: ''},this.fetchPost())},
             (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+                console.log("Error msg = "+errorMsg);
                 errorMsg = errorMsg.substring(1,errorMsg.length-1);
                 this.props.showOverlayMsg('Error posting comment!', errorMsg, red);
             },{'Authorization': this.props.token});
@@ -50,11 +51,11 @@ class Post extends React.Component{
 
     render() {
         const posterURL = (this.state.postData?'/users/'+this.state.postData.user.userID:'');
-        let comments = (this.state.postData?this.state.postData.comments.map((comment)=>{
+        let comments = (this.state.postData?this.state.postData.comments.map((comment, index)=>{
             return (
-                <div className="media">
+                <div key={index} className="media">
                     <a className="pull-left" href="#">
-                        <img className="media-object" src="/dist/blogCommentImage.png" alt="" />
+                        <img className="media-object" src="/blogCommentImage.png" alt="" />
                     </a>
                     <div className="media-body">
                         <h4 className="media-heading">{comment.user.firstName+' '+comment.user.lastName}
@@ -75,7 +76,7 @@ class Post extends React.Component{
                     <hr />
                     <p><span className="glyphicon glyphicon-time"></span> Posted on {this.state.postData?this.state.postData.timestamp:null}</p>
                     <hr />
-                    <img className="img-responsive" src="/dist/blogBgImage.png" alt="" />
+                    <img className="img-responsive" src="/blogBgImage.png" alt="" />
                     <hr />
                     <p className="lead">{this.state.postData?this.state.postData.textBody:null}</p>
                     <hr />
@@ -85,7 +86,7 @@ class Post extends React.Component{
                             <div className="form-group">
                                 <textarea className="form-control" rows="3" value={this.state.commentText} onChange={this.handlePostCommentChange.bind(this)}></textarea>
                             </div>
-                            <button type="submit" className="btn btn-primary" onClick={this.postComment}>Submit</button>
+                            <button type="submit" className="btn btn-primary" onClick={this.postComment.bind(this)}>Submit</button>
                         </form>
                     </div>
                     <hr />
