@@ -4,9 +4,10 @@
   "description": "Blogggr JavaScript React frontend",
   "main": "index.js",
   "scripts": {
+    "scss": "./node-scripts/sass-compiler.js",
     "transpile": "babel src --out-dir dist",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --hot --inline",
+    "dev": "npm run scss && webpack-dev-server --hot --inline",
     "clean": "rm -rf dist",
     "build": "npm run clean && webpack"
   },
@@ -24,6 +25,7 @@
     "lodash": "~4.17.4"
   },
   "devDependencies": {
+    "node-sass": "~4.3.0",
     "babel-cli": "^6.0.0",
     "babel-core": "~6.23.1",
     "babel-loader": "~6.3.0",
