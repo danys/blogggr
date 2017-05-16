@@ -1,4 +1,5 @@
 import React, {PropTypes} from 'react'
+import { browserHistory } from 'react-router';
 
 export class HomePost extends React.Component {
 
@@ -10,7 +11,7 @@ export class HomePost extends React.Component {
         return (
         <div>
             <h2>
-                <a href={this.props.postURL}>{this.props.title}</a>
+                <a href={this.props.postURL} onClick={(e)=>{e.preventDefault();browserHistory.push(this.props.postURL)}}>{this.props.title}</a>
             </h2>
             <p className="lead">
                 by <a href={this.props.authorProfileURL}>{this.props.author}</a>
