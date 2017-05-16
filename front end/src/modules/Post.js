@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import {get, post} from '../utils/ajax'
+import {red}  from '../consts/Constants'
 
 class Post extends React.Component{
 
@@ -13,6 +14,8 @@ class Post extends React.Component{
             commentText: ''
         };
         this.fetchPost = this.fetchPost.bind(this);
+        this.postComment = this.postComment.bind(this);
+        this.handlePostCommentChange = this.handlePostCommentChange.bind(this);
     }
 
     fetchPost(){
@@ -32,14 +35,13 @@ class Post extends React.Component{
 
     postComment(){
         let requestData={};
-        requestData['postID']=(this.state.postData)?this.state.postData.postID:'';
-        requestData['text']=(this.state.postData)?this.state.commentText:'';
+        requestData["postID"]=(this.state.postData)?this.state.postData.postID:'';
+        requestData["text"]=(this.state.postData)?this.state.commentText:'';
         post(this.commentsURL,
             requestData,
             ()=>{this.setState({commentText: ''},this.fetchPost())},
             (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                console.log("Error msg = "+errorMsg);
                 errorMsg = errorMsg.substring(1,errorMsg.length-1);
                 this.props.showOverlayMsg('Error posting comment!', errorMsg, red);
             },{'Authorization': this.props.token});
@@ -84,9 +86,9 @@ class Post extends React.Component{
                         <h4>Leave a Comment:</h4>
                         <form role="form">
                             <div className="form-group">
-                                <textarea className="form-control" rows="3" value={this.state.commentText} onChange={this.handlePostCommentChange.bind(this)}></textarea>
+                                <textarea className="form-control" rows="3" value={this.state.commentText} onChange={this.handlePostCommentChange}></textarea>
                             </div>
-                            <button type="submit" className="btn btn-primary" onClick={this.postComment.bind(this)}>Submit</button>
+                            <button type="button" className="btn btn-primary" onClick={this.postComment}>Submit</button>
                         </form>
                     </div>
                     <hr />
