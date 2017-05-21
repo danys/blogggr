@@ -11,7 +11,7 @@ class Link extends React.Component{
     handleClick(event){
         event.preventDefault();
         if (this.props.onClick) this.props.onClick(event);
-        browserHistory.push(this.props.url);
+        if (this.props.url!=='#') browserHistory.push(this.props.url);
     }
 
     render(){
