@@ -45,7 +45,7 @@ class Navbar extends React.Component{
                         <li {...homeProps}><Link url="/" text="Home"></Link></li>
                         <li {...friendsProps}><Link url="/friends" text="Friends"></Link></li>
                         <li {...userProps}>
-                            <Link cssClass="dropdown-toggle" data-toggle="dropdown" url="#" text="Friends">
+                            <Link cssClass="dropdown-toggle" data-toggle="dropdown" url="#">
                                 <i className="fa fa-user fa-fw"></i> <i className="fa fa-caret-down"></i>
                             </Link>
                             <ul className="dropdown-menu dropdown-user">
