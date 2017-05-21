@@ -22,7 +22,8 @@
     "font-awesome": "~4.7.0",
     "moment": "~2.18.1",
     "react-select": "~1.0.0-rc.3",
-    "lodash": "~4.17.4"
+    "lodash": "~4.17.4",
+    "prop-types": "~15.5.10"
   },
   "devDependencies": {
     "node-sass": "~4.3.0",
