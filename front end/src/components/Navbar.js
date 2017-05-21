@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { logoutAction } from '../actions/SessionActions'
 import {del} from '../utils/ajax'
 import {red}  from '../consts/Constants'
+import Link from './Link'
 
 class Navbar extends React.Component{
 
@@ -41,19 +42,28 @@ class Navbar extends React.Component{
         if (this.state.loggedin) {
                 loginFunctionality = (
                     <ul className="nav navbar-top-links navbar-right">
-                        <li {...homeProps}><a href="/">Home</a></li>
-                        <li {...friendsProps}><a href="/friends">Friends</a></li>
+                        <li {...homeProps}><Link url="/" text="Home"></Link></li>
+                        <li {...friendsProps}><Link url="/friends" text="Friends"></Link></li>
                         <li {...userProps}>
-                            <a className="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <Link cssClass="dropdown-toggle" data-toggle="dropdown" url="#" text="Friends">
                                 <i className="fa fa-user fa-fw"></i> <i className="fa fa-caret-down"></i>
-                            </a>
+                            </Link>
                             <ul className="dropdown-menu dropdown-user">
-                                <li><a href="/user"><i className="fa fa-user fa-fw"></i> User Profile</a>
+                                <li>
+                                    <Link url="/user">
+                                        <i className="fa fa-user fa-fw"></i> User Profile
+                                    </Link>
                                 </li>
-                                <li><a href="/settings"><i className="fa fa-gear fa-fw"></i> Settings</a>
+                                <li>
+                                    <Link url="/settings">
+                                        <i className="fa fa-gear fa-fw"></i> Settings
+                                    </Link>
                                 </li>
                                 <li className="divider"></li>
-                                <li><a href="#" onClick={this.handleLogoutClick}><i className="fa fa-sign-out fa-fw"></i> Logout</a>
+                                <li>
+                                    <Link url="/" onClick={this.handleLogoutClick}>
+                                        <i className="fa fa-sign-out fa-fw"></i> Logout
+                                    </Link>
                                 </li>
                             </ul>
                         </li>
@@ -63,11 +73,11 @@ class Navbar extends React.Component{
         return (
         <nav className="navbar navbar-default navbar-static-top" role="navigation">
             <div className="navbar-header">
-                <a className="navbar-brand" href="/">
+                <Link url="/" cssClass="navbar-brand">
                     <i className="blogggr_logo">
                         <u>Blogggr</u>
                     </i>
-                </a>
+                </Link>
             </div>
             {loginFunctionality}
         </nav>

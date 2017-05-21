@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import {get, post} from '../utils/ajax'
 import {red}  from '../consts/Constants'
+import Link from '../components/Link'
 
 class Post extends React.Component{
 
@@ -56,9 +57,9 @@ class Post extends React.Component{
         let comments = (this.state.postData?this.state.postData.comments.map((comment, index)=>{
             return (
                 <div key={index} className="media">
-                    <a className="pull-left" href="#">
+                    <Link cssClass="pull-left" url="#">
                         <img className="media-object" src="/blogCommentImage.png" alt="" />
-                    </a>
+                    </Link>
                     <div className="media-body">
                         <h4 className="media-heading">{comment.user.firstName+' '+comment.user.lastName}
                             <small>{comment.timestamp}</small>
@@ -73,7 +74,7 @@ class Post extends React.Component{
                 <div className="col-lg-8">
                     <h1>{this.state.postData?this.state.postData.title:null}</h1>
                     <p className="lead">
-                        by <a href={posterURL}>{this.state.postData?this.state.postData.user.firstName+' '+this.state.postData.user.lastName:null}</a>
+                        by <Link text={this.state.postData?this.state.postData.user.firstName+' '+this.state.postData.user.lastName:null} url={posterURL} />
                     </p>
                     <hr />
                     <p><span className="glyphicon glyphicon-time"></span> Posted on {this.state.postData?this.state.postData.timestamp:null}</p>

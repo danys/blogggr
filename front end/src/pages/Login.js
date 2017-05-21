@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import {loginAction} from '../actions/SessionActions'
 import {post} from '../utils/ajax'
 import {red}  from '../consts/Constants'
+import Link from '../components/Link'
 
 export class Login extends React.Component{
 
@@ -70,9 +71,8 @@ export class Login extends React.Component{
                                             <input name="remember" type="checkbox" value="Remember Me" tabIndex="3" />Remember Me
                                         </label>
                                     </div>
-
-                                    <a href="#" onClick={this.handleLoginClick} className="btn btn-lg btn-success btn-block" tabIndex="4">Login</a>
-                                    <a href="/" className="btn btn-sm btn-primary btn-block" tabIndex="5">Back</a>
+                                    <Link url="/login" onClick={this.handleLoginClick} cssClass="btn btn-lg btn-success btn-block" text="Login" tabIndex="4"/>
+                                    <Link url="/" cssClass="btn btn-sm btn-primary btn-block" text="Back" tabIndex="5"/>
                                 </fieldset>
                             </form>
                         </div>

@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from './Link'
 
 export default class Welcome extends React.Component{
 
@@ -9,8 +10,8 @@ export default class Welcome extends React.Component{
                         <h1>Hi, welcome to Blogggr!</h1>
                         <p>Share blog posts with friends and the world!</p>
                         <p>
-                            <a className="btn btn-info btn-lg" href="/login" role="button">Login</a> or
-                            <a className="btn btn-success btn-lg" href="/signup" role="button">Sign up</a>
+                            <Link cssClass="btn btn-info btn-lg" url="/login" role="button" text="Login" /> or
+                            <Link cssClass="btn btn-success btn-lg" url="/signup" role="button" text="Sign up" />
                         </p>
                     </div>
                 </div>

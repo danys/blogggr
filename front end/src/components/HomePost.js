@@ -1,5 +1,5 @@
-import React, {PropTypes} from 'react'
-import { browserHistory } from 'react-router';
+import React, {PropTypes} from 'react';
+import Link from './Link';
 
 export class HomePost extends React.Component {
 
@@ -11,18 +11,20 @@ export class HomePost extends React.Component {
         return (
         <div>
             <h2>
-                <a href={this.props.postURL} onClick={(e)=>{e.preventDefault();browserHistory.push(this.props.postURL)}}>{this.props.title}</a>
+                <Link url={this.props.postURL} text={this.props.title} />
             </h2>
             <p className="lead">
-                by <a href={this.props.authorProfileURL}>{this.props.author}</a>
+                by <Link url={this.props.authorProfileURL} text={this.props.author} />
             </p>
             <p><span className="glyphicon glyphicon-time"></span>Posted on {this.props.timestamp}</p>
             <hr/>
             <img className="img-responsive" src="/blogBgImage.png" alt=""/>
             <hr/>
             <p>{this.props.textBody}</p>
-            <a className="btn btn-primary" href={this.props.postURL}>Read More <span
-            className="glyphicon glyphicon-chevron-right"></span></a>
+            <Link cssClass="btn btn-primary" url={this.props.postURL}>
+                Read More <span
+                className="glyphicon glyphicon-chevron-right"></span>
+            </Link>
             {this.props.hr}
         </div>
         );

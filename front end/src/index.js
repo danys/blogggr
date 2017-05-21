@@ -5,11 +5,11 @@ import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import {loadState, saveState} from './utils/localStorage';
 
-import App from './modules/App';
-import Login from './modules/Login';
-import {Signup} from './modules/Signup';
-import Post from './modules/Post';
-import BlogHome from './modules/BlogHome';
+import App from './pages/App';
+import Login from './pages/Login';
+import {Signup} from './pages/Signup';
+import Post from './pages/Post';
+import BlogHome from './pages/BlogHome';
 import reducer from './reducers/index';
 
 const persistedState = loadState();

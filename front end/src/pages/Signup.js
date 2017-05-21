@@ -1,6 +1,7 @@
 import React from 'react'
 import {post} from '../utils/ajax'
 import {red, green}  from '../consts/Constants'
+import Link from '../components/Link';
 
 export class Signup extends React.Component{
 
@@ -84,8 +85,8 @@ export class Signup extends React.Component{
                                     <div className="form-group">
                                         <input className="form-control" placeholder="Repeat password" name="passwordRepeat" type="password" pattern=".{8,}" required="true" tabIndex="6"/>
                                     </div>
-                                    <a href="#" className="btn btn-lg btn-success btn-block" onClick={this.handleSignupClick} tabIndex="7">Sign up</a>
-                                    <a href="/" className="btn btn-sm btn-primary btn-block">Back</a>
+                                    <Link url="/signup" cssClass="btn btn-lg btn-success btn-block" onClick={this.handleSignupClick} text="Sign up" tabIndex="7"/>
+                                    <Link url="/" cssClass="btn btn-sm btn-primary btn-block" text="Back" />
                                 </fieldset>
                             </form>
                         </div>
