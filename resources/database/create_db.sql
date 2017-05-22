@@ -44,12 +44,15 @@ CREATE TABLE Blogggr.Posts (
                 shortTitle VARCHAR(100) NOT NULL,
                 textBody TEXT NOT NULL,
                 timeStamp TIMESTAMP NOT NULL,
-                isGlobal BOOLEAN NOT NULL,
                 CONSTRAINT post_pk PRIMARY KEY (postID)
 );
 
 
 ALTER SEQUENCE Blogggr.posts_postid_seq OWNED BY Blogggr.Posts.postID;
+
+CREATE UNIQUE INDEX posts_idx
+ ON Blogggr.Posts
+ ( shortTitle ASC, userID ASC );
 
 CREATE SEQUENCE Blogggr.comments_commentid_seq;
 
