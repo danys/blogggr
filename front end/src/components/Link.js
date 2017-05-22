@@ -18,10 +18,10 @@ class Link extends React.Component{
         const text = this.props.children?this.props.children:this.props.text?this.props.text:null;
         const cssClass = this.props.cssClass?this.props.cssClass:null;
         let props = jQuery.extend( true, {}, this.props);
-        if (this.props.text) delete props["text"];
-        if (this.props.url) delete props["url"];
-        if (this.props.onClick) delete props["onClick"];
-        if (this.props.cssClass) delete props["cssClass"];
+        if (this.props.hasOwnProperty('text')) delete props["text"];
+        if (this.props.hasOwnProperty('url')) delete props["url"];
+        if (this.props.hasOwnProperty('onClick')) delete props["onClick"];
+        if (this.props.hasOwnProperty('cssClass')) delete props["cssClass"];
         return (
             cssClass?
                 <a {...props} className={cssClass} onClick={this.handleClick.bind(this)} href={this.props.url}>{text}</a>
