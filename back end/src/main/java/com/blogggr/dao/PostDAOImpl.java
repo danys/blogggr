@@ -11,12 +11,12 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.PageData;
 import com.blogggr.models.PrevNextListPage;
 import com.blogggr.strategies.validators.GetPostsValidator;
+import com.blogggr.utilities.StringUtilities;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.*;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.AbstractMap.SimpleEntry;
 
 /**
  * Created by Daniel Sunnen on 20.11.16.
@@ -52,7 +52,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             List<Post> posts = entityManager.createQuery(postsQuery).setMaxResults(limit).getResultList();
             CriteriaQuery<Long> postsCountQuery = generateQuery(userID, postUserID, title, visibility, null, null, true);
             Long totalCount = entityManager.createQuery(postsCountQuery).getSingleResult();
-            Collections.sort(posts, (p1,p2)->(int)(p1.getPostID()-p2.getPostID())); //sort such that post id are in ascending order
+            Collections.sort(posts, (p1, p2)->(int)(p1.getPostID()-p2.getPostID())); //sort such that post id are in ascending order
             Integer numberPageItems = posts.size();
             Long nextAfter = null;
             Long nextBefore = null;
@@ -258,16 +258,33 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         return query;
     }
 
+    private List<Map.Entry<String,String>> buildListKV(Long previous, Long next, Integer limit, Long postUserID, String title, Visibility visibility){
+        List<Map.Entry<String,String>> l = new ArrayList<>(5);
+        Map.Entry<String,String> entry = new AbstractMap.SimpleEntry<>(GetPostsValidator.posterUserIDKey, String.valueOf(postUserID));
+        l.add(entry);
+        entry = new AbstractMap.SimpleEntry<>(GetPostsValidator.titleKey, title);
+        l.add(entry);
+        entry = new AbstractMap.SimpleEntry<>(GetPostsValidator.visibilityKey, visibility.name());
+        l.add(entry);
+        entry = new AbstractMap.SimpleEntry<>(GetPostsValidator.afterKey, String.valueOf(next));
+        l.add(entry);
+        entry = new AbstractMap.SimpleEntry<>(GetPostsValidator.beforeKey, String.valueOf(previous));
+        l.add(entry);
+        entry = new AbstractMap.SimpleEntry<>(GetPostsValidator.limitKey, String.valueOf(limit));
+        l.add(entry);
+        return l;
+    }
+
     private String buildNextPageUrl(Long next, Integer limit, Long postUserID, String title, Visibility visibility){
         if (next==null || limit==null) throw new IllegalArgumentException("Next and limit should not be null!");
-        return AppConfig.fullBaseUrl + PostsController.postsPath + "?" + GetPostsValidator.afterKey
-                + "=" + String.valueOf(next) + "&" + GetPostsValidator.limitKey + "=" + limit;
+        return AppConfig.baseUrl + PostsController.postsPath + "?" +
+                StringUtilities.buildQueryStringFromListOfKVPairs(buildListKV(null, next, limit, postUserID, title, visibility));
     }
 
     private String buildPreviousPageUrl(Long previous, Integer limit, Long postUserID, String title, Visibility visibility){
         if (previous==null || limit==null) throw new IllegalArgumentException("Previous and limit should not be null!");
-        return AppConfig.fullBaseUrl + PostsController.postsPath + "?" + GetPostsValidator.beforeKey
-                + "=" + String.valueOf(previous) + "&" + GetPostsValidator.limitKey + "=" + limit;
+        return AppConfig.baseUrl + PostsController.postsPath + "?" +
+                StringUtilities.buildQueryStringFromListOfKVPairs(buildListKV(previous, null, limit, postUserID, title, visibility));
     }
 
     @Override
