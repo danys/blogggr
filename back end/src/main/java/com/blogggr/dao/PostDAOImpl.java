@@ -13,7 +13,6 @@ import com.blogggr.models.PrevNextListPage;
 import com.blogggr.strategies.validators.GetPostsValidator;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.NoResultException;
 import javax.persistence.criteria.*;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -70,8 +69,8 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             PageData pData = new PageData();
             pData.setPageItemsCount(numberPageItems);
             pData.setTotalCount(totalCount);
-            if (nextAfter!=null) pData.setNext(buildNextPageUrl(nextAfter,limit));
-            if (nextBefore!=null) pData.setPrevious(buildPreviousPageUrl(nextBefore,limit));
+            if (nextAfter!=null) pData.setNext(buildNextPageUrl(nextAfter,limit, postUserID, title, visibility));
+            if (nextBefore!=null) pData.setPrevious(buildPreviousPageUrl(nextBefore,limit,postUserID, title, visibility));
             PrevNextListPage<Post> page = new PrevNextListPage<>(posts,pData);
             return page;
         }
@@ -259,13 +258,13 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         return query;
     }
 
-    private String buildNextPageUrl(Long next, Integer limit){
+    private String buildNextPageUrl(Long next, Integer limit, Long postUserID, String title, Visibility visibility){
         if (next==null || limit==null) throw new IllegalArgumentException("Next and limit should not be null!");
         return AppConfig.fullBaseUrl + PostsController.postsPath + "?" + GetPostsValidator.afterKey
                 + "=" + String.valueOf(next) + "&" + GetPostsValidator.limitKey + "=" + limit;
     }
 
-    private String buildPreviousPageUrl(Long previous, Integer limit){
+    private String buildPreviousPageUrl(Long previous, Integer limit, Long postUserID, String title, Visibility visibility){
         if (previous==null || limit==null) throw new IllegalArgumentException("Previous and limit should not be null!");
         return AppConfig.fullBaseUrl + PostsController.postsPath + "?" + GetPostsValidator.beforeKey
                 + "=" + String.valueOf(previous) + "&" + GetPostsValidator.limitKey + "=" + limit;
