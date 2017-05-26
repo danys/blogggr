@@ -71,6 +71,9 @@ public class User implements Serializable {
 	@OneToMany(mappedBy="user")
 	private List<Session> sessions;
 
+	@Version
+	private Long version;
+
 	public User() {
 	}
 

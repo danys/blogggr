@@ -42,6 +42,9 @@ public class Friend implements Serializable {
 	@JoinColumn(name="actionuserid")
 	private User user3; //user that most recently changed the status column
 
+	@Version
+	private Long version;
+
 	public Friend() {
 	}
 

@@ -41,6 +41,9 @@ public class Post implements Serializable {
 	@JoinColumn(name="userid")
 	private User user;
 
+	@Version
+	private Long version;
+
 	public Post() {
 	}
 

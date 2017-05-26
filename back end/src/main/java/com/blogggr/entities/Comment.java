@@ -37,6 +37,9 @@ public class Comment implements Serializable {
 	@JoinColumn(name="userid")
 	private User user;
 
+	@Version
+	private Long version;
+
 	public Comment() {
 	}
 
