@@ -11,7 +11,7 @@ CREATE TABLE Blogggr.Users (
                 Challenge CHAR(64) NOT NULL,
                 Status INTEGER NOT NULL,
                 LastChange TIMESTAMP NOT NULL,
-                Version BIGINT NOT NULL,
+                Version BIGINT DEFAULT 0 NOT NULL,
                 CONSTRAINT user_pk PRIMARY KEY (userID)
 );
 
@@ -45,7 +45,7 @@ CREATE TABLE Blogggr.Posts (
                 shortTitle VARCHAR(100) NOT NULL,
                 textBody TEXT NOT NULL,
                 timeStamp TIMESTAMP NOT NULL,
-                Version BIGINT NOT NULL,
+                Version BIGINT DEFAULT 0 NOT NULL,
                 CONSTRAINT post_pk PRIMARY KEY (postID)
 );
 
@@ -60,7 +60,7 @@ CREATE TABLE Blogggr.Comments (
                 text VARCHAR(500) NOT NULL,
                 Timestamp TIMESTAMP NOT NULL,
                 userID BIGINT NOT NULL,
-                Version BIGINT NOT NULL,
+                Version BIGINT DEFAULT 0 NOT NULL,
                 CONSTRAINT comment_pk PRIMARY KEY (commentID)
 );
 
@@ -72,7 +72,7 @@ CREATE TABLE Blogggr.Friends (
                 userTwoID BIGINT NOT NULL,
                 Status INTEGER NOT NULL,
                 actionUserID BIGINT NOT NULL,
-                Version BIGINT NOT NULL,
+                Version BIGINT DEFAULT 0 NOT NULL,
                 CONSTRAINT friend_pk PRIMARY KEY (userOneID, userTwoID)
 );
 
