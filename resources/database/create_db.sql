@@ -11,6 +11,7 @@ CREATE TABLE Blogggr.Users (
                 Challenge CHAR(64) NOT NULL,
                 Status INTEGER NOT NULL,
                 LastChange TIMESTAMP NOT NULL,
+                Version BIGINT NOT NULL,
                 CONSTRAINT user_pk PRIMARY KEY (userID)
 );
 
@@ -44,15 +45,12 @@ CREATE TABLE Blogggr.Posts (
                 shortTitle VARCHAR(100) NOT NULL,
                 textBody TEXT NOT NULL,
                 timeStamp TIMESTAMP NOT NULL,
+                Version BIGINT NOT NULL,
                 CONSTRAINT post_pk PRIMARY KEY (postID)
 );
 
 
 ALTER SEQUENCE Blogggr.posts_postid_seq OWNED BY Blogggr.Posts.postID;
-
-CREATE UNIQUE INDEX posts_idx
- ON Blogggr.Posts
- ( shortTitle ASC, userID ASC );
 
 CREATE SEQUENCE Blogggr.comments_commentid_seq;
 
@@ -62,6 +60,7 @@ CREATE TABLE Blogggr.Comments (
                 text VARCHAR(500) NOT NULL,
                 Timestamp TIMESTAMP NOT NULL,
                 userID BIGINT NOT NULL,
+                Version BIGINT NOT NULL,
                 CONSTRAINT comment_pk PRIMARY KEY (commentID)
 );
 
@@ -73,6 +72,7 @@ CREATE TABLE Blogggr.Friends (
                 userTwoID BIGINT NOT NULL,
                 Status INTEGER NOT NULL,
                 actionUserID BIGINT NOT NULL,
+                Version BIGINT NOT NULL,
                 CONSTRAINT friend_pk PRIMARY KEY (userOneID, userTwoID)
 );
 
