@@ -281,4 +281,12 @@ public class User implements Serializable {
 		return session;
 	}
 
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
 }

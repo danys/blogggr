@@ -88,4 +88,12 @@ public class Friend implements Serializable {
 		this.user3 = user3;
 	}
 
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
 }
