@@ -9,6 +9,7 @@ import { updateUserData } from '../actions/UserDataActions'
 import { setTitle, setPoster, setVisibility } from '../actions/BlogSearchFilterActions'
 import {Modal} from '../components/Modal'
 import {CreatePostForm} from '../components/CreatePostForm'
+import Link from '../components/Link'
 
 export class HomePosts extends React.Component {
 
@@ -110,6 +111,28 @@ export class HomePosts extends React.Component {
         this.setState({newPost: newPost});
     }
 
+    handlePrevClick(){
+        get(this.state.postsData.pageData.previous,
+            {},
+            (data)=>{this.setState({postsData: data.data});},
+            (jqXHR)=>{
+                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+                errorMsg = errorMsg.substring(1,errorMsg.length-1);
+                this.props.showOverlayMsg('Posts search error', errorMsg, red);
+            },{'Authorization': this.props.token});
+    }
+
+    handleNextClick(){
+        get(this.state.postsData.pageData.next,
+            {},
+            (data)=>{this.setState({postsData: data.data});},
+            (jqXHR)=>{
+                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+                errorMsg = errorMsg.substring(1,errorMsg.length-1);
+                this.props.showOverlayMsg('Posts search error', errorMsg, red);
+            },{'Authorization': this.props.token});
+    }
+
     render() {
         const homePosts = (this.state.postsData==null || this.state.postsData.pageItems.length==0)?'No matching posts found!':this.state.postsData.pageItems.map(
             (post,index) => {return <HomePost key={index} title={post.title}
@@ -122,6 +145,59 @@ export class HomePosts extends React.Component {
         );
         const userFirst = (this.state.userData==null || this.state.userData.firstName==null)?null:this.state.userData.firstName;
         const userLast = (this.state.userData==null || this.state.userData.lastName==null)?null:this.state.userData.lastName;
+        let prevNextButtons = null; //default to null
+        if (this.state.postsData && this.state.postsData.pageData){
+            if (this.state.postsData.pageData.next && this.state.postsData.pageData.previous){
+                //Previous and next button
+                prevNextButtons = (
+                    <div>
+                        <hr />
+                        <ul className="pager">
+                            <li className="previous">
+                                <Link url="/" onClick={this.handlePrevClick.bind(this)}>
+                                    &larr; Older
+                                </Link>
+                            </li>
+                            <li className="next">
+                                <Link url="/" onClick={this.handleNextClick.bind(this)}>
+                                    Newer &rarr;
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
+                );
+            }
+            else if (this.state.postsData.pageData.next){
+                //Next button
+                prevNextButtons = (
+                    <div>
+                        <hr />
+                        <ul className="pager">
+                            <li className="next">
+                                <Link url="/" onClick={this.handleNextClick.bind(this)}>
+                                    Newer &rarr;
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
+                );
+            }
+            else if (this.state.postsData.pageData.previous){
+                //Previous
+                prevNextButtons = (
+                    <div>
+                        <hr />
+                        <ul className="pager">
+                            <li className="previous">
+                                <Link url="/" onClick={this.handlePrevClick.bind(this)}>
+                                    &larr; Older
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
+                );
+            }
+        }
         return (
             <div>
                 <div className="row">
@@ -129,6 +205,7 @@ export class HomePosts extends React.Component {
                         <div className="userHomeName">Hello, {userFirst} {userLast}</div>
                         <h1 className="page-header">Blog posts</h1>
                         {homePosts}
+                        {prevNextButtons}
                     </div>
                     <div className="col-md-4">
                         <Sidebar handleSearch={this.searchPosts}
