@@ -1,9 +1,9 @@
 import React, {PropTypes} from 'react'
 
 import { connect } from 'react-redux'
-import { logoutAction } from '../actions/SessionActions'
-import {del} from '../utils/ajax'
-import {red}  from '../consts/Constants'
+import { logoutAction } from '../../actions/SessionActions'
+import {del} from '../../utils/ajax'
+import {red}  from '../../consts/Constants'
 import Link from './Link'
 
 class Navbar extends React.Component{

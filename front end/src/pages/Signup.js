@@ -1,7 +1,7 @@
 import React from 'react'
 import {post} from '../utils/ajax'
 import {red, green}  from '../consts/Constants'
-import Link from '../components/Link';
+import Link from '../components/navigation/Link';
 
 export class Signup extends React.Component{
 

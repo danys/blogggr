@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import {loginAction} from '../actions/SessionActions'
 import {post} from '../utils/ajax'
 import {red}  from '../consts/Constants'
-import Link from '../components/Link'
+import Link from '../components/navigation/Link'
 
 export class Login extends React.Component{
 

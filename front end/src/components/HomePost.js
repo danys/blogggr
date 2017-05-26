@@ -1,5 +1,5 @@
 import React, {PropTypes} from 'react';
-import Link from './Link';
+import Link from './navigation/Link';
 
 export class HomePost extends React.Component {
 

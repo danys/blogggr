@@ -1,5 +1,5 @@
 import React from 'react'
-import Link from './Link'
+import Link from './navigation/Link'
 
 export default class Welcome extends React.Component{
 

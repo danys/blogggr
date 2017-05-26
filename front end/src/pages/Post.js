@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import {get, post} from '../utils/ajax'
 import {red}  from '../consts/Constants'
-import Link from '../components/Link'
+import Link from '../components/navigation/Link'
 
 class Post extends React.Component{
 
