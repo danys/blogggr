@@ -5,6 +5,7 @@ import { logoutAction } from '../../actions/SessionActions'
 import {del} from '../../utils/ajax'
 import {red}  from '../../consts/Constants'
 import Link from './Link'
+import {withRouter} from 'react-router-dom'
 
 class Navbar extends React.Component{
 
@@ -30,15 +31,16 @@ class Navbar extends React.Component{
 
     handleLogoutClick(){
         this.props.removeToken();
-        this.props.router.push('/');
+        this.props.history.push('/');
         del(this.state.sessionURL,()=>{},()=>{this.props.showOverlayMsg('Error logging out', 'Error deleting session', red);},{'Authorization': this.state.token});
     }
 
     render(){
+        console.log("Loca "+this.props.highlight);
         let loginFunctionality = '';
-        const homeProps = this.state.highlight && this.state.highlight==='home'?{className:"active"}:null;
-        const friendsProps = this.state.highlight && this.state.highlight==='friends'?{className:"active"}:null;
-        const userProps = this.state.highlight && this.state.highlight==='user'?{className:"dropdown active"}:{className:"dropdown"};
+        const homeProps = this.state.highlight && this.state.highlight==='/'?{className:"active"}:null;
+        const friendsProps = this.state.highlight && this.state.highlight==='/friends'?{className:"active"}:null;
+        const userProps = this.state.highlight && this.state.highlight==='/user'?{className:"dropdown active"}:{className:"dropdown"};
         if (this.state.loggedin) {
                 loginFunctionality = (
                     <ul className="nav navbar-top-links navbar-right">
@@ -103,7 +105,7 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(
+export default withRouter(connect(
     mapStateToProps,
     mapDispatchToProps
-)(Navbar);
+)(Navbar));

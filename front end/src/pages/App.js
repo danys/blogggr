@@ -3,8 +3,13 @@ import Navbar from '../components/navigation/Navbar'
 import Footer from '../components/Footer'
 import {Modal} from '../components/Modal'
 import {red}  from '../consts/Constants'
+import {Switch, Route} from 'react-router-dom'
+import Login from './Login';
+import {Signup} from './Signup';
+import Post from './Post';
+import BlogHome from './BlogHome';
 
-export default class App extends React.Component{
+export class App extends React.Component{
 
     constructor(props){
         super(props);
@@ -26,15 +31,23 @@ export default class App extends React.Component{
     }
 
     render(){
+        const appRoutes = (
+            <Switch>
+                <Route exact path="/" component={BlogHome} />
+                <Route path="/login" component={Login} />
+                <Route path="/signup" component={Signup} />
+                <Route path="/users/:userID/posts/:postName" component={Post} />
+            </Switch>
+        );
         //Modify children props
-        let childrenWithProps = React.Children.map(this.props.children, (child) => {
+        let childrenWithProps = React.Children.map(appRoutes.props.children, (child) => {
             return React.cloneElement(child, {
                 showOverlayMsg: this.showOverlayMsg
             })
         });
         return (
         <div>
-            <Navbar highlight={this.props.children.props.route.name} showOverlayMsg={this.showOverlayMsg} router={this.props.router}/>
+            <Navbar highlight={this.props.location.pathname} showOverlayMsg={this.showOverlayMsg} router={this.props.router}/>
             <div className="container">
                 {childrenWithProps}
                 <Footer />

@@ -5,7 +5,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 //React router
-import { Router, Route, browserHistory } from 'react-router'
+import { Route, IndexRoute } from 'react-router';
+import {BrowserRouter} from 'react-router-dom';
 
 //Redux
 import { Provider } from 'react-redux'

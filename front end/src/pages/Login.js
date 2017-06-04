@@ -4,6 +4,7 @@ import {loginAction} from '../actions/SessionActions'
 import {post} from '../utils/ajax'
 import {red}  from '../consts/Constants'
 import Link from '../components/navigation/Link'
+import {withRouter} from 'react-router-dom'
 
 export class Login extends React.Component{
 
@@ -31,7 +32,7 @@ export class Login extends React.Component{
             let pos = sessionURL.indexOf('/api');
             sessionURL = sessionURL.substr(pos);
             this.props.storeToken(authToken, sessionURL, data.data.ValidUntil);
-            this.props.router.push('/');
+            this.props.history.push('/');
         }, (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
                 errorMsg = errorMsg.substring(1,errorMsg.length-1);
@@ -91,7 +92,7 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(
+export default withRouter(connect(
     null,
     mapDispatchToProps
-)(Login);
+)(Login));

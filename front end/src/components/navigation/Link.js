@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { browserHistory } from 'react-router';
+import {withRouter} from 'react-router-dom';
 
 class Link extends React.Component{
 
@@ -11,7 +11,7 @@ class Link extends React.Component{
     handleClick(event){
         event.preventDefault();
         if (this.props.onClick) this.props.onClick(event);
-        if (this.props.url!=='#') browserHistory.push(this.props.url);
+        if (this.props.url!=='#') this.props.history.push(this.props.url);
     }
 
     render(){
@@ -22,6 +22,9 @@ class Link extends React.Component{
         if (this.props.hasOwnProperty('url')) delete props["url"];
         if (this.props.hasOwnProperty('onClick')) delete props["onClick"];
         if (this.props.hasOwnProperty('cssClass')) delete props["cssClass"];
+        if (this.props.hasOwnProperty('match')) delete props["match"];
+        if (this.props.hasOwnProperty('location')) delete props["location"];
+        if (this.props.hasOwnProperty('history')) delete props["history"];
         return (
             cssClass?
                 <a {...props} className={cssClass} onClick={this.handleClick.bind(this)} href={this.props.url}>{text}</a>
@@ -31,7 +34,7 @@ class Link extends React.Component{
     }
 }
 
-export default Link;
+export default withRouter(Link);
 
 Link.propTypes = {
     onClick: PropTypes.func,
