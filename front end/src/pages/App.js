@@ -33,23 +33,17 @@ export class App extends React.Component{
     render(){
         const appRoutes = (
             <Switch>
-                <Route exact path="/" component={BlogHome} />
-                <Route path="/login" component={Login} />
-                <Route path="/signup" component={Signup} />
-                <Route path="/users/:userID/posts/:postName" component={Post} />
+                <Route exact path="/" render={()=><BlogHome showOverlayMsg={this.showOverlayMsg}/>} />
+                <Route path="/login" render={()=><Login showOverlayMsg={this.showOverlayMsg}/>} />
+                <Route path="/signup" render={()=><Signup showOverlayMsg={this.showOverlayMsg}/>} />
+                <Route path="/users/:userID/posts/:postName" render={()=><Post showOverlayMsg={this.showOverlayMsg}/>} />
             </Switch>
         );
-        //Modify children props
-        let childrenWithProps = React.Children.map(appRoutes.props.children, (child) => {
-            return React.cloneElement(child, {
-                showOverlayMsg: this.showOverlayMsg
-            })
-        });
         return (
         <div>
             <Navbar highlight={this.props.location.pathname} showOverlayMsg={this.showOverlayMsg} router={this.props.router}/>
             <div className="container">
-                {childrenWithProps}
+                {appRoutes}
                 <Footer />
             </div>
             <Modal title={this.state.modalTitle} body={this.state.modalMsg} modalId='modal' color={this.state.color}/>
