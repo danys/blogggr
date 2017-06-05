@@ -41,7 +41,7 @@ public class SessionsController {
 
     //POST /sessions
     @RequestMapping(path = sessionPath, method = RequestMethod.POST)
-    public ResponseEntity createUser(@RequestBody String bodyData){
+    public ResponseEntity createSession(@RequestBody String bodyData){
         AppModel model = new AppModelImpl(new NoAuthorization(), new SessionPostDataValidator(), new InvokePostSessionService(sessionService), new PostResponse());
         return model.execute(null,null,bodyData);
     }
