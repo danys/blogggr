@@ -36,7 +36,6 @@ class Navbar extends React.Component{
     }
 
     render(){
-        console.log("Loca "+this.props.highlight);
         let loginFunctionality = '';
         const homeProps = this.state.highlight && this.state.highlight==='/'?{className:"active"}:null;
         const friendsProps = this.state.highlight && this.state.highlight==='/friends'?{className:"active"}:null;

@@ -20,7 +20,7 @@ class Post extends React.Component{
     }
 
     fetchPost(){
-        get(this.postsURL+this.props.params.userID+'/posts/'+this.props.params.postName,
+        get(this.postsURL+this.props.match.params.userID+'/posts/'+this.props.match.params.postName,
             {},
             (data)=>{this.setState({postData: data.data})},
             (jqXHR)=>{
