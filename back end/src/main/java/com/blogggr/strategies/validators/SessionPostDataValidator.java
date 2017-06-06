@@ -32,12 +32,6 @@ public class SessionPostDataValidator extends GenericValidator{
             errorMessage = "E-mail address does not validate!";
             return false;
         }
-        int atIndex = sessionPostData.getEmail().indexOf("@");
-        int dotIndex = sessionPostData.getEmail().indexOf(".",atIndex);
-        if (dotIndex==-1) {
-            errorMessage = "E-mail address does not validate!";
-            return false;
-        }
         return true;
     }
 }

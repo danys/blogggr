@@ -32,11 +32,6 @@ public class UserPostDataValidator extends GenericValidator {
             if (!userData.getEmail().matches(AppConfig.validEmailRegex)) {
                 return "E-mail address does not validate!";
             }
-            int atIndex = userData.getEmail().indexOf("@");
-            int dotIndex = userData.getEmail().indexOf(".",atIndex);
-            if (dotIndex==-1) {
-                return "E-mail address does not validate!";
-            }
         }
         //Check provided passwords
         if (userData.getPassword()!=null && userData.getPasswordRepeat()!=null && userData.getPasswordRepeat().compareTo(userData.getPassword())!=0) {
