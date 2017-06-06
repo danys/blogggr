@@ -1,5 +1,6 @@
 package com.blogggr.strategies.validators;
 
+import com.blogggr.config.AppConfig;
 import com.blogggr.requestdata.UserPostData;
 import com.blogggr.strategies.ValidationStrategy;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -28,7 +29,7 @@ public class UserPostDataValidator extends GenericValidator {
         }
         //Check email
         if (userData.getEmail()!=null){
-            if (!userData.getEmail().contains("@")) {
+            if (!userData.getEmail().matches(AppConfig.validEmailRegex)) {
                 return "E-mail address does not validate!";
             }
             int atIndex = userData.getEmail().indexOf("@");

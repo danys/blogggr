@@ -1,5 +1,6 @@
 package com.blogggr.strategies.validators;
 
+import com.blogggr.config.AppConfig;
 import com.blogggr.requestdata.SessionPostData;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,8 +27,8 @@ public class SessionPostDataValidator extends GenericValidator{
             errorMessage = "All fields need to be filled!";
             return false;
         }
-        //Check that email looks somewhat like an email
-        if (!sessionPostData.getEmail().contains("@")) {
+        //Check the the given email address is valid (https://emailregex.com/)
+        if (!sessionPostData.getEmail().matches(AppConfig.validEmailRegex)) {
             errorMessage = "E-mail address does not validate!";
             return false;
         }

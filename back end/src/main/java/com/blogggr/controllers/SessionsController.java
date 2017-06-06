@@ -16,6 +16,8 @@ import com.blogggr.strategies.responses.PutResponse;
 import com.blogggr.strategies.validators.IdValidator;
 import com.blogggr.strategies.validators.SessionPostDataValidator;
 import com.blogggr.strategies.validators.SessionPutDataValidator;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +36,8 @@ public class SessionsController {
     private SessionService sessionService;
     private UserService userService;
 
+    private final Log logger = LogFactory.getLog(this.getClass());
+
     public SessionsController(SessionService sessionService, UserService userService){
         this.sessionService = sessionService;
         this.userService = userService;
@@ -42,6 +46,7 @@ public class SessionsController {
     //POST /sessions
     @RequestMapping(path = sessionPath, method = RequestMethod.POST)
     public ResponseEntity createSession(@RequestBody String bodyData){
+        logger.trace("POST /sessions");
         AppModel model = new AppModelImpl(new NoAuthorization(), new SessionPostDataValidator(), new InvokePostSessionService(sessionService), new PostResponse());
         return model.execute(null,null,bodyData);
     }
