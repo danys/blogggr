@@ -49,7 +49,25 @@ export class Login extends React.Component{
     }
 
     render() {
+        const { from } = this.props.location.state || { from: { pathname: '/' } };
+        const warning = (from.pathname!=='/')?
+            <div className="row">
+                <div className="col-md-6 col-md-offset-3">
+            <div className="login-panel panel panel-danger">
+                <div className="panel-heading">
+                    <h3 className="panel-title">Access denied</h3>
+                </div>
+                <div className="panel-body">
+                    You need to be authenticated to view this page!
+                </div>
+            </div>
+                </div>
+            </div>
+            :
+            '';
         return (
+            <div>
+            {warning}
             <div className="row">
                 <div className="col-md-4 col-md-offset-4">
                     <div className="login-panel panel panel-default">
@@ -79,6 +97,7 @@ export class Login extends React.Component{
                         </div>
                     </div>
                 </div>
+            </div>
             </div>
         );
     }

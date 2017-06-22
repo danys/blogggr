@@ -1,22 +1,27 @@
-import React from 'react'
-import Navbar from '../components/navigation/Navbar'
-import Footer from '../components/Footer'
-import {Modal} from '../components/Modal'
-import {red}  from '../consts/Constants'
-import {Switch, Route} from 'react-router-dom'
+import React from 'react';
+import Navbar from '../components/navigation/Navbar';
+import Footer from '../components/Footer';
+import {Modal} from '../components/Modal';
+import {red}  from '../consts/Constants';
+import {Switch, Route} from 'react-router-dom';
 import Login from './Login';
 import {Signup} from './Signup';
 import Post from './Post';
 import BlogHome from './BlogHome';
+import User from './User';
+import {AuthRoute} from '../routes/AuthRoute';
+import { connect } from 'react-redux';
+import { logoutAction } from '../actions/SessionActions'
 
-export class App extends React.Component{
+class App extends React.Component{
 
     constructor(props){
         super(props);
         this.state = {
             modalTitle: 'Error',
             modalMsg: 'Error',
-            color: red
+            color: red,
+            loggedin: false
         };
         this.showOverlayMsg = this.showOverlayMsg.bind(this);
     }
@@ -30,13 +35,25 @@ export class App extends React.Component{
         $('#modal').modal('show');
     }
 
+    //Check if auth token is still valid
+    authIsOK(){
+        let validTillDateTime = moment(this.props.validUntil,"YYYY-MM-DD HH:mm:ss");
+        if ((this.props.loggedin===true) && (moment().isAfter(validTillDateTime))) {
+            this.props.removeToken();
+            return false;
+        }
+        else if (this.props.loggedin===true) return true;
+        else return false;
+    }
+
     render(){
         const appRoutes = (
             <Switch>
                 <Route exact path="/" render={()=><BlogHome showOverlayMsg={this.showOverlayMsg}/>} />
                 <Route path="/login" render={()=><Login showOverlayMsg={this.showOverlayMsg}/>} />
                 <Route path="/signup" render={()=><Signup showOverlayMsg={this.showOverlayMsg}/>} />
-                <Route path="/users/:userID/posts/:postName" render={()=><Post showOverlayMsg={this.showOverlayMsg}/>} />
+                <AuthRoute loggedin={this.authIsOK.bind(this)} path="/users/:userID/posts/:postName" render={()=><Post showOverlayMsg={this.showOverlayMsg}/>} />
+                <AuthRoute loggedin={this.authIsOK.bind(this)} path="/users" render={()=><User showOverlayMsg={this.showOverlayMsg}/>} />
             </Switch>
         );
         return (
@@ -51,3 +68,23 @@ export class App extends React.Component{
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        loggedin: state.session.loggedin,
+        validUntil: state.session.validUntil
+    }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        removeToken: () => {
+            dispatch(logoutAction())
+        }
+    }
+};
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App);

@@ -11,36 +11,21 @@ class Navbar extends React.Component{
 
     constructor(props){
         super(props);
-        this.state = {
-            loggedin: this.props.loggedin,
-            highlight: this.props.highlight,
-            sessionURL: this.props.sessionURL,
-            token: this.props.token
-        };
         this.handleLogoutClick = this.handleLogoutClick.bind(this);
-    }
-
-    componentWillReceiveProps(nextProps){
-        this.setState({
-            loggedin: nextProps.loggedin,
-            highlight: nextProps.highlight,
-            sessionURL: nextProps.sessionURL,
-            token: nextProps.token
-        });
     }
 
     handleLogoutClick(){
         this.props.removeToken();
         this.props.history.push('/');
-        del(this.state.sessionURL,()=>{},()=>{this.props.showOverlayMsg('Error logging out', 'Error deleting session', red);},{'Authorization': this.state.token});
+        del(this.props.sessionURL,()=>{},()=>{this.props.showOverlayMsg('Error logging out', 'Error deleting session', red);},{'Authorization': this.props.token});
     }
 
     render(){
         let loginFunctionality = '';
-        const homeProps = this.state.highlight && this.state.highlight==='/'?{className:"active"}:null;
-        const friendsProps = this.state.highlight && this.state.highlight==='/friends'?{className:"active"}:null;
-        const userProps = this.state.highlight && this.state.highlight==='/user'?{className:"dropdown active"}:{className:"dropdown"};
-        if (this.state.loggedin) {
+        const homeProps = this.props.highlight && this.props.highlight==='/'?{className:"active"}:null;
+        const friendsProps = this.props.highlight && this.props.highlight==='/friends'?{className:"active"}:null;
+        const userProps = this.props.highlight && this.props.highlight==='/user'?{className:"dropdown active"}:{className:"dropdown"};
+        if (this.props.loggedin) {
                 loginFunctionality = (
                     <ul className="nav navbar-top-links navbar-right">
                         <li {...homeProps}><Link url="/" text="Home"></Link></li>
@@ -51,7 +36,7 @@ class Navbar extends React.Component{
                             </Link>
                             <ul className="dropdown-menu dropdown-user">
                                 <li>
-                                    <Link url="/user">
+                                    <Link url="/users">
                                         <i className="fa fa-user fa-fw"></i> User Profile
                                     </Link>
                                 </li>
