@@ -4,9 +4,9 @@ spring:
   jpa:
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
+        show_sql: false
+        format_sql: false
   datasource:
     url: jdbc:postgresql://localhost/blogggr
-    username: postgres
-    password: root
+    username: blogggr
+    password: blogggr123
