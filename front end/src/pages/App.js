@@ -49,7 +49,7 @@ class App extends React.Component{
     render(){
         const appRoutes = (
             <Switch>
-                <Route exact path="/" render={()=><BlogHome showOverlayMsg={this.showOverlayMsg}/>} />
+                <Route exact path="/" render={()=><BlogHome loggedin={this.authIsOK.bind(this)} showOverlayMsg={this.showOverlayMsg}/>} />
                 <Route path="/login" render={()=><Login showOverlayMsg={this.showOverlayMsg}/>} />
                 <Route path="/signup" render={()=><Signup showOverlayMsg={this.showOverlayMsg}/>} />
                 <AuthRoute loggedin={this.authIsOK.bind(this)} path="/users/:userID/posts/:postName" render={()=><Post showOverlayMsg={this.showOverlayMsg}/>} />
