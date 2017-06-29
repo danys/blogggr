@@ -3,6 +3,7 @@ package com.blogggr.utilities;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -44,10 +45,20 @@ public class Cryptography {
         }
     }
 
+    public Cryptography() {
+        try {
+            this.algorithm = Algorithm.HMAC512(HMACKey);
+        } catch(UnsupportedEncodingException e){
+            this.algorithm = null;
+        }
+    }
+
     @Value("${hmackey}")
     private String HMACKey;
 
     private final String issuer = "blogggr";
+    private final long maxValidHours = 24L;
+    private Algorithm algorithm;
 
     /**
      * Generate a JWT token with a subject claim and an expiration time
@@ -57,21 +68,27 @@ public class Cryptography {
      * @throws UnsupportedEncodingException
      */
     public String generateJWT(String username) throws UnsupportedEncodingException {
-        Algorithm algorithm = Algorithm.HMAC512(HMACKey);
-        Instant validTillDate = Instant.now().plus(Duration.ofHours(24));
+        Instant validTillDate = Instant.now().plus(Duration.ofHours(maxValidHours));
         Date expirationDate = Date.from(validTillDate);
+        if (algorithm==null) throw new UnsupportedEncodingException();
         return JWT.create()
-                .withSubject(username)
-                .withIssuer(issuer)
-                .withExpiresAt(expirationDate)
+                .withSubject(username) //sub key
+                .withIssuer(issuer) //iss key
+                .withExpiresAt(expirationDate) //exp key
                 .sign(algorithm);
     }
 
-    public DecodedJWT verifyJWT(String token) throws UnsupportedEncodingException{
-        Algorithm algorithm = Algorithm.HMAC512(HMACKey);
+    public String verifyJWT(String token) throws UnsupportedEncodingException{
+        if (algorithm==null) throw new UnsupportedEncodingException();
         JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer(issuer)
+                .acceptExpiresAt(1L)
                 .build(); //Reusable verifier instance
-        return verifier.verify(token);
+        try{
+            DecodedJWT jwt = verifier.verify(token);
+            return jwt.getSubject();
+        }catch(JWTVerificationException e){
+            return null;
+        }
     }
 }
