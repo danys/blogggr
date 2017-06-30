@@ -8,12 +8,15 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.requestdata.SessionPostData;
 import com.blogggr.services.SessionService;
+import com.blogggr.services.SessionServiceImpl;
 import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.utilities.Cryptography;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,13 +26,15 @@ import java.util.Map;
 public class InvokePostSessionService implements ServiceInvocationStrategy{
 
     private SessionService sessionService;
+    private Cryptography cryptography;
 
-    public InvokePostSessionService(SessionService sessionService){
+    public InvokePostSessionService(SessionService sessionService, Cryptography cryptography){
         this.sessionService = sessionService;
+        this.cryptography = cryptography;
     }
 
     @Override
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, DBException, WrongPasswordException{
+    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, DBException, WrongPasswordException, UnsupportedEncodingException{
         ObjectMapper mapper = new ObjectMapper();
         SessionPostData sessionData;
         try{
@@ -44,12 +49,11 @@ public class InvokePostSessionService implements ServiceInvocationStrategy{
         catch(IOException e){
             return null;
         }
-        Session session = sessionService.createSession(sessionData);
+        SessionServiceImpl.SessionDetails jwt = sessionService.createSession(sessionData);
         //Create location string and session id hash. Then return it as a map.
         Map<String, String> responseMap = new HashMap<>();
-        responseMap.put(AppConfig.locationHeaderKey,AppConfig.fullBaseUrl + SessionsController.sessionPath + "/" + String.valueOf(session.getSessionid()));
-        responseMap.put(AppConfig.authKey,session.getSessionhash());
-        responseMap.put(AppConfig.validityUntilKey,session.getValidtill().toString().substring(0,19));
+        responseMap.put(AppConfig.authKey,jwt.jwt);
+        responseMap.put(AppConfig.validityUntilKey,jwt.expiration.toString());
         return responseMap;
     }
 }

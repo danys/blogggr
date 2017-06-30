@@ -4,25 +4,15 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.models.AppModel;
 import com.blogggr.models.AppModelImpl;
 import com.blogggr.services.SessionService;
-import com.blogggr.services.UserService;
-import com.blogggr.strategies.auth.AuthenticatedAuthorization;
 import com.blogggr.strategies.auth.NoAuthorization;
-import com.blogggr.strategies.invoker.InvokeDeleteSessionService;
 import com.blogggr.strategies.invoker.InvokePostSessionService;
-import com.blogggr.strategies.invoker.InvokeUpdateSessionService;
-import com.blogggr.strategies.responses.DeleteResponse;
 import com.blogggr.strategies.responses.PostResponse;
-import com.blogggr.strategies.responses.PutResponse;
-import com.blogggr.strategies.validators.IdValidator;
 import com.blogggr.strategies.validators.SessionPostDataValidator;
-import com.blogggr.strategies.validators.SessionPutDataValidator;
+import com.blogggr.utilities.Cryptography;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Daniel Sunnen on 13.11.16.
@@ -34,39 +24,20 @@ public class SessionsController {
     public static final String sessionPath = "/sessions";
 
     private SessionService sessionService;
-    private UserService userService;
+    private Cryptography cryptography;
 
     private final Log logger = LogFactory.getLog(this.getClass());
 
-    public SessionsController(SessionService sessionService, UserService userService){
+    public SessionsController(SessionService sessionService, Cryptography cryptography){
         this.sessionService = sessionService;
-        this.userService = userService;
+        this.cryptography = cryptography;
     }
 
     //POST /sessions
     @RequestMapping(path = sessionPath, method = RequestMethod.POST)
     public ResponseEntity createSession(@RequestBody String bodyData){
         logger.trace("POST /sessions");
-        AppModel model = new AppModelImpl(new NoAuthorization(), new SessionPostDataValidator(), new InvokePostSessionService(sessionService), new PostResponse());
+        AppModel model = new AppModelImpl(new NoAuthorization(), new SessionPostDataValidator(), new InvokePostSessionService(sessionService, cryptography), new PostResponse());
         return model.execute(null,null,bodyData);
-    }
-
-    //PUT /sessions
-    // Used to extend the validity of a session
-    @RequestMapping(path = sessionPath+"/{id}", method = RequestMethod.PUT)
-    public ResponseEntity updateSession(@PathVariable String id, @RequestHeader Map<String,String> header,@RequestBody String bodyData) {
-        Map<String,String> map = new HashMap<>();
-        map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new SessionPutDataValidator(), new InvokeUpdateSessionService(sessionService), new PutResponse());
-        return model.execute(map,header,bodyData);
-    }
-
-    //DELETE /sessions
-    @RequestMapping(path = sessionPath+"/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteSession(@PathVariable String id, @RequestHeader Map<String,String> header){
-        Map<String,String> map = new HashMap<>();
-        map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeDeleteSessionService(sessionService), new DeleteResponse());
-        return model.execute(map,header,null);
     }
 }

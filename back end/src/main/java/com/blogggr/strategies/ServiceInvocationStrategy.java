@@ -5,6 +5,7 @@ import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -12,5 +13,5 @@ import java.util.Map;
  */
 public interface ServiceInvocationStrategy {
 
-    Object invokeService(Map<String,String> input, String body, Long userID) throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException;
+    Object invokeService(Map<String,String> input, String body, Long userID) throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException;
 }

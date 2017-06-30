@@ -28,6 +28,7 @@ public class InvokeGetPostsService implements ServiceInvocationStrategy {
         this.postService = postService;
     }
 
+    @Override
     public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, DBException {
         //Check if the poster id is present
         String idStr = null;

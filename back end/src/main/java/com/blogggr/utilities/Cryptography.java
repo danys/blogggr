@@ -78,17 +78,38 @@ public class Cryptography {
                 .sign(algorithm);
     }
 
-    public String verifyJWT(String token) throws UnsupportedEncodingException{
+    private DecodedJWT getDecodedJWT(String token) throws UnsupportedEncodingException, JWTVerificationException{
         if (algorithm==null) throw new UnsupportedEncodingException();
         JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer(issuer)
                 .acceptExpiresAt(1L)
                 .build(); //Reusable verifier instance
-        try{
-            DecodedJWT jwt = verifier.verify(token);
-            return jwt.getSubject();
-        }catch(JWTVerificationException e){
-            return null;
-        }
+        return verifier.verify(token);
+    }
+
+    /**
+     * Extract subject from valid JWT
+     * @param token
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws JWTVerificationException
+     */
+    public String getSubjectFromValidJWT(String token) throws UnsupportedEncodingException, JWTVerificationException{
+        if (algorithm==null) throw new UnsupportedEncodingException();
+        DecodedJWT jwtObject = getDecodedJWT(token);
+        return jwtObject.getSubject();
+    }
+
+    /**
+     * Extract expiraiton date from valid JWT
+     * @param token
+     * @return
+     * @throws UnsupportedEncodingException
+     * @throws JWTVerificationException
+     */
+    public java.util.Date getExpirationFromValidJWT(String token) throws UnsupportedEncodingException, JWTVerificationException{
+        if (algorithm==null) throw new UnsupportedEncodingException();
+        DecodedJWT jwtObject = getDecodedJWT(token);
+        return jwtObject.getExpiresAt();
     }
 }
