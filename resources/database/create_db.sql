@@ -22,19 +22,6 @@ CREATE UNIQUE INDEX users_idx
  ON Blogggr.Users
  ( Email ASC );
 
-CREATE SEQUENCE Blogggr.sessions_sessionid_seq;
-
-CREATE TABLE Blogggr.Sessions (
-                sessionID BIGINT NOT NULL DEFAULT nextval('Blogggr.sessions_sessionid_seq'),
-                userID BIGINT NOT NULL,
-                sessionHash CHAR(64) NOT NULL,
-                lastActionTime TIMESTAMP NOT NULL,
-                validTill TIMESTAMP NOT NULL,
-                CONSTRAINT session_pk PRIMARY KEY (sessionID)
-);
-
-
-ALTER SEQUENCE Blogggr.sessions_sessionid_seq OWNED BY Blogggr.Sessions.sessionID;
 
 CREATE SEQUENCE Blogggr.posts_postid_seq;
 
@@ -106,13 +93,6 @@ ON UPDATE NO ACTION
 NOT DEFERRABLE;
 
 ALTER TABLE Blogggr.Comments ADD CONSTRAINT users_comments_fk
-FOREIGN KEY (userID)
-REFERENCES Blogggr.Users (userID)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION
-NOT DEFERRABLE;
-
-ALTER TABLE Blogggr.Sessions ADD CONSTRAINT users_sessions_fk
 FOREIGN KEY (userID)
 REFERENCES Blogggr.Users (userID)
 ON DELETE NO ACTION
