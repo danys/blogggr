@@ -1,20 +1,14 @@
 package com.blogggr.services;
 
-import com.blogggr.config.AppConfig;
-import com.blogggr.dao.SessionDAO;
 import com.blogggr.dao.UserDAO;
-import com.blogggr.entities.Session;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.*;
 import com.blogggr.requestdata.SessionPostData;
-import com.blogggr.requestdata.SessionPutData;
 import com.blogggr.utilities.Cryptography;
-import com.blogggr.utilities.TimeUtilities;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.UnsupportedEncodingException;
-import java.sql.Timestamp;
 
 /**
  * Created by Daniel Sunnen on 13.11.16.
@@ -28,12 +22,10 @@ public class SessionServiceImpl implements SessionService{
         public java.util.Date expiration;
     }
 
-    private SessionDAO sessionDAO;
     private UserDAO userDAO;
     private Cryptography cryptography;
 
-    public SessionServiceImpl(SessionDAO sessionDAO, UserDAO userDAO, Cryptography cryptography){
-        this.sessionDAO = sessionDAO;
+    public SessionServiceImpl(UserDAO userDAO, Cryptography cryptography){
         this.userDAO = userDAO;
         this.cryptography = cryptography;
     }

@@ -21,8 +21,6 @@ public interface UserService {
 
     User getUserByEmail(String email) throws ResourceNotFoundException, DBException;
 
-    User getUserBySessionHash(String sessionHash) throws ResourceNotFoundException, DBException, SessionExpiredException;
-
     void updateUser(long userResourceID, long userID, UserPostData userData) throws ResourceNotFoundException, DBException, NotAuthorizedException;
 
     RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber) throws DBException;

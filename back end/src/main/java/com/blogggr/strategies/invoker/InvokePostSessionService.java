@@ -1,8 +1,6 @@
 package com.blogggr.strategies.invoker;
 
 import com.blogggr.config.AppConfig;
-import com.blogggr.controllers.SessionsController;
-import com.blogggr.entities.Session;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;

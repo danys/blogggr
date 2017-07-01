@@ -1,13 +1,10 @@
 package com.blogggr.services;
 
-import com.blogggr.dao.SessionDAO;
 import com.blogggr.dao.UserDAO;
-import com.blogggr.entities.Session;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.exceptions.SessionExpiredException;
 import com.blogggr.models.RandomAccessListPage;
 import com.blogggr.requestdata.UserPostData;
 import com.blogggr.utilities.Cryptography;
@@ -16,9 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created by Daniel Sunnen on 28.10.16.
@@ -28,11 +22,9 @@ import java.util.Random;
 public class UserServiceImpl implements UserService{
 
     private UserDAO userDAO;
-    private SessionDAO sessionDAO;
 
-    public UserServiceImpl(UserDAO userDAO, SessionDAO sessionDAO){
+    public UserServiceImpl(UserDAO userDAO){
         this.userDAO = userDAO;
-        this.sessionDAO = sessionDAO;
     }
 
     @Override
@@ -43,17 +35,6 @@ public class UserServiceImpl implements UserService{
     @Override
     public User getUserByEmail(String email) throws ResourceNotFoundException, DBException{
         return userDAO.getUserByEmail(email);
-    }
-
-    @Override
-    public User getUserBySessionHash(String sessionHash) throws ResourceNotFoundException, DBException, SessionExpiredException{
-        Session session = sessionDAO.getSessionBySessionHash(sessionHash);
-        //Check if user session is expired
-        Timestamp ts = TimeUtilities.getCurrentTimestamp();
-        if (session.getValidtill().compareTo(ts)<0){
-            throw new SessionExpiredException();
-        }
-        return session.getUser();
     }
 
     //For POST request

@@ -66,11 +66,6 @@ public class User implements Serializable {
 	@OneToMany(mappedBy="user")
 	private List<Post> posts;
 
-	//bi-directional many-to-one association to Session
-	@JsonIgnore
-	@OneToMany(mappedBy="user")
-	private List<Session> sessions;
-
 	@Version
 	private Long version;
 
@@ -257,36 +252,6 @@ public class User implements Serializable {
 		post.setUser(null);
 
 		return post;
-	}
-
-	public List<Session> getSessions() {
-		return this.sessions;
-	}
-
-	public void setSessions(List<Session> sessions) {
-		this.sessions = sessions;
-	}
-
-	public Session addSession(Session session) {
-		getSessions().add(session);
-		session.setUser(this);
-
-		return session;
-	}
-
-	public Session removeSession(Session session) {
-		getSessions().remove(session);
-		session.setUser(null);
-
-		return session;
-	}
-
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long version) {
-		this.version = version;
 	}
 
 }
