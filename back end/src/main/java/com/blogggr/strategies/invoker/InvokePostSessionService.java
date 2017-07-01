@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +54,9 @@ public class InvokePostSessionService implements ServiceInvocationStrategy{
         //Create location string and session id hash. Then return it as a map.
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put(AppConfig.authKey,jwt.jwt);
-        responseMap.put(AppConfig.validityUntilKey,jwt.expiration.toString());
+        //Format valid until timestamp as "YYYY-MM-DD HH:mm:ss"
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        responseMap.put(AppConfig.validityUntilKey,dateFormat.format(jwt.expiration));
         return responseMap;
     }
 }

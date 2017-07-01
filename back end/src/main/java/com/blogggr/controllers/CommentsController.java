@@ -15,6 +15,7 @@ import com.blogggr.strategies.responses.PutResponse;
 import com.blogggr.strategies.validators.CommentPostDataValidator;
 import com.blogggr.strategies.validators.CommentPutDataValidator;
 import com.blogggr.strategies.validators.IdValidator;
+import com.blogggr.utilities.Cryptography;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,24 +34,26 @@ public class CommentsController {
     private UserService userService;
     private PostService postService;
     private CommentService commentService;
+    private Cryptography cryptography;
 
-    public CommentsController(UserService userService, PostService postService, CommentService commentService){
+    public CommentsController(UserService userService, PostService postService, CommentService commentService, Cryptography cryptography){
         this.userService = userService;
         this.postService = postService;
         this.commentService = commentService;
+        this.cryptography = cryptography;
     }
 
     //POST /comments
     @RequestMapping(path = commentsPath, method = RequestMethod.POST)
     public ResponseEntity createComment(@RequestBody String bodyData, @RequestHeader Map<String,String> header){
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new CommentPostDataValidator(), new InvokePostCommentService(commentService), new PostResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new CommentPostDataValidator(), new InvokePostCommentService(commentService), new PostResponse());
         return model.execute(null,header,bodyData);
     }
 
     //PUT /comments
     @RequestMapping(path = commentsPath+"/{id}", method = RequestMethod.PUT)
     public ResponseEntity updateComment(@PathVariable String id,@RequestBody String bodyData, @RequestHeader Map<String,String> header){
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new CommentPutDataValidator(), new InvokePutCommentService(commentService), new PutResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new CommentPutDataValidator(), new InvokePutCommentService(commentService), new PutResponse());
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         return model.execute(map,header,bodyData);
@@ -61,7 +64,7 @@ public class CommentsController {
     public ResponseEntity deleteComment(@PathVariable String id, @RequestHeader Map<String,String> header){
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeDeleteCommentService(commentService), new DeleteResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new IdValidator(), new InvokeDeleteCommentService(commentService), new DeleteResponse());
         return model.execute(map,header,null);
     }
 
@@ -70,7 +73,7 @@ public class CommentsController {
     public ResponseEntity getComment(@PathVariable String id, @RequestHeader Map<String,String> header){
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetCommentService(commentService), new GetResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new IdValidator(), new InvokeGetCommentService(commentService), new GetResponse());
         return model.execute(map,header,null);
     }
 
@@ -79,7 +82,7 @@ public class CommentsController {
     public ResponseEntity getCommentsByPostId(@PathVariable String id, @RequestHeader Map<String,String> header){
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetCommentsService(postService, commentService), new GetResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new IdValidator(), new InvokeGetCommentsService(postService, commentService), new GetResponse());
         return model.execute(map,header,null);
     }
 

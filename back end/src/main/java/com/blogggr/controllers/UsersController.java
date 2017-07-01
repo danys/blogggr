@@ -11,6 +11,7 @@ import com.blogggr.strategies.responses.GetResponse;
 import com.blogggr.strategies.responses.PostResponse;
 import com.blogggr.strategies.responses.PutResponse;
 import com.blogggr.strategies.validators.*;
+import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.HTTPMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,23 +30,25 @@ public class UsersController {
 
     private UserService userService;
     private PostService postService;
+    private Cryptography cryptography;
 
-    public UsersController(UserService userService, PostService postService){
+    public UsersController(UserService userService, PostService postService, Cryptography cryptography){
         this.userService = userService;
         this.postService = postService;
+        this.cryptography = cryptography;
     }
 
     //GET /users
     @RequestMapping(path = userPath, method = RequestMethod.GET)
     public ResponseEntity getUsers(@RequestParam Map<String,String> params, @RequestHeader Map<String,String> header){
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new GetUsersValidator(), new InvokeGetUsersService(userService), new GetResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new GetUsersValidator(), new InvokeGetUsersService(userService), new GetResponse());
         return model.execute(params,header,null);
     }
 
     //GET /users/me
     @RequestMapping(path = userPath+"/me", method = RequestMethod.GET)
     public ResponseEntity getCurrentUser(@RequestHeader Map<String,String> header){
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new NoCheckValidator(), new InvokeGetUserMeService(userService), new GetResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new NoCheckValidator(), new InvokeGetUserMeService(userService), new GetResponse());
         return model.execute(null,header,null);
     }
 
@@ -54,7 +57,7 @@ public class UsersController {
     public ResponseEntity getUser(@PathVariable String id, @RequestHeader Map<String,String> header) {
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetUserService(userService), new GetResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new IdValidator(), new InvokeGetUserService(userService), new GetResponse());
         return model.execute(map,header,null);
     }
 
@@ -63,7 +66,7 @@ public class UsersController {
     public ResponseEntity getUserPosts(@PathVariable String id, @RequestHeader Map<String,String> header) {
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetUserPostsService(postService), new GetResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new IdValidator(), new InvokeGetUserPostsService(postService), new GetResponse());
         return model.execute(map,header,null);
     }
 
@@ -77,7 +80,7 @@ public class UsersController {
     //PUT /users/id
     @RequestMapping(path = userPath+"/{id}", method = RequestMethod.PUT)
     public ResponseEntity updateUser(@PathVariable String id,@RequestBody String bodyData, @RequestHeader Map<String,String> header){
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new UserPutDataValidator(), new InvokePutUserService(userService), new PutResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new UserPutDataValidator(), new InvokePutUserService(userService), new PutResponse());
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         return model.execute(map,header,bodyData);

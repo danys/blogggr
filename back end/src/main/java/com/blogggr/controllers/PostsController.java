@@ -12,6 +12,7 @@ import com.blogggr.strategies.responses.GetResponse;
 import com.blogggr.strategies.responses.PostResponse;
 import com.blogggr.strategies.responses.PutResponse;
 import com.blogggr.strategies.validators.*;
+import com.blogggr.utilities.Cryptography;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,23 +30,25 @@ public class PostsController {
 
     private UserService userService;
     private PostService postService;
+    private Cryptography cryptography;
 
-    public PostsController(UserService userService, PostService postService){
+    public PostsController(UserService userService, PostService postService, Cryptography cryptography){
         this.userService = userService;
         this.postService = postService;
+        this.cryptography = cryptography;
     }
 
     //POST /posts
     @RequestMapping(path = postsPath, method = RequestMethod.POST)
     public ResponseEntity createPost(@RequestBody String bodyData, @RequestHeader Map<String,String> header){
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new PostPostDataValidator(), new InvokePostPostService(postService), new PostResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new PostPostDataValidator(), new InvokePostPostService(postService), new PostResponse());
         return model.execute(null,header,bodyData);
     }
 
     //PUT /posts
     @RequestMapping(path = postsPath+"/{id}", method = RequestMethod.PUT)
     public ResponseEntity updatePost(@PathVariable String id,@RequestBody String bodyData, @RequestHeader Map<String,String> header){
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new PostPutDataValidator(), new InvokePutPostService(postService), new PutResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new PostPutDataValidator(), new InvokePutPostService(postService), new PutResponse());
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         return model.execute(map,header,bodyData);
@@ -56,7 +59,7 @@ public class PostsController {
     public ResponseEntity deletePost(@PathVariable String id, @RequestHeader Map<String,String> header){
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeDeletePostService(postService), new DeleteResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new IdValidator(), new InvokeDeletePostService(postService), new DeleteResponse());
         return model.execute(map,header,null);
     }
 
@@ -65,7 +68,7 @@ public class PostsController {
     public ResponseEntity getPost(@PathVariable String id, @RequestHeader Map<String,String> header){
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new IdValidator(), new InvokeGetPostService(postService), new GetResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new IdValidator(), new InvokeGetPostService(postService), new GetResponse());
         return model.execute(map,header,null);
     }
 
@@ -75,14 +78,14 @@ public class PostsController {
         Map<String,String> map = new HashMap<>();
         map.put("userID", userID);
         map.put("postShortName", postShortName);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new GetPostByLabelValidator(), new InvokeGetPostByLabelService(postService), new GetResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new GetPostByLabelValidator(), new InvokeGetPostByLabelService(postService), new GetResponse());
         return model.execute(map,header,null);
     }
 
     //GET /posts
     @RequestMapping(path = postsPath, method = RequestMethod.GET)
     public ResponseEntity getPosts(@RequestParam Map<String,String> params, @RequestHeader Map<String,String> header){
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService), new GetPostsValidator(), new InvokeGetPostsService(postService), new GetResponse());
+        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new GetPostsValidator(), new InvokeGetPostsService(postService), new GetResponse());
         return model.execute(params,header,null);
     }
 }

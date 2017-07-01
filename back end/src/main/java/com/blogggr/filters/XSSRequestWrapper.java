@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
@@ -70,7 +71,7 @@ public class XSSRequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public Map<String,String[]> getParameterMap(){
-        Map<String, String[]> map = super.getParameterMap();
+        Map<String, String[]> map = new HashMap<>(super.getParameterMap());
         Iterator<Map.Entry<String, String[]>> it = map.entrySet().iterator();
         Map.Entry<String, String[]> entry;
         String[] array;

@@ -45,16 +45,13 @@ public class Cryptography {
         }
     }
 
-    public Cryptography() {
+    public Cryptography(@Value("${hmackey}") String HMACKey) {
         try {
             this.algorithm = Algorithm.HMAC512(HMACKey);
         } catch(UnsupportedEncodingException e){
             this.algorithm = null;
         }
     }
-
-    @Value("${hmackey}")
-    private String HMACKey;
 
     private final String issuer = "blogggr";
     private final long maxValidHours = 24L;
