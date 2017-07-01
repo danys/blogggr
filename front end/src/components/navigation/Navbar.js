@@ -2,8 +2,6 @@ import React, {PropTypes} from 'react'
 
 import { connect } from 'react-redux'
 import { logoutAction } from '../../actions/SessionActions'
-import {del} from '../../utils/ajax'
-import {red}  from '../../consts/Constants'
 import Link from './Link'
 import {withRouter} from 'react-router-dom'
 
@@ -17,7 +15,6 @@ class Navbar extends React.Component{
     handleLogoutClick(){
         this.props.removeToken();
         this.props.history.push('/');
-        del(this.props.sessionURL,()=>{},()=>{this.props.showOverlayMsg('Error logging out', 'Error deleting session', red);},{'Authorization': this.props.token});
     }
 
     render(){
@@ -77,7 +74,6 @@ Navbar.propTypes = {
 
 const mapStateToProps = (state) => ({
  loggedin: state.session.loggedin,
- sessionURL: state.session.sessionURL,
  token: state.session.token
  });
 
