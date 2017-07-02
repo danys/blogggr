@@ -9,6 +9,8 @@ import com.blogggr.models.RandomAccessListPage;
 import com.blogggr.requestdata.UserPostData;
 import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.TimeUtilities;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ import java.sql.Timestamp;
 public class UserServiceImpl implements UserService{
 
     private UserDAO userDAO;
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     public UserServiceImpl(UserDAO userDAO){
         this.userDAO = userDAO;

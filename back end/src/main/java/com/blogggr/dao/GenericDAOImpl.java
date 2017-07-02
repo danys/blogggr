@@ -1,5 +1,7 @@
 package com.blogggr.dao;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -15,6 +17,8 @@ import java.util.List;
 @Repository
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class GenericDAOImpl<T extends Serializable> implements GenericDAO<T>{
+
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     @PersistenceContext
     protected EntityManager entityManager;

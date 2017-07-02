@@ -12,6 +12,8 @@ import com.blogggr.json.PageData;
 import com.blogggr.models.PrevNextListPage;
 import com.blogggr.strategies.validators.GetPostsValidator;
 import com.blogggr.utilities.StringUtilities;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.*;
@@ -23,6 +25,8 @@ import java.util.AbstractMap.SimpleEntry;
  */
 @Repository
 public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
+
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     public enum Visibility {
         onlyGlobal,

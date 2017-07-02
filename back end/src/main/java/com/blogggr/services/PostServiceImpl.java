@@ -14,6 +14,8 @@ import com.blogggr.models.PrevNextListPage;
 import com.blogggr.requestdata.PostData;
 import com.blogggr.utilities.StringUtilities;
 import com.blogggr.utilities.TimeUtilities;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,8 @@ public class PostServiceImpl implements PostService{
     private final String noModifyAuthorization = "No authorization to modify this post!";
     private final String noReadAuthorization = "No authorization to view this post!";
     private final String dbException = "Database exception!";
+
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     public PostServiceImpl(PostDAO postDAO, UserDAO userDAO, FriendDAO friendDAO){
         this.postDAO = postDAO;

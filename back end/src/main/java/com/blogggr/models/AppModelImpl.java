@@ -8,6 +8,8 @@ import com.blogggr.strategies.AuthorizationStrategy;
 import com.blogggr.strategies.ResponseStrategy;
 import com.blogggr.strategies.ServiceInvocationStrategy;
 import com.blogggr.strategies.ValidationStrategy;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.dao.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.datasource.init.ScriptException;
@@ -30,6 +32,8 @@ public class AppModelImpl implements AppModel{
     private ValidationStrategy validationBehavior;
     private ServiceInvocationStrategy serviceBehavior;
     private ResponseStrategy responseBehavior;
+
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     public AppModelImpl(AuthorizationStrategy authStrategy, ValidationStrategy validationStrategy,
                     ServiceInvocationStrategy serviceStrategy, ResponseStrategy responseStrategy){

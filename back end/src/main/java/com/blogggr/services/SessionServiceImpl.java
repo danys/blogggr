@@ -5,6 +5,8 @@ import com.blogggr.entities.User;
 import com.blogggr.exceptions.*;
 import com.blogggr.requestdata.SessionPostData;
 import com.blogggr.utilities.Cryptography;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ public class SessionServiceImpl implements SessionService{
         public java.util.Date expiration;
     }
 
+    private final Log logger = LogFactory.getLog(this.getClass());
     private UserDAO userDAO;
     private Cryptography cryptography;
 

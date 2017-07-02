@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Created by Daniel Sunnen on 05.06.17.
@@ -21,6 +23,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class XSSRequestWrapper extends HttpServletRequestWrapper {
 
     private Pattern[] patterns;
+
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     public XSSRequestWrapper(HttpServletRequest request){
         super(request);

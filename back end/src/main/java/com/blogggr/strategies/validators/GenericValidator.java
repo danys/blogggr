@@ -3,6 +3,8 @@ package com.blogggr.strategies.validators;
 import com.blogggr.strategies.ValidationStrategy;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.util.Map;
@@ -13,6 +15,7 @@ import java.util.Map;
 public abstract class GenericValidator implements ValidationStrategy{
 
     protected String errorMessage;
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     public boolean stringIsNumber(String numStr){
         try{

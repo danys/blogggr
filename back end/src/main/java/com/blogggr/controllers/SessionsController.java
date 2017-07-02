@@ -36,7 +36,7 @@ public class SessionsController {
     //POST /sessions
     @RequestMapping(path = sessionPath, method = RequestMethod.POST)
     public ResponseEntity createSession(@RequestBody String bodyData){
-        logger.trace("POST /sessions");
+        logger.debug("[POST /sessions] RequestBody: "+bodyData.toString());
         AppModel model = new AppModelImpl(new NoAuthorization(), new SessionPostDataValidator(), new InvokePostSessionService(sessionService, cryptography), new PostResponse());
         return model.execute(null,null,bodyData);
     }

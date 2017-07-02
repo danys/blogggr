@@ -11,6 +11,8 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.PageMetaData;
 import com.blogggr.models.RandomAccessListPage;
 import com.blogggr.strategies.validators.GetUsersValidator;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -29,6 +31,8 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
     public static final String dbException = "Database exception!";
 
     private final int defaultLimit = 50;
+
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     public UserDAOImpl(){
         super(User.class);

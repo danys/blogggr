@@ -9,6 +9,8 @@ import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.requestdata.FriendData;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,8 @@ public class FriendServiceImpl implements FriendService{
 
     private UserDAO userDAO;
     private FriendDAO friendDAO;
+
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     public FriendServiceImpl(UserDAO userDAO, FriendDAO friendDAO){
         this.userDAO = userDAO;

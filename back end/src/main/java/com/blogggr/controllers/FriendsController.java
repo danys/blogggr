@@ -19,6 +19,8 @@ import com.blogggr.strategies.validators.FriendPutDataValidator;
 import com.blogggr.strategies.validators.IdValidator;
 import com.blogggr.strategies.validators.NoCheckValidator;
 import com.blogggr.utilities.Cryptography;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +40,8 @@ public class FriendsController {
     private FriendService friendService;
     private Cryptography cryptography;
 
+    private final Log logger = LogFactory.getLog(this.getClass());
+
     public FriendsController(UserService userService, FriendService friendService, Cryptography cryptography){
         this.userService = userService;
         this.friendService = friendService;
@@ -47,6 +51,7 @@ public class FriendsController {
     //POST /friends
     @RequestMapping(path = friendsPath, method = RequestMethod.POST)
     public ResponseEntity createFriendship(@RequestBody String bodyData, @RequestHeader Map<String,String> header){
+        logger.debug("[POST /friends] RequestParams = "+bodyData+". Header: "+header.toString());
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new FriendPostDataValidator(), new InvokePostFriendService(friendService), new PostResponse());
         return model.execute(null,header,bodyData);
     }
@@ -54,6 +59,7 @@ public class FriendsController {
     //PUT /friends/id1/id2
     @RequestMapping(path = friendsPath+"/{id}/{id2}", method = RequestMethod.PUT)
     public ResponseEntity updateFriendship(@PathVariable String id, @PathVariable String id2, @RequestBody String bodyData, @RequestHeader Map<String,String> header){
+        logger.debug("[PUT /friends/id1/id2] Id = "+id+". Id2 = "+id2+" RequestBody = "+bodyData+"Header: "+header.toString());
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new FriendPutDataValidator(), new InvokePutFriendService(friendService), new PutResponse());
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
@@ -64,6 +70,7 @@ public class FriendsController {
     //GET /friends
     @RequestMapping(path = friendsPath, method = RequestMethod.GET)
     public ResponseEntity getFriends(@RequestParam Map<String,String> params, @RequestHeader Map<String,String> header){
+        logger.debug("[GET /friends] RequestParams = "+params.toString()+"Header: "+header.toString());
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new NoCheckValidator(), new InvokeGetFriendsService(friendService), new GetResponse());
         return model.execute(params,header,null);
     }
@@ -71,6 +78,7 @@ public class FriendsController {
     //DELETE /friends/id
     @RequestMapping(path = friendsPath+"/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteFriend(@PathVariable String id, @RequestHeader Map<String,String> header){
+        logger.debug("[DELETE /friends/id] Id = "+id+"Header: "+header.toString());
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new IdValidator(), new InvokeDeleteFriendService(friendService), new DeleteResponse());

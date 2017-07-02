@@ -6,6 +6,8 @@ import com.blogggr.entities.User;
 import com.blogggr.entities.User_;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.stereotype.Repository;
 
@@ -27,6 +29,8 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO{
     public FriendDAOImpl(){
         super(Friend.class);
     }
+
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     @Override
     public List<User> getUserFriends(long userID) throws ResourceNotFoundException, DBException{

@@ -12,6 +12,8 @@ import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.requestdata.CommentData;
 import com.blogggr.utilities.TimeUtilities;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,8 @@ public class CommentServiceImpl implements CommentService{
     private FriendDAO friendDAO;
 
     private final String notCommentFound = "Comment not found!";
+
+    private final Log logger = LogFactory.getLog(this.getClass());
 
     public CommentServiceImpl(CommentDAO commentDAO, UserDAO userDAO, PostDAO postDAO, FriendDAO friendDAO){
         this.commentDAO = commentDAO;

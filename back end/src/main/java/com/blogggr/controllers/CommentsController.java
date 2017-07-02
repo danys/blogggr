@@ -16,6 +16,8 @@ import com.blogggr.strategies.validators.CommentPostDataValidator;
 import com.blogggr.strategies.validators.CommentPutDataValidator;
 import com.blogggr.strategies.validators.IdValidator;
 import com.blogggr.utilities.Cryptography;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +38,8 @@ public class CommentsController {
     private CommentService commentService;
     private Cryptography cryptography;
 
+    private final Log logger = LogFactory.getLog(this.getClass());
+
     public CommentsController(UserService userService, PostService postService, CommentService commentService, Cryptography cryptography){
         this.userService = userService;
         this.postService = postService;
@@ -46,22 +50,25 @@ public class CommentsController {
     //POST /comments
     @RequestMapping(path = commentsPath, method = RequestMethod.POST)
     public ResponseEntity createComment(@RequestBody String bodyData, @RequestHeader Map<String,String> header){
+        logger.debug("[POST /comments] RequestBody = "+bodyData+". Header: "+header.toString());
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new CommentPostDataValidator(), new InvokePostCommentService(commentService), new PostResponse());
         return model.execute(null,header,bodyData);
     }
 
-    //PUT /comments
+    //PUT /comments/id
     @RequestMapping(path = commentsPath+"/{id}", method = RequestMethod.PUT)
     public ResponseEntity updateComment(@PathVariable String id,@RequestBody String bodyData, @RequestHeader Map<String,String> header){
+        logger.debug("[PUT /comments/id] Id = "+id+" RequestBody = "+bodyData+". Header: "+header.toString());
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new CommentPutDataValidator(), new InvokePutCommentService(commentService), new PutResponse());
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         return model.execute(map,header,bodyData);
     }
 
-    //DELETE /comments
+    //DELETE /comments/id
     @RequestMapping(path = commentsPath+"/{id}", method = RequestMethod.DELETE)
     public ResponseEntity deleteComment(@PathVariable String id, @RequestHeader Map<String,String> header){
+        logger.debug("[DELETE /comments] Id = "+id+"Header: "+header.toString());
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new IdValidator(), new InvokeDeleteCommentService(commentService), new DeleteResponse());
@@ -71,6 +78,7 @@ public class CommentsController {
     //GET /comments/id
     @RequestMapping(path = commentsPath+"/{id}", method = RequestMethod.GET)
     public ResponseEntity getComment(@PathVariable String id, @RequestHeader Map<String,String> header){
+        logger.debug("[GET /comments/id] Id = "+id+". Header: "+header.toString());
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new IdValidator(), new InvokeGetCommentService(commentService), new GetResponse());
@@ -80,6 +88,7 @@ public class CommentsController {
     //GET /posts/id/comments
     @RequestMapping(path = PostsController.postsPath+"/{id}"+commentsPath, method = RequestMethod.GET)
     public ResponseEntity getCommentsByPostId(@PathVariable String id, @RequestHeader Map<String,String> header){
+        logger.debug("[GET /comments/id/comments] Id = "+id+". Header: "+header.toString());
         Map<String,String> map = new HashMap<>();
         map.put("id", id);
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new IdValidator(), new InvokeGetCommentsService(postService, commentService), new GetResponse());
