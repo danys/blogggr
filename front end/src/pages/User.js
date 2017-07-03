@@ -8,50 +8,31 @@ class User extends React.Component{
 
     constructor(props){
         super(props);
-        /*this.postsURL = "/api/v1.0/users/";
-        this.commentsURL = "/api/v1.0/comments";
+        this.userMeURL = "/api/v1.0/users/me";
         this.state = {
-            commentText: ''
+            userMe: null
         };
-        this.fetchPost = this.fetchPost.bind(this);
-        this.postComment = this.postComment.bind(this);
-        this.handlePostCommentChange = this.handlePostCommentChange.bind(this);*/
+        this.fetchPost = this.fetchUserMe.bind(this);
     }
 
-    /*fetchPost(){
-        get(this.postsURL+this.props.match.params.userID+'/posts/'+this.props.match.params.postName,
+    fetchUserMe(){
+        get(this.userMeURL,
             {},
-            (data)=>{this.setState({postData: data.data})},
+            (data)=>{this.setState({userMe: data.data})},
             (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
                 errorMsg = errorMsg.substring(1,errorMsg.length-1);
                 this.props.showOverlayMsg('Error retrieving details of the post!', errorMsg, red);
             },{'Authorization': this.props.token});
-    }*/
-
-    /*componentDidMount(){
-        this.fetchPost();
     }
 
-    postComment(){
-        let requestData={};
-        requestData["postID"]=(this.state.postData)?this.state.postData.postID:'';
-        requestData["text"]=(this.state.postData)?this.state.commentText:'';
-        post(this.commentsURL,
-            requestData,
-            ()=>{this.setState({commentText: ''},this.fetchPost())},
-            (jqXHR)=>{
-                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.props.showOverlayMsg('Error posting comment!', errorMsg, red);
-            },{'Authorization': this.props.token});
+    componentDidMount(){
+        this.fetchUserMe();
     }
-
-    handlePostCommentChange(event){
-        this.setState({commentText: event.target.value});
-    }*/
 
     render() {
+        let userEmailDisabled = {};
+        userEmailDisabled.disabled=true;
         return (
             <div className="row">
                 <div className="col-lg-6">
@@ -60,7 +41,26 @@ class User extends React.Component{
                             <h3 className="panel-title">User details</h3>
                         </div>
                         <div className="panel-body">
-                            Panel content
+                            <form className="form-horizontal">
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="email">Email:</label>
+                                    <div className="col-sm-9">
+                                        <input type="email" className="form-control" id="email" value={(this.state.userMe?this.state.userMe.email:'')} {...userEmailDisabled}/>
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="firstName">First name:</label>
+                                    <div className="col-sm-9">
+                                        <input type="text" className="form-control" id="firstName" value={(this.state.userMe?this.state.userMe.firstName:'')} />
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="lastName">Last name:</label>
+                                    <div className="col-sm-9">
+                                        <input type="text" className="form-control" id="lastName" value={(this.state.userMe?this.state.userMe.lastName:'')} />
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
