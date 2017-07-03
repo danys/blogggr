@@ -11,3 +11,9 @@ spring:
     username: blogggr
     password: blogggr123
 hmackey: 7A7CFC99DB9802272D1987E287926AC52642417BF2D68455E180412C22
+logging:
+  level:
+    org.springframework.web: WARN
+    org.hibernate: ERROR
+    com.blogggr: DEBUG
+  file: /var/log/spring/blogggr.log
