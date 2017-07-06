@@ -33,7 +33,7 @@ class Navbar extends React.Component{
                             </Link>
                             <ul className="dropdown-menu dropdown-user">
                                 <li>
-                                    <Link url="/users">
+                                    <Link url="/users/me">
                                         <i className="fa fa-user fa-fw"></i> User Profile
                                     </Link>
                                 </li>

@@ -9,6 +9,7 @@ import {Signup} from './Signup';
 import Post from './Post';
 import BlogHome from './BlogHome';
 import User from './User';
+import Settings from './Settings';
 import {AuthRoute} from '../routes/AuthRoute';
 import { connect } from 'react-redux';
 import { logoutAction } from '../actions/SessionActions'
@@ -53,7 +54,8 @@ class App extends React.Component{
                 <Route path="/login" render={()=><Login showOverlayMsg={this.showOverlayMsg}/>} />
                 <Route path="/signup" render={()=><Signup showOverlayMsg={this.showOverlayMsg}/>} />
                 <AuthRoute loggedin={this.authIsOK.bind(this)} path="/users/:userID/posts/:postName" render={()=><Post showOverlayMsg={this.showOverlayMsg}/>} />
-                <AuthRoute loggedin={this.authIsOK.bind(this)} path="/users" render={()=><User showOverlayMsg={this.showOverlayMsg}/>} />
+                <AuthRoute loggedin={this.authIsOK.bind(this)} path="/users/:userID" render={()=><User showOverlayMsg={this.showOverlayMsg}/>} />
+                <AuthRoute loggedin={this.authIsOK.bind(this)} path="/settings" render={()=><Settings showOverlayMsg={this.showOverlayMsg}/>} />
             </Switch>
         );
         return (
