@@ -1,6 +1,7 @@
 package com.blogggr.strategies.validators;
 
 import com.blogggr.requestdata.UserPostData;
+import com.blogggr.requestdata.UserPutData;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +25,7 @@ public class UserPutDataValidator extends GenericValidator{
             return false;
         }
         ObjectMapper mapper = new ObjectMapper();
-        UserPostData userData = mapper.readValue(body, UserPostData.class);
+        UserPutData userData = mapper.readValue(body, UserPutData.class);
         //Check the validity of the body parameters
         if (userData.getPassword()!=null && userData.getPasswordRepeat()==null){
             errorMessage = "Provide the new password twice!";
@@ -38,7 +39,10 @@ public class UserPutDataValidator extends GenericValidator{
             return false;
         }
         //Check other conditions
-        String valRes = UserPostDataValidator.validateUserData(userData);
+        UserPostData temp = new UserPostData();
+        temp.setFirstName(userData.getFirstName());
+        temp.setLastName(userData.getLastName());
+        String valRes = UserPostDataValidator.validateUserData(temp);
         if (!valRes.isEmpty()) {
             errorMessage = valRes;
             return false;

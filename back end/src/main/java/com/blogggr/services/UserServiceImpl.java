@@ -7,6 +7,7 @@ import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.models.RandomAccessListPage;
 import com.blogggr.requestdata.UserPostData;
+import com.blogggr.requestdata.UserPutData;
 import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.TimeUtilities;
 import org.apache.commons.logging.Log;
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void updateUser(long userResourceID, long userID, UserPostData userData) throws ResourceNotFoundException, DBException, NotAuthorizedException{
+    public void updateUser(long userResourceID, long userID, UserPutData userData) throws ResourceNotFoundException, DBException, NotAuthorizedException{
         User user = userDAO.findById(userResourceID);
         if (user == null) throw new ResourceNotFoundException("User not found!");
         //A user can only change his own data

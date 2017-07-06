@@ -4,11 +4,9 @@ import com.blogggr.entities.User;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.exceptions.SessionExpiredException;
 import com.blogggr.models.RandomAccessListPage;
 import com.blogggr.requestdata.UserPostData;
-
-import java.util.List;
+import com.blogggr.requestdata.UserPutData;
 
 /**
  * Created by Daniel Sunnen on 28.10.16.
@@ -21,7 +19,7 @@ public interface UserService {
 
     User getUserByEmail(String email) throws ResourceNotFoundException, DBException;
 
-    void updateUser(long userResourceID, long userID, UserPostData userData) throws ResourceNotFoundException, DBException, NotAuthorizedException;
+    void updateUser(long userResourceID, long userID, UserPutData userData) throws ResourceNotFoundException, DBException, NotAuthorizedException;
 
     RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber) throws DBException;
 }

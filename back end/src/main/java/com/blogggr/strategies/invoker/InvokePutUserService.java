@@ -4,6 +4,7 @@ import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.requestdata.UserPostData;
+import com.blogggr.requestdata.UserPutData;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
 import com.blogggr.strategies.validators.IdValidator;
@@ -34,9 +35,9 @@ public class InvokePutUserService implements ServiceInvocationStrategy {
         Long userResourceID = Long.parseLong(idStr);
         //Parse the body and perform the update of the associated record
         ObjectMapper mapper = new ObjectMapper();
-        UserPostData userData;
+        UserPutData userData;
         try{
-            userData = mapper.readValue(body, UserPostData.class);
+            userData = mapper.readValue(body, UserPutData.class);
         }
         catch(JsonParseException e){
             return null;
