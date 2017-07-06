@@ -72,8 +72,15 @@ public class UserServiceImpl implements UserService{
         if (user == null) throw new ResourceNotFoundException("User not found!");
         //A user can only change his own data
         if (user.getUserID() != userID) throw new NotAuthorizedException("Not authorized to change this user!");
-        if (userData.getPassword() != null)
-                user.setPasswordHash(Cryptography.computeSHA256Hash(userData.getPassword() + user.getSalt()));
+        //If an old password has been provided check it!
+        if (userData.getOldPassword()!=null){
+            String oldHash = Cryptography.computeSHA256Hash(userData.getOldPassword() + user.getSalt());
+            if (oldHash.compareTo(user.getPasswordHash())!=0) throw new NotAuthorizedException("Old password is wrong!");
+        }
+        if (userData.getPassword() != null){
+            if (userData.getOldPassword()==null) throw new NotAuthorizedException("Old password must be provided!");
+            user.setPasswordHash(Cryptography.computeSHA256Hash(userData.getPassword() + user.getSalt()));
+        }
         if (userData.getEmail() != null) user.setEmail(userData.getEmail());
         if (userData.getLastName() != null) user.setLastName(userData.getLastName());
         if (userData.getFirstName() != null) user.setFirstName(userData.getFirstName());

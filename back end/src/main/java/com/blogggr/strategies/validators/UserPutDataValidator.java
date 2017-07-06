@@ -27,9 +27,15 @@ public class UserPutDataValidator extends GenericValidator{
         ObjectMapper mapper = new ObjectMapper();
         UserPutData userData = mapper.readValue(body, UserPutData.class);
         //Check the validity of the body parameters
-        if (userData.getPassword()!=null && userData.getPasswordRepeat()==null){
-            errorMessage = "Provide the new password twice!";
-            return false;
+        //If any of the password parameters is given, all other parameters must be given as well
+        if (userData.getOldPassword()!=null || userData.getPassword()!=null || userData.getPasswordRepeat()!=null){
+            if (userData.getOldPassword()==null || userData.getPassword()==null || userData.getPasswordRepeat()==null){
+                errorMessage = "Provide the old password and the new password twice!";
+                return false;
+            }else if(userData.getPassword().compareTo(userData.getPasswordRepeat())!=0){
+                errorMessage = "The new password and the repeated new password do not match!";
+                return false;
+            }
         }
         if (userData.getFirstName()==null
             && userData.getLastName()==null
