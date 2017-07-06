@@ -48,3 +48,16 @@ export function del(url, successHandler, errorHandler, headers={}) {
         error: errorHandler
     });
 }
+
+export function put(url, requestData, successHandler, errorHandler, headers={}) {
+    jQuery.ajax({
+        url: url,
+        method: 'PUT',
+        data: JSON.stringify(requestData),
+        dataType: 'json',
+        contentType: "application/json; charset=utf-8",
+        headers: headers,
+        success: successHandler,
+        error: errorHandler
+    });
+}

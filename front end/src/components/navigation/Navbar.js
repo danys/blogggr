@@ -21,7 +21,7 @@ class Navbar extends React.Component{
         let loginFunctionality = '';
         const homeProps = this.props.highlight && this.props.highlight==='/'?{className:"active"}:null;
         const friendsProps = this.props.highlight && this.props.highlight==='/friends'?{className:"active"}:null;
-        const userProps = this.props.highlight && this.props.highlight==='/user'?{className:"dropdown active"}:{className:"dropdown"};
+        const userProps = this.props.highlight && this.props.highlight==='/users'?{className:"dropdown active"}:{className:"dropdown"};
         if (this.props.loggedin) {
                 loginFunctionality = (
                     <ul className="nav navbar-top-links navbar-right">
