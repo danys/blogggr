@@ -12,7 +12,7 @@ class User extends React.Component{
         this.userBaseURL = "/api/v1.0/users/";
         this.state = {
             userMe: null,
-            passwordData: {}
+            passwordData: null
         };
         this.fetchPost = this.fetchUserMe.bind(this);
     }
@@ -39,7 +39,7 @@ class User extends React.Component{
     }
 
     handlePasswordFieldChange(fieldName, value){
-        let passwordData = this.state.passwordData;
+        let passwordData = (this.state.passwordData!=null)?this.state.passwordData:{};
         passwordData[fieldName]=value.target.value;
         this.setState({passwordData: passwordData});
     }
@@ -48,14 +48,13 @@ class User extends React.Component{
         if (!this.state.userMe) return;
         let request = {
             id: this.state.userMe.userID,
-            firstName: jQuery('#firstName').val(),
-            lastName: jQuery('#lastName').val()
+            firstName: this.state.userMe.firstName,
+            lastName: this.state.userMe.lastName
         };
         put(this.userBaseURL+this.state.userMe.userID,
             request,
             (data)=>{
-                let successMsg = JSON.stringify(JSON.parse(data.responseText).error);
-                successMsg = successMsg.substring(1,successMsg.length-1);
+                let successMsg = "Successfully updated user data!";
                 this.props.showOverlayMsg('Success', successMsg, green);
             },
             (jqXHR)=>{
@@ -70,21 +69,22 @@ class User extends React.Component{
         if (this.state.passwordData==null) return;
         let request = {
             id: this.state.userMe.userID,
-            oldPassword: jQuery('#oldPassword').val(),
-            password: jQuery('#password').val(),
-            passwordRepeat: jQuery('#passwordRepeat').val()
+            oldPassword: this.state.passwordData.oldPassword,
+            password: this.state.passwordData.password,
+            passwordRepeat: this.state.passwordData.passwordRepeat
         };
         put(this.userBaseURL+this.state.userMe.userID,
             request,
             (data)=>{
-                let successMsg = JSON.stringify(JSON.parse(data.responseText).error);
-                successMsg = successMsg.substring(1,successMsg.length-1);
+                let successMsg = "Password changed successfully!";
                 this.props.showOverlayMsg('Success', successMsg, green);
+                this.setState({passwordData: null});
             },
             (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
                 errorMsg = errorMsg.substring(1,errorMsg.length-1);
                 this.props.showOverlayMsg('Error changing password!', errorMsg, red);
+                this.setState({passwordData: null});
             },
             {'Authorization': this.props.token});
     }
@@ -140,24 +140,27 @@ class User extends React.Component{
                                 <div className="form-group">
                                     <label className="control-label col-sm-5" htmlFor="oldPassword">Old password:</label>
                                     <div className="col-sm-7">
-                                        <input type="password" className="form-control" id="oldPassword" onChange={this.handlePasswordFieldChange.bind(this,'oldPassword')} value={(this.state.passwordData?this.state.passwordData.oldPassword:'')}/>
+                                        <input type="password" className="form-control" id="oldPassword" onChange={this.handlePasswordFieldChange.bind(this,'oldPassword')}
+                                               value={(this.state.passwordData && this.state.passwordData.oldPassword?this.state.passwordData.oldPassword:'')}/>
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <label className="control-label col-sm-5" htmlFor="newPassword">New password:</label>
                                     <div className="col-sm-7">
-                                        <input type="password" className="form-control" id="password" onChange={this.handlePasswordFieldChange.bind(this,'password')} value={(this.state.passwordData?this.state.passwordData.password:'')} />
+                                        <input type="password" className="form-control" id="password" onChange={this.handlePasswordFieldChange.bind(this,'password')}
+                                               value={(this.state.passwordData && this.state.passwordData.password?this.state.passwordData.password:'')} />
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <label className="control-label col-sm-5" htmlFor="newPasswordRepeat">Repeat new password:</label>
                                     <div className="col-sm-7">
-                                        <input type="password" className="form-control" id="passwordRepeat" onChange={this.handlePasswordFieldChange.bind(this,'passwordRepeat')} value={(this.state.passwordData?this.state.passwordData.passwordRepeat:'')} />
+                                        <input type="password" className="form-control" id="passwordRepeat" onChange={this.handlePasswordFieldChange.bind(this,'passwordRepeat')}
+                                               value={(this.state.passwordData && this.state.passwordData.passwordRepeat?this.state.passwordData.passwordRepeat:'')} />
                                     </div>
                                 </div>
                                 <div className="form-group">
-                                    <div className="col-sm-3" />
-                                    <div className="col-sm-9">
+                                    <div className="col-sm-5" />
+                                    <div className="col-sm-7">
                                         <button type="button" className="btn btn-primary btn-block" onClick={this.updatePassword.bind(this)}>Change password</button>
                                     </div>
                                 </div>
