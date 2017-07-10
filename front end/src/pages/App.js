@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../components/navigation/Navbar';
 import Footer from '../components/Footer';
-import {Modal} from '../components/Modal';
+import {Modal} from '../components/modal/Modal';
 import {red}  from '../consts/Constants';
 import {Switch, Route} from 'react-router-dom';
 import Login from './Login';

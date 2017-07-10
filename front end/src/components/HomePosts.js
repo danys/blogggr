@@ -1,15 +1,15 @@
 import React from 'react'
 
-import Sidebar from './SearchSidebar'
+import SearchSidebarBody from './sidebar/SearchSidebarBody'
+import {Sidebar} from './sidebar/Sidebar'
 import {get,post} from '../utils/ajax'
 import { connect } from 'react-redux'
 import {red, green, blue}  from '../consts/Constants'
 import {HomePost} from './HomePost'
 import { updateUserData } from '../actions/UserDataActions'
 import { setTitle, setPoster, setVisibility } from '../actions/BlogSearchFilterActions'
-import {Modal} from '../components/Modal'
-import {CreatePostForm} from '../components/CreatePostForm'
-import Link from './navigation/Link'
+import {Modal} from './modal/Modal'
+import {CreatePostForm} from './modal/PostForm'
 import PrevNext from './navigation/PrevNext'
 
 export class HomePosts extends React.Component {
@@ -161,15 +161,17 @@ export class HomePosts extends React.Component {
                         />
                     </div>
                     <div className="col-md-4">
-                        <Sidebar handleSearch={this.searchPosts}
-                                 updateTitle={this.searchTitleUpdate}
-                                 updatePoster={this.searchBlogPosterUpdate}
-                                 updateVisibility={this.searchVisibilityUpdate}
-                                 title={this.state.title}
-                                 poster={this.state.poster}
-                                 visibility={this.state.visibility}
-                                 showNewPostModal={this.showCreatePost}
-                        />
+                        <Sidebar title="Search for blog posts">
+                            <SearchSidebarBody
+                                handleSearch={this.searchPosts}
+                                updateTitle={this.searchTitleUpdate}
+                                updatePoster={this.searchBlogPosterUpdate}
+                                updateVisibility={this.searchVisibilityUpdate}
+                                title={this.state.title}
+                                poster={this.state.poster}
+                                visibility={this.state.visibility}
+                                showNewPostModal={this.showCreatePost}/>
+                        </Sidebar>
                     </div>
                 </div>
                 <Modal title={'Create a new post'} body={<CreatePostForm data={this.state.newPost} onChange={this.updateNewPost.bind(this)}/>} footerAction={this.createPost.bind(this)} modalId='newPostModal' footerButtonCaption='Save' color={blue} hasFooter={true}/>

@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from 'react-select'
-import {get} from '../utils/ajax'
+import {get} from '../../utils/ajax'
 import { connect } from 'react-redux'
 import debounce from 'lodash/debounce'
 
@@ -60,8 +60,7 @@ export class SearchSidebar extends React.Component{
     render(){
         const posterLabel = ('label' in this.props.poster)?this.props.poster.label:'';
         return (
-        <div className="well">
-            <h4>Search for blog posts</h4>
+            <div>
             <div className="form-group">
                 <label htmlFor="titleSearchKey">Blog title</label>
                 <input type="text" className="form-control" placeholder="Title" id="titleSearchKey" onChange={this.updateTitle} value={this.props.title}/>
@@ -117,7 +116,7 @@ export class SearchSidebar extends React.Component{
             <br/>
             <h4>Create a new blog post</h4>
             <button type="button" className="btn btn-md btn-primary btn-block" onClick={this.props.showNewPostModal}>New post</button>
-        </div>
+            </div>
         );
     }
 }
