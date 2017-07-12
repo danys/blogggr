@@ -36,7 +36,7 @@ export class HomePosts extends React.Component {
         get(this.userMeURL,
             {},
             (data)=>{this.setState({userData: data.data},
-                ()=>{this.props.storeUserData(this.state.userData.firstName, this.state.userData.lastName, this.state.userData.email);});
+                ()=>{this.props.storeUserData(this.state.userData.firstName, this.state.userData.lastName);});
             },
             (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
@@ -190,8 +190,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        storeUserData: (firstName, lastName, email) => {
-            dispatch(updateUserData(firstName, lastName, email))
+        storeUserData: (firstName, lastName) => {
+            dispatch(updateUserData(firstName, lastName))
         },
         setSearchTitle: (title) => {
             dispatch(setTitle(title))

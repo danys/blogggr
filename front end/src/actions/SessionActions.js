@@ -2,11 +2,12 @@ export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const RENEW_SESSION = 'RENEW_SESSION';
 
-export function loginAction(token, validUntil){
+export function loginAction(token, validUntil, email){
     return {
       type: LOGIN,
       token: token,
-      validUntil: validUntil
+      validUntil: validUntil,
+      email: email
     };
 }
 
@@ -14,7 +15,8 @@ export function logoutAction(){
     return {
         type: LOGOUT,
         token: '',
-        validUntil: ''
+        validUntil: '',
+        email: ''
     };
 }
 

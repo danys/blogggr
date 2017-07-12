@@ -1,10 +1,9 @@
 export const UPDATE = 'UPDATE';
 
-export function updateUserData(firstName, lastName, email){
+export function updateUserData(firstName, lastName){
     return {
         type: UPDATE,
         firstName: firstName,
-        lastName: lastName,
-        email: email
+        lastName: lastName
     };
 }

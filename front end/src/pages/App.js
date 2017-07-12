@@ -21,8 +21,7 @@ class App extends React.Component{
         this.state = {
             modalTitle: 'Error',
             modalMsg: 'Error',
-            color: red,
-            loggedin: false
+            color: red
         };
         this.showOverlayMsg = this.showOverlayMsg.bind(this);
     }
@@ -39,11 +38,11 @@ class App extends React.Component{
     //Check if auth token is still valid
     authIsOK(){
         let validTillDateTime = moment(this.props.validUntil,"YYYY-MM-DD HH:mm:ss");
-        if ((this.props.loggedin===true) && (moment().isAfter(validTillDateTime))) {
+        if ((this.props.token!=='') && (moment().isAfter(validTillDateTime))) {
             this.props.removeToken();
             return false;
         }
-        else if (this.props.loggedin===true) return true;
+        else if (this.props.token!=='') return true;
         else return false;
     }
 
@@ -73,7 +72,7 @@ class App extends React.Component{
 
 const mapStateToProps = (state) => {
     return {
-        loggedin: state.session.loggedin,
+        token: state.session.token,
         validUntil: state.session.validUntil
     }
 };

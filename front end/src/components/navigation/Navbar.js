@@ -22,7 +22,7 @@ class Navbar extends React.Component{
         const homeProps = this.props.highlight && this.props.highlight==='/'?{className:"active"}:null;
         const friendsProps = this.props.highlight && this.props.highlight==='/friends'?{className:"active"}:null;
         const userProps = this.props.highlight && this.props.highlight==='/users'?{className:"dropdown active"}:{className:"dropdown"};
-        if (this.props.loggedin) {
+        if (this.props.token!=='') {
                 loginFunctionality = (
                     <ul className="nav navbar-top-links navbar-right">
                         <li {...homeProps}><Link url="/" text="Home"></Link></li>
@@ -73,7 +73,6 @@ Navbar.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
- loggedin: state.session.loggedin,
  token: state.session.token
  });
 

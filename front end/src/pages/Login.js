@@ -28,7 +28,7 @@ export class Login extends React.Component{
             (data, status, request)=>{
             //Extract the auth token, update the redux store and redirect the user
             let authToken = data.data.Auth;
-            this.props.storeToken(authToken, data.data.ValidUntil);
+            this.props.storeToken(authToken, data.data.ValidUntil, data.data.email);
             this.props.history.push('/');
         }, (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
@@ -102,8 +102,8 @@ export class Login extends React.Component{
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        storeToken: (token, validUntil) => {
-            dispatch(loginAction(token, validUntil))
+        storeToken: (token, validUntil, email) => {
+            dispatch(loginAction(token, validUntil, email))
         }
     }
 };
