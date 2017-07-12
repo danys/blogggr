@@ -49,12 +49,13 @@ public class InvokePostSessionService implements ServiceInvocationStrategy{
             return null;
         }
         SessionServiceImpl.SessionDetails jwt = sessionService.createSession(sessionData);
-        //Create location string and session id hash. Then return it as a map.
+        //Return a map that contains the user email address, the JWT and its expiration timestamp
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put(AppConfig.authKey,jwt.jwt);
         //Format valid until timestamp as "YYYY-MM-DD HH:mm:ss"
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         responseMap.put(AppConfig.validityUntilKey,dateFormat.format(jwt.expiration));
+        responseMap.put(AppConfig.emailKey, jwt.email);
         return responseMap;
     }
 }

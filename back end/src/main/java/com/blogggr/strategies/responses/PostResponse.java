@@ -30,10 +30,11 @@ public class PostResponse extends GenericResponse implements ResponseStrategy {
         //Optional auth data in the response body: "{Auth: <sessionHash>,ValidUntil: <ts>}"
         JsonNodeFactory factory = JsonNodeFactory.instance;
         ObjectNode authData = null;
-        if (map.containsKey(AppConfig.authKey) && map.containsKey(AppConfig.validityUntilKey)) {
+        if (map.containsKey(AppConfig.authKey) && map.containsKey(AppConfig.validityUntilKey) && map.containsKey(AppConfig.emailKey)) {
             authData = factory.objectNode();
             authData.put(AppConfig.authKey,map.get(AppConfig.authKey));
             authData.put(AppConfig.validityUntilKey,map.get(AppConfig.validityUntilKey));
+            authData.put(AppConfig.emailKey,map.get(AppConfig.emailKey));
         }
         return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(authData), headers, HttpStatus.CREATED);
     }

@@ -22,6 +22,7 @@ public class SessionServiceImpl implements SessionService{
     public static class SessionDetails{
         public String jwt;
         public java.util.Date expiration;
+        public String email;
     }
 
     private final Log logger = LogFactory.getLog(this.getClass());
@@ -44,6 +45,7 @@ public class SessionServiceImpl implements SessionService{
         SessionDetails details = new SessionDetails();
         details.jwt = cryptography.generateJWT(user.getEmail());
         details.expiration = cryptography.getExpirationFromValidJWT(details.jwt);
+        details.email = sessionData.getEmail();
         return details;
     }
 }

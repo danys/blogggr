@@ -21,6 +21,7 @@ public class AppConfig {
     public static final String locationHeaderKey = "Location";
     public static final String authKey = "Auth";
     public static final String validityUntilKey = "ValidUntil";
+    public static final String emailKey = "email";
     public static final long sessionValidityMillis = 1000*60*60*24; //one day: maximum validity of a session. Max also applies for extensions.
     public static final String headerAuthorizationKey = "authorization";
     public static final int maxPostBodyLength = 100;
