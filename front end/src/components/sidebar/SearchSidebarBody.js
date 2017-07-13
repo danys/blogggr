@@ -4,7 +4,7 @@ import {get} from '../../utils/ajax'
 import { connect } from 'react-redux'
 import debounce from 'lodash/debounce'
 
-export class SearchSidebar extends React.Component{
+class SearchSidebar extends React.Component{
 
     constructor(props){
         super(props);

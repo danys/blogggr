@@ -4,12 +4,15 @@ import { withRouter } from 'react-router'
 import {get, post} from '../utils/ajax'
 import {red}  from '../consts/Constants'
 import Link from '../components/navigation/Link'
+import {Sidebar} from '../components/sidebar/Sidebar'
+import PostOptionsSidebarBody from '../components/sidebar/PostOptionsSidebarBody'
 
 class Post extends React.Component{
 
     constructor(props){
         super(props);
-        this.postsURL = "/api/v1.0/users/";
+        this.userPostsURL = "/api/v1.0/users/";
+        this.postsURL = "/api/v1.0/posts/";
         this.commentsURL = "/api/v1.0/comments";
         this.state = {
             commentText: ''
@@ -20,7 +23,7 @@ class Post extends React.Component{
     }
 
     fetchPost(){
-        get(this.postsURL+this.props.match.params.userID+'/posts/'+this.props.match.params.postName,
+        get(this.userPostsURL+this.props.match.params.userID+'/posts/'+this.props.match.params.postName,
             {},
             (data)=>{this.setState({postData: data.data})},
             (jqXHR)=>{
@@ -52,6 +55,14 @@ class Post extends React.Component{
         this.setState({commentText: event.target.value});
     }
 
+    showEditPostModal(){
+        //
+    }
+
+    showDeletePostModal(){
+        //
+    }
+
     render() {
         const posterURL = (this.state.postData?'/users/'+this.state.postData.user.userID:'');
         let comments = (this.state.postData?this.state.postData.comments.map((comment, index)=>{
@@ -69,6 +80,17 @@ class Post extends React.Component{
                 </div>
             )
             }):null);
+        //If the current user is the author of the post: show edit and delete options
+        let sidebar = '';
+        if (this.state.postData && this.props.email===this.state.postData.user.email){
+            sidebar = (
+                <div className="col-md-4">
+                    <Sidebar title="Post options">
+                        <PostOptionsSidebarBody editModal={this.showEditPostModal.bind(this)} deleteModal={this.showDeletePostModal.bind(this)} />
+                    </Sidebar>
+                </div>
+            );
+        }
         return (
             <div className="row">
                 <div className="col-lg-8">
@@ -95,13 +117,15 @@ class Post extends React.Component{
                     <hr />
                     {comments}
                 </div>
+                {sidebar}
             </div>
         );
     }
 }
 
 const mapStateToProps = (state) => ({
-    token: state.session.token
+    token: state.session.token,
+    email: state.session.email
 });
 
 
