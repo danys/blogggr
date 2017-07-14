@@ -11,7 +11,7 @@ export default class Welcome extends React.Component{
                         <p>Share blog posts with friends and the world!</p>
                         <p>
                             <Link cssClass="btn btn-info btn-lg" url="/login" role="button" text="Login" /> or
-                            <Link cssClass="btn btn-success btn-lg" url="/signup" role="button" text="Sign up" />
+                            <Link cssClass="btn btn-success btn-lg linkSpace" url="/signup" role="button" text="Sign up" />
                         </p>
                     </div>
                 </div>
