@@ -10,8 +10,12 @@ class PostOptionsSidebarBody extends React.Component{
     render(){
         return (
             <div>
-                <button type="button" className="btn btn-md btn-info btn-block" onClick={this.props.editModal.bind(this)}>Edit post</button>
-                <button type="button" className="btn btn-md btn-danger btn-block" onClick={this.props.deleteModal.bind(this)}>Delete post</button>
+                <button type="button" className="btn btn-md btn-info btn-block" onClick={this.props.editModal.bind(this)}>
+                    <span className="glyphicon glyphicon-pencil"> Edit post</span>
+                </button>
+                <button type="button" className="btn btn-md btn-danger btn-block" onClick={this.props.deleteModal.bind(this)}>
+                    <span className="glyphicon glyphicon-remove"> Delete post</span>
+                </button>
             </div>
         );
     }
