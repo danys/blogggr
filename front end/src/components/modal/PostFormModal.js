@@ -12,9 +12,8 @@ export class PostFormModal extends React.Component {
     }
 
     render(){
-
         return (
-            <Modal>
+            <Modal {...this.props}>
                 <form>
                     <div className="form-group">
                         <label htmlFor="createPostTitle">Post's title</label>

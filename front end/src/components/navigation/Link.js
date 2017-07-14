@@ -12,6 +12,7 @@ class Link extends React.Component{
         event.preventDefault();
         if (this.props.onClick) this.props.onClick(event);
         if (this.props.url!=='#') this.props.history.push(this.props.url);
+        window.scrollTo(0, 0);
     }
 
     render(){

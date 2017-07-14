@@ -6,6 +6,8 @@ import {red}  from '../consts/Constants'
 import Link from '../components/navigation/Link'
 import {Sidebar} from '../components/sidebar/Sidebar'
 import PostOptionsSidebarBody from '../components/sidebar/PostOptionsSidebarBody'
+import {PostForm} from '../components/modal/PostFormModal'
+import {Modal} from '../components/modal/Modal'
 
 class Post extends React.Component{
 
@@ -118,6 +120,7 @@ class Post extends React.Component{
                     {comments}
                 </div>
                 {sidebar}
+                
             </div>
         );
     }

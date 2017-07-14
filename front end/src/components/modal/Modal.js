@@ -28,7 +28,7 @@ export class Modal extends React.Component {
                         <h4 className="modal-title">{this.props.title}</h4>
                     </div>
                     <div className="modal-body">
-                        {this.props.body}
+                        {this.props.children}
                     </div>
                     {footer}
                 </div>

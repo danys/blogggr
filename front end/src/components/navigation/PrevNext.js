@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from './Link';
 
-const PrevNext = ({prev, next, prevUrl, nextUrl}) => {
+const PrevNext = ({prev, next, prevUrl, nextUrl, rev}) => {
     return (
         <div>
             <hr />
@@ -9,14 +9,14 @@ const PrevNext = ({prev, next, prevUrl, nextUrl}) => {
                 {prev &&
                 <li className="previous">
                     <Link url={prevUrl} onClick={prev}>
-                        &larr; Older
+                        &larr; {rev==='true'?'Newer':'Older'}
                     </Link>
                 </li>
                 }
                 {next &&
                 <li className="next">
                     <Link url={nextUrl} onClick={next}>
-                        Newer &rarr;
+                        {rev==='true'?'Older':'Newer'} &rarr;
                     </Link>
                 </li>
                 }

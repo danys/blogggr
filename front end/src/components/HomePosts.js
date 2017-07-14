@@ -8,8 +8,7 @@ import {red, green, blue}  from '../consts/Constants'
 import {HomePost} from './HomePost'
 import { updateUserData } from '../actions/UserDataActions'
 import { setTitle, setPoster, setVisibility } from '../actions/BlogSearchFilterActions'
-import {Modal} from './modal/Modal'
-import {CreatePostForm} from './modal/PostForm'
+import {PostFormModal} from './modal/PostFormModal'
 import PrevNext from './navigation/PrevNext'
 
 export class HomePosts extends React.Component {
@@ -158,6 +157,7 @@ export class HomePosts extends React.Component {
                             next={(this.state.postsData && this.state.postsData.pageData && this.state.postsData.pageData.next)?this.handleNextClick.bind(this):null}
                             prevUrl="/"
                             nextUrl="/"
+                            rev="true"
                         />
                     </div>
                     <div className="col-md-4">
@@ -174,7 +174,7 @@ export class HomePosts extends React.Component {
                         </Sidebar>
                     </div>
                 </div>
-                <Modal title={'Create a new post'} body={<CreatePostForm data={this.state.newPost} onChange={this.updateNewPost.bind(this)}/>} footerAction={this.createPost.bind(this)} modalId='newPostModal' footerButtonCaption='Save' color={blue} hasFooter={true}/>
+                <PostFormModal data={this.state.newPost} title={'Create a new post'} onChange={this.updateNewPost.bind(this)} footerAction={this.createPost.bind(this)} modalId='newPostModal' footerButtonCaption='Save' color={blue} hasFooter={true} />
             </div>
         );
     }
