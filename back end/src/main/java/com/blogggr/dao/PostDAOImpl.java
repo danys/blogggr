@@ -56,17 +56,16 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             List<Post> posts = entityManager.createQuery(postsQuery).setMaxResults(limit).getResultList();
             CriteriaQuery<Long> postsCountQuery = generateQuery(userID, postUserID, title, visibility, null, null, true);
             Long totalCount = entityManager.createQuery(postsCountQuery).getSingleResult();
-            Collections.sort(posts, (p1, p2)->(int)(p1.getPostID()-p2.getPostID())); //sort such that post id are in ascending order
             Integer numberPageItems = posts.size();
             Long nextAfter = null;
             Long nextBefore = null;
             //Figure out if a post is before or after the posts of this page
             if (totalCount>0 && posts.size()>0){
-                CriteriaQuery<Post> beforePostQuery = generateQuery(userID, postUserID, title, visibility, posts.get(0).getPostID(), null, false);
+                CriteriaQuery<Post> beforePostQuery = generateQuery(userID, postUserID, title, visibility, null, posts.get(0).getPostID(), false);
                 List<Post> beforePosts = entityManager.createQuery(beforePostQuery).setMaxResults(1).getResultList();
                 if (beforePosts.size()==1) nextBefore = posts.get(0).getPostID();
 
-                CriteriaQuery<Post> afterPostQuery = generateQuery(userID, postUserID, title, visibility, null, posts.get(posts.size()-1).getPostID(), false);
+                CriteriaQuery<Post> afterPostQuery = generateQuery(userID, postUserID, title, visibility, posts.get(posts.size()-1).getPostID(), null, false);
                 List<Post> afterPosts = entityManager.createQuery(afterPostQuery).setMaxResults(1).getResultList();
                 if (afterPosts.size()==1) nextAfter = posts.get(posts.size()-1).getPostID();
             }
@@ -107,12 +106,9 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             title = "%" + title.toLowerCase() + "%"; //substring of title is enough for a match
             titleCondition = cb.like(cb.lower(root.get(Post_.title)), title);
         }
-        if (before == null && after == null) {
-            after = defaultMinimumID;
-        }
         if (before != null && after != null) {
             //Can have either before or after but not both set
-            before = null;
+            throw new IllegalArgumentException("Cannot set both before and after!");
         }
         //Post user condition
         Predicate postUserCondition = null;
@@ -123,7 +119,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         //After postID condition, Before postID condition
         if (!countOnly){
             if (after != null) postAfterCondition = cb.greaterThan(root.get(Post_.postID), after);
-            else postBeforeCondition = cb.lessThan(root.get(Post_.postID), before);
+            else if (before != null) postBeforeCondition = cb.lessThan(root.get(Post_.postID), before);
         }
         Predicate[] predicatesOr1Array;
         //Visibility global => return all global posts
@@ -133,7 +129,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             if (postUserCondition != null) predicatesOr1.add(postUserCondition); //filter on userID of poster
             if (!countOnly){
                 if (postAfterCondition!=null) predicatesOr1.add(postAfterCondition);
-                else predicatesOr1.add(postBeforeCondition);
+                else if (postBeforeCondition!=null) predicatesOr1.add(postBeforeCondition);
             }
             predicatesOr1Array = new Predicate[predicatesOr1.size()];
             predicatesOr1.toArray(predicatesOr1Array);
@@ -147,7 +143,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             if (titleCondition!=null) predicatesOr1.add(titleCondition); //filter on title
             if (!countOnly){
                 if (postAfterCondition!=null) predicatesOr1.add(postAfterCondition);
-                else predicatesOr1.add(postBeforeCondition);
+                else if (postBeforeCondition!=null) predicatesOr1.add(postBeforeCondition);
             }
             predicatesOr1Array = new Predicate[predicatesOr1.size()];
             predicatesOr1.toArray(predicatesOr1Array);
@@ -192,7 +188,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
                             cb.and(friendsPredicate,postAfterCondition)
                     );
                 }
-                else{
+                else if (postBeforeCondition!=null){
                     query.where(
                             cb.and(friendsPredicate,postBeforeCondition)
                     );
@@ -246,7 +242,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
                             cb.and(friendsUserGlobalPredicate,postAfterCondition)
                     );
                 }
-                else{
+                else if (postBeforeCondition!=null){
                     query.where(
                             cb.and(friendsUserGlobalPredicate,postBeforeCondition)
                     );
@@ -257,6 +253,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         if (countOnly) query.select(cb.countDistinct(root));
         else{
             if (after!=null) query.orderBy(cb.asc(root.get(Post_.postID)));
+            //else before!=null || before==null (=> default to sort from most recent post to oldest post)
             else query.orderBy(cb.desc(root.get(Post_.postID)));
         }
         return query;
@@ -282,13 +279,13 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
     private String buildNextPageUrl(Long next, Integer limit, Long postUserID, String title, Visibility visibility){
         if (next==null || limit==null) throw new IllegalArgumentException("Next and limit should not be null!");
         return AppConfig.baseUrl + PostsController.postsPath + "?" +
-                StringUtilities.buildQueryStringFromListOfKVPairs(buildListKV(null, next, limit, postUserID, title, visibility));
+                StringUtilities.buildQueryStringFromListOfKVPairs(buildListKV(next, null, limit, postUserID, title, visibility));
     }
 
     private String buildPreviousPageUrl(Long previous, Integer limit, Long postUserID, String title, Visibility visibility){
         if (previous==null || limit==null) throw new IllegalArgumentException("Previous and limit should not be null!");
         return AppConfig.baseUrl + PostsController.postsPath + "?" +
-                StringUtilities.buildQueryStringFromListOfKVPairs(buildListKV(previous, null, limit, postUserID, title, visibility));
+                StringUtilities.buildQueryStringFromListOfKVPairs(buildListKV(null, previous, limit, postUserID, title, visibility));
     }
 
     @Override
