@@ -14,6 +14,7 @@ export class PostFormModal extends React.Component {
     render(){
         return (
             <Modal {...this.props}>
+                {this.props.data ?
                 <form>
                     <div className="form-group">
                         <label htmlFor="createPostTitle">Post's title</label>
@@ -32,6 +33,11 @@ export class PostFormModal extends React.Component {
                         </select>
                     </div>
                 </form>
+                :
+                this.props.text ?
+                <div>{this.props.text}</div>
+                :
+                ''}
             </Modal>
         );
     }

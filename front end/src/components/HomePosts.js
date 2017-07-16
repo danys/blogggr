@@ -90,7 +90,7 @@ export class HomePosts extends React.Component {
         let requestData = {};
         requestData.title=data.title;
         requestData.textBody=data.textBody;
-        requestData.global = (requestData['isGlobal']==='isGlobal')?true:false;
+        requestData.global = (data['isGlobal']==='isGlobal')?true:false;
         post(this.postsURL, requestData,
             (data)=>{
                 this.props.showOverlayMsg('Success', 'Successfully created post!', green);

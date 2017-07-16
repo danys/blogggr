@@ -3,12 +3,15 @@ package com.blogggr.strategies.invoker;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;
+import com.blogggr.json.FilterFactory;
+import com.blogggr.json.JsonTransformer;
 import com.blogggr.requestdata.PostData;
 import com.blogggr.services.PostService;
 import com.blogggr.strategies.ServiceInvocationStrategy;
 import com.blogggr.strategies.validators.IdValidator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -47,7 +50,6 @@ public class InvokePutPostService implements ServiceInvocationStrategy {
         catch(IOException e){
             return null;
         }
-        postService.updatePost(postID, userID, postData);
-        return null;
+        return JsonTransformer.filterFieldsOfMultiLevelObject(postService.updatePost(postID, userID, postData), FilterFactory.getPostFilter());
     }
 }

@@ -6,8 +6,9 @@ import {red}  from '../consts/Constants'
 import Link from '../components/navigation/Link'
 import {Sidebar} from '../components/sidebar/Sidebar'
 import PostOptionsSidebarBody from '../components/sidebar/PostOptionsSidebarBody'
-import {PostForm} from '../components/modal/PostFormModal'
-import {Modal} from '../components/modal/Modal'
+import {PostFormModal} from '../components/modal/PostFormModal'
+import {blue, green} from '../consts/Constants'
+import {put, del} from '../utils/ajax'
 
 class Post extends React.Component{
 
@@ -17,26 +18,36 @@ class Post extends React.Component{
         this.postsURL = "/api/v1.0/posts/";
         this.commentsURL = "/api/v1.0/comments";
         this.state = {
-            commentText: ''
+            commentText: '',
+            modalTitle: '',
+            modalButtonCaption: '',
+            updatePostData: null,
+            action: '',
+            modalText: ''
         };
         this.fetchPost = this.fetchPost.bind(this);
         this.postComment = this.postComment.bind(this);
         this.handlePostCommentChange = this.handlePostCommentChange.bind(this);
     }
 
-    fetchPost(){
-        get(this.userPostsURL+this.props.match.params.userID+'/posts/'+this.props.match.params.postName,
+    fetchPost(props){
+        get(this.userPostsURL+props.match.params.userID+'/posts/'+props.match.params.postName,
             {},
             (data)=>{this.setState({postData: data.data})},
             (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
                 errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.props.showOverlayMsg('Error retrieving details of the post!', errorMsg, red);
-            },{'Authorization': this.props.token});
+                props.showOverlayMsg('Error retrieving details of the post!', errorMsg, red);
+            },{'Authorization': props.token});
+    }
+
+    componentWillReceiveProps(nextProps){
+        if (JSON.stringify(nextProps)===JSON.stringify(this.props)) return;
+        this.fetchPost(nextProps);
     }
 
     componentDidMount(){
-        this.fetchPost();
+        this.fetchPost(this.props);
     }
 
     postComment(){
@@ -58,11 +69,63 @@ class Post extends React.Component{
     }
 
     showEditPostModal(){
-        //
+        if (this.state.postData==null) return;
+        const updatePostData = jQuery.extend(true, {}, this.state.postData);
+        this.setState({modalTitle: 'Edit post', modalButtonCaption: 'Update', updatePostData: updatePostData, action: 'Edit', modalText: ''});
+        $('#postModal').modal('show');
     }
 
     showDeletePostModal(){
-        //
+        this.setState({modalTitle: 'Delete post', modalButtonCaption: 'Delete', updatePostData: null, action: 'Delete', modalText: 'Do you really want to delete this post?'});
+        $('#postModal').modal('show');
+    }
+
+    modalAction(){
+        if (!this.state.postData) return; //Error
+        if (this.state.action==='Edit'){
+            //PUT post
+            let modalTitle = 'Edit post';
+            let requestData = {};
+            requestData.title=this.state.updatePostData.title;
+            requestData.textBody=this.state.updatePostData.textBody;
+            requestData.global = (this.state.updatePostData['isGlobal']==='isGlobal')?true:false;
+            put(this.postsURL+this.state.postData.postID, requestData,
+                (data, status, request)=>{
+                    this.props.showOverlayMsg(modalTitle, 'Successfully updated post!', green);
+                    let url = this.props.match.url;
+                    let slashIndex = url.lastIndexOf('/');
+                    url = url.substring(0,slashIndex);
+                    url += '/';
+                    url += data.data.shortTitle;
+                    this.props.history.push(url);
+                }, (jqXHR)=>{
+                    let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+                    errorMsg = errorMsg.substring(1,errorMsg.length-1);
+                    this.props.showOverlayMsg(modalTitle, errorMsg, red);
+                },
+                {'Authorization': this.props.token}
+            );
+        } else if (this.state.action==='Delete'){
+            //DELETE post
+            let modalTitle = 'Delete post';
+            del(this.postsURL+this.state.postData.postID, {},
+                (data, status, request)=>{
+                    this.props.showOverlayMsg(modalTitle, 'Successfully deleted post!', green);
+                    this.props.history.push('/');
+                }, (jqXHR)=>{
+                    let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+                    errorMsg = errorMsg.substring(1,errorMsg.length-1);
+                    this.props.showOverlayMsg(modalTitle, errorMsg, red);
+                },
+                {'Authorization': this.props.token}
+            );
+        }
+    }
+
+    modalFormChange(field, value){
+        let post = this.state.updatePostData;
+        post[field] = value;
+        this.setState({updatePostData: post});
     }
 
     render() {
@@ -120,6 +183,7 @@ class Post extends React.Component{
                     {comments}
                 </div>
                 {sidebar}
+                <PostFormModal data={this.state.updatePostData} onChange={this.modalFormChange.bind(this)} title={this.state.modalTitle} text={this.state.modalText} footerAction={this.modalAction.bind(this)} modalId='postModal' footerButtonCaption={this.state.modalButtonCaption} color={blue} hasFooter={true} />
             </div>
         );
     }
