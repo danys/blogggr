@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../components/navigation/Navbar';
 import Footer from '../components/Footer';
-import {Modal} from '../components/modal/Modal';
+import {SimpleModal} from '../components/modal/SimpleModal';
 import {red}  from '../consts/Constants';
 import {Switch, Route} from 'react-router-dom';
 import Login from './Login';
@@ -64,7 +64,7 @@ class App extends React.Component{
                 {appRoutes}
                 <Footer />
             </div>
-            <Modal title={this.state.modalTitle} body={this.state.modalMsg} modalId='modal' color={this.state.color}/>
+            <SimpleModal message={this.state.modalMsg} title={this.state.modalTitle} modalId='modal' color={this.state.color} />
         </div>
         );
     }

@@ -120,7 +120,6 @@ class Post extends React.Component{
                     {comments}
                 </div>
                 {sidebar}
-                
             </div>
         );
     }
