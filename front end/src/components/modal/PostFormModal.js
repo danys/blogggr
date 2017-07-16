@@ -27,7 +27,7 @@ export class PostFormModal extends React.Component {
                     </div>
                     <div className="form-group">
                         <label htmlFor="createPostVisibility">Post visibility</label>
-                        <select className="form-control" id="createPostVisibility" onChange={this.handleChange.bind(this, 'isGlobal')} value={this.props.data.isGlobal?this.props.data.isGlobal:'Global'}>
+                        <select className="form-control" id="createPostVisibility" onChange={this.handleChange.bind(this, 'isGlobal')} value={this.props.data.global && this.props.data.global==true ? 'Global': 'Restricted'}>
                             <option>Global</option>
                             <option>Restricted</option>
                         </select>

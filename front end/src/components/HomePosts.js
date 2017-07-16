@@ -27,7 +27,7 @@ export class HomePosts extends React.Component {
             poster: {}, //gets label and value keys
             visibility: this.props.visibility,
             limit: 10,
-            newPost: {isGlobal: 'Global'}
+            newPost: {global: true}
         }
     }
 
@@ -90,11 +90,11 @@ export class HomePosts extends React.Component {
         let requestData = {};
         requestData.title=data.title;
         requestData.textBody=data.textBody;
-        requestData.global = (data['isGlobal']==='isGlobal')?true:false;
+        requestData.global = data.global;
         post(this.postsURL, requestData,
             (data)=>{
                 this.props.showOverlayMsg('Success', 'Successfully created post!', green);
-                const initVisibility = {isGlobal: 'Global'};
+                const initVisibility = {global: 'Global'};
                 this.setState({newPost: initVisibility});
                 this.searchPosts();
             },
@@ -107,7 +107,8 @@ export class HomePosts extends React.Component {
 
     updateNewPost(key, value){
         const newPost = this.state.newPost;
-        newPost[key] = value;
+        if (key==='isGlobal') newPost.global = (value==='Global')?true:false;
+        else newPost[key] = value;
         this.setState({newPost: newPost});
     }
 

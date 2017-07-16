@@ -88,7 +88,7 @@ class Post extends React.Component{
             let requestData = {};
             requestData.title=this.state.updatePostData.title;
             requestData.textBody=this.state.updatePostData.textBody;
-            requestData.global = (this.state.updatePostData['isGlobal']==='isGlobal')?true:false;
+            requestData.global = this.state.updatePostData.global;
             put(this.postsURL+this.state.postData.postID, requestData,
                 (data, status, request)=>{
                     this.props.showOverlayMsg(modalTitle, 'Successfully updated post!', green);
@@ -108,7 +108,7 @@ class Post extends React.Component{
         } else if (this.state.action==='Delete'){
             //DELETE post
             let modalTitle = 'Delete post';
-            del(this.postsURL+this.state.postData.postID, {},
+            del(this.postsURL+this.state.postData.postID,
                 (data, status, request)=>{
                     this.props.showOverlayMsg(modalTitle, 'Successfully deleted post!', green);
                     this.props.history.push('/');
@@ -124,7 +124,8 @@ class Post extends React.Component{
 
     modalFormChange(field, value){
         let post = this.state.updatePostData;
-        post[field] = value;
+        if (field==='isGlobal') post.global = (value==='Global')?true:false;
+        else post[field] = value;
         this.setState({updatePostData: post});
     }
 
