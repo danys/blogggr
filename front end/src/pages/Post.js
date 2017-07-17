@@ -56,7 +56,7 @@ class Post extends React.Component{
         requestData["text"]=(this.state.postData)?this.state.commentText:'';
         post(this.commentsURL,
             requestData,
-            ()=>{this.setState({commentText: ''},this.fetchPost())},
+            ()=>{this.setState({commentText: ''},this.fetchPost(this.props))},
             (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
                 errorMsg = errorMsg.substring(1,errorMsg.length-1);
