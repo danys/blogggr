@@ -129,6 +129,10 @@ class Post extends React.Component{
         this.setState({updatePostData: post});
     }
 
+    commentModalAction(actionType){
+        //
+    }
+
     render() {
         const posterURL = (this.state.postData?'/users/'+this.state.postData.user.userID:'');
         let comments = (this.state.postData?this.state.postData.comments.map((comment, index)=>{
@@ -140,6 +144,17 @@ class Post extends React.Component{
                     <div className="media-body">
                         <h4 className="media-heading">{comment.user.firstName+' '+comment.user.lastName}
                             <small>{comment.timestamp}</small>
+                            {(comment.user.email===this.props.email)?
+                                <span>
+                                    <button type="button" className="btn btn-md btn-info" onClick={this.commentModalAction.bind(this,'edit')}>
+                                        <span className="glyphicon glyphicon-pencil"></span>
+                                    </button>
+                                    <button type="button" className="btn btn-md btn-danger" onClick={this.commentModalAction.bind(this, 'delete')}>
+                                        <span className="glyphicon glyphicon-remove"></span>
+                                    </button>
+                                </span>
+                                :
+                                ''}
                         </h4>
                         {comment.text}
                     </div>
