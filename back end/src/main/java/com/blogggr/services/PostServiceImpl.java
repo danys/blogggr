@@ -4,6 +4,7 @@ import com.blogggr.dao.FriendDAO;
 import com.blogggr.dao.PostDAO;
 import com.blogggr.dao.PostDAOImpl;
 import com.blogggr.dao.UserDAO;
+import com.blogggr.entities.Comment;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.DBException;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -127,6 +129,15 @@ public class PostServiceImpl implements PostService{
     public Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle) throws ResourceNotFoundException, DBException, NotAuthorizedException{
         try{
             Post post = postDAO.getPostByUserAndLabel(userID, postUserID, postShortTitle);
+            //Order comments by date
+            List<Comment> comments = post.getComments();
+            Collections.sort(comments, new Comparator<Comment>() {
+                @Override
+                public int compare(Comment o1, Comment o2) {
+                    return (int)(o1.getRealTimestamp().getTime()-o2.getRealTimestamp().getTime());
+                }
+            });
+            post.setComments(comments);
             //1. Post can be viewed if current session user is the owner or the post has global flag
             if (post.getUser().getUserID()==userID || post.getGlobal()) return post;
             //2. Post can be viewed if the current user is friends with the poster

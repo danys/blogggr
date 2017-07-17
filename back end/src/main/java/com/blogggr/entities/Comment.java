@@ -63,6 +63,11 @@ public class Comment implements Serializable {
 		return JsonTransformer.timestampToString(timestamp);
 	}
 
+	@JsonIgnore
+	public Timestamp getRealTimestamp(){
+		return timestamp;
+	}
+
 	public void setTimestamp(Timestamp timestamp) {
 		this.timestamp = timestamp;
 	}
