@@ -1,5 +1,6 @@
 import React from 'react'
 import {Modal} from './Modal'
+import {blue, red} from '../../consts/Constants'
 
 export class PostFormModal extends React.Component {
 
@@ -12,8 +13,9 @@ export class PostFormModal extends React.Component {
     }
 
     render(){
+        const color=(this.props.data)?blue:red;
         return (
-            <Modal {...this.props}>
+            <Modal {...this.props} color={color}>
                 {this.props.data ?
                 <form>
                     <div className="form-group">

@@ -7,6 +7,7 @@ import Link from '../components/navigation/Link'
 import {Sidebar} from '../components/sidebar/Sidebar'
 import PostOptionsSidebarBody from '../components/sidebar/PostOptionsSidebarBody'
 import {PostFormModal} from '../components/modal/PostFormModal'
+import {CommentFormModal} from '../components/modal/CommentFormModal'
 import {blue, green} from '../consts/Constants'
 import {put, del} from '../utils/ajax'
 
@@ -22,8 +23,10 @@ class Post extends React.Component{
             modalTitle: '',
             modalButtonCaption: '',
             updatePostData: null,
+            updateCommentData: null,
             action: '',
-            modalText: ''
+            modalText: '',
+            commentAction: 'Edit'
         };
         this.fetchPost = this.fetchPost.bind(this);
         this.postComment = this.postComment.bind(this);
@@ -122,6 +125,42 @@ class Post extends React.Component{
         }
     }
 
+    commentModalAction(){
+        if (this.state.updateCommentData==null) return; //Error
+        if (this.state.commentAction==='Edit'){
+            //Update comment
+            let modalTitle = 'Edit comment';
+            let requestData = {};
+            requestData.commentID=this.state.updateCommentData.commentID;
+            requestData.text=this.state.updateCommentData.text;
+            put(this.commentsURL+'/'+this.state.updateCommentData.commentID, requestData,
+                (data, status, request)=>{
+                    this.props.showOverlayMsg(modalTitle, 'Successfully updated comment!', green);
+                    this.fetchPost(this.props);
+                }, (jqXHR)=>{
+                    let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+                    errorMsg = errorMsg.substring(1,errorMsg.length-1);
+                    this.props.showOverlayMsg(modalTitle, errorMsg, red);
+                },
+                {'Authorization': this.props.token}
+            );
+        } else if (this.state.commentAction==='Delete'){
+            //DELETE post
+            let modalTitle = 'Delete comment';
+            del(this.commentsURL+'/'+this.state.updateCommentData.commentID,
+                (data, status, request)=>{
+                    this.props.showOverlayMsg(modalTitle, 'Successfully deleted comment!', green);
+                    this.fetchPost(this.props);
+                }, (jqXHR)=>{
+                    let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+                    errorMsg = errorMsg.substring(1,errorMsg.length-1);
+                    this.props.showOverlayMsg(modalTitle, errorMsg, red);
+                },
+                {'Authorization': this.props.token}
+            );
+        }
+    }
+
     modalFormChange(field, value){
         let post = this.state.updatePostData;
         if (field==='isGlobal') post.global = (value==='Global')?true:false;
@@ -129,8 +168,17 @@ class Post extends React.Component{
         this.setState({updatePostData: post});
     }
 
-    commentModalAction(actionType){
-        //
+    commentModalFormChange(field, value){
+        let comment = this.state.updateCommentData;
+        comment[field] = value;
+        this.setState({updateCommentData: comment});
+    }
+
+    showCommentModal(actionType, index){
+        if (this.state.postData==null) return;
+        const updateCommentData = jQuery.extend(true, {}, this.state.postData.comments[index]);
+        this.setState({commentAction: actionType, updateCommentData: updateCommentData});
+        $('#commentModal').modal('show');
     }
 
     render() {
@@ -146,10 +194,10 @@ class Post extends React.Component{
                             <small>{comment.timestamp}</small>
                             {(comment.user.email===this.props.email)?
                                 <span>
-                                    <button type="button" className="btn btn-md btn-info" onClick={this.commentModalAction.bind(this,'edit')}>
+                                    <button type="button" className="btn btn-md btn-info" onClick={this.showCommentModal.bind(this,'Edit',index)}>
                                         <span className="glyphicon glyphicon-pencil"></span>
                                     </button>
-                                    <button type="button" className="btn btn-md btn-danger" onClick={this.commentModalAction.bind(this, 'delete')}>
+                                    <button type="button" className="btn btn-md btn-danger" onClick={this.showCommentModal.bind(this, 'Delete',index)}>
                                         <span className="glyphicon glyphicon-remove"></span>
                                     </button>
                                 </span>
@@ -199,7 +247,8 @@ class Post extends React.Component{
                     {comments}
                 </div>
                 {sidebar}
-                <PostFormModal data={this.state.updatePostData} onChange={this.modalFormChange.bind(this)} title={this.state.modalTitle} text={this.state.modalText} footerAction={this.modalAction.bind(this)} modalId='postModal' footerButtonCaption={this.state.modalButtonCaption} color={blue} hasFooter={true} />
+                <PostFormModal data={this.state.updatePostData} onChange={this.modalFormChange.bind(this)} title={this.state.modalTitle} text={this.state.modalText} footerAction={this.modalAction.bind(this)} modalId='postModal' footerButtonCaption={this.state.modalButtonCaption} hasFooter={true} />
+                <CommentFormModal data={this.state.updateCommentData} actionType={this.state.commentAction} onChange={this.commentModalFormChange.bind(this)} footerAction={this.commentModalAction.bind(this)} modalId='commentModal' hasFooter={true} />
             </div>
         );
     }

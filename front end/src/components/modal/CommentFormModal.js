@@ -1,5 +1,6 @@
 import React from 'react'
 import {Modal} from './Modal'
+import {blue, red} from '../../consts/Constants'
 
 export class CommentFormModal extends React.Component {
 
@@ -16,8 +17,9 @@ export class CommentFormModal extends React.Component {
         const footerButtonCaption = (this.props.actionType==='Edit')?'Update':'Delete';
         const data = (this.props.actionType==='Edit')?this.props.data:null;
         const text = (this.props.actionType==='Edit')?null:'Do you really want to delete this comment?';
+        const color=(this.props.actionType==='Edit')?blue:red;
         return (
-            <Modal title={title} footerButtonCaption={footerButtonCaption} >
+            <Modal title={title} footerButtonCaption={footerButtonCaption} color={color} {...this.props} >
                 {data ?
                     <form>
                         <div className="form-group">
