@@ -5,7 +5,7 @@ package com.blogggr.requestdata;
  */
 public class CommentData {
 
-    private Long postID;
+    private Long commentID;
     private String text;
 
     public CommentData(){
@@ -13,12 +13,12 @@ public class CommentData {
     }
 
 
-    public Long getPostID() {
-        return postID;
+    public Long getCommentID() {
+        return commentID;
     }
 
-    public void setPostID(Long postID) {
-        this.postID = postID;
+    public void setCommentID(Long postID) {
+        this.commentID = postID;
     }
 
     public String getText() {

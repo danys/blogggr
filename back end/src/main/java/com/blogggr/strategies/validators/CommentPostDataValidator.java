@@ -17,7 +17,7 @@ public class CommentPostDataValidator extends GenericValidator{
         ObjectMapper mapper = new ObjectMapper();
         CommentData postCommentData = mapper.readValue(body, CommentData.class);
         //Check that all fields are present
-        if ((postCommentData.getPostID()==null) || (postCommentData.getText()==null)){
+        if ((postCommentData.getCommentID()==null) || (postCommentData.getText()==null)){
             errorMessage = "All fields need to be filled!";
             return false;
         }

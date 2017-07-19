@@ -46,7 +46,7 @@ public class CommentServiceImpl implements CommentService{
     public Comment createComment(long userID, CommentData commentData) throws ResourceNotFoundException, DBException, NotAuthorizedException {
         User user = userDAO.findById(userID);
         if (user==null) throw new ResourceNotFoundException("User not found!");
-        Post post = postDAO.findById(commentData.getPostID());
+        Post post = postDAO.findById(commentData.getCommentID());
         if (post==null) throw new ResourceNotFoundException("Post not found!");
         //If post is not global then user must be friends with the poster (or be the poster)
         if (!post.getGlobal() && post.getUser().getUserID()!=userID){
