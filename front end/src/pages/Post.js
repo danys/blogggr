@@ -191,13 +191,13 @@ class Post extends React.Component{
                     </Link>
                     <div className="media-body">
                         <h4 className="media-heading">{comment.user.firstName+' '+comment.user.lastName}
-                            <small>{comment.timestamp}</small>
+                            <small className="marginLeftRight">{comment.timestamp}</small>
                             {(comment.user.email===this.props.email)?
                                 <span>
-                                    <button type="button" className="btn btn-md btn-info" onClick={this.showCommentModal.bind(this,'Edit',index)}>
+                                    <button type="button" className="btn btn-md btn-info marginLeftRight" onClick={this.showCommentModal.bind(this,'Edit',index)}>
                                         <span className="glyphicon glyphicon-pencil"></span>
                                     </button>
-                                    <button type="button" className="btn btn-md btn-danger" onClick={this.showCommentModal.bind(this, 'Delete',index)}>
+                                    <button type="button" className="btn btn-md btn-danger marginLeftRight" onClick={this.showCommentModal.bind(this, 'Delete',index)}>
                                         <span className="glyphicon glyphicon-remove"></span>
                                     </button>
                                 </span>
