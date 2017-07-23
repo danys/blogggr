@@ -22,16 +22,11 @@ public class User implements Serializable {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
 	private Long userID;
 
-	@Column(columnDefinition = "bpchar(64)")
-	private String challenge;
-
-	private String email;
-
 	private String firstName;
 
 	private String lastName;
 
-	private Timestamp lastChange;
+	private String email;
 
 	@Column(columnDefinition = "bpchar(64)")
 	private String passwordHash;
@@ -39,7 +34,16 @@ public class User implements Serializable {
 	@Column(columnDefinition = "bpchar(12)")
 	private String salt;
 
+	@Column(columnDefinition = "bpchar(64)")
+	private String challenge;
+
 	private Integer status;
+
+	private Integer sex; //0=male, 1=female
+
+	private String lang;
+
+	private Timestamp lastChange;
 
 	//bi-directional many-to-one association to Comment
 	@JsonIgnore
@@ -142,6 +146,22 @@ public class User implements Serializable {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public Integer getSex() {
+		return sex;
+	}
+
+	public void setSex(Integer sex) {
+		this.sex = sex;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 	public List<Comment> getComments() {
