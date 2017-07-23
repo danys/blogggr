@@ -51,6 +51,8 @@ public class UserServiceImpl implements UserService{
         user.setFirstName(userData.getFirstName());
         user.setLastName(userData.getLastName());
         user.setEmail(userData.getEmail());
+        user.setSex(Integer.parseInt(userData.getSex()));
+        user.setLang(userData.getLang());
         //Compute a 12 character salt
         String salt = Cryptography.computeSHA256Hash(String.valueOf(System.currentTimeMillis())) //UTC time
                 .substring(0,12); //chars 0 to 11
