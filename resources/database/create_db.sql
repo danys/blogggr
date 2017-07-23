@@ -10,6 +10,8 @@ CREATE TABLE Blogggr.Users (
                 Salt CHAR(12) NOT NULL,
                 Challenge CHAR(64) NOT NULL,
                 Status INTEGER NOT NULL,
+                Sex SMALLINT NOT NULL,
+                Lang CHAR(2) NOT NULL,
                 LastChange TIMESTAMP NOT NULL,
                 Version BIGINT DEFAULT 0 NOT NULL,
                 CONSTRAINT user_pk PRIMARY KEY (userID)
@@ -21,7 +23,6 @@ ALTER SEQUENCE Blogggr.users_userid_seq OWNED BY Blogggr.Users.userID;
 CREATE UNIQUE INDEX users_idx
  ON Blogggr.Users
  ( Email ASC );
-
 
 CREATE SEQUENCE Blogggr.posts_postid_seq;
 
