@@ -10,6 +10,8 @@ public class UserPostData {
     private String email;
     private String password;
     private String passwordRepeat;
+    private String sex;
+    private String lang;
 
     public UserPostData(){
         //
@@ -53,5 +55,21 @@ public class UserPostData {
 
     public void setPasswordRepeat(String passwordRepeat) {
         this.passwordRepeat = passwordRepeat;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 }
