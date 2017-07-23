@@ -10,6 +10,10 @@ export class Signup extends React.Component{
         this.handleSignupClick = this.handleSignupClick.bind(this);
         this.resetForm = this.resetForm.bind(this);
         this.signUpURL = "/api/v1.0/users";
+        this.state = {
+            sex: '0',
+            lang: 'en'
+        };
     }
 
     resetForm(){
@@ -22,26 +26,22 @@ export class Signup extends React.Component{
     }
 
     handleSignupClick(){
-        const firstName = jQuery("input[name=firstName]").val();
-        const lastName = jQuery("input[name=lastName]").val();
-        const email = jQuery("input[name=email]").val();
-        const emailRepeat = jQuery("input[name=emailRepeat]").val();
-        const password = jQuery("input[name=password]").val();
-        const passwordRepeat = jQuery("input[name=passwordRepeat]").val();
-        if (email!==emailRepeat){
+        if (this.state.email!==this.state.emailRepeat){
             this.props.showOverlayMsg('Form validation error', 'E-mail addresses must match!', red);
             return;
         }
-        if (password!==passwordRepeat){
+        if (this.state.password!==this.state.passwordRepeat){
             this.props.showOverlayMsg('Form validation error', 'Passwords must match!', red);
             return;
         }
         let requestData = {
-            "firstName": firstName,
-            "lastName": lastName,
-            "email": email,
-            "password": password,
-            "passwordRepeat": passwordRepeat
+            "firstName": this.state.firstName,
+            "lastName": this.state.lastName,
+            "email": this.state.email,
+            "password": this.state.password,
+            "passwordRepeat": this.state.passwordRepeat,
+            "lang": this.state.lang,
+            "sex": this.state.sex
         };
         post(this.signUpURL, requestData,
             (data, status, request)=>{
@@ -56,6 +56,20 @@ export class Signup extends React.Component{
         );
     }
 
+    formInputChange(field, event){
+        if (field==='sex'){
+            if (event.target.value==='Male') this.setState({sex: '0'});
+            else if (event.target.value==='Female') this.setState({sex: '1'});
+        }
+        else if (field==='lang'){
+            if (event.target.value==='English') this.setState({lang: 'en'});
+            else if (event.target.value==='German') this.setState({lang: 'de'});
+            else if (event.target.value==='French') this.setState({lang: 'fr'});
+            else if (event.target.value==='Luxembourgish') this.setState({lang: 'lu'});
+        }
+        else this.setState({[field]: event.target.value});
+    }
+
     render(){
         return (
             <div className="row">
@@ -68,22 +82,44 @@ export class Signup extends React.Component{
                             <form role="form">
                                 <fieldset>
                                     <div className="form-group">
-                                        <input className="form-control" placeholder="First name" name="firstName" type="text" autoFocus pattern=".{3,}" required="true" tabIndex="1"/>
+                                        <label>First name:</label>
+                                        <input className="form-control" placeholder="First name" name="firstName" type="text" autoFocus pattern=".{3,}" required="true" tabIndex="1" onChange={this.formInputChange.bind(this,"firstName")}/>
                                     </div>
                                     <div className="form-group">
-                                        <input className="form-control" placeholder="Last name" name="lastName" type="text" pattern=".{3,}" required="true" tabIndex="2"/>
+                                        <label>Last name:</label>
+                                        <input className="form-control" placeholder="Last name" name="lastName" type="text" pattern=".{3,}" required="true" tabIndex="2" onChange={this.formInputChange.bind(this,"lastName")}/>
                                     </div>
                                     <div className="form-group">
-                                        <input className="form-control" placeholder="E-mail" name="email" type="email" pattern=".{1,}@[az09]{2,}\.[az]{2,}" required="true" tabIndex="3"/>
+                                        <label>Email:</label>
+                                        <input className="form-control" placeholder="E-mail" name="email" type="email" pattern=".{1,}@[az09]{2,}\.[az]{2,}" required="true" tabIndex="3" onChange={this.formInputChange.bind(this,"email")}/>
                                     </div>
                                     <div className="form-group">
-                                        <input className="form-control" placeholder="Repeat e-mail" name="emailRepeat" type="email" pattern=".{1,}@[az09]{2,}\.[az]{2,}" required="true" tabIndex="4"/>
+                                        <label>Repeat email:</label>
+                                        <input className="form-control" placeholder="Repeat e-mail" name="emailRepeat" type="email" pattern=".{1,}@[az09]{2,}\.[az]{2,}" required="true" tabIndex="4" onChange={this.formInputChange.bind(this,"emailRepeat")}/>
                                     </div>
                                     <div className="form-group">
-                                        <input className="form-control" placeholder="Password" name="password" type="password" pattern=".{8,}" required="true" tabIndex="5"/>
+                                        <label>Password:</label>
+                                        <input className="form-control" placeholder="Password" name="password" type="password" pattern=".{8,}" required="true" tabIndex="5" onChange={this.formInputChange.bind(this,"password")}/>
                                     </div>
                                     <div className="form-group">
-                                        <input className="form-control" placeholder="Repeat password" name="passwordRepeat" type="password" pattern=".{8,}" required="true" tabIndex="6"/>
+                                        <label>Repeat password:</label>
+                                        <input className="form-control" placeholder="Repeat password" name="passwordRepeat" type="password" pattern=".{8,}" required="true" tabIndex="6" onChange={this.formInputChange.bind(this,"passwordRepeat")}/>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="sex">Sex:</label>
+                                        <select className="form-control" id="sex" required="true" tabIndex="7" onChange={this.formInputChange.bind(this,"sex")}>
+                                            <option>Male</option>
+                                            <option>Female</option>
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="lang">Language:</label>
+                                        <select className="form-control" id="lang" required="true" tabIndex="8" onChange={this.formInputChange.bind(this,"lang")}>
+                                            <option>English</option>
+                                            <option>German</option>
+                                            <option>French</option>
+                                            <option>Luxembourgish</option>
+                                        </select>
                                     </div>
                                     <Link url="/signup" cssClass="btn btn-lg btn-success btn-block" onClick={this.handleSignupClick} text="Sign up" tabIndex="7"/>
                                     <Link url="/" cssClass="btn btn-sm btn-primary btn-block" text="Back" />
