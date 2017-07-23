@@ -8,6 +8,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,13 +47,35 @@ public class UserPostDataValidator extends GenericValidator {
     protected boolean validate(Map<String,String> input, String body) throws JsonProcessingException,JsonParseException, IOException{
         ObjectMapper mapper = new ObjectMapper();
         UserPostData userData = mapper.readValue(body, UserPostData.class);
-        if (userData.getFirstName() == null || userData.getLastName() == null || userData.getEmail() == null || userData.getPassword() == null) {
+        if (userData.getFirstName() == null || userData.getLastName() == null || userData.getEmail() == null
+                || userData.getPassword() == null || userData.getSex()==null || userData.getLang()==null) {
             errorMessage = "Provide all required fields!";
             return false;
         }
         String valRes = validateUserData(userData);
         if (!valRes.isEmpty()) {
             errorMessage = valRes;
+            return false;
+        }
+        //Validate lang variable
+        if (userData.getLang().length()!=2){
+            errorMessage = "The language code is a two character string!";
+            return false;
+        }
+        String lang = userData.getLang().toLowerCase();
+        String acceptedLangsArray[] = {"en","de","fr","lu"};
+        List<String> acceptedLangs = new ArrayList<>(Arrays.asList(acceptedLangsArray));
+        if (!acceptedLangs.contains(lang)){
+            errorMessage = "The given language code is not accepted!";
+            return false;
+        }
+        //Validate sex variable
+        int sex = 0;
+        try{
+            sex = Integer.parseInt(userData.getSex());
+        }
+        catch(NumberFormatException e){
+            errorMessage = "Could not parse sex!";
             return false;
         }
         return true;
