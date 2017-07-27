@@ -6,6 +6,7 @@ import {red}  from '../consts/Constants';
 import {Switch, Route} from 'react-router-dom';
 import Login from './Login';
 import {Signup} from './Signup';
+import Friends from './Friends';
 import Post from './Post';
 import BlogHome from './BlogHome';
 import User from './User';
@@ -55,6 +56,7 @@ class App extends React.Component{
                 <AuthRoute loggedin={this.authIsOK.bind(this)} path="/users/:userID/posts/:postName" render={()=><Post showOverlayMsg={this.showOverlayMsg}/>} />
                 <AuthRoute loggedin={this.authIsOK.bind(this)} path="/users/:userID" render={()=><User showOverlayMsg={this.showOverlayMsg}/>} />
                 <AuthRoute loggedin={this.authIsOK.bind(this)} path="/settings" render={()=><Settings showOverlayMsg={this.showOverlayMsg}/>} />
+                <AuthRoute loggedin={this.authIsOK.bind(this)} path="/friends" render={()=><Friends showOverlayMsg={this.showOverlayMsg}/>} />
             </Switch>
         );
         return (

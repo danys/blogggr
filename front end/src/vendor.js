@@ -24,6 +24,9 @@ import 'bootstrap/dist/js/bootstrap.min.js'
 //Font awesome
 import 'font-awesome/css/font-awesome.min.css'
 
+//Fixed data table
+import 'fixed-data-table-2/dist/fixed-data-table.min.css'
+
 //App styles
 import './styling/dist/css/style.css'
 import 'react-select/dist/react-select.css'
