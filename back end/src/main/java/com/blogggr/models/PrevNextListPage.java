@@ -9,8 +9,8 @@ import java.util.List;
  */
 public class PrevNextListPage<T> {
 
-    List<T> pageItems;
-    PageData pageData;
+    private List<T> pageItems;
+    private PageData pageData;
 
     public PrevNextListPage(List<T> pageItems, PageData pageData){
         this.pageItems = pageItems;
