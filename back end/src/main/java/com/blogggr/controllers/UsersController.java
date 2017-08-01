@@ -45,7 +45,7 @@ public class UsersController {
     //GET /users
     @RequestMapping(path = userPath, method = RequestMethod.GET)
     public ResponseEntity getUsers(@RequestParam Map<String,String> params, @RequestHeader Map<String,String> header){
-        logger.debug("[POST /users] RequestParams: "+params.toString()+". Header: "+header.toString());
+        logger.debug("[GET /users] RequestParams: "+params.toString()+". Header: "+header.toString());
         AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new GetUsersValidator(), new InvokeGetUsersService(userService), new GetResponse());
         return model.execute(params,header,null);
     }

@@ -5,9 +5,11 @@ import com.blogggr.entities.User;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.models.PrevNextListPage;
 import com.blogggr.models.RandomAccessListPage;
 import com.blogggr.requestdata.UserPostData;
 import com.blogggr.requestdata.UserPutData;
+import com.blogggr.requestdata.UserSearchData;
 import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.TimeUtilities;
 import org.apache.commons.logging.Log;
@@ -94,5 +96,10 @@ public class UserServiceImpl implements UserService{
     public RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber) throws DBException{
         RandomAccessListPage<User> usersPage = userDAO.getUsers(searchString,limit,pageNumber);
         return usersPage;
+    }
+
+    @Override
+    public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData) throws DBException{
+        return userDAO.getUsersBySearchTerms(searchData);
     }
 }

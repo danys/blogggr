@@ -8,17 +8,23 @@ import com.blogggr.entities.User;
 import com.blogggr.entities.User_;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.json.PageData;
 import com.blogggr.json.PageMetaData;
+import com.blogggr.models.PrevNextListPage;
 import com.blogggr.models.RandomAccessListPage;
+import com.blogggr.requestdata.UserSearchData;
 import com.blogggr.strategies.validators.GetUsersValidator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -79,16 +85,16 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
             sb.append(UsersController.userPath);
             sb.append("?");
             if (searchString!=null && searchString.length()>0) {
-                sb.append(GetUsersValidator.searchKey);
+                sb.append(GetUsersValidator.SEARCH_KEY);
                 sb.append("=");
                 sb.append(searchString);
                 sb.append("&");
             }
-            sb.append(GetUsersValidator.pageKey);
+            sb.append(GetUsersValidator.PAGE_KEY);
             sb.append("=");
             sb.append(Integer.toString(pageNumber));
             sb.append("&");
-            sb.append(GetUsersValidator.limitKey);
+            sb.append(GetUsersValidator.LIMIT_KEY);
             sb.append("=");
             sb.append(Integer.toString(limit));
             pageMetaData.setPageUrl(sb.toString());
@@ -120,5 +126,53 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
         if (countOnly) query.select(cb.countDistinct(root));
         else query.orderBy(cb.asc(root.get(User_.userID)));
         return query;
+    }
+
+    @Override
+    public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData) throws DBException{
+        List<User> users = generateSearchTermQuery(searchData, User.class, true).getResultList();
+        Integer usersCountFiltered = generateSearchTermQuery(searchData, Integer.class, true).getSingleResult();
+        Long usersCountAll = generateSearchTermQuery(searchData, Long.class, false).getSingleResult();
+        PageData page = new PageData();
+        page.setTotalCount(usersCountAll);
+        page.setPageItemsCount(usersCountFiltered);
+        return new PrevNextListPage(users,page);
+    }
+
+    private <T> TypedQuery<T> generateSearchTermQuery(UserSearchData searchData, Class<T> resultClass, boolean doFilter){
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery query = (resultClass!=Long.class)?cb.createQuery(User.class):cb.createQuery(Long.class);
+        Root<User> root = query.from(User.class);
+        List<Predicate> predicates = new LinkedList<>();
+        if (doFilter){
+            if (searchData.getFirstName()!=null) {
+                cb.like(cb.lower(root.get(User_.firstName)),searchData.getFirstName().toLowerCase()+"%");
+            }
+            if (searchData.getLastName()!=null) {
+                cb.like(cb.lower(root.get(User_.lastName)),searchData.getLastName().toLowerCase()+"%");
+            }
+            if (searchData.getEmail()!=null) {
+                cb.like(cb.lower(root.get(User_.email)),searchData.getEmail().toLowerCase()+"%");
+            }
+        }
+        Predicate predicatesArray[] = new Predicate[predicates.size()];
+        predicates.toArray(predicatesArray);
+        Predicate beforeAfter = null;
+        //Before and after cannot be set at the same time
+        if (searchData.getBefore()!=null) {
+            beforeAfter = cb.greaterThan(root.get(User_.userID),searchData.getBefore());
+        } else if (searchData.getAfter()!=null){
+            beforeAfter = cb.lessThan(root.get(User_.userID),searchData.getAfter());
+        }
+        query.where(
+                cb.and(
+                        cb.or(predicatesArray),
+                        beforeAfter
+                )
+        );
+        if (resultClass!=Long.class) query.orderBy(cb.asc(root.get(User_.userID)));
+        TypedQuery tQuery = entityManager.createQuery(query);
+        if (resultClass!=Long.class)tQuery.setMaxResults(searchData.getLength());
+        return tQuery;
     }
 }
