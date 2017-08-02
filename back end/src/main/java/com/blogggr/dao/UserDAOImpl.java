@@ -137,7 +137,8 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
         Long usersCountAll = generateSearchTermQuery(searchData, Long.class, false).getSingleResult();
         PageData page = new PageData();
         page.setTotalCount(usersCountAll);
-        page.setPageItemsCount((usersCountFiltered!=null)?usersCountFiltered.intValue():null);
+        page.setPageItemsCount(users.size());
+        page.setFilteredCount(usersCountFiltered);
         return new PrevNextListPage(users,page);
     }
 
@@ -184,6 +185,7 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
             }
         }
         if (resultClass!=Long.class) query.orderBy(cb.asc(root.get(User_.userID)));
+        else query.select(cb.count(root));
         TypedQuery tQuery = entityManager.createQuery(query);
         if (resultClass!=Long.class) tQuery.setMaxResults(searchData.getLength());
         return tQuery;
