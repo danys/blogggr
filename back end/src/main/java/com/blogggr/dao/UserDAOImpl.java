@@ -44,6 +44,7 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
         super(User.class);
     }
 
+    @Override
     public User getUserByEmail(String email) throws DBException, ResourceNotFoundException{
         try {
             CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -60,6 +61,7 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
         }
     }
 
+    @Override
     public RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber) throws DBException{
         try{
             //Check and maybe adjust limit, set default limit
@@ -131,11 +133,11 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
     @Override
     public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData) throws DBException{
         List<User> users = generateSearchTermQuery(searchData, User.class, true).getResultList();
-        Integer usersCountFiltered = generateSearchTermQuery(searchData, Integer.class, true).getSingleResult();
+        Long usersCountFiltered = generateSearchTermQuery(searchData, Long.class, true).getSingleResult();
         Long usersCountAll = generateSearchTermQuery(searchData, Long.class, false).getSingleResult();
         PageData page = new PageData();
         page.setTotalCount(usersCountAll);
-        page.setPageItemsCount(usersCountFiltered);
+        page.setPageItemsCount((usersCountFiltered!=null)?usersCountFiltered.intValue():null);
         return new PrevNextListPage(users,page);
     }
 
@@ -146,33 +148,44 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
         List<Predicate> predicates = new LinkedList<>();
         if (doFilter){
             if (searchData.getFirstName()!=null) {
-                cb.like(cb.lower(root.get(User_.firstName)),searchData.getFirstName().toLowerCase()+"%");
+                predicates.add(cb.like(cb.lower(root.get(User_.firstName)),searchData.getFirstName().toLowerCase()+"%"));
             }
             if (searchData.getLastName()!=null) {
-                cb.like(cb.lower(root.get(User_.lastName)),searchData.getLastName().toLowerCase()+"%");
+                predicates.add(cb.like(cb.lower(root.get(User_.lastName)),searchData.getLastName().toLowerCase()+"%"));
             }
             if (searchData.getEmail()!=null) {
-                cb.like(cb.lower(root.get(User_.email)),searchData.getEmail().toLowerCase()+"%");
+                predicates.add(cb.like(cb.lower(root.get(User_.email)),searchData.getEmail().toLowerCase()+"%"));
             }
         }
-        Predicate predicatesArray[] = new Predicate[predicates.size()];
-        predicates.toArray(predicatesArray);
-        Predicate beforeAfter = null;
-        //Before and after cannot be set at the same time
-        if (searchData.getBefore()!=null) {
-            beforeAfter = cb.greaterThan(root.get(User_.userID),searchData.getBefore());
-        } else if (searchData.getAfter()!=null){
-            beforeAfter = cb.lessThan(root.get(User_.userID),searchData.getAfter());
+        Predicate predicatesArray[];
+        if (predicates.size()>0){
+            predicatesArray = new Predicate[predicates.size()];
+            predicates.toArray(predicatesArray);
+            Predicate beforeAfter = null;
+            //Before and after cannot be set at the same time
+            if (searchData.getBefore()!=null) {
+                beforeAfter = cb.greaterThan(root.get(User_.userID),searchData.getBefore());
+            } else if (searchData.getAfter()!=null){
+                beforeAfter = cb.lessThan(root.get(User_.userID),searchData.getAfter());
+            }
+            if (beforeAfter!=null) {
+                query.where(
+                        cb.and(
+                                cb.or(predicatesArray),
+                                beforeAfter
+                        )
+                );
+            } else {
+                query.where(
+                        cb.and(
+                                cb.or(predicatesArray)
+                        )
+                );
+            }
         }
-        query.where(
-                cb.and(
-                        cb.or(predicatesArray),
-                        beforeAfter
-                )
-        );
         if (resultClass!=Long.class) query.orderBy(cb.asc(root.get(User_.userID)));
         TypedQuery tQuery = entityManager.createQuery(query);
-        if (resultClass!=Long.class)tQuery.setMaxResults(searchData.getLength());
+        if (resultClass!=Long.class) tQuery.setMaxResults(searchData.getLength());
         return tQuery;
     }
 }
