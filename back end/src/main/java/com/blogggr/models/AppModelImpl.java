@@ -50,35 +50,35 @@ public class AppModelImpl implements AppModel{
         //Invoke service and catch the different exceptions that might be raised
         try{
             responseData = serviceBehavior.invokeService(input, body, authBehavior.getUserId(header));
-        }
-        catch(DataIntegrityViolationException e){
+        }catch(DataIntegrityViolationException e){
+            e.printStackTrace();
             return responseBehavior.exceptionResponse(duplicateKeyError);
-        }
-        catch(NonTransientDataAccessException e){
+        }catch(NonTransientDataAccessException e){
+            e.printStackTrace();
             return responseBehavior.exceptionResponse(nonTransientExceptionError);
-        }
-        catch(RecoverableDataAccessException e){
+        }catch(RecoverableDataAccessException e){
+            e.printStackTrace();
             return responseBehavior.exceptionResponse(recoverableExceptionError);
-        }
-        catch(ScriptException e){
+        }catch(ScriptException e){
+            e.printStackTrace();
             return responseBehavior.exceptionResponse(scriptExceptionError);
-        }
-        catch(TransientDataAccessException e){
+        }catch(TransientDataAccessException e){
+            e.printStackTrace();
             return responseBehavior.exceptionResponse(transientExceptionError);
-        }
-        catch(ResourceNotFoundException e){
+        }catch(ResourceNotFoundException e){
+            e.printStackTrace();
             return responseBehavior.notFound(e.getMessage());
-        }
-        catch(WrongPasswordException e){
+        }catch(WrongPasswordException e){
+            e.printStackTrace();
             return responseBehavior.notAuthenticatedResponse("Wrong password!");
-        }
-        catch(NotAuthorizedException e){
+        }catch(NotAuthorizedException e){
+            e.printStackTrace();
             return responseBehavior.notAuthorizedResponse(e.getMessage());
-        }
-        catch(DBException e){
+        }catch(DBException e){
+            e.printStackTrace();
             return responseBehavior.exceptionResponse(e.getMessage());
-        }
-        catch(Exception e){
+        }catch(Exception e){
+            e.printStackTrace();
             return responseBehavior.exceptionResponse(exceptionError);
         }
         return responseBehavior.successResponse(responseData);
