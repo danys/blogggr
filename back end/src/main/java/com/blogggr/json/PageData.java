@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class PageData {
 
     private Long totalCount; //total count of items
+    private Long filteredCount; //filtered count of items
     private Integer pageItemsCount; //items per page
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -18,6 +19,14 @@ public class PageData {
 
     public PageData(){
         //
+    }
+
+    public Long getFilteredCount() {
+        return filteredCount;
+    }
+
+    public void setFilteredCount(Long filteredCount) {
+        this.filteredCount = filteredCount;
     }
 
     public Long getTotalCount() {
