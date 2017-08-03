@@ -172,14 +172,14 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
             if (beforeAfter!=null) {
                 query.where(
                         cb.and(
-                                cb.or(predicatesArray),
+                                cb.and(predicatesArray),
                                 beforeAfter
                         )
                 );
             } else {
                 query.where(
                         cb.and(
-                                cb.or(predicatesArray)
+                                cb.and(predicatesArray)
                         )
                 );
             }
