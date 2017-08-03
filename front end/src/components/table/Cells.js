@@ -14,7 +14,8 @@ export class TextCell extends React.Component {
 
 export class InputHeaderCell extends React.Component {
 
-    onChange(event){
+    onInputChange(event){
+        event.stopPropagation();
         this.props.onChange(event.target.value);
     }
 
@@ -25,7 +26,7 @@ export class InputHeaderCell extends React.Component {
                 <input type="text"
                        className="form-control"
                        placeholder={field}
-                       onChange={this.onChange.bind(this)}
+                       onChange={this.onInputChange.bind(this)}
                        value={data}
                 />
             </Cell>

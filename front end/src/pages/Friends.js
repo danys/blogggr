@@ -11,6 +11,7 @@ import {CommentFormModal} from '../components/modal/CommentFormModal'
 import {blue, green} from '../consts/Constants'
 import {put, del} from '../utils/ajax'
 import {InputHeaderCell} from "../components/table/Cells";
+import debounce from 'lodash/debounce'
 
 import { Table, Column, Cell } from 'fixed-data-table-2';
 
@@ -25,17 +26,16 @@ class Friends extends React.Component{
             searchParams: {
                 firstName: '',
                 lastName: '',
-                email: ''
+                email: '',
+                length: 10
             }
         };
+        this.debouncedFetchUsers = debounce(this.fetchUsers,200);
     }
 
-    fetchUsers(searchStr, page, limit){
+    fetchUsers(){
         get(this.usersURL,
-            {
-                search: searchStr,
-                page: 0
-            },
+            this.state.searchParams,
             (data)=>{this.setState({friendsSearchData: data.data.pageItems})},
             (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
@@ -45,20 +45,20 @@ class Friends extends React.Component{
     }
 
     componentDidMount(){
-        this.fetchUsers('',0,100);
+        this.fetchUsers();
     }
 
     searchFormChange(field, value){
         let searchParams = this.state.searchParams;
         searchParams[field] = value;
-        this.setState({searchParams: searchParams});
+        this.setState({searchParams: searchParams}, this.debouncedFetchUsers);
     }
 
     render() {
         return (
             <div className="row">
                 <div className="col-lg-6">
-                    <h1>Search for your friends</h1>
+                    <h1>Search for a user</h1>
                     <Table
                         rowsCount={this.state.friendsSearchData.length}
                         rowHeight={50}
