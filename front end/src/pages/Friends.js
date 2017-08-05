@@ -22,14 +22,20 @@ class Friends extends React.Component{
                 lastName: '',
                 email: '',
                 length: 10
-            }
+            },
+            pagesInTransit:{}
         };
         this.debouncedFetchUsers = debounce(this.fetchUsers,200);
         this.fetchUsers = this.fetchUsers.bind(this);
     }
 
-    fetchUsers(pageNumber){
+    fetchUsers(pageNumber, clear){
         let requestParams = this.state.searchParams;
+        //First check whether the requested page was already requested but not yet been serviced
+        if (this.state.pagesInTransit.hasOwnProperty(pageNumber)) return;
+        //let pagesInTransit = this.state.pagesInTransit;
+        //pagesInTransit[pageNumber] = true;
+        //this.setState({pagesInTransit: pagesInTransit});
         if (pageNumber!=='0'){
             const pageN = parseInt(pageNumber);
             const nextPageN = (pageN+1).toString();
@@ -45,9 +51,11 @@ class Friends extends React.Component{
         get(this.usersURL,
             requestParams,
             (data)=>{
-                let friendsData = (this.state.friendsSearchData==null)?{}:this.state.friendsSearchData;
+                let friendsData = (this.state.friendsSearchData==null || clear)?{}:this.state.friendsSearchData;
                 friendsData[pageNumber] = data.data;
-                this.setState({friendsSearchData: friendsData})
+                //let pagesInTransit = this.state.pagesInTransit;
+                //delete pagesInTransit[pageNumber];
+                this.setState({friendsSearchData: friendsData/*, pagesInTransit: pagesInTransit*/})
             },
             (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
@@ -63,7 +71,7 @@ class Friends extends React.Component{
     searchFormChange(field, value){
         let searchParams = this.state.searchParams;
         searchParams[field] = value;
-        this.setState({searchParams: searchParams}, this.debouncedFetchUsers);
+        this.setState({searchParams: searchParams}, () => {this.debouncedFetchUsers('0',true)});
     }
 
     render() {
