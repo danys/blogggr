@@ -158,17 +158,20 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
                 predicates.add(cb.like(cb.lower(root.get(User_.email)),searchData.getEmail().toLowerCase()+"%"));
             }
         }
+
+        Predicate beforeAfter = null;
+        //Before and after cannot be set at the same time
+        if (searchData.getBefore()!=null) {
+            beforeAfter = cb.lessThan(root.get(User_.userID),searchData.getBefore());
+        } else if (searchData.getAfter()!=null){
+            beforeAfter = cb.greaterThan(root.get(User_.userID),searchData.getAfter());
+        }
+
         Predicate predicatesArray[];
         if (predicates.size()>0){
             predicatesArray = new Predicate[predicates.size()];
             predicates.toArray(predicatesArray);
-            Predicate beforeAfter = null;
-            //Before and after cannot be set at the same time
-            if (searchData.getBefore()!=null) {
-                beforeAfter = cb.greaterThan(root.get(User_.userID),searchData.getBefore());
-            } else if (searchData.getAfter()!=null){
-                beforeAfter = cb.lessThan(root.get(User_.userID),searchData.getAfter());
-            }
+
             if (beforeAfter!=null) {
                 query.where(
                         cb.and(
@@ -183,6 +186,8 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
                         )
                 );
             }
+        } else if (beforeAfter!=null){
+            query.where(beforeAfter);
         }
         if (resultClass!=Long.class) query.orderBy(cb.asc(root.get(User_.userID)));
         else query.select(cb.count(root));

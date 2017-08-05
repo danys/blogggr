@@ -18,6 +18,8 @@ public class GetUsersValidator extends GenericValidator  {
     public static final String PAGE_KEY = "page";
     public static final String LIMIT_KEY = "limit";
     public static final String LENGTH_KEY = "length";
+    public static final String BEFORE_KEY = "before";
+    public static final String AFTER_KEY = "after";
 
     private final int MINIMUM_SEARCH_LEN = 3;
 
@@ -29,28 +31,17 @@ public class GetUsersValidator extends GenericValidator  {
                 return false;
             }
         } else { //No search key => maybe has firstName, lastName and email search keys
-            //No minimum key length restriction
-            /*if (input.containsKey(FIRST_NAME_SEARCH_KEY)
-                    && input.get(FIRST_NAME_SEARCH_KEY).length()<MINIMUM_SEARCH_LEN) {
-                errorMessage = "First name must have a minimum length of " + MINIMUM_SEARCH_LEN + "!";
-                return false;
-            }
-            if (input.containsKey(LAST_NAME_SEARCH_KEY)
-                    && input.get(LAST_NAME_SEARCH_KEY).length()<MINIMUM_SEARCH_LEN) {
-                errorMessage = "Last name must have a minimum length of " + MINIMUM_SEARCH_LEN + "!";
-                return false;
-            }
-            if (input.containsKey(EMAIL_SEARCH_KEY)
-                    && input.get(EMAIL_SEARCH_KEY).length()<MINIMUM_SEARCH_LEN) {
-                errorMessage = "Email must have a minimum length of " + MINIMUM_SEARCH_LEN + "!";
-                return false;
-            }*/
+            //No minimum key length restriction for search fields
             if (!input.containsKey(LENGTH_KEY)){
                 errorMessage = "Length parameter must be provided!";
                 return false;
             }
             if (input.containsKey(LENGTH_KEY) && !stringIsNumber(input.get(LENGTH_KEY))){
                 errorMessage = "Length must be an integer number!";
+                return false;
+            }
+            if (input.containsKey(AFTER_KEY) && input.containsKey(BEFORE_KEY)){
+                errorMessage = "Provide only after or before key but not both!";
                 return false;
             }
         }

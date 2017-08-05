@@ -60,6 +60,12 @@ public class InvokeGetUsersService implements ServiceInvocationStrategy {
             if (input.containsKey(GetUsersValidator.LENGTH_KEY)) {
                 searchData.setLength(Integer.parseInt(input.get(GetUsersValidator.LENGTH_KEY)));
             }
+            if (input.containsKey(GetUsersValidator.BEFORE_KEY)) {
+                searchData.setBefore(Long.parseLong(input.get(GetUsersValidator.BEFORE_KEY)));
+            }
+            if (input.containsKey(GetUsersValidator.AFTER_KEY)) {
+                searchData.setAfter(Long.parseLong(input.get(GetUsersValidator.AFTER_KEY)));
+            }
             PrevNextListPage<User> users = userService.getUsersBySearchTerms(searchData);
             //Filter out unwanted fields
             JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(users.getPageItems(), FilterFactory.getUserFilter());
