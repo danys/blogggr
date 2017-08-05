@@ -1,17 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import {get, post} from '../utils/ajax';
+import {get} from '../utils/ajax';
 import {red}  from '../consts/Constants';
-import Link from '../components/navigation/Link'
-import {Sidebar} from '../components/sidebar/Sidebar'
-import PostOptionsSidebarBody from '../components/sidebar/PostOptionsSidebarBody'
-import {PostFormModal} from '../components/modal/PostFormModal'
-import {CommentFormModal} from '../components/modal/CommentFormModal'
-import {blue, green} from '../consts/Constants'
-import {put, del} from '../utils/ajax'
 import {InputHeaderCell} from "../components/table/Cells";
-import debounce from 'lodash/debounce'
+import debounce from 'lodash/debounce';
+import {TextCell} from '../components/table/Cells';
 
 import { Table, Column, Cell } from 'fixed-data-table-2';
 
@@ -22,7 +16,7 @@ class Friends extends React.Component{
         this.friendsURL = "/api/v1.0/friends/";
         this.usersURL = "/api/v1.0/users";
         this.state = {
-            friendsSearchData: [],
+            friendsSearchData: null,
             searchParams: {
                 firstName: '',
                 lastName: '',
@@ -31,12 +25,30 @@ class Friends extends React.Component{
             }
         };
         this.debouncedFetchUsers = debounce(this.fetchUsers,200);
+        this.fetchUsers = this.fetchUsers.bind(this);
     }
 
-    fetchUsers(){
+    fetchUsers(pageNumber){
+        let requestParams = this.state.searchParams;
+        if (pageNumber!=='0'){
+            const pageN = parseInt(pageNumber);
+            const nextPageN = (pageN+1).toString();
+            const previousPageN = (pageN-1).toString();
+            if (this.state.friendsSearchData!=null && this.state.friendsSearchData.hasOwnProperty(previousPageN)){
+                requestParams.after = this.state.friendsSearchData[previousPageN].pageItems[this.state.searchParams.length-1].userID;
+            } else if (this.state.friendsSearchData!=null && this.state.friendsSearchData.hasOwnProperty(nextPageN)){
+                requestParams.before = this.state.friendsSearchData[nextPageN].pageItems[0].userID;
+            } else {
+                throw "Invalid pageNumber: previous or next pageNumber does not exist!";
+            }
+        }
         get(this.usersURL,
-            this.state.searchParams,
-            (data)=>{this.setState({friendsSearchData: data.data.pageItems})},
+            requestParams,
+            (data)=>{
+                let friendsData = (this.state.friendsSearchData==null)?{}:this.state.friendsSearchData;
+                friendsData[pageNumber] = data.data;
+                this.setState({friendsSearchData: friendsData})
+            },
             (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
                 errorMsg = errorMsg.substring(1,errorMsg.length-1);
@@ -45,7 +57,7 @@ class Friends extends React.Component{
     }
 
     componentDidMount(){
-        this.fetchUsers();
+        this.fetchUsers('0');
     }
 
     searchFormChange(field, value){
@@ -55,12 +67,14 @@ class Friends extends React.Component{
     }
 
     render() {
+        const rowsCount = (this.state.friendsSearchData!=null && this.state.friendsSearchData['0'].pageData)?this.state.friendsSearchData['0'].pageData.filteredCount:0;
+        const rowData = (this.state.friendsSearchData!=null)?this.state.friendsSearchData:null;
         return (
             <div className="row">
                 <div className="col-lg-6">
                     <h1>Search for a user</h1>
                     <Table
-                        rowsCount={this.state.friendsSearchData.length}
+                        rowsCount={rowsCount}
                         rowHeight={50}
                         width={600}
                         height={250}
@@ -77,9 +91,7 @@ class Friends extends React.Component{
                         <Column
                             header={<InputHeaderCell field="First name" onChange={this.searchFormChange.bind(this, 'firstName')} />}
                             cell={props => (
-                                <Cell {...props}>
-                                    {this.state.friendsSearchData[props.rowIndex].firstName}
-                                </Cell>
+                                <TextCell {...props} loadUsers={this.fetchUsers} field='firstName' data={rowData} itemsPerPage={this.state.searchParams.length}/>
                             )}
                             width={130}
                         />
@@ -87,7 +99,7 @@ class Friends extends React.Component{
                             header={<InputHeaderCell field="Last name" onChange={this.searchFormChange.bind(this, 'lastName')} />}
                             cell={props => (
                                 <Cell {...props}>
-                                    {this.state.friendsSearchData[props.rowIndex].lastName}
+                                    <TextCell {...props} loadUsers={this.fetchUsers} field='lastName' data={rowData} itemsPerPage={this.state.searchParams.length}/>
                                 </Cell>
                             )}
                             width={130}
@@ -96,7 +108,7 @@ class Friends extends React.Component{
                             header={<InputHeaderCell field="E-mail" onChange={this.searchFormChange.bind(this, 'email')} />}
                             cell={props => (
                                 <Cell {...props}>
-                                    {this.state.friendsSearchData[props.rowIndex].email}
+                                    <TextCell {...props} loadUsers={this.fetchUsers} field='email' data={rowData} itemsPerPage={this.state.searchParams.length}/>
                                 </Cell>
                             )}
                             width={200}
