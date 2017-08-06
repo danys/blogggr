@@ -22,20 +22,18 @@ class Friends extends React.Component{
                 lastName: '',
                 email: '',
                 length: 10
-            },
-            pagesInTransit:{}
+            }
         };
+        this.pagesInTransit={};
         this.debouncedFetchUsers = debounce(this.fetchUsers,200);
         this.fetchUsers = this.fetchUsers.bind(this);
     }
 
     fetchUsers(pageNumber, clear){
-        let requestParams = this.state.searchParams;
+        let requestParams = Object.assign({},this.state.searchParams);
         //First check whether the requested page was already requested but not yet been serviced
-        if (this.state.pagesInTransit.hasOwnProperty(pageNumber)) return;
-        //let pagesInTransit = this.state.pagesInTransit;
-        //pagesInTransit[pageNumber] = true;
-        //this.setState({pagesInTransit: pagesInTransit});
+        if (this.pagesInTransit.hasOwnProperty(pageNumber)) return;
+        this.pagesInTransit[pageNumber] = true;
         if (pageNumber!=='0'){
             const pageN = parseInt(pageNumber);
             const nextPageN = (pageN+1).toString();
@@ -53,9 +51,8 @@ class Friends extends React.Component{
             (data)=>{
                 let friendsData = (this.state.friendsSearchData==null || clear)?{}:this.state.friendsSearchData;
                 friendsData[pageNumber] = data.data;
-                //let pagesInTransit = this.state.pagesInTransit;
-                //delete pagesInTransit[pageNumber];
-                this.setState({friendsSearchData: friendsData/*, pagesInTransit: pagesInTransit*/})
+                delete this.pagesInTransit[pageNumber];
+                this.setState({friendsSearchData: friendsData});
             },
             (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
@@ -84,7 +81,7 @@ class Friends extends React.Component{
                     <Table
                         rowsCount={rowsCount}
                         rowHeight={50}
-                        width={600}
+                        width={650}
                         height={250}
                         headerHeight={50}>
                         <Column
@@ -119,7 +116,7 @@ class Friends extends React.Component{
                                     <TextCell {...props} loadUsers={this.fetchUsers} field='email' data={rowData} itemsPerPage={this.state.searchParams.length}/>
                                 </Cell>
                             )}
-                            width={200}
+                            width={250}
                         />
                     </Table>
                 </div>
