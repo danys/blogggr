@@ -28,7 +28,12 @@ class App extends React.Component{
     }
 
     componentDidMount(){
-        $('#modal').on('hidden.bs.modal', () => {this.setState({modalTitle:'',modalMsg: '', color: red})});
+        $('#modal').on('hidden.bs.modal', () => {
+            this.setState({modalTitle:'',modalMsg: '', color: red});
+            //Prevent padding-right:10px from being added to body
+            $(document.body).removeAttr('style');
+            $(document.body).removeAttr('class');
+        });
     }
 
     showOverlayMsg(title, msg, color){
