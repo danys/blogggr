@@ -1,6 +1,17 @@
 import React from 'react';
 import { Cell } from 'fixed-data-table-2';
 
+export function getCellData(data, index, field, itemsPerPage){
+    const pageNum = (Math.floor(index/itemsPerPage)).toString();
+    const pageIndex = index%itemsPerPage;
+    if (data.hasOwnProperty(pageNum)){
+        return data[pageNum]['pageItems'][pageIndex][field];
+    } else {
+        this.props.loadUsers(pageNum);
+        return null;
+    }
+}
+
 export class TextCell extends React.Component {
 
     constructor(props){
