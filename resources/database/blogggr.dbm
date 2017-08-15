@@ -3,7 +3,7 @@
 CAUTION: Do not modify this file unless you know what you are doing.
          Unexpected results may occur if the code is changed deliberately.
 -->
-<dbmodel pgmodeler-ver="0.8.2" last-position="1,0" last-zoom="1"
+<dbmodel pgmodeler-ver="0.8.2" last-position="0,174" last-zoom="1"
 	 default-schema="public" default-owner="postgres">
 <database name="Blogggr">
 </database>
@@ -15,7 +15,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<role name="postgres"/>
 </schema>
 
-<sequence name="users_userid_seq"
+<sequence name="user_id_seq"
 	 start="1" increment="1"
 	 min-value="1" max-value="999999999999999999"
 	 cache="1" cycle="false">
@@ -23,7 +23,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<role name="postgres"/>
 </sequence>
 
-<sequence name="posts_postid_seq"
+<sequence name="post_id_seq"
 	 start="1" increment="1"
 	 min-value="1" max-value="999999999999999999"
 	 cache="1" cycle="false">
@@ -31,7 +31,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<role name="postgres"/>
 </sequence>
 
-<sequence name="comments_commentid_seq"
+<sequence name="comment_id_seq"
 	 start="1" increment="1"
 	 min-value="1" max-value="999999999999999999"
 	 cache="1" cycle="false">
@@ -42,20 +42,20 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="friends">
 	<schema name="blogggr"/>
 	<role name="postgres"/>
-	<position x="40" y="340"/>
-	<column name="useroneid">
+	<position x="40" y="343"/>
+	<column name="user_one_id">
 		<type name="bigint"/>
 	</column>
-	<column name="usertwoid">
+	<column name="user_two_id">
 		<type name="bigint"/>
 	</column>
 	<column name="status" not-null="true">
 		<type name="integer"/>
 	</column>
-	<column name="lastactionuserid">
+	<column name="last_action_user_id">
 		<type name="bigint"/>
 	</column>
-	<column name="lastactiontimestamp" not-null="true">
+	<column name="last_action_timestamp" not-null="true">
 		<type name="timestamp"/>
 	</column>
 	<column name="version" not-null="true">
@@ -66,26 +66,49 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="user_images">
 	<schema name="blogggr"/>
 	<role name="postgres"/>
-	<position x="160" y="503"/>
+	<position x="60" y="520"/>
+	<column name="user_image_id" not-null="true">
+		<type name="bigint"/>
+	</column>
+	<column name="user_id">
+		<type name="bigint"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="is_current" not-null="true">
+		<type name="boolean"/>
+	</column>
+	<column name="width" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="height" not-null="true">
+		<type name="integer"/>
+	</column>
+	<constraint name="user_image_image_id_pk" type="pk-constr" table="blogggr.user_images">
+		<columns names="user_image_id" ref-type="src-columns"/>
+	</constraint>
 </table>
 
-<table name="post_images">
+<sequence name="post_image_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="999999999999999999"
+	 cache="1" cycle="false">
 	<schema name="blogggr"/>
 	<role name="postgres"/>
-	<position x="460" y="443"/>
-</table>
+</sequence>
 
 <table name="comments">
 	<schema name="blogggr"/>
 	<role name="postgres"/>
-	<position x="540" y="320"/>
-	<column name="commentid" not-null="true" sequence="blogggr.comments_commentid_seq">
+	<position x="540" y="323"/>
+	<column name="comment_id" not-null="true" sequence="blogggr.comment_id_seq">
 		<type name="bigint"/>
 	</column>
-	<column name="postid">
+	<column name="post_id">
 		<type name="bigint"/>
 	</column>
-	<column name="userid">
+	<column name="user_id">
 		<type name="bigint"/>
 	</column>
 	<column name="text" not-null="true">
@@ -98,7 +121,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="bigint"/>
 	</column>
 	<constraint name="comments_commentid_pk" type="pk-constr" table="blogggr.comments">
-		<columns names="commentid" ref-type="src-columns"/>
+		<columns names="comment_id" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -106,35 +129,35 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="blogggr"/>
 	<role name="postgres"/>
 	<position x="540" y="63"/>
-	<column name="postid" not-null="true" sequence="blogggr.posts_postid_seq">
+	<column name="post_id" not-null="true" sequence="blogggr.post_id_seq">
 		<type name="bigint"/>
 	</column>
-	<column name="userid">
+	<column name="user_id">
 		<type name="bigint"/>
 	</column>
 	<column name="title" not-null="true">
 		<type name="varchar" length="500"/>
 	</column>
-	<column name="shorttitle" not-null="true">
+	<column name="short_title" not-null="true">
 		<type name="varchar" length="100"/>
 	</column>
-	<column name="textbody" not-null="true">
+	<column name="text_body" not-null="true">
 		<type name="text"/>
 	</column>
 	<column name="timestamp" not-null="true">
 		<type name="timestamp"/>
 	</column>
-	<column name="isglobal" not-null="true">
+	<column name="is_global" not-null="true">
 		<type name="boolean"/>
 	</column>
 	<column name="version" not-null="true">
 		<type name="bigint"/>
 	</column>
 	<constraint name="postid_pk" type="pk-constr" table="blogggr.posts">
-		<columns names="postid" ref-type="src-columns"/>
+		<columns names="post_id" ref-type="src-columns"/>
 	</constraint>
 	<constraint name="shorttitle_unique" type="uq-constr" table="blogggr.posts">
-		<columns names="shorttitle" ref-type="src-columns"/>
+		<columns names="short_title" ref-type="src-columns"/>
 	</constraint>
 </table>
 
@@ -142,19 +165,19 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<schema name="blogggr"/>
 	<role name="postgres"/>
 	<position x="40" y="63"/>
-	<column name="userid" not-null="true" sequence="blogggr.users_userid_seq">
+	<column name="user_id" not-null="true" sequence="blogggr.user_id_seq">
 		<type name="bigint"/>
 	</column>
-	<column name="firstname" not-null="true">
+	<column name="first_name" not-null="true">
 		<type name="varchar" length="255"/>
 	</column>
-	<column name="lastname" not-null="true">
+	<column name="last_name" not-null="true">
 		<type name="varchar" length="255"/>
 	</column>
 	<column name="email" not-null="true">
 		<type name="varchar" length="255"/>
 	</column>
-	<column name="passwordhash" not-null="true">
+	<column name="password_hash" not-null="true">
 		<type name="character" length="64"/>
 	</column>
 	<column name="salt" not-null="true">
@@ -166,7 +189,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<column name="status" not-null="true">
 		<type name="smallint"/>
 	</column>
-	<column name="lastchange" not-null="true">
+	<column name="last_change" not-null="true">
 		<type name="timestamp"/>
 	</column>
 	<column name="sex" not-null="true">
@@ -179,63 +202,91 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="bigint"/>
 	</column>
 	<constraint name="userid_pk" type="pk-constr" table="blogggr.users">
-		<columns names="userid" ref-type="src-columns"/>
+		<columns names="user_id" ref-type="src-columns"/>
 	</constraint>
 	<constraint name="email_unique" type="uq-constr" table="blogggr.users">
 		<columns names="email" ref-type="src-columns"/>
 	</constraint>
 </table>
 
-<sequence name="post_images_post_imageid_seq"
+<table name="post_images">
+	<schema name="blogggr"/>
+	<role name="postgres"/>
+	<position x="520" y="480"/>
+	<column name="post_image_id" not-null="true" sequence="blogggr.post_image_id_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="post_id">
+		<type name="bigint"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="width" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="height" not-null="true">
+		<type name="integer"/>
+	</column>
+	<constraint name="post_image_id_pk" type="pk-constr" table="blogggr.post_images">
+		<columns names="post_image_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="user_image_id_seq"
 	 start="1" increment="1"
 	 min-value="1" max-value="999999999999999999"
 	 cache="1" cycle="false">
 	<schema name="blogggr"/>
 	<role name="postgres"/>
 </sequence>
-
-<sequence name="user_images_userimageid_seq"
-	 start="1" increment="1"
-	 min-value="1" max-value="999999999999999999"
-	 cache="1" cycle="false">
-	<schema name="blogggr"/>
-	<role name="postgres"/>
-</sequence>
-
-<constraint name="posts_userid_fk" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.users" table="blogggr.posts">
-	<columns names="userid" ref-type="src-columns"/>
-	<columns names="userid" ref-type="dst-columns"/>
-</constraint>
-
-<constraint name="comments_postid_fk" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.posts" table="blogggr.comments">
-	<columns names="postid" ref-type="src-columns"/>
-	<columns names="postid" ref-type="dst-columns"/>
-</constraint>
-
-<constraint name="comments_userid_fk" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.users" table="blogggr.comments">
-	<columns names="userid" ref-type="src-columns"/>
-	<columns names="userid" ref-type="dst-columns"/>
-</constraint>
 
 <constraint name="friends_useroneid_pk" type="fk-constr" comparison-type="MATCH FULL"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.users" table="blogggr.friends">
-	<columns names="useroneid" ref-type="src-columns"/>
-	<columns names="userid" ref-type="dst-columns"/>
+	<columns names="user_one_id" ref-type="src-columns"/>
+	<columns names="user_id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="friends_usertwoid_fk" type="fk-constr" comparison-type="MATCH FULL"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.users" table="blogggr.friends">
-	<columns names="usertwoid" ref-type="src-columns"/>
-	<columns names="userid" ref-type="dst-columns"/>
+	<columns names="user_two_id" ref-type="src-columns"/>
+	<columns names="user_id" ref-type="dst-columns"/>
 </constraint>
 
 <constraint name="lastactionuserid" type="fk-constr" comparison-type="MATCH FULL"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.users" table="blogggr.friends">
-	<columns names="lastactionuserid" ref-type="src-columns"/>
-	<columns names="userid" ref-type="dst-columns"/>
+	<columns names="last_action_user_id" ref-type="src-columns"/>
+	<columns names="user_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="user_images_user_id_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.users" table="blogggr.user_images">
+	<columns names="user_id" ref-type="src-columns"/>
+	<columns names="user_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="post_image_post_id_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.posts" table="blogggr.post_images">
+	<columns names="post_id" ref-type="src-columns"/>
+	<columns names="post_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="comments_postid_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.posts" table="blogggr.comments">
+	<columns names="post_id" ref-type="src-columns"/>
+	<columns names="post_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="comments_userid_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.users" table="blogggr.comments">
+	<columns names="user_id" ref-type="src-columns"/>
+	<columns names="user_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="posts_userid_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.users" table="blogggr.posts">
+	<columns names="user_id" ref-type="src-columns"/>
+	<columns names="user_id" ref-type="dst-columns"/>
 </constraint>
 
 <relationship name="rel_posts_users" type="relfk"
@@ -263,6 +314,24 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 src-required="false" dst-required="false">
 	<label ref-type="name-label">
 		<position x="48.4757" y="23.2181"/>
+	</label>
+</relationship>
+
+<relationship name="rel_post_images_posts" type="relfk"
+	 src-table="blogggr.post_images"
+	 dst-table="blogggr.posts"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-76.8336" y="118.551"/>
+	</label>
+</relationship>
+
+<relationship name="rel_user_images_users" type="relfk"
+	 src-table="blogggr.user_images"
+	 dst-table="blogggr.users"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-0.450827" y="137.051"/>
 	</label>
 </relationship>
 
