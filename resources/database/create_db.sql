@@ -1,108 +1,201 @@
+-- DDL
 
-CREATE SEQUENCE Blogggr.users_userid_seq;
+--DROP SCHEMA IF EXISTS blogggr CASCADE;
+CREATE SCHEMA blogggr;
+ALTER SCHEMA blogggr OWNER TO postgres;
+SET search_path TO pg_catalog,public,blogggr;
+-- DROP SEQUENCE IF EXISTS blogggr.user_id_seq CASCADE;
+CREATE SEQUENCE blogggr.user_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 999999999999999999
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+ALTER SEQUENCE blogggr.user_id_seq OWNER TO postgres;
 
-CREATE TABLE Blogggr.Users (
-                userID BIGINT NOT NULL DEFAULT nextval('Blogggr.users_userid_seq'),
-                firstName VARCHAR(255) NOT NULL,
-                lastName VARCHAR(255) NOT NULL,
-                Email VARCHAR(255) NOT NULL,
-                PasswordHash CHAR(64) NOT NULL,
-                Salt CHAR(12) NOT NULL,
-                Challenge CHAR(64) NOT NULL,
-                Status INTEGER NOT NULL,
-                Sex SMALLINT NOT NULL,
-                Lang CHAR(2) NOT NULL,
-                LastChange TIMESTAMP NOT NULL,
-                Version BIGINT DEFAULT 0 NOT NULL,
-                CONSTRAINT user_pk PRIMARY KEY (userID)
+-- DROP SEQUENCE IF EXISTS blogggr.post_id_seq CASCADE;
+CREATE SEQUENCE blogggr.post_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 999999999999999999
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+
+ALTER SEQUENCE blogggr.post_id_seq OWNER TO postgres;
+
+-- DROP SEQUENCE IF EXISTS blogggr.comment_id_seq CASCADE;
+CREATE SEQUENCE blogggr.comment_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 999999999999999999
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+
+ALTER SEQUENCE blogggr.comment_id_seq OWNER TO postgres;
+
+-- DROP TABLE IF EXISTS blogggr.friends CASCADE;
+CREATE TABLE blogggr.friends(
+	user_one_id bigint,
+	user_two_id bigint,
+	status integer NOT NULL,
+	last_action_user_id bigint,
+	last_action_timestamp timestamp NOT NULL,
+	version bigint NOT NULL,
+
 );
 
+ALTER TABLE blogggr.friends OWNER TO postgres;
 
-ALTER SEQUENCE Blogggr.users_userid_seq OWNED BY Blogggr.Users.userID;
+-- DROP TABLE IF EXISTS blogggr.user_images CASCADE;
+CREATE TABLE blogggr.user_images(
+	user_image_id bigint NOT NULL,
+	user_id bigint,
+	name varchar(64) NOT NULL,
+	is_current boolean NOT NULL,
+	width integer NOT NULL,
+	height integer NOT NULL,
+	version bigint NOT NULL,
+	CONSTRAINT user_image_image_id_pk PRIMARY KEY (user_image_id)
 
-CREATE UNIQUE INDEX users_idx
- ON Blogggr.Users
- ( Email ASC );
-
-CREATE SEQUENCE Blogggr.posts_postid_seq;
-
-CREATE TABLE Blogggr.Posts (
-                postID BIGINT NOT NULL DEFAULT nextval('Blogggr.posts_postid_seq'),
-                userID BIGINT NOT NULL,
-                title VARCHAR(500) NOT NULL,
-                shortTitle VARCHAR(100) NOT NULL,
-                textBody TEXT NOT NULL,
-                timeStamp TIMESTAMP NOT NULL,
-                Version BIGINT DEFAULT 0 NOT NULL,
-                CONSTRAINT post_pk PRIMARY KEY (postID)
 );
 
+ALTER TABLE blogggr.user_images OWNER TO postgres;
 
-ALTER SEQUENCE Blogggr.posts_postid_seq OWNED BY Blogggr.Posts.postID;
+-- DROP SEQUENCE IF EXISTS blogggr.post_image_id_seq CASCADE;
+CREATE SEQUENCE blogggr.post_image_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 999999999999999999
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
 
-CREATE SEQUENCE Blogggr.comments_commentid_seq;
+ALTER SEQUENCE blogggr.post_image_id_seq OWNER TO postgres;
 
-CREATE TABLE Blogggr.Comments (
-                commentID BIGINT NOT NULL DEFAULT nextval('Blogggr.comments_commentid_seq'),
-                postID BIGINT NOT NULL,
-                text VARCHAR(500) NOT NULL,
-                Timestamp TIMESTAMP NOT NULL,
-                userID BIGINT NOT NULL,
-                Version BIGINT DEFAULT 0 NOT NULL,
-                CONSTRAINT comment_pk PRIMARY KEY (commentID)
+-- DROP TABLE IF EXISTS blogggr.comments CASCADE;
+CREATE TABLE blogggr.comments(
+	comment_id bigint NOT NULL DEFAULT nextval('blogggr.comment_id_seq'::regclass),
+	post_id bigint,
+	user_id bigint,
+	text varchar(500) NOT NULL,
+	"timestamp" timestamp NOT NULL,
+	version bigint NOT NULL,
+	CONSTRAINT comments_commentid_pk PRIMARY KEY (comment_id)
+
 );
 
+ALTER TABLE blogggr.comments OWNER TO postgres;
 
-ALTER SEQUENCE Blogggr.comments_commentid_seq OWNED BY Blogggr.Comments.commentID;
+-- DROP TABLE IF EXISTS blogggr.posts CASCADE;
+CREATE TABLE blogggr.posts(
+	post_id bigint NOT NULL DEFAULT nextval('blogggr.post_id_seq'::regclass),
+	user_id bigint,
+	title varchar(500) NOT NULL,
+	short_title varchar(100) NOT NULL,
+	text_body text NOT NULL,
+	"timestamp" timestamp NOT NULL,
+	is_global boolean NOT NULL,
+	version bigint NOT NULL,
+	CONSTRAINT postid_pk PRIMARY KEY (post_id),
+	CONSTRAINT shorttitle_unique UNIQUE (short_title)
 
-CREATE TABLE Blogggr.Friends (
-                userOneID BIGINT NOT NULL,
-                userTwoID BIGINT NOT NULL,
-                Status INTEGER NOT NULL,
-                actionUserID BIGINT NOT NULL,
-                Version BIGINT DEFAULT 0 NOT NULL,
-                CONSTRAINT friend_pk PRIMARY KEY (userOneID, userTwoID)
 );
 
+ALTER TABLE blogggr.posts OWNER TO postgres;
 
-ALTER TABLE Blogggr.Friends ADD CONSTRAINT users_friends_1_fk
-FOREIGN KEY (userOneID)
-REFERENCES Blogggr.Users (userID)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION
-NOT DEFERRABLE;
+-- DROP TABLE IF EXISTS blogggr.users CASCADE;
+CREATE TABLE blogggr.users(
+	user_id bigint NOT NULL DEFAULT nextval('blogggr.user_id_seq'::regclass),
+	first_name varchar(255) NOT NULL,
+	last_name varchar(255) NOT NULL,
+	email varchar(255) NOT NULL,
+	password_hash character(64) NOT NULL,
+	salt character(12) NOT NULL,
+	challenge character(64) NOT NULL,
+	status smallint NOT NULL,
+	last_change timestamp NOT NULL,
+	sex smallint NOT NULL,
+	lang character(2) NOT NULL,
+	version bigint NOT NULL,
+	CONSTRAINT userid_pk PRIMARY KEY (user_id),
+	CONSTRAINT email_unique UNIQUE (email)
 
-ALTER TABLE Blogggr.Friends ADD CONSTRAINT users_friends_2_fk
-FOREIGN KEY (userTwoID)
-REFERENCES Blogggr.Users (userID)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION
-NOT DEFERRABLE;
+);
 
-ALTER TABLE Blogggr.Friends ADD CONSTRAINT users_friends_3_fk
-FOREIGN KEY (actionUserID)
-REFERENCES Blogggr.Users (userID)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION
-NOT DEFERRABLE;
+ALTER TABLE blogggr.users OWNER TO postgres;
 
-ALTER TABLE Blogggr.Posts ADD CONSTRAINT users_posts_fk
-FOREIGN KEY (userID)
-REFERENCES Blogggr.Users (userID)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION
-NOT DEFERRABLE;
+-- DROP TABLE IF EXISTS blogggr.post_images CASCADE;
+CREATE TABLE blogggr.post_images(
+	post_image_id bigint NOT NULL DEFAULT nextval('blogggr.post_image_id_seq'::regclass),
+	post_id bigint,
+	name varchar(64) NOT NULL,
+	width integer NOT NULL,
+	height integer NOT NULL,
+	version bigint NOT NULL,
+	CONSTRAINT post_image_id_pk PRIMARY KEY (post_image_id)
 
-ALTER TABLE Blogggr.Comments ADD CONSTRAINT users_comments_fk
-FOREIGN KEY (userID)
-REFERENCES Blogggr.Users (userID)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION
-NOT DEFERRABLE;
+);
 
-ALTER TABLE Blogggr.Comments ADD CONSTRAINT posts_comments_fk
-FOREIGN KEY (postID)
-REFERENCES Blogggr.Posts (postID)
-ON DELETE NO ACTION
-ON UPDATE NO ACTION
-NOT DEFERRABLE;
+ALTER TABLE blogggr.post_images OWNER TO postgres;
+
+-- DROP SEQUENCE IF EXISTS blogggr.user_image_id_seq CASCADE;
+CREATE SEQUENCE blogggr.user_image_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 999999999999999999
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+
+ALTER SEQUENCE blogggr.user_image_id_seq OWNER TO postgres;
+
+-- ALTER TABLE blogggr.friends DROP CONSTRAINT IF EXISTS friends_useroneid_pk CASCADE;
+ALTER TABLE blogggr.friends ADD CONSTRAINT friends_useroneid_pk FOREIGN KEY (user_one_id)
+REFERENCES blogggr.users (user_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ALTER TABLE blogggr.friends DROP CONSTRAINT IF EXISTS friends_usertwoid_fk CASCADE;
+ALTER TABLE blogggr.friends ADD CONSTRAINT friends_usertwoid_fk FOREIGN KEY (user_two_id)
+REFERENCES blogggr.users (user_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ALTER TABLE blogggr.friends DROP CONSTRAINT IF EXISTS last_action_user_id_fk CASCADE;
+ALTER TABLE blogggr.friends ADD CONSTRAINT last_action_user_id_fk FOREIGN KEY (last_action_user_id)
+REFERENCES blogggr.users (user_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ALTER TABLE blogggr.user_images DROP CONSTRAINT IF EXISTS user_images_user_id_fk CASCADE;
+ALTER TABLE blogggr.user_images ADD CONSTRAINT user_images_user_id_fk FOREIGN KEY (user_id)
+REFERENCES blogggr.users (user_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ALTER TABLE blogggr.comments DROP CONSTRAINT IF EXISTS comments_postid_fk CASCADE;
+ALTER TABLE blogggr.comments ADD CONSTRAINT comments_postid_fk FOREIGN KEY (post_id)
+REFERENCES blogggr.posts (post_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ALTER TABLE blogggr.comments DROP CONSTRAINT IF EXISTS comments_userid_fk CASCADE;
+ALTER TABLE blogggr.comments ADD CONSTRAINT comments_userid_fk FOREIGN KEY (user_id)
+REFERENCES blogggr.users (user_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ALTER TABLE blogggr.posts DROP CONSTRAINT IF EXISTS posts_userid_fk CASCADE;
+ALTER TABLE blogggr.posts ADD CONSTRAINT posts_userid_fk FOREIGN KEY (user_id)
+REFERENCES blogggr.users (user_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ALTER TABLE blogggr.post_images DROP CONSTRAINT IF EXISTS post_image_post_id_fk CASCADE;
+ALTER TABLE blogggr.post_images ADD CONSTRAINT post_image_post_id_fk FOREIGN KEY (post_id)
+REFERENCES blogggr.posts (post_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+
+
