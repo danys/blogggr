@@ -63,35 +63,13 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</column>
 </table>
 
-<table name="user_images">
+<sequence name="user_image_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="999999999999999999"
+	 cache="1" cycle="false">
 	<schema name="blogggr"/>
 	<role name="postgres"/>
-	<position x="60" y="503"/>
-	<column name="user_image_id" not-null="true">
-		<type name="bigint"/>
-	</column>
-	<column name="user_id">
-		<type name="bigint"/>
-	</column>
-	<column name="name" not-null="true">
-		<type name="varchar" length="64"/>
-	</column>
-	<column name="is_current" not-null="true">
-		<type name="boolean"/>
-	</column>
-	<column name="width" not-null="true">
-		<type name="integer"/>
-	</column>
-	<column name="height" not-null="true">
-		<type name="integer"/>
-	</column>
-	<column name="version" not-null="true">
-		<type name="bigint"/>
-	</column>
-	<constraint name="user_image_image_id_pk" type="pk-constr" table="blogggr.user_images">
-		<columns names="user_image_id" ref-type="src-columns"/>
-	</constraint>
-</table>
+</sequence>
 
 <sequence name="post_image_id_seq"
 	 start="1" increment="1"
@@ -239,13 +217,35 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	</constraint>
 </table>
 
-<sequence name="user_image_id_seq"
-	 start="1" increment="1"
-	 min-value="1" max-value="999999999999999999"
-	 cache="1" cycle="false">
+<table name="user_images">
 	<schema name="blogggr"/>
 	<role name="postgres"/>
-</sequence>
+	<position x="60" y="503"/>
+	<column name="user_image_id" not-null="true" sequence="blogggr.user_image_id_seq">
+		<type name="bigint"/>
+	</column>
+	<column name="user_id">
+		<type name="bigint"/>
+	</column>
+	<column name="name" not-null="true">
+		<type name="varchar" length="64"/>
+	</column>
+	<column name="is_current" not-null="true">
+		<type name="boolean"/>
+	</column>
+	<column name="width" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="height" not-null="true">
+		<type name="integer"/>
+	</column>
+	<column name="version" not-null="true">
+		<type name="bigint"/>
+	</column>
+	<constraint name="user_image_image_id_pk" type="pk-constr" table="blogggr.user_images">
+		<columns names="user_image_id" ref-type="src-columns"/>
+	</constraint>
+</table>
 
 <constraint name="friends_useroneid_pk" type="fk-constr" comparison-type="MATCH FULL"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.users" table="blogggr.friends">
