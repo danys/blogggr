@@ -12,10 +12,10 @@ public class FriendPK implements Serializable {
 	//default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(insertable=false, updatable=false)
+	@Column(name="user_one_id", insertable=false, updatable=false)
 	private Long userOneID;
 
-	@Column(insertable=false, updatable=false)
+	@Column(name="user_two_id", insertable=false, updatable=false)
 	private Long userTwoID;
 
 	public FriendPK() {

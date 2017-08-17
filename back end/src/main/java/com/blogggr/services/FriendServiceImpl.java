@@ -51,8 +51,8 @@ public class FriendServiceImpl implements FriendService{
         friend.setUser1(userSmall);
         friend.setUser2(userBig);
         friend.setStatus(0); //initial status => pending friendship state
-        if (userSmall.getUserID()==userID) friend.setUser3(userSmall);
-        else friend.setUser3(userBig);
+        if (userSmall.getUserID()==userID) friend.setLastActionUserID(userSmall);
+        else friend.setLastActionUserID(userBig);
         FriendPK fPk = new FriendPK();
         fPk.setuserOneID(userSmall.getUserID());
         fPk.setuserTwoID(userBig.getUserID());
@@ -73,23 +73,23 @@ public class FriendServiceImpl implements FriendService{
         User currentUser = userDAO.findById(userID);
         if (currentUser==null) throw new ResourceNotFoundException("User not found!");
         if (friend.getStatus()==0 && friendData.getAction()!=0){ //accept friend request
-            if (friend.getUser3().getUserID()!=userID){
+            if (friend.getLastActionUserID().getUserID()!=userID){
                 //user at one side sets status to pending the other user can set it to 1, 2 or 3
                 friend.setStatus(friendData.getAction());
-                friend.setUser3(currentUser);
+                friend.setLastActionUserID(currentUser);
                 friendDAO.update(friend);
             }
             else throw new NotAuthorizedException("Cannot update friend status!");
         }
         else if (friend.getStatus()==1 && friendData.getAction()==3){ //set status to blocked
             friend.setStatus(friendData.getAction());
-            friend.setUser3(currentUser);
+            friend.setLastActionUserID(currentUser);
             friendDAO.update(friend);
         }
         else if ((friend.getStatus()==2 || friend.getStatus()==3) && friendData.getAction()==1) { //set status to accepted from declined or blocked
-            if (friend.getUser3().getUserID()==userID){
+            if (friend.getLastActionUserID().getUserID()==userID){
                 friend.setStatus(friendData.getAction());
-                friend.setUser3(currentUser);
+                friend.setLastActionUserID(currentUser);
                 friendDAO.update(friend);
             }
         }

@@ -18,17 +18,20 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="seq",sequenceName="blogggr.users_userid_seq", allocationSize=1)
+	@Column(name = "user_id")
+	@SequenceGenerator(name="seq",sequenceName="blogggr.user_id_seq", allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
 	private Long userID;
 
+	@Column(name = "first_name")
 	private String firstName;
 
+	@Column(name = "last_name")
 	private String lastName;
 
 	private String email;
 
-	@Column(columnDefinition = "bpchar(64)")
+	@Column(name = "password_hash", columnDefinition = "bpchar(64)")
 	private String passwordHash;
 
 	@Column(columnDefinition = "bpchar(12)")
@@ -43,6 +46,7 @@ public class User implements Serializable {
 
 	private String lang;
 
+	@Column(name = "last_change")
 	private Timestamp lastChange;
 
 	//bi-directional many-to-one association to Comment
@@ -62,7 +66,7 @@ public class User implements Serializable {
 
 	//bi-directional many-to-one association to Friend
 	@JsonIgnore
-	@OneToMany(mappedBy="user3")
+	@OneToMany(mappedBy="lastActionUserID")
 	private List<Friend> friends3;
 
 	//bi-directional many-to-one association to Post
@@ -240,14 +244,13 @@ public class User implements Serializable {
 
 	public Friend addFriends3(Friend friends3) {
 		getFriends3().add(friends3);
-		friends3.setUser3(this);
-
+		friends3.setLastActionUserID(this);
 		return friends3;
 	}
 
 	public Friend removeFriends3(Friend friends3) {
 		getFriends3().remove(friends3);
-		friends3.setUser3(null);
+		friends3.setLastActionUserID(null);
 
 		return friends3;
 	}

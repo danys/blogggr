@@ -18,7 +18,8 @@ public class Comment implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="seq",sequenceName="blogggr.comments_commentid_seq", allocationSize=1)
+	@Column(name = "comment_id")
+	@SequenceGenerator(name="seq",sequenceName="blogggr.comment_id_seq", allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
 	private Long commentID;
 
@@ -29,12 +30,12 @@ public class Comment implements Serializable {
 	//bi-directional many-to-one association to Post
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name="postid")
+	@JoinColumn(name="post_id")
 	private Post post;
 
 	//bi-directional many-to-one association to User
 	@ManyToOne
-	@JoinColumn(name="userid")
+	@JoinColumn(name="user_id")
 	private User user;
 
 	@Version

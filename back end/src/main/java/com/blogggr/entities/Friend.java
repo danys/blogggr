@@ -1,6 +1,7 @@
 package com.blogggr.entities;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import javax.persistence.*;
 
 
@@ -27,20 +28,23 @@ public class Friend implements Serializable {
 
 	//bi-directional many-to-one association to User
 	@ManyToOne
-	@JoinColumn(name="useroneid")
+	@JoinColumn(name="user_one_id")
 	@MapsId("userOneID")
 	private User user1;
 
 	//bi-directional many-to-one association to User
 	@ManyToOne
-	@JoinColumn(name="usertwoid")
+	@JoinColumn(name="user_two_id")
 	@MapsId("userTwoID")
 	private User user2;
 
 	//bi-directional many-to-one association to User
 	@ManyToOne
-	@JoinColumn(name="actionuserid")
-	private User user3; //user that most recently changed the status column
+	@JoinColumn(name="last_action_user_id")
+	private User lastActionUserID;
+
+	@Column(name="last_action_timestamp")
+	private Timestamp lastActionTimestamp;
 
 	@Version
 	private Long version;
@@ -80,12 +84,20 @@ public class Friend implements Serializable {
 		this.user2 = user2;
 	}
 
-	public User getUser3() {
-		return this.user3;
+	public User getLastActionUserID() {
+		return lastActionUserID;
 	}
 
-	public void setUser3(User user3) {
-		this.user3 = user3;
+	public void setLastActionUserID(User lastActionUserID) {
+		this.lastActionUserID = lastActionUserID;
+	}
+
+	public Timestamp getLastActionTimestamp() {
+		return lastActionTimestamp;
+	}
+
+	public void setLastActionTimestamp(Timestamp lastActionTimestamp) {
+		this.lastActionTimestamp = lastActionTimestamp;
 	}
 
 	public Long getVersion() {

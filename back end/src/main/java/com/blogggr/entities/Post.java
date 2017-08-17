@@ -18,18 +18,22 @@ public class Post implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name="seq",sequenceName="blogggr.posts_postid_seq", allocationSize=1)
+	@Column(name = "post_id")
+	@SequenceGenerator(name="seq",sequenceName="blogggr.post_id_seq", allocationSize=1)
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
 	private Long postID;
 
+	@Column(name = "short_title")
 	private String shortTitle;
 
+	@Column(name = "text_body")
 	private String textBody;
 
 	private Timestamp timestamp;
 
 	private String title;
 
+	@Column(name = "is_global")
 	private Boolean isGlobal;
 
 	//bi-directional many-to-one association to Comment
