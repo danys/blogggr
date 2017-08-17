@@ -76,12 +76,12 @@ public class AuthenticatedAuthorization implements AuthorizationStrategy {
     public Long getUserId(Map<String,String> header){
         if (dbCheck) {
             if (authenticatedUser==null) return null;
-            else return authenticatedUser.getUserID();
+            else return authenticatedUser.getUserId();
         }
         //The DB has not yet been queried, do it now
         isAuthorized(header);
         if (authenticatedUser==null) return null;
-        return authenticatedUser.getUserID();
+        return authenticatedUser.getUserId();
     }
 
     @Override

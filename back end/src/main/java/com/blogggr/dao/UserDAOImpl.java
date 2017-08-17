@@ -126,7 +126,7 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
             );
         }
         if (countOnly) query.select(cb.countDistinct(root));
-        else query.orderBy(cb.asc(root.get(User_.userID)));
+        else query.orderBy(cb.asc(root.get(User_.userId)));
         return query;
     }
 
@@ -162,9 +162,9 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
         Predicate beforeAfter = null;
         //Before and after cannot be set at the same time
         if (searchData.getBefore()!=null) {
-            beforeAfter = cb.lessThan(root.get(User_.userID),searchData.getBefore());
+            beforeAfter = cb.lessThan(root.get(User_.userId),searchData.getBefore());
         } else if (searchData.getAfter()!=null){
-            beforeAfter = cb.greaterThan(root.get(User_.userID),searchData.getAfter());
+            beforeAfter = cb.greaterThan(root.get(User_.userId),searchData.getAfter());
         }
 
         Predicate predicatesArray[];
@@ -189,7 +189,7 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO{
         } else if (beforeAfter!=null){
             query.where(beforeAfter);
         }
-        if (resultClass!=Long.class) query.orderBy(cb.asc(root.get(User_.userID)));
+        if (resultClass!=Long.class) query.orderBy(cb.asc(root.get(User_.userId)));
         else query.select(cb.count(root));
         TypedQuery tQuery = entityManager.createQuery(query);
         if (resultClass!=Long.class) tQuery.setMaxResults(searchData.getLength());

@@ -3,137 +3,148 @@ package com.blogggr.entities;
 import com.blogggr.json.JsonTransformer;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Version;
 
 
 /**
  * The persistent class for the posts database table.
- * 
  */
 @Entity
-@Table(name="posts", schema="blogggr")
+@Table(name = "posts", schema = "blogggr")
 public class Post implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name = "post_id")
-	@SequenceGenerator(name="seq",sequenceName="blogggr.post_id_seq", allocationSize=1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
-	private Long postID;
+  private static final long serialVersionUID = 1L;
 
-	@Column(name = "short_title")
-	private String shortTitle;
+  @Id
+  @Column(name = "post_id")
+  @SequenceGenerator(name = "seq", sequenceName = "blogggr.post_id_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+  private Long postId;
 
-	@Column(name = "text_body")
-	private String textBody;
+  @Column(name = "short_title")
+  private String shortTitle;
 
-	private Timestamp timestamp;
+  @Column(name = "text_body")
+  private String textBody;
 
-	private String title;
+  private Timestamp timestamp;
 
-	@Column(name = "is_global")
-	private Boolean isGlobal;
+  private String title;
 
-	//bi-directional many-to-one association to Comment
-	@OneToMany(mappedBy="post", fetch=FetchType.LAZY)
-	private List<Comment> comments;
+  @Column(name = "is_global")
+  private Boolean isGlobal;
 
-	//bi-directional many-to-one association to User
-	@ManyToOne
-	@JoinColumn(name="userid")
-	private User user;
+  //bi-directional many-to-one association to Comment
+  @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+  private List<Comment> comments;
 
-	@Version
-	private Long version;
+  //bi-directional many-to-one association to User
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
-	public Post() {
-	}
+  @Version
+  private Long version;
 
-	public String getTimestamp(){
-		return JsonTransformer.timestampToString(timestamp);
-	}
+  public Post() {
+  }
 
-	public Long getPostID() {
-		return this.postID;
-	}
+  public String getTimestamp() {
+    return JsonTransformer.timestampToString(timestamp);
+  }
 
-	public void setPostID(Long postid) {
-		this.postID = postid;
-	}
+  public Long getPostId() {
+    return this.postId;
+  }
 
-	public String getShortTitle() {
-		return this.shortTitle;
-	}
+  public void setPostId(Long postId) {
+    this.postId = postId;
+  }
 
-	public void setShortTitle(String shorttitle) {
-		this.shortTitle = shorttitle;
-	}
+  public String getShortTitle() {
+    return this.shortTitle;
+  }
 
-	public String getTextBody() {
-		return this.textBody;
-	}
+  public void setShortTitle(String shorttitle) {
+    this.shortTitle = shorttitle;
+  }
 
-	public void setTextBody(String textbody) {
-		this.textBody = textbody;
-	}
+  public String getTextBody() {
+    return this.textBody;
+  }
 
-	public void setTimestamp(Timestamp timestamp) {
-		this.timestamp = timestamp;
-	}
+  public void setTextBody(String textbody) {
+    this.textBody = textbody;
+  }
 
-	public String getTitle() {
-		return this.title;
-	}
+  public void setTimestamp(Timestamp timestamp) {
+    this.timestamp = timestamp;
+  }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+  public String getTitle() {
+    return this.title;
+  }
 
-	public Boolean getGlobal() {
-		return isGlobal;
-	}
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-	public void setGlobal(Boolean global) {
-		isGlobal = global;
-	}
+  public Boolean getGlobal() {
+    return isGlobal;
+  }
 
-	public List<Comment> getComments() {
-		return this.comments;
-	}
+  public void setGlobal(Boolean global) {
+    isGlobal = global;
+  }
 
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
-	}
+  public List<Comment> getComments() {
+    return this.comments;
+  }
 
-	public Comment addComment(Comment comment) {
-		getComments().add(comment);
-		comment.setPost(this);
+  public void setComments(List<Comment> comments) {
+    this.comments = comments;
+  }
 
-		return comment;
-	}
+  public Comment addComment(Comment comment) {
+    getComments().add(comment);
+    comment.setPost(this);
 
-	public Comment removeComment(Comment comment) {
-		getComments().remove(comment);
-		comment.setPost(null);
+    return comment;
+  }
 
-		return comment;
-	}
+  public Comment removeComment(Comment comment) {
+    getComments().remove(comment);
+    comment.setPost(null);
 
-	public User getUser() {
-		return this.user;
-	}
+    return comment;
+  }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+  public User getUser() {
+    return this.user;
+  }
 
-	public Long getVersion() {
-		return version;
-	}
+  public void setUser(User user) {
+    this.user = user;
+  }
 
-	public void setVersion(Long version) {
-		this.version = version;
-	}
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
 }

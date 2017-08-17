@@ -48,7 +48,7 @@ public class InvokePostCommentService implements ServiceInvocationStrategy {
         //Create location string and return it
         //Create location string and session id hash. Then return it as a map.
         Map<String, String> responseMap = new HashMap<>();
-        String put = responseMap.put(AppConfig.locationHeaderKey, AppConfig.fullBaseUrl + CommentsController.commentsPath + "/" + String.valueOf(comment.getCommentID()));
+        String put = responseMap.put(AppConfig.locationHeaderKey, AppConfig.fullBaseUrl + CommentsController.commentsPath + "/" + String.valueOf(comment.getCommentId()));
         return responseMap;
     }
 }

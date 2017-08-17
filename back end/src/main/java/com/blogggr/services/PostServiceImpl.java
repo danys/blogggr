@@ -70,7 +70,7 @@ public class PostServiceImpl implements PostService{
     public Post updatePost(long postID, long userID, PostData postData) throws ResourceNotFoundException, NotAuthorizedException{
         Post post = postDAO.findById(postID);
         if (post==null) throw new ResourceNotFoundException(postNotFound);
-        if (post.getUser().getUserID()!=userID) throw new NotAuthorizedException(noModifyAuthorization);
+        if (post.getUser().getUserId()!=userID) throw new NotAuthorizedException(noModifyAuthorization);
         //Update timestamp
         post.setTimestamp(TimeUtilities.getCurrentTimestamp());
         if (postData.getTextBody()!=null) post.setTextBody(postData.getTextBody());
@@ -88,7 +88,7 @@ public class PostServiceImpl implements PostService{
     public void deletePost(long postId, long userID) throws ResourceNotFoundException, NotAuthorizedException{
         Post post = postDAO.findById(postId);
         if (post==null) throw new ResourceNotFoundException(postNotFound);
-        if (post.getUser().getUserID()!=userID) throw new NotAuthorizedException(noModifyAuthorization);
+        if (post.getUser().getUserId()!=userID) throw new NotAuthorizedException(noModifyAuthorization);
         postDAO.deleteById(postId);
     }
 
@@ -112,9 +112,9 @@ public class PostServiceImpl implements PostService{
         if (post==null) throw new ResourceNotFoundException(postNotFound);
         User postAuthor = post.getUser();
         //1. Post can be viewed if current session user is the owner or the post has global flag
-        if (postAuthor.getUserID()==userID || post.getGlobal()) return post;
+        if (postAuthor.getUserId()==userID || post.getGlobal()) return post;
         //2. Post can be viewed if the current user is friends with the poster
-        if (isFriendOfUser(postAuthor.getUserID(),userID)) return post;
+        if (isFriendOfUser(postAuthor.getUserId(),userID)) return post;
         //Otherwise access denied
         throw new NotAuthorizedException(noReadAuthorization);
     }
@@ -139,9 +139,9 @@ public class PostServiceImpl implements PostService{
             });
             post.setComments(comments);
             //1. Post can be viewed if current session user is the owner or the post has global flag
-            if (post.getUser().getUserID()==userID || post.getGlobal()) return post;
+            if (post.getUser().getUserId()==userID || post.getGlobal()) return post;
             //2. Post can be viewed if the current user is friends with the poster
-            if (isFriendOfUser(post.getUser().getUserID(),userID)) return post;
+            if (isFriendOfUser(post.getUser().getUserId(),userID)) return post;
             //Otherwise access denied
             throw new NotAuthorizedException(noReadAuthorization);
         }

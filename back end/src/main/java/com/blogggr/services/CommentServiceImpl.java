@@ -49,8 +49,8 @@ public class CommentServiceImpl implements CommentService{
         Post post = postDAO.findById(commentData.getCommentID());
         if (post==null) throw new ResourceNotFoundException("Post not found!");
         //If post is not global then user must be friends with the poster (or be the poster)
-        if (!post.getGlobal() && post.getUser().getUserID()!=userID){
-            long posterUserID = post.getUser().getUserID();
+        if (!post.getGlobal() && post.getUser().getUserId()!=userID){
+            long posterUserID = post.getUser().getUserId();
             long smaller = (posterUserID<userID)?posterUserID:userID;
             long bigger = (posterUserID>=userID)?posterUserID:userID;
             try{
@@ -73,7 +73,7 @@ public class CommentServiceImpl implements CommentService{
     public void updateComment(long commentID, long userID, CommentData commentData) throws ResourceNotFoundException, NotAuthorizedException{
         Comment comment = commentDAO.findById(commentID);
         if (comment==null) throw new ResourceNotFoundException(notCommentFound);
-        if (comment.getUser().getUserID()!=userID) throw new NotAuthorizedException("Not allowed to change comment!");
+        if (comment.getUser().getUserId()!=userID) throw new NotAuthorizedException("Not allowed to change comment!");
         comment.setTimestamp(TimeUtilities.getCurrentTimestamp()); //update timestamp
         comment.setText(commentData.getText());
     }
@@ -83,7 +83,7 @@ public class CommentServiceImpl implements CommentService{
         try{
             Comment comment = commentDAO.findById(commentID);
             if (comment==null) throw new ResourceNotFoundException(notCommentFound);
-            if (comment.getUser().getUserID()!=userID) throw new NotAuthorizedException("Not allowed to delete comment!");
+            if (comment.getUser().getUserId()!=userID) throw new NotAuthorizedException("Not allowed to delete comment!");
             commentDAO.deleteById(commentID);
         }
         catch(Exception e){
@@ -106,11 +106,11 @@ public class CommentServiceImpl implements CommentService{
         if (post==null) throw new ResourceNotFoundException("Did not find post!");
         User postAuthor = post.getUser();
         //1. Comments of the post can be viewed if current session user is the owner or the post has global flag
-        if (postAuthor.getUserID()==userID || post.getGlobal()) return post.getComments();
+        if (postAuthor.getUserId()==userID || post.getGlobal()) return post.getComments();
         //2. Post and comments can be viewed if the current user is friends with the poster
         long smallNum, bigNum;
-        smallNum = (postAuthor.getUserID() < userID) ? postAuthor.getUserID() : userID;
-        bigNum = (postAuthor.getUserID() >= userID) ? postAuthor.getUserID() : userID;
+        smallNum = (postAuthor.getUserId() < userID) ? postAuthor.getUserId() : userID;
+        bigNum = (postAuthor.getUserId() >= userID) ? postAuthor.getUserId() : userID;
         try{
             friendDAO.getFriendByUserIDs(smallNum, bigNum);
             return post.getComments();

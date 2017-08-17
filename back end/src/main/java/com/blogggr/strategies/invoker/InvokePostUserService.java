@@ -44,7 +44,7 @@ public class InvokePostUserService implements ServiceInvocationStrategy{
         //Create location string and return it
         //Create location string and session id hash. Then return it as a map.
         Map<String, String> responseMap = new HashMap<>();
-        responseMap.put(AppConfig.locationHeaderKey,AppConfig.fullBaseUrl + UsersController.userPath + "/" + String.valueOf(user.getUserID()));
+        responseMap.put(AppConfig.locationHeaderKey,AppConfig.fullBaseUrl + UsersController.userPath + "/" + String.valueOf(user.getUserId()));
         return responseMap;
     }
 

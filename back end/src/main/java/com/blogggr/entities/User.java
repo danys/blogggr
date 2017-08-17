@@ -3,278 +3,286 @@ package com.blogggr.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Version;
 
 
 /**
  * The persistent class for the users database table.
- * 
  */
 @Entity
-@Table(name="users", schema="blogggr")
+@Table(name = "users", schema = "blogggr")
 public class User implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name = "user_id")
-	@SequenceGenerator(name="seq",sequenceName="blogggr.user_id_seq", allocationSize=1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
-	private Long userID;
+  private static final long serialVersionUID = 1L;
 
-	@Column(name = "first_name")
-	private String firstName;
+  @Id
+  @Column(name = "user_id")
+  @SequenceGenerator(name = "seq", sequenceName = "blogggr.user_id_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+  private Long userId;
 
-	@Column(name = "last_name")
-	private String lastName;
+  @Column(name = "first_name")
+  private String firstName;
 
-	private String email;
+  @Column(name = "last_name")
+  private String lastName;
 
-	@Column(name = "password_hash", columnDefinition = "bpchar(64)")
-	private String passwordHash;
+  private String email;
 
-	@Column(columnDefinition = "bpchar(12)")
-	private String salt;
+  @Column(name = "password_hash", columnDefinition = "bpchar(64)")
+  private String passwordHash;
 
-	@Column(columnDefinition = "bpchar(64)")
-	private String challenge;
+  @Column(columnDefinition = "bpchar(12)")
+  private String salt;
 
-	private Integer status;
+  @Column(columnDefinition = "bpchar(64)")
+  private String challenge;
 
-	private Integer sex; //0=male, 1=female
+  private Integer status;
 
-	private String lang;
+  private Integer sex; //0=male, 1=female
 
-	@Column(name = "last_change")
-	private Timestamp lastChange;
+  private String lang;
 
-	//bi-directional many-to-one association to Comment
-	@JsonIgnore
-	@OneToMany(mappedBy="user")
-	private List<Comment> comments;
+  @Column(name = "last_change")
+  private Timestamp lastChange;
 
-	//bi-directional many-to-one association to Friend
-	@JsonIgnore
-	@OneToMany(mappedBy="user1")
-	private List<Friend> friends1;
+  //bi-directional many-to-one association to Comment
+  @JsonIgnore
+  @OneToMany(mappedBy = "user")
+  private List<Comment> comments;
 
-	//bi-directional many-to-one association to Friend
-	@JsonIgnore
-	@OneToMany(mappedBy="user2")
-	private List<Friend> friends2;
+  //bi-directional many-to-one association to Friend
+  @JsonIgnore
+  @OneToMany(mappedBy = "user1")
+  private List<Friend> friends1;
 
-	//bi-directional many-to-one association to Friend
-	@JsonIgnore
-	@OneToMany(mappedBy="lastActionUserID")
-	private List<Friend> friends3;
+  //bi-directional many-to-one association to Friend
+  @JsonIgnore
+  @OneToMany(mappedBy = "user2")
+  private List<Friend> friends2;
 
-	//bi-directional many-to-one association to Post
-	@JsonIgnore
-	@OneToMany(mappedBy="user")
-	private List<Post> posts;
+  //bi-directional many-to-one association to Friend
+  @JsonIgnore
+  @OneToMany(mappedBy = "lastActionUserId")
+  private List<Friend> friends3;
 
-	@Version
-	private Long version;
+  //bi-directional many-to-one association to Post
+  @JsonIgnore
+  @OneToMany(mappedBy = "user")
+  private List<Post> posts;
 
-	public User() {
-	}
+  @Version
+  private Long version;
 
-	public Long getUserID() {
-		return this.userID;
-	}
+  public User() {
+  }
 
-	public void setUserID(Long userid) {
-		this.userID = userid;
-	}
+  public Long getUserId() {
+    return this.userId;
+  }
 
-	public String getChallenge() {
-		return this.challenge;
-	}
+  public void setUserId(Long userId) {
+    this.userId = userId;
+  }
 
-	public void setChallenge(String challenge) {
-		this.challenge = challenge;
-	}
+  public String getChallenge() {
+    return this.challenge;
+  }
 
-	public String getEmail() {
-		return this.email;
-	}
+  public void setChallenge(String challenge) {
+    this.challenge = challenge;
+  }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+  public String getEmail() {
+    return this.email;
+  }
 
-	public String getFirstName() {
-		return this.firstName;
-	}
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-	public void setFirstName(String firstname) {
-		this.firstName = firstname;
-	}
+  public String getFirstName() {
+    return this.firstName;
+  }
 
-	public Timestamp getLastChange() {
-		return this.lastChange;
-	}
+  public void setFirstName(String firstname) {
+    this.firstName = firstname;
+  }
 
-	public void setLastChange(Timestamp lastchange) {
-		this.lastChange = lastchange;
-	}
+  public Timestamp getLastChange() {
+    return this.lastChange;
+  }
 
-	public String getLastName() {
-		return this.lastName;
-	}
+  public void setLastChange(Timestamp lastchange) {
+    this.lastChange = lastchange;
+  }
 
-	public void setLastName(String lastname) {
-		this.lastName = lastname;
-	}
+  public String getLastName() {
+    return this.lastName;
+  }
 
-	public String getPasswordHash() {
-		return this.passwordHash;
-	}
+  public void setLastName(String lastname) {
+    this.lastName = lastname;
+  }
 
-	public void setPasswordHash(String passwordhash) {
-		this.passwordHash = passwordhash;
-	}
+  public String getPasswordHash() {
+    return this.passwordHash;
+  }
 
-	public String getSalt() {
-		return this.salt;
-	}
+  public void setPasswordHash(String passwordhash) {
+    this.passwordHash = passwordhash;
+  }
 
-	public void setSalt(String salt) {
-		this.salt = salt;
-	}
+  public String getSalt() {
+    return this.salt;
+  }
 
-	public Integer getStatus() {
-		return this.status;
-	}
+  public void setSalt(String salt) {
+    this.salt = salt;
+  }
 
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
+  public Integer getStatus() {
+    return this.status;
+  }
 
-	public Integer getSex() {
-		return sex;
-	}
+  public void setStatus(Integer status) {
+    this.status = status;
+  }
 
-	public void setSex(Integer sex) {
-		this.sex = sex;
-	}
+  public Integer getSex() {
+    return sex;
+  }
 
-	public String getLang() {
-		return lang;
-	}
+  public void setSex(Integer sex) {
+    this.sex = sex;
+  }
 
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
+  public String getLang() {
+    return lang;
+  }
 
-	public List<Comment> getComments() {
-		return this.comments;
-	}
+  public void setLang(String lang) {
+    this.lang = lang;
+  }
 
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
-	}
+  public List<Comment> getComments() {
+    return this.comments;
+  }
 
-	public Comment addComment(Comment comment) {
-		getComments().add(comment);
-		comment.setUser(this);
+  public void setComments(List<Comment> comments) {
+    this.comments = comments;
+  }
 
-		return comment;
-	}
+  public Comment addComment(Comment comment) {
+    getComments().add(comment);
+    comment.setUser(this);
 
-	public Comment removeComment(Comment comment) {
-		getComments().remove(comment);
-		comment.setUser(null);
+    return comment;
+  }
 
-		return comment;
-	}
+  public Comment removeComment(Comment comment) {
+    getComments().remove(comment);
+    comment.setUser(null);
 
-	public List<Friend> getFriends1() {
-		return this.friends1;
-	}
+    return comment;
+  }
 
-	public void setFriends1(List<Friend> friends1) {
-		this.friends1 = friends1;
-	}
+  public List<Friend> getFriends1() {
+    return this.friends1;
+  }
 
-	public Friend addFriends1(Friend friends1) {
-		getFriends1().add(friends1);
-		friends1.setUser1(this);
+  public void setFriends1(List<Friend> friends1) {
+    this.friends1 = friends1;
+  }
 
-		return friends1;
-	}
+  public Friend addFriends1(Friend friends1) {
+    getFriends1().add(friends1);
+    friends1.setUser1(this);
 
-	public Friend removeFriends1(Friend friends1) {
-		getFriends1().remove(friends1);
-		friends1.setUser1(null);
+    return friends1;
+  }
 
-		return friends1;
-	}
+  public Friend removeFriends1(Friend friends1) {
+    getFriends1().remove(friends1);
+    friends1.setUser1(null);
 
-	public List<Friend> getFriends2() {
-		return this.friends2;
-	}
+    return friends1;
+  }
 
-	public void setFriends2(List<Friend> friends2) {
-		this.friends2 = friends2;
-	}
+  public List<Friend> getFriends2() {
+    return this.friends2;
+  }
 
-	public Friend addFriends2(Friend friends2) {
-		getFriends2().add(friends2);
-		friends2.setUser2(this);
+  public void setFriends2(List<Friend> friends2) {
+    this.friends2 = friends2;
+  }
 
-		return friends2;
-	}
+  public Friend addFriends2(Friend friends2) {
+    getFriends2().add(friends2);
+    friends2.setUser2(this);
 
-	public Friend removeFriends2(Friend friends2) {
-		getFriends2().remove(friends2);
-		friends2.setUser2(null);
+    return friends2;
+  }
 
-		return friends2;
-	}
+  public Friend removeFriends2(Friend friends2) {
+    getFriends2().remove(friends2);
+    friends2.setUser2(null);
 
-	public List<Friend> getFriends3() {
-		return this.friends3;
-	}
+    return friends2;
+  }
 
-	public void setFriends3(List<Friend> friends3) {
-		this.friends3 = friends3;
-	}
+  public List<Friend> getFriends3() {
+    return this.friends3;
+  }
 
-	public Friend addFriends3(Friend friends3) {
-		getFriends3().add(friends3);
-		friends3.setLastActionUserID(this);
-		return friends3;
-	}
+  public void setFriends3(List<Friend> friends3) {
+    this.friends3 = friends3;
+  }
 
-	public Friend removeFriends3(Friend friends3) {
-		getFriends3().remove(friends3);
-		friends3.setLastActionUserID(null);
+  public Friend addFriends3(Friend friends3) {
+    getFriends3().add(friends3);
+    friends3.setLastActionUserId(this);
+    return friends3;
+  }
 
-		return friends3;
-	}
+  public Friend removeFriends3(Friend friends3) {
+    getFriends3().remove(friends3);
+    friends3.setLastActionUserId(null);
 
-	public List<Post> getPosts() {
-		return this.posts;
-	}
+    return friends3;
+  }
 
-	public void setPosts(List<Post> posts) {
-		this.posts = posts;
-	}
+  public List<Post> getPosts() {
+    return this.posts;
+  }
 
-	public Post addPost(Post post) {
-		getPosts().add(post);
-		post.setUser(this);
+  public void setPosts(List<Post> posts) {
+    this.posts = posts;
+  }
 
-		return post;
-	}
+  public Post addPost(Post post) {
+    getPosts().add(post);
+    post.setUser(this);
 
-	public Post removePost(Post post) {
-		getPosts().remove(post);
-		post.setUser(null);
+    return post;
+  }
 
-		return post;
-	}
+  public Post removePost(Post post) {
+    getPosts().remove(post);
+    post.setUser(null);
+
+    return post;
+  }
 
 }

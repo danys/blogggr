@@ -61,13 +61,13 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             Long nextBefore = null;
             //Figure out if a post is before or after the posts of this page
             if (totalCount>0 && posts.size()>0){
-                CriteriaQuery<Post> beforePostQuery = generateQuery(userID, postUserID, title, visibility, null, posts.get(0).getPostID(), false);
+                CriteriaQuery<Post> beforePostQuery = generateQuery(userID, postUserID, title, visibility, null, posts.get(0).getPostId(), false);
                 List<Post> beforePosts = entityManager.createQuery(beforePostQuery).setMaxResults(1).getResultList();
-                if (beforePosts.size()==1) nextBefore = posts.get(0).getPostID();
+                if (beforePosts.size()==1) nextBefore = posts.get(0).getPostId();
 
-                CriteriaQuery<Post> afterPostQuery = generateQuery(userID, postUserID, title, visibility, posts.get(posts.size()-1).getPostID(), null, false);
+                CriteriaQuery<Post> afterPostQuery = generateQuery(userID, postUserID, title, visibility, posts.get(posts.size()-1).getPostId(), null, false);
                 List<Post> afterPosts = entityManager.createQuery(afterPostQuery).setMaxResults(1).getResultList();
-                if (afterPosts.size()==1) nextAfter = posts.get(posts.size()-1).getPostID();
+                if (afterPosts.size()==1) nextAfter = posts.get(posts.size()-1).getPostId();
             }
             PageData pData = new PageData();
             pData.setPageItemsCount(numberPageItems);
@@ -113,13 +113,13 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         //Post user condition
         Predicate postUserCondition = null;
         if (postUserID != null && visibility!=Visibility.onlyCurrentUser)
-            postUserCondition = cb.equal(postUserJoin.get(User_.userID), postUserID.longValue());
+            postUserCondition = cb.equal(postUserJoin.get(User_.userId), postUserID.longValue());
         Predicate postAfterCondition = null;
         Predicate postBeforeCondition = null;
         //After postID condition, Before postID condition
         if (!countOnly){
-            if (after != null) postAfterCondition = cb.greaterThan(root.get(Post_.postID), after);
-            else if (before != null) postBeforeCondition = cb.lessThan(root.get(Post_.postID), before);
+            if (after != null) postAfterCondition = cb.greaterThan(root.get(Post_.postId), after);
+            else if (before != null) postBeforeCondition = cb.lessThan(root.get(Post_.postId), before);
         }
         Predicate[] predicatesOr1Array;
         //Visibility global => return all global posts
@@ -139,7 +139,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         }
         //Visibility current user
         else if (visibility == Visibility.onlyCurrentUser) { //postUserID is ignored
-            predicatesOr1.add(cb.equal(postUserJoin.get(User_.userID), userID)); //filter on current user
+            predicatesOr1.add(cb.equal(postUserJoin.get(User_.userId), userID)); //filter on current user
             if (titleCondition!=null) predicatesOr1.add(titleCondition); //filter on title
             if (!countOnly){
                 if (postAfterCondition!=null) predicatesOr1.add(postAfterCondition);
@@ -155,13 +155,13 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         else if (visibility == Visibility.onlyFriends) {
             //Visibility friend => filter friend posts and exclude current user posts
             //AND predicate 1
-            predicatesOr1.add(cb.notEqual(postUserJoin.get(User_.userID), userID)); //exclude current user
-            predicatesOr1.add(cb.equal(friendUserJoin2.get(User_.userID), userID)); //only friends
+            predicatesOr1.add(cb.notEqual(postUserJoin.get(User_.userId), userID)); //exclude current user
+            predicatesOr1.add(cb.equal(friendUserJoin2.get(User_.userId), userID)); //only friends
             predicatesOr1.add(cb.equal(userFriendJoin1.get(Friend_.status), friendAccepted)); //status accepted
             predicatesOr1.add(cb.equal(root.get(Post_.isGlobal), false)); //no global posts
             //AND predicate 2
-            predicatesOr2.add(cb.notEqual(postUserJoin.get(User_.userID), userID)); //exclude current user
-            predicatesOr2.add(cb.equal(friendUserJoin1.get(User_.userID), userID)); //only friends
+            predicatesOr2.add(cb.notEqual(postUserJoin.get(User_.userId), userID)); //exclude current user
+            predicatesOr2.add(cb.equal(friendUserJoin1.get(User_.userId), userID)); //only friends
             predicatesOr2.add(cb.equal(userFriendJoin1.get(Friend_.status), friendAccepted)); //status accepted
             predicatesOr2.add(cb.equal(root.get(Post_.isGlobal), false)); //no global posts
             //Other conditions like the title and the filter on the poster's userID
@@ -199,13 +199,13 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         else if (visibility == Visibility.all) {
             //Visibility friend => filter friend posts and exclude current user posts
             //OR predicate 1
-            predicatesOr1.add(cb.equal(friendUserJoin2.get(User_.userID), userID)); //only friends
+            predicatesOr1.add(cb.equal(friendUserJoin2.get(User_.userId), userID)); //only friends
             predicatesOr1.add(cb.equal(userFriendJoin1.get(Friend_.status), friendAccepted)); //status accepted
             //OR predicate 2
-            predicatesOr2.add(cb.equal(friendUserJoin1.get(User_.userID), userID)); //only friends
+            predicatesOr2.add(cb.equal(friendUserJoin1.get(User_.userId), userID)); //only friends
             predicatesOr2.add(cb.equal(userFriendJoin1.get(Friend_.status), friendAccepted)); //status accepted
             //OR predicate 3
-            predicatesOr3.add(cb.equal(postUserJoin.get(User_.userID), userID)); //either current user
+            predicatesOr3.add(cb.equal(postUserJoin.get(User_.userId), userID)); //either current user
             //OR predicate 4
             predicatesOr4.add(cb.equal(root.get(Post_.isGlobal), true)); //either global post
             //Other conditions like the title and the filter on the poster's userID
@@ -252,9 +252,9 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         //Order by post ID and eventually limit
         if (countOnly) query.select(cb.countDistinct(root));
         else{
-            if (after!=null) query.orderBy(cb.asc(root.get(Post_.postID)));
+            if (after!=null) query.orderBy(cb.asc(root.get(Post_.postId)));
             //else before!=null || before==null (=> default to sort from most recent post to oldest post)
-            else query.orderBy(cb.desc(root.get(Post_.postID)));
+            else query.orderBy(cb.desc(root.get(Post_.postId)));
         }
         return query;
     }
@@ -297,7 +297,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
         query.where(
                 cb.and(
                         cb.equal(root.get(Post_.shortTitle),postShortTitle),
-                        cb.equal(postUserJoin.get(User_.userID),postUserID)
+                        cb.equal(postUserJoin.get(User_.userId),postUserID)
                 )
         );
         return entityManager.createQuery(query).getSingleResult();

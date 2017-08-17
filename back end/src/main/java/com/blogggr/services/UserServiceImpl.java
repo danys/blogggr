@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService{
         User user = userDAO.findById(userResourceID);
         if (user == null) throw new ResourceNotFoundException("User not found!");
         //A user can only change his own data
-        if (user.getUserID() != userID) throw new NotAuthorizedException("Not authorized to change this user!");
+        if (user.getUserId() != userID) throw new NotAuthorizedException("Not authorized to change this user!");
         //If an old password has been provided check it!
         if (userData.getOldPassword()!=null){
             String oldHash = Cryptography.computeSHA256Hash(userData.getOldPassword() + user.getSalt());

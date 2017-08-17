@@ -60,7 +60,7 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO{
                 query.where(
                         cb.and(
                                 cb.equal(root.get(Friend_.status), 1),
-                                cb.equal(user1Join.get(User_.userID), userID)
+                                cb.equal(user1Join.get(User_.userId), userID)
                         )
                 );
             }
@@ -69,7 +69,7 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO{
                 query.where(
                         cb.and(
                                 cb.equal(root.get(Friend_.status), 1),
-                                cb.equal(user2Join.get(User_.userID), userID)
+                                cb.equal(user2Join.get(User_.userId), userID)
                         )
                 );
             }

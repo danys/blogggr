@@ -4,96 +4,105 @@ import com.blogggr.json.JsonTransformer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.sql.Timestamp;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Version;
 
 
 /**
  * The persistent class for the comments database table.
- * 
  */
 @Entity
-@Table(name="comments", schema="blogggr")
+@Table(name = "comments", schema = "blogggr")
 public class Comment implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@Column(name = "comment_id")
-	@SequenceGenerator(name="seq",sequenceName="blogggr.comment_id_seq", allocationSize=1)
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
-	private Long commentID;
+  private static final long serialVersionUID = 1L;
 
-	private String text;
+  @Id
+  @Column(name = "comment_id")
+  @SequenceGenerator(name = "seq", sequenceName = "blogggr.comment_id_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+  private Long commentId;
 
-	private Timestamp timestamp;
+  private String text;
 
-	//bi-directional many-to-one association to Post
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name="post_id")
-	private Post post;
+  private Timestamp timestamp;
 
-	//bi-directional many-to-one association to User
-	@ManyToOne
-	@JoinColumn(name="user_id")
-	private User user;
+  //bi-directional many-to-one association to Post
+  @JsonIgnore
+  @ManyToOne
+  @JoinColumn(name = "post_id")
+  private Post post;
 
-	@Version
-	private Long version;
+  //bi-directional many-to-one association to User
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
-	public Comment() {
-	}
+  @Version
+  private Long version;
 
-	public Long getCommentID() {
-		return this.commentID;
-	}
+  public Comment() {
+  }
 
-	public void setCommentID(Long commentid) {
-		this.commentID = commentid;
-	}
+  public Long getCommentId() {
+    return this.commentId;
+  }
 
-	public String getText() {
-		return this.text;
-	}
+  public void setCommentId(Long commentId) {
+    this.commentId = commentId;
+  }
 
-	public void setText(String text) {
-		this.text = text;
-	}
+  public String getText() {
+    return this.text;
+  }
 
-	public String getTimestamp(){
-		return JsonTransformer.timestampToString(timestamp);
-	}
+  public void setText(String text) {
+    this.text = text;
+  }
 
-	@JsonIgnore
-	public Timestamp getRealTimestamp(){
-		return timestamp;
-	}
+  public String getTimestamp() {
+    return JsonTransformer.timestampToString(timestamp);
+  }
 
-	public void setTimestamp(Timestamp timestamp) {
-		this.timestamp = timestamp;
-	}
+  @JsonIgnore
+  public Timestamp getRealTimestamp() {
+    return timestamp;
+  }
 
-	public Post getPost() {
-		return this.post;
-	}
+  public void setTimestamp(Timestamp timestamp) {
+    this.timestamp = timestamp;
+  }
 
-	public void setPost(Post post) {
-		this.post = post;
-	}
+  public Post getPost() {
+    return this.post;
+  }
 
-	public User getUser() {
-		return this.user;
-	}
+  public void setPost(Post post) {
+    this.post = post;
+  }
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+  public User getUser() {
+    return this.user;
+  }
 
-	public Long getVersion() {
-		return version;
-	}
+  public void setUser(User user) {
+    this.user = user;
+  }
 
-	public void setVersion(Long version) {
-		this.version = version;
-	}
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
 }
