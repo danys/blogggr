@@ -75,6 +75,7 @@ public class FilterFactory {
         userFilterMap.put("email",null);
         userFilterMap.put("lastName",null);
         userFilterMap.put("firstName",null);
+        userFilterMap.put("image",null);
         JsonFilter jsonFilter = new JsonFilter(userFilterMap);
         return jsonFilter;
     }

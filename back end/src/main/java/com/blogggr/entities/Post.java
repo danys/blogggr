@@ -2,6 +2,7 @@ package com.blogggr.entities;
 
 import com.blogggr.json.JsonTransformer;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
@@ -51,6 +52,10 @@ public class Post implements Serializable {
   @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
   private List<Comment> comments;
 
+  //bi-directional many-to-one association to Post
+  @OneToMany(mappedBy = "post")
+  private List<PostImage> postImages;
+
   //bi-directional many-to-one association to User
   @ManyToOne
   @JoinColumn(name = "user_id")
@@ -61,6 +66,8 @@ public class Post implements Serializable {
 
   public Post() {
   }
+
+  //Getters and setters
 
   public String getTimestamp() {
     return JsonTransformer.timestampToString(timestamp);
@@ -138,6 +145,14 @@ public class Post implements Serializable {
 
   public void setUser(User user) {
     this.user = user;
+  }
+
+  public List<PostImage> getPostImages() {
+    return postImages;
+  }
+
+  public void setPostImages(List<PostImage> postImages) {
+    this.postImages = postImages;
   }
 
   public Long getVersion() {

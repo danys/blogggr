@@ -7,12 +7,14 @@ import java.sql.Timestamp;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 
@@ -82,11 +84,28 @@ public class User implements Serializable {
   @OneToMany(mappedBy = "user")
   private List<Post> posts;
 
+  //bi-directional many-to-one association to Post
+  @JsonIgnore
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+  private List<UserImage> userImages;
+
+  @Transient
+  private UserImage image;
+
   @Version
   private Long version;
 
   public User() {
   }
+
+  public UserImage getImage() {
+    this.image = (this.userImages == null) ? null
+        : this.userImages.stream().filter(userImage -> userImage.getCurrent() == true).findFirst()
+            .orElse(null);
+    return image;
+  }
+
+  //Getters and setters
 
   public Long getUserId() {
     return this.userId;
