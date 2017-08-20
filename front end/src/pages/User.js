@@ -17,7 +17,7 @@ class User extends React.Component{
     }
 
     fetchUser(){
-        get(this.userBaseURL+this.props.match.params.userID,
+        get(this.userBaseURL+this.props.match.params.userId,
             {},
             (data)=>{this.setState({userMe: data.data})},
             (jqXHR)=>{

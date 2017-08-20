@@ -34,7 +34,7 @@ class Post extends React.Component{
     }
 
     fetchPost(props){
-        get(this.userPostsURL+props.match.params.userID+'/posts/'+props.match.params.postName,
+        get(this.userPostsURL+props.match.params.userId+'/posts/'+props.match.params.postName,
             {},
             (data)=>{this.setState({postData: data.data})},
             (jqXHR)=>{
@@ -55,7 +55,7 @@ class Post extends React.Component{
 
     postComment(){
         let requestData={};
-        requestData["postID"]=(this.state.postData)?this.state.postData.postID:'';
+        requestData["postId"]=(this.state.postData)?this.state.postData.postId:'';
         requestData["text"]=(this.state.postData)?this.state.commentText:'';
         post(this.commentsURL,
             requestData,
@@ -92,7 +92,7 @@ class Post extends React.Component{
             requestData.title=this.state.updatePostData.title;
             requestData.textBody=this.state.updatePostData.textBody;
             requestData.global = this.state.updatePostData.global;
-            put(this.postsURL+this.state.postData.postID, requestData,
+            put(this.postsURL+this.state.postData.postId, requestData,
                 (data, status, request)=>{
                     this.props.showOverlayMsg(modalTitle, 'Successfully updated post!', green);
                     let url = this.props.match.url;
@@ -111,7 +111,7 @@ class Post extends React.Component{
         } else if (this.state.action==='Delete'){
             //DELETE post
             let modalTitle = 'Delete post';
-            del(this.postsURL+this.state.postData.postID,
+            del(this.postsURL+this.state.postData.postId,
                 (data, status, request)=>{
                     this.props.showOverlayMsg(modalTitle, 'Successfully deleted post!', green);
                     this.props.history.push('/');
@@ -182,7 +182,7 @@ class Post extends React.Component{
     }
 
     render() {
-        const posterURL = (this.state.postData?'/users/'+this.state.postData.user.userID:'');
+        const posterURL = (this.state.postData?'/users/'+this.state.postData.user.userId:'');
         let comments = (this.state.postData?this.state.postData.comments.map((comment, index)=>{
             return (
                 <div key={index} className="media">

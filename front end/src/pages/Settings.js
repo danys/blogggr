@@ -47,11 +47,11 @@ class Settings extends React.Component{
     updateUser(){
         if (!this.state.userMe) return;
         let request = {
-            id: this.state.userMe.userID,
+            id: this.state.userMe.userId,
             firstName: this.state.userMe.firstName,
             lastName: this.state.userMe.lastName
         };
-        put(this.userBaseURL+this.state.userMe.userID,
+        put(this.userBaseURL+this.state.userMe.userId,
             request,
             (data)=>{
                 let successMsg = "Successfully updated user data!";
@@ -68,12 +68,12 @@ class Settings extends React.Component{
     updatePassword(){
         if (this.state.passwordData==null) return;
         let request = {
-            id: this.state.userMe.userID,
+            id: this.state.userMe.userId,
             oldPassword: this.state.passwordData.oldPassword,
             password: this.state.passwordData.password,
             passwordRepeat: this.state.passwordData.passwordRepeat
         };
-        put(this.userBaseURL+this.state.userMe.userID,
+        put(this.userBaseURL+this.state.userMe.userId,
             request,
             (data)=>{
                 let successMsg = "Password changed successfully!";

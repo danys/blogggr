@@ -68,7 +68,7 @@ export class HomePosts extends React.Component {
     searchPosts(){
         let requestData = {};
         if (this.state.title!=undefined && this.state.title!=='') requestData['title']=this.state.title;
-        if (this.state.poster!=undefined && 'value' in this.state.poster) requestData['posterUserID']=this.state.poster.value;
+        if (this.state.poster!=undefined && 'value' in this.state.poster) requestData['posteruserId']=this.state.poster.value;
         if (this.state.visibility!=undefined && this.state.visibility!='') requestData['visibility']=this.state.visibility;
         if (this.state.limit!=undefined && this.state.limit!='') requestData['limit']=this.state.limit;
         get(this.postsURL,
@@ -138,10 +138,10 @@ export class HomePosts extends React.Component {
         const homePosts = (this.state.postsData==null || this.state.postsData.pageItems.length==0)?'No matching posts found!':this.state.postsData.pageItems.map(
             (post,index) => {return <HomePost key={index} title={post.title}
                                  author={post.user.firstName+' '+post.user.lastName}
-                                 authorProfileURL={'/users/'+post.user.userID}
+                                 authorProfileURL={'/users/'+post.user.userId}
                                  timestamp={post.timestamp}
                                  textBody={post.textBody}
-                                 postURL={'/users/'+post.user.userID+'/posts/'+post.shortTitle}
+                                 postURL={'/users/'+post.user.userId+'/posts/'+post.shortTitle}
                                  hr={(index==this.state.postsData.pageItems.length-1)?'':<hr/>}/>}
         );
         const userFirst = (this.state.userData==null || this.state.userData.firstName==null)?null:this.state.userData.firstName;
@@ -183,7 +183,7 @@ export class HomePosts extends React.Component {
 
 const mapStateToProps = (state) => ({
     token: state.session.token,
-    posterUserID: state.blogSearchFilter.postUserID,
+    posteruserId: state.blogSearchFilter.postuserId,
     posterUserName: state.blogSearchFilter.postUserName,
     title: state.blogSearchFilter.title,
     visibility: state.blogSearchFilter.visibility,

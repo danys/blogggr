@@ -39,9 +39,9 @@ class Friends extends React.Component{
             const nextPageN = (pageN+1).toString();
             const previousPageN = (pageN-1).toString();
             if (this.state.friendsSearchData!=null && this.state.friendsSearchData.hasOwnProperty(previousPageN)){
-                requestParams.after = this.state.friendsSearchData[previousPageN].pageItems[this.state.searchParams.length-1].userID;
+                requestParams.after = this.state.friendsSearchData[previousPageN].pageItems[this.state.searchParams.length-1].userId;
             } else if (this.state.friendsSearchData!=null && this.state.friendsSearchData.hasOwnProperty(nextPageN)){
-                requestParams.before = this.state.friendsSearchData[nextPageN].pageItems[0].userID;
+                requestParams.before = this.state.friendsSearchData[nextPageN].pageItems[0].userId;
             } else {
                 throw "Invalid pageNumber: previous or next pageNumber does not exist!";
             }

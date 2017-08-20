@@ -46,7 +46,7 @@ class SearchSidebar extends React.Component{
         get(this.usersURL+input,
             {},
             (data)=>{
-                const selectOptions = data.data.pageItems.map((obj)=>{let val = {};val['label']=obj.firstName+' '+obj.lastName;val['value']=obj.userID;return val;});
+                const selectOptions = data.data.pageItems.map((obj)=>{let val = {};val['label']=obj.firstName+' '+obj.lastName;val['value']=obj.userId;return val;});
                 callback(null, {
                     options: selectOptions,
                     complete: true

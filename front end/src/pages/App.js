@@ -58,8 +58,8 @@ class App extends React.Component{
                 <Route exact path="/" render={()=><BlogHome loggedin={this.authIsOK.bind(this)} showOverlayMsg={this.showOverlayMsg}/>} />
                 <Route path="/login" render={()=><Login showOverlayMsg={this.showOverlayMsg}/>} />
                 <Route path="/signup" render={()=><Signup showOverlayMsg={this.showOverlayMsg}/>} />
-                <AuthRoute loggedin={this.authIsOK.bind(this)} path="/users/:userID/posts/:postName" render={()=><Post showOverlayMsg={this.showOverlayMsg}/>} />
-                <AuthRoute loggedin={this.authIsOK.bind(this)} path="/users/:userID" render={()=><User showOverlayMsg={this.showOverlayMsg}/>} />
+                <AuthRoute loggedin={this.authIsOK.bind(this)} path="/users/:userId/posts/:postName" render={()=><Post showOverlayMsg={this.showOverlayMsg}/>} />
+                <AuthRoute loggedin={this.authIsOK.bind(this)} path="/users/:userId" render={()=><User showOverlayMsg={this.showOverlayMsg}/>} />
                 <AuthRoute loggedin={this.authIsOK.bind(this)} path="/settings" render={()=><Settings showOverlayMsg={this.showOverlayMsg}/>} />
                 <AuthRoute loggedin={this.authIsOK.bind(this)} path="/friends" render={()=><Friends showOverlayMsg={this.showOverlayMsg}/>} />
             </Switch>
