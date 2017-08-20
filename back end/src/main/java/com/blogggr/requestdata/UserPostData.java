@@ -5,71 +5,71 @@ package com.blogggr.requestdata;
  */
 public class UserPostData {
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private String passwordRepeat;
-    private String sex;
-    private String lang;
+  private String firstName;
+  private String lastName;
+  private String email;
+  private String password;
+  private String passwordRepeat;
+  private String sex;
+  private String lang;
 
-    public UserPostData(){
-        //
-    }
+  public UserPostData() {
+    //
+  }
 
-    public String getFirstName() {
-        return firstName;
-    }
+  public String getFirstName() {
+    return firstName;
+  }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-    public String getLastName() {
-        return lastName;
-    }
+  public String getLastName() {
+    return lastName;
+  }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public String getPasswordRepeat() {
-        return passwordRepeat;
-    }
+  public String getPasswordRepeat() {
+    return passwordRepeat;
+  }
 
-    public void setPasswordRepeat(String passwordRepeat) {
-        this.passwordRepeat = passwordRepeat;
-    }
+  public void setPasswordRepeat(String passwordRepeat) {
+    this.passwordRepeat = passwordRepeat;
+  }
 
-    public String getSex() {
-        return sex;
-    }
+  public String getSex() {
+    return sex;
+  }
 
-    public void setSex(String sex) {
-        this.sex = sex;
-    }
+  public void setSex(String sex) {
+    this.sex = sex;
+  }
 
-    public String getLang() {
-        return lang;
-    }
+  public String getLang() {
+    return lang;
+  }
 
-    public void setLang(String lang) {
-        this.lang = lang;
-    }
+  public void setLang(String lang) {
+    this.lang = lang;
+  }
 }

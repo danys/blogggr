@@ -14,11 +14,14 @@ import java.util.List;
  */
 public interface FriendService {
 
-    Friend createFriend(long userID, FriendData friendData) throws ResourceNotFoundException, DBException, NotAuthorizedException;
+  Friend createFriend(long userID, FriendData friendData)
+      throws ResourceNotFoundException, DBException, NotAuthorizedException;
 
-    void updateFriend(long userID, long user1, long user2, FriendData friendData) throws ResourceNotFoundException, NotAuthorizedException, DBException;
+  void updateFriend(long userID, long user1, long user2, FriendData friendData)
+      throws ResourceNotFoundException, NotAuthorizedException, DBException;
 
-    void deleteFriend(long friendId, long userID) throws ResourceNotFoundException, NotAuthorizedException;
+  void deleteFriend(long friendId, long userID)
+      throws ResourceNotFoundException, NotAuthorizedException;
 
-    List<User> getFriends(long userID) throws ResourceNotFoundException, DBException;
+  List<User> getFriends(long userID) throws ResourceNotFoundException, DBException;
 }

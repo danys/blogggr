@@ -17,35 +17,31 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 04.11.16.
  */
-public class InvokePostUserService implements ServiceInvocationStrategy{
+public class InvokePostUserService implements ServiceInvocationStrategy {
 
-    private UserService userService;
+  private UserService userService;
 
-    public InvokePostUserService(UserService userService){
-        this.userService = userService;
+  public InvokePostUserService(UserService userService) {
+    this.userService = userService;
+  }
+
+  public Object invokeService(Map<String, String> input, String body, Long userID) {
+    ObjectMapper mapper = new ObjectMapper();
+    UserPostData userData;
+    try {
+      userData = mapper.readValue(body, UserPostData.class);
+    } catch (JsonProcessingException e) {
+      return null;
+    } catch (IOException e) {
+      return null;
     }
-
-    public Object invokeService(Map<String,String> input, String body, Long userID){
-        ObjectMapper mapper = new ObjectMapper();
-        UserPostData userData;
-        try{
-            userData = mapper.readValue(body, UserPostData.class);
-        }
-        catch(JsonParseException e){
-            return null;
-        }
-        catch(JsonProcessingException e){
-            return null;
-        }
-        catch(IOException e){
-            return null;
-        }
-        User user = userService.createUser(userData);
-        //Create location string and return it
-        //Create location string and session id hash. Then return it as a map.
-        Map<String, String> responseMap = new HashMap<>();
-        responseMap.put(AppConfig.locationHeaderKey,AppConfig.fullBaseUrl + UsersController.userPath + "/" + String.valueOf(user.getUserId()));
-        return responseMap;
-    }
+    User user = userService.createUser(userData);
+    //Create location string and return it
+    //Create location string and session id hash. Then return it as a map.
+    Map<String, String> responseMap = new HashMap<>();
+    responseMap.put(AppConfig.locationHeaderKey,
+        AppConfig.fullBaseUrl + UsersController.userPath + "/" + String.valueOf(user.getUserId()));
+    return responseMap;
+  }
 
 }

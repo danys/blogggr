@@ -22,22 +22,26 @@ import java.util.Set;
  */
 public class InvokeGetPostService implements ServiceInvocationStrategy {
 
-    private PostService postService;
+  private PostService postService;
 
-    public InvokeGetPostService(PostService postService){
-        this.postService = postService;
-    }
+  public InvokeGetPostService(PostService postService) {
+    this.postService = postService;
+  }
 
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, NotAuthorizedException, DBException {
-        if (!input.containsKey(IdValidator.idName)){
-            return null;
-        }
-        String idStr = input.get(IdValidator.idName);
-        Long id = Long.parseLong(idStr);
-        Post post = postService.getPostById(id, userID);
-        if (post==null) throw new ResourceNotFoundException("Post not found!");
-        //Filter fields of the post
-        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(post, FilterFactory.getPostFilter());
-        return node;
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, NotAuthorizedException, DBException {
+    if (!input.containsKey(IdValidator.idName)) {
+      return null;
     }
+    String idStr = input.get(IdValidator.idName);
+    Long id = Long.parseLong(idStr);
+    Post post = postService.getPostById(id, userID);
+    if (post == null) {
+      throw new ResourceNotFoundException("Post not found!");
+    }
+    //Filter fields of the post
+    JsonNode node = JsonTransformer
+        .filterFieldsOfMultiLevelObject(post, FilterFactory.getPostFilter());
+    return node;
+  }
 }

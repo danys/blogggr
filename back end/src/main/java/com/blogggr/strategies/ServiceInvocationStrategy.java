@@ -13,5 +13,6 @@ import java.util.Map;
  */
 public interface ServiceInvocationStrategy {
 
-    Object invokeService(Map<String,String> input, String body, Long userID) throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException;
+  Object invokeService(Map<String, String> input, String body, Long userID)
+      throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException;
 }

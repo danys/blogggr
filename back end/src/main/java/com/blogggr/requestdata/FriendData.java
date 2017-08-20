@@ -5,28 +5,28 @@ package com.blogggr.requestdata;
  */
 public class FriendData {
 
-    private Long userID1;
-    private Long userID2;
+    private Long userId1;
+    private Long userId2;
     private Integer action;
 
     public FriendData(){
         //
     }
 
-    public Long getUserID1() {
-        return userID1;
+    public Long getUserId1() {
+        return userId1;
     }
 
-    public void setUserID1(Long userID1) {
-        this.userID1 = userID1;
+    public void setUserId1(Long userId1) {
+        this.userId1 = userId1;
     }
 
-    public Long getUserID2() {
-        return userID2;
+    public Long getUserId2() {
+        return userId2;
     }
 
-    public void setUserID2(Long userID2) {
-        this.userID2 = userID2;
+    public void setUserId2(Long userId2) {
+        this.userId2 = userId2;
     }
 
     public Integer getAction() {

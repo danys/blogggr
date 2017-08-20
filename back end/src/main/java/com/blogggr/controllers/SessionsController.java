@@ -21,23 +21,24 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(AppConfig.baseUrl)
 public class SessionsController {
 
-    public static final String sessionPath = "/sessions";
+  public static final String sessionPath = "/sessions";
 
-    private SessionService sessionService;
-    private Cryptography cryptography;
+  private SessionService sessionService;
+  private Cryptography cryptography;
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+  private final Log logger = LogFactory.getLog(this.getClass());
 
-    public SessionsController(SessionService sessionService, Cryptography cryptography){
-        this.sessionService = sessionService;
-        this.cryptography = cryptography;
-    }
+  public SessionsController(SessionService sessionService, Cryptography cryptography) {
+    this.sessionService = sessionService;
+    this.cryptography = cryptography;
+  }
 
-    //POST /sessions
-    @RequestMapping(path = sessionPath, method = RequestMethod.POST)
-    public ResponseEntity createSession(@RequestBody String bodyData){
-        logger.debug("[POST /sessions]");
-        AppModel model = new AppModelImpl(new NoAuthorization(), new SessionPostDataValidator(), new InvokePostSessionService(sessionService, cryptography), new PostResponse());
-        return model.execute(null,null,bodyData);
-    }
+  //POST /sessions
+  @RequestMapping(path = sessionPath, method = RequestMethod.POST)
+  public ResponseEntity createSession(@RequestBody String bodyData) {
+    logger.debug("[POST /sessions]");
+    AppModel model = new AppModelImpl(new NoAuthorization(), new SessionPostDataValidator(),
+        new InvokePostSessionService(sessionService, cryptography), new PostResponse());
+    return model.execute(null, null, bodyData);
+  }
 }

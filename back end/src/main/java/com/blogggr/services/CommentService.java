@@ -13,13 +13,17 @@ import java.util.List;
  */
 public interface CommentService {
 
-    Comment createComment(long userID, CommentData commentData) throws ResourceNotFoundException, DBException, NotAuthorizedException;
+  Comment createComment(long userID, CommentData commentData)
+      throws ResourceNotFoundException, DBException, NotAuthorizedException;
 
-    void updateComment(long commentID, long userID, CommentData commentData) throws ResourceNotFoundException, NotAuthorizedException;
+  void updateComment(long commentID, long userID, CommentData commentData)
+      throws ResourceNotFoundException, NotAuthorizedException;
 
-    void deleteComment(long commentID, long userID) throws ResourceNotFoundException, NotAuthorizedException, DBException;
+  void deleteComment(long commentID, long userID)
+      throws ResourceNotFoundException, NotAuthorizedException, DBException;
 
-    Comment getCommentById(long commentID, long userID) throws ResourceNotFoundException;
+  Comment getCommentById(long commentID, long userID) throws ResourceNotFoundException;
 
-    List<Comment> getCommentsByPostId(long postID, long userID) throws ResourceNotFoundException, NotAuthorizedException, DBException;
+  List<Comment> getCommentsByPostId(long postID, long userID)
+      throws ResourceNotFoundException, NotAuthorizedException, DBException;
 }

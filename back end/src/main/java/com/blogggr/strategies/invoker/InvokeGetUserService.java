@@ -17,22 +17,27 @@ import java.util.Set;
  * Created by Daniel Sunnen on 10.11.16.
  */
 public class InvokeGetUserService implements ServiceInvocationStrategy {
-    private UserService userService;
 
-    public InvokeGetUserService(UserService userService){
-        this.userService = userService;
-    }
+  private UserService userService;
 
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException{
-        if (!input.containsKey(IdValidator.idName)){
-            return null;
-        }
-        String idStr = input.get(IdValidator.idName);
-        Long id = Long.parseLong(idStr);
-        User user = userService.getUserById(id);
-        if (user==null) throw new ResourceNotFoundException("User not found!");
-        //Filter out unwanted fields
-        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(user, FilterFactory.getUserFilter());
-        return node;
+  public InvokeGetUserService(UserService userService) {
+    this.userService = userService;
+  }
+
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException {
+    if (!input.containsKey(IdValidator.idName)) {
+      return null;
     }
+    String idStr = input.get(IdValidator.idName);
+    Long id = Long.parseLong(idStr);
+    User user = userService.getUserById(id);
+    if (user == null) {
+      throw new ResourceNotFoundException("User not found!");
+    }
+    //Filter out unwanted fields
+    JsonNode node = JsonTransformer
+        .filterFieldsOfMultiLevelObject(user, FilterFactory.getUserFilter());
+    return node;
+  }
 }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class CommentDAOImpl extends GenericDAOImpl<Comment> implements CommentDAO {
 
-    public CommentDAOImpl(){
-        super(Comment.class);
-    }
+  public CommentDAOImpl() {
+    super(Comment.class);
+  }
 }

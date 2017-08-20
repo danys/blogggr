@@ -7,34 +7,34 @@ import javax.validation.constraints.NotNull;
  */
 public class PrevNextData<T> {
 
-    @NotNull
-    private Integer length;
+  @NotNull
+  private Integer length;
 
-    private T before;
+  private T before;
 
-    private T after;
+  private T after;
 
-    public Integer getLength() {
-        return length;
-    }
+  public Integer getLength() {
+    return length;
+  }
 
-    public void setLength(Integer length) {
-        this.length = length;
-    }
+  public void setLength(Integer length) {
+    this.length = length;
+  }
 
-    public T getBefore() {
-        return before;
-    }
+  public T getBefore() {
+    return before;
+  }
 
-    public void setBefore(T before) {
-        this.before = before;
-    }
+  public void setBefore(T before) {
+    this.before = before;
+  }
 
-    public T getAfter() {
-        return after;
-    }
+  public T getAfter() {
+    return after;
+  }
 
-    public void setAfter(T after) {
-        this.after = after;
-    }
+  public void setAfter(T after) {
+    this.after = after;
+  }
 }

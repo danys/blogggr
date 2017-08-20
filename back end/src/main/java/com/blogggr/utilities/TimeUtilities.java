@@ -8,9 +8,9 @@ import java.util.Calendar;
  */
 public class TimeUtilities {
 
-    public static Timestamp getCurrentTimestamp(){
-        Calendar calendar = Calendar.getInstance();
-        java.util.Date now = calendar.getTime();
-        return new Timestamp(now.getTime()); //GMT time
-    }
+  public static Timestamp getCurrentTimestamp() {
+    Calendar calendar = Calendar.getInstance();
+    java.util.Date now = calendar.getTime();
+    return new Timestamp(now.getTime()); //GMT time
+  }
 }

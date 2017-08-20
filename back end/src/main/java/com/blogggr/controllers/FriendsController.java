@@ -34,54 +34,67 @@ import java.util.Map;
 @RequestMapping(AppConfig.baseUrl)
 public class FriendsController {
 
-    public static final String friendsPath = "/friends";
+  public static final String friendsPath = "/friends";
 
-    private UserService userService;
-    private FriendService friendService;
-    private Cryptography cryptography;
+  private UserService userService;
+  private FriendService friendService;
+  private Cryptography cryptography;
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+  private final Log logger = LogFactory.getLog(this.getClass());
 
-    public FriendsController(UserService userService, FriendService friendService, Cryptography cryptography){
-        this.userService = userService;
-        this.friendService = friendService;
-        this.cryptography = cryptography;
-    }
+  public FriendsController(UserService userService, FriendService friendService,
+      Cryptography cryptography) {
+    this.userService = userService;
+    this.friendService = friendService;
+    this.cryptography = cryptography;
+  }
 
-    //POST /friends
-    @RequestMapping(path = friendsPath, method = RequestMethod.POST)
-    public ResponseEntity createFriendship(@RequestBody String bodyData, @RequestHeader Map<String,String> header){
-        logger.debug("[POST /friends] RequestParams = "+bodyData+". Header: "+header.toString());
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new FriendPostDataValidator(), new InvokePostFriendService(friendService), new PostResponse());
-        return model.execute(null,header,bodyData);
-    }
+  //POST /friends
+  @RequestMapping(path = friendsPath, method = RequestMethod.POST)
+  public ResponseEntity createFriendship(@RequestBody String bodyData,
+      @RequestHeader Map<String, String> header) {
+    logger.debug("[POST /friends] RequestParams = " + bodyData + ". Header: " + header.toString());
+    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
+        new FriendPostDataValidator(), new InvokePostFriendService(friendService),
+        new PostResponse());
+    return model.execute(null, header, bodyData);
+  }
 
-    //PUT /friends/id1/id2
-    @RequestMapping(path = friendsPath+"/{id}/{id2}", method = RequestMethod.PUT)
-    public ResponseEntity updateFriendship(@PathVariable String id, @PathVariable String id2, @RequestBody String bodyData, @RequestHeader Map<String,String> header){
-        logger.debug("[PUT /friends/id1/id2] Id = "+id+". Id2 = "+id2+" RequestBody = "+bodyData+"Header: "+header.toString());
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new FriendPutDataValidator(), new InvokePutFriendService(friendService), new PutResponse());
-        Map<String,String> map = new HashMap<>();
-        map.put("id", id);
-        map.put("id2", id2);
-        return model.execute(map,header,bodyData);
-    }
+  //PUT /friends/id1/id2
+  @RequestMapping(path = friendsPath + "/{id}/{id2}", method = RequestMethod.PUT)
+  public ResponseEntity updateFriendship(@PathVariable String id, @PathVariable String id2,
+      @RequestBody String bodyData, @RequestHeader Map<String, String> header) {
+    logger.debug(
+        "[PUT /friends/id1/id2] Id = " + id + ". Id2 = " + id2 + " RequestBody = " + bodyData
+            + "Header: " + header.toString());
+    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
+        new FriendPutDataValidator(), new InvokePutFriendService(friendService), new PutResponse());
+    Map<String, String> map = new HashMap<>();
+    map.put("id", id);
+    map.put("id2", id2);
+    return model.execute(map, header, bodyData);
+  }
 
-    //GET /friends
-    @RequestMapping(path = friendsPath, method = RequestMethod.GET)
-    public ResponseEntity getFriends(@RequestParam Map<String,String> params, @RequestHeader Map<String,String> header){
-        logger.debug("[GET /friends] RequestParams = "+params.toString()+"Header: "+header.toString());
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new NoCheckValidator(), new InvokeGetFriendsService(friendService), new GetResponse());
-        return model.execute(params,header,null);
-    }
+  //GET /friends
+  @RequestMapping(path = friendsPath, method = RequestMethod.GET)
+  public ResponseEntity getFriends(@RequestParam Map<String, String> params,
+      @RequestHeader Map<String, String> header) {
+    logger.debug(
+        "[GET /friends] RequestParams = " + params.toString() + "Header: " + header.toString());
+    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
+        new NoCheckValidator(), new InvokeGetFriendsService(friendService), new GetResponse());
+    return model.execute(params, header, null);
+  }
 
-    //DELETE /friends/id
-    @RequestMapping(path = friendsPath+"/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteFriend(@PathVariable String id, @RequestHeader Map<String,String> header){
-        logger.debug("[DELETE /friends/id] Id = "+id+"Header: "+header.toString());
-        Map<String,String> map = new HashMap<>();
-        map.put("id", id);
-        AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography), new IdValidator(), new InvokeDeleteFriendService(friendService), new DeleteResponse());
-        return model.execute(map,header,null);
-    }
+  //DELETE /friends/id
+  @RequestMapping(path = friendsPath + "/{id}", method = RequestMethod.DELETE)
+  public ResponseEntity deleteFriend(@PathVariable String id,
+      @RequestHeader Map<String, String> header) {
+    logger.debug("[DELETE /friends/id] Id = " + id + "Header: " + header.toString());
+    Map<String, String> map = new HashMap<>();
+    map.put("id", id);
+    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
+        new IdValidator(), new InvokeDeleteFriendService(friendService), new DeleteResponse());
+    return model.execute(map, header, null);
+  }
 }

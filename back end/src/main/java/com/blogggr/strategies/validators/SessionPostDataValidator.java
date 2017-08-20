@@ -12,26 +12,28 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 13.11.16.
  */
-public class SessionPostDataValidator extends GenericValidator{
+public class SessionPostDataValidator extends GenericValidator {
 
-    public SessionPostDataValidator(){
-        //super constructor called implicitly
-    }
+  public SessionPostDataValidator() {
+    //super constructor called implicitly
+  }
 
-    @Override
-    protected boolean validate(Map<String, String> input, String body) throws JsonProcessingException,JsonParseException, IOException{
-        ObjectMapper mapper = new ObjectMapper();
-        SessionPostData sessionPostData = mapper.readValue(body, SessionPostData.class);
-        //Check that all fields are present
-        if (sessionPostData.getEmail()==null || sessionPostData.getPassword()==null || sessionPostData.getRememberMe()==null){
-            errorMessage = "All fields need to be filled!";
-            return false;
-        }
-        //Check the the given email address is valid (https://emailregex.com/)
-        if (!sessionPostData.getEmail().matches(AppConfig.validEmailRegex)) {
-            errorMessage = "E-mail address does not validate!";
-            return false;
-        }
-        return true;
+  @Override
+  protected boolean validate(Map<String, String> input, String body)
+      throws JsonProcessingException, JsonParseException, IOException {
+    ObjectMapper mapper = new ObjectMapper();
+    SessionPostData sessionPostData = mapper.readValue(body, SessionPostData.class);
+    //Check that all fields are present
+    if (sessionPostData.getEmail() == null || sessionPostData.getPassword() == null
+        || sessionPostData.getRememberMe() == null) {
+      errorMessage = "All fields need to be filled!";
+      return false;
     }
+    //Check the the given email address is valid (https://emailregex.com/)
+    if (!sessionPostData.getEmail().matches(AppConfig.validEmailRegex)) {
+      errorMessage = "E-mail address does not validate!";
+      return false;
+    }
+    return true;
+  }
 }

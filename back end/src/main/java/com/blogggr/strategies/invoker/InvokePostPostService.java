@@ -21,33 +21,30 @@ import java.util.Map;
  */
 public class InvokePostPostService implements ServiceInvocationStrategy {
 
-    private PostService postService;
+  private PostService postService;
 
-    public InvokePostPostService(PostService postService){
-        this.postService = postService;
-    }
+  public InvokePostPostService(PostService postService) {
+    this.postService = postService;
+  }
 
-    @Override
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, WrongPasswordException {
-        ObjectMapper mapper = new ObjectMapper();
-        PostData postData;
-        try{
-            postData = mapper.readValue(body, PostData.class);
-        }
-        catch(JsonParseException e){
-            return null;
-        }
-        catch(JsonProcessingException e){
-            return null;
-        }
-        catch(IOException e){
-            return null;
-        }
-        Post post = postService.createPost(userID, postData);
-        //Create location string and return it
-        //Create location string and session id hash. Then return it as a map.
-        Map<String, String> responseMap = new HashMap<>();
-        responseMap.put(AppConfig.locationHeaderKey,AppConfig.fullBaseUrl + PostsController.postsPath + "/" + String.valueOf(post.getPostId()));
-        return responseMap;
+  @Override
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, WrongPasswordException {
+    ObjectMapper mapper = new ObjectMapper();
+    PostData postData;
+    try {
+      postData = mapper.readValue(body, PostData.class);
+    } catch (JsonProcessingException e) {
+      return null;
+    } catch (IOException e) {
+      return null;
     }
+    Post post = postService.createPost(userID, postData);
+    //Create location string and return it
+    //Create location string and session id hash. Then return it as a map.
+    Map<String, String> responseMap = new HashMap<>();
+    responseMap.put(AppConfig.locationHeaderKey,
+        AppConfig.fullBaseUrl + PostsController.postsPath + "/" + String.valueOf(post.getPostId()));
+    return responseMap;
+  }
 }

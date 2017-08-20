@@ -15,16 +15,19 @@ import java.util.*;
  * Created by Daniel Sunnen on 13.12.16.
  */
 public class InvokeGetFriendsService implements ServiceInvocationStrategy {
-    private FriendService friendService;
 
-    public InvokeGetFriendsService(FriendService friendService){
-        this.friendService = friendService;
-    }
+  private FriendService friendService;
 
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, DBException {
-        List<User> friends = friendService.getFriends(userID);
-        //Filter out unwanted fields
-        JsonNode nodes = JsonTransformer.filterFieldsOfMultiLevelObject(friends, FilterFactory.getUserFilter());
-        return nodes;
-    }
+  public InvokeGetFriendsService(FriendService friendService) {
+    this.friendService = friendService;
+  }
+
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, DBException {
+    List<User> friends = friendService.getFriends(userID);
+    //Filter out unwanted fields
+    JsonNode nodes = JsonTransformer
+        .filterFieldsOfMultiLevelObject(friends, FilterFactory.getUserFilter());
+    return nodes;
+  }
 }

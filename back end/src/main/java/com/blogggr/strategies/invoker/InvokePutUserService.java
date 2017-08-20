@@ -20,35 +20,31 @@ import java.util.Map;
  */
 public class InvokePutUserService implements ServiceInvocationStrategy {
 
-    private UserService userService;
+  private UserService userService;
 
-    public InvokePutUserService(UserService commentService){
-        this.userService = commentService;
-    }
+  public InvokePutUserService(UserService commentService) {
+    this.userService = commentService;
+  }
 
-    @Override
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, NotAuthorizedException, DBException {
-        if (!input.containsKey(IdValidator.idName)){
-            return null;
-        }
-        String idStr = input.get(IdValidator.idName);
-        Long userResourceID = Long.parseLong(idStr);
-        //Parse the body and perform the update of the associated record
-        ObjectMapper mapper = new ObjectMapper();
-        UserPutData userData;
-        try{
-            userData = mapper.readValue(body, UserPutData.class);
-        }
-        catch(JsonParseException e){
-            return null;
-        }
-        catch(JsonProcessingException e){
-            return null;
-        }
-        catch(IOException e){
-            return null;
-        }
-        userService.updateUser(userResourceID, userID, userData);
-        return null;
+  @Override
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, NotAuthorizedException, DBException {
+    if (!input.containsKey(IdValidator.idName)) {
+      return null;
     }
+    String idStr = input.get(IdValidator.idName);
+    Long userResourceID = Long.parseLong(idStr);
+    //Parse the body and perform the update of the associated record
+    ObjectMapper mapper = new ObjectMapper();
+    UserPutData userData;
+    try {
+      userData = mapper.readValue(body, UserPutData.class);
+    } catch (JsonProcessingException e) {
+      return null;
+    } catch (IOException e) {
+      return null;
+    }
+    userService.updateUser(userResourceID, userID, userData);
+    return null;
+  }
 }

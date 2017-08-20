@@ -22,24 +22,28 @@ import java.util.Map;
  */
 public class InvokeGetCommentsService implements ServiceInvocationStrategy {
 
-    private PostService postService;
-    private CommentService commentService;
+  private PostService postService;
+  private CommentService commentService;
 
-    public InvokeGetCommentsService(PostService postService, CommentService commentService){
-        this.postService = postService;
-        this.commentService = commentService;
-    }
+  public InvokeGetCommentsService(PostService postService, CommentService commentService) {
+    this.postService = postService;
+    this.commentService = commentService;
+  }
 
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, NotAuthorizedException, DBException {
-        if (!input.containsKey(IdValidator.idName)){
-            return null;
-        }
-        String idStr = input.get(IdValidator.idName);
-        Long id = Long.parseLong(idStr);
-        List<Comment> comments = commentService.getCommentsByPostId(id, userID);
-        if (comments==null) throw new ResourceNotFoundException("Comments not found!");
-        //Filter comment fields
-        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(comments, FilterFactory.getCommentFilter());
-        return node;
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, NotAuthorizedException, DBException {
+    if (!input.containsKey(IdValidator.idName)) {
+      return null;
     }
+    String idStr = input.get(IdValidator.idName);
+    Long id = Long.parseLong(idStr);
+    List<Comment> comments = commentService.getCommentsByPostId(id, userID);
+    if (comments == null) {
+      throw new ResourceNotFoundException("Comments not found!");
+    }
+    //Filter comment fields
+    JsonNode node = JsonTransformer
+        .filterFieldsOfMultiLevelObject(comments, FilterFactory.getCommentFilter());
+    return node;
+  }
 }

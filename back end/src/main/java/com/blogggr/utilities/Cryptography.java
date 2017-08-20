@@ -21,92 +21,93 @@ import java.time.Instant;
 @Component
 public class Cryptography {
 
-    final private static char[] lookupHexChars = "0123456789abcdef".toCharArray();
+  final private static char[] lookupHexChars = "0123456789abcdef".toCharArray();
 
-    private static String byteToString(byte[] data){
-        char[] hexData = new char[data.length*2];
-        for(int i=0;i<data.length;i++){
-            int value = data[i] & 0xFF;
-            hexData[i*2] = lookupHexChars[value >> 4];
-            hexData[i*2+1] = lookupHexChars[value & 0x0F];
-        }
-        return new String(hexData);
+  private static String byteToString(byte[] data) {
+    char[] hexData = new char[data.length * 2];
+    for (int i = 0; i < data.length; i++) {
+      int value = data[i] & 0xFF;
+      hexData[i * 2] = lookupHexChars[value >> 4];
+      hexData[i * 2 + 1] = lookupHexChars[value & 0x0F];
     }
+    return new String(hexData);
+  }
 
-    public static String computeSHA256Hash(String input){
-        try{
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(input.getBytes());
-            byte[] bytesHash = md.digest();
-            return byteToString(bytesHash);
-        }
-        catch(NoSuchAlgorithmException e){
-            return "";
-        }
+  public static String computeSHA256Hash(String input) {
+    try {
+      MessageDigest md = MessageDigest.getInstance("SHA-256");
+      md.update(input.getBytes());
+      byte[] bytesHash = md.digest();
+      return byteToString(bytesHash);
+    } catch (NoSuchAlgorithmException e) {
+      return "";
     }
+  }
 
-    public Cryptography(@Value("${hmackey}") String HMACKey) {
-        try {
-            this.algorithm = Algorithm.HMAC512(HMACKey);
-        } catch(UnsupportedEncodingException e){
-            this.algorithm = null;
-        }
+  public Cryptography(@Value("${hmackey}") String HMACKey) {
+    try {
+      this.algorithm = Algorithm.HMAC512(HMACKey);
+    } catch (UnsupportedEncodingException e) {
+      this.algorithm = null;
     }
+  }
 
-    private final String issuer = "blogggr";
-    private final long maxValidHours = 24L;
-    private Algorithm algorithm;
+  private final String issuer = "blogggr";
+  private final long maxValidHours = 24L;
+  private Algorithm algorithm;
 
-    /**
-     * Generate a JWT token with a subject claim and an expiration time
-     * The token expires 24h after issuance
-     * @param username
-     * @return a JWT
-     * @throws UnsupportedEncodingException
-     */
-    public String generateJWT(String username) throws UnsupportedEncodingException {
-        Instant validTillDate = Instant.now().plus(Duration.ofHours(maxValidHours));
-        Date expirationDate = Date.from(validTillDate);
-        if (algorithm==null) throw new UnsupportedEncodingException();
-        return JWT.create()
-                .withSubject(username) //sub key
-                .withIssuer(issuer) //iss key
-                .withExpiresAt(expirationDate) //exp key
-                .sign(algorithm);
+  /**
+   * Generate a JWT token with a subject claim and an expiration time The token expires 24h after
+   * issuance
+   *
+   * @return a JWT
+   */
+  public String generateJWT(String username) throws UnsupportedEncodingException {
+    Instant validTillDate = Instant.now().plus(Duration.ofHours(maxValidHours));
+    Date expirationDate = Date.from(validTillDate);
+    if (algorithm == null) {
+      throw new UnsupportedEncodingException();
     }
+    return JWT.create()
+        .withSubject(username) //sub key
+        .withIssuer(issuer) //iss key
+        .withExpiresAt(expirationDate) //exp key
+        .sign(algorithm);
+  }
 
-    private DecodedJWT getDecodedJWT(String token) throws UnsupportedEncodingException, JWTVerificationException{
-        if (algorithm==null) throw new UnsupportedEncodingException();
-        JWTVerifier verifier = JWT.require(algorithm)
-                .withIssuer(issuer)
-                .acceptExpiresAt(1L)
-                .build(); //Reusable verifier instance
-        return verifier.verify(token);
+  private DecodedJWT getDecodedJWT(String token)
+      throws UnsupportedEncodingException, JWTVerificationException {
+    if (algorithm == null) {
+      throw new UnsupportedEncodingException();
     }
+    JWTVerifier verifier = JWT.require(algorithm)
+        .withIssuer(issuer)
+        .acceptExpiresAt(1L)
+        .build(); //Reusable verifier instance
+    return verifier.verify(token);
+  }
 
-    /**
-     * Extract subject from valid JWT
-     * @param token
-     * @return
-     * @throws UnsupportedEncodingException
-     * @throws JWTVerificationException
-     */
-    public String getSubjectFromValidJWT(String token) throws UnsupportedEncodingException, JWTVerificationException{
-        if (algorithm==null) throw new UnsupportedEncodingException();
-        DecodedJWT jwtObject = getDecodedJWT(token);
-        return jwtObject.getSubject();
+  /**
+   * Extract subject from valid JWT
+   */
+  public String getSubjectFromValidJWT(String token)
+      throws UnsupportedEncodingException, JWTVerificationException {
+    if (algorithm == null) {
+      throw new UnsupportedEncodingException();
     }
+    DecodedJWT jwtObject = getDecodedJWT(token);
+    return jwtObject.getSubject();
+  }
 
-    /**
-     * Extract expiraiton date from valid JWT
-     * @param token
-     * @return
-     * @throws UnsupportedEncodingException
-     * @throws JWTVerificationException
-     */
-    public java.util.Date getExpirationFromValidJWT(String token) throws UnsupportedEncodingException, JWTVerificationException{
-        if (algorithm==null) throw new UnsupportedEncodingException();
-        DecodedJWT jwtObject = getDecodedJWT(token);
-        return jwtObject.getExpiresAt();
+  /**
+   * Extract expiraiton date from valid JWT
+   */
+  public java.util.Date getExpirationFromValidJWT(String token)
+      throws UnsupportedEncodingException, JWTVerificationException {
+    if (algorithm == null) {
+      throw new UnsupportedEncodingException();
     }
+    DecodedJWT jwtObject = getDecodedJWT(token);
+    return jwtObject.getExpiresAt();
+  }
 }

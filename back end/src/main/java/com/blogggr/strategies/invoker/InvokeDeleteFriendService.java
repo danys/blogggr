@@ -14,19 +14,20 @@ import java.util.Map;
  */
 public class InvokeDeleteFriendService implements ServiceInvocationStrategy {
 
-    private FriendService friendService;
+  private FriendService friendService;
 
-    public InvokeDeleteFriendService(FriendService friendService){
-        this.friendService = friendService;
-    }
+  public InvokeDeleteFriendService(FriendService friendService) {
+    this.friendService = friendService;
+  }
 
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, NotAuthorizedException, DBException {
-        if (!input.containsKey(IdValidator.idName)){
-            return null;
-        }
-        String idStr = input.get(IdValidator.idName);
-        Long id = Long.parseLong(idStr);
-        friendService.deleteFriend(id,userID);
-        return null;
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, NotAuthorizedException, DBException {
+    if (!input.containsKey(IdValidator.idName)) {
+      return null;
     }
+    String idStr = input.get(IdValidator.idName);
+    Long id = Long.parseLong(idStr);
+    friendService.deleteFriend(id, userID);
+    return null;
+  }
 }

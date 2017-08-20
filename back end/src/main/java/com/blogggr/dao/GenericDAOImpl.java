@@ -16,41 +16,41 @@ import java.util.List;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class GenericDAOImpl<T extends Serializable> implements GenericDAO<T>{
+public class GenericDAOImpl<T extends Serializable> implements GenericDAO<T> {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+  private final Log logger = LogFactory.getLog(this.getClass());
 
-    @PersistenceContext
-    protected EntityManager entityManager;
+  @PersistenceContext
+  protected EntityManager entityManager;
 
-    protected Class<T> clazz;
+  protected Class<T> clazz;
 
-    public GenericDAOImpl(Class<T> clazz){
-        this.clazz = clazz;
-    }
+  public GenericDAOImpl(Class<T> clazz) {
+    this.clazz = clazz;
+  }
 
-    public T findById(Long id){
-        return entityManager.find(clazz, id);
-    }
+  public T findById(Long id) {
+    return entityManager.find(clazz, id);
+  }
 
-    public List< T > findAll(){
-        return entityManager.createQuery( "from " + clazz.getName()).getResultList();
-    }
+  public List<T> findAll() {
+    return entityManager.createQuery("from " + clazz.getName()).getResultList();
+  }
 
-    public void save(T entity){
-        entityManager.persist(entity);
-    }
+  public void save(T entity) {
+    entityManager.persist(entity);
+  }
 
-    public void update(T entity){
-        entityManager.merge(entity);
-    }
+  public void update(T entity) {
+    entityManager.merge(entity);
+  }
 
-    public void delete(T entity){
-        entityManager.remove(entity);
-    }
+  public void delete(T entity) {
+    entityManager.remove(entity);
+  }
 
-    public void deleteById(Long entityId){
-        T entity = findById(entityId);
-        delete(entity);
-    }
+  public void deleteById(Long entityId) {
+    T entity = findById(entityId);
+    delete(entity);
+  }
 }

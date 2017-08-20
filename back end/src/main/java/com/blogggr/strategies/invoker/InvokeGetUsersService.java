@@ -21,57 +21,60 @@ import java.util.Map;
  */
 public class InvokeGetUsersService implements ServiceInvocationStrategy {
 
-    private UserService userService;
+  private UserService userService;
 
-    public InvokeGetUsersService(UserService userService){
-        this.userService = userService;
-    }
+  public InvokeGetUsersService(UserService userService) {
+    this.userService = userService;
+  }
 
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws DBException{
-        String searchString = null;
-        Integer limit = null;
-        Integer pageNum = null;
-        if (input.containsKey(GetUsersValidator.LIMIT_KEY)){
-            limit = Integer.parseInt(input.get(GetUsersValidator.LIMIT_KEY));
-        }
-        if (input.containsKey(GetUsersValidator.PAGE_KEY)){
-            pageNum = Integer.parseInt(input.get(GetUsersValidator.PAGE_KEY));
-        }
-        if (input.containsKey(GetUsersValidator.SEARCH_KEY)){
-            searchString = input.get(GetUsersValidator.SEARCH_KEY);
-            RandomAccessListPage<User> usersPage = userService.getUsers(searchString,limit,pageNum);
-            //Filter out unwanted fields
-            JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(usersPage.getPageItems(), FilterFactory.getUserFilter());
-            ObjectMapper mapper = new ObjectMapper();
-            List<Object> trimmedUsers = mapper.convertValue(node,List.class);
-            return new RandomAccessListPage<>(trimmedUsers,usersPage.getPageData());
-        } else {
-            //Search by firstName, lastName and email
-            UserSearchData searchData = new UserSearchData();
-            if (input.containsKey(GetUsersValidator.FIRST_NAME_SEARCH_KEY)) {
-                searchData.setFirstName(input.get(GetUsersValidator.FIRST_NAME_SEARCH_KEY));
-            }
-            if (input.containsKey(GetUsersValidator.LAST_NAME_SEARCH_KEY)) {
-                searchData.setLastName(input.get(GetUsersValidator.LAST_NAME_SEARCH_KEY));
-            }
-            if (input.containsKey(GetUsersValidator.EMAIL_SEARCH_KEY)) {
-                searchData.setEmail(input.get(GetUsersValidator.EMAIL_SEARCH_KEY));
-            }
-            if (input.containsKey(GetUsersValidator.LENGTH_KEY)) {
-                searchData.setLength(Integer.parseInt(input.get(GetUsersValidator.LENGTH_KEY)));
-            }
-            if (input.containsKey(GetUsersValidator.BEFORE_KEY)) {
-                searchData.setBefore(Long.parseLong(input.get(GetUsersValidator.BEFORE_KEY)));
-            }
-            if (input.containsKey(GetUsersValidator.AFTER_KEY)) {
-                searchData.setAfter(Long.parseLong(input.get(GetUsersValidator.AFTER_KEY)));
-            }
-            PrevNextListPage<User> users = userService.getUsersBySearchTerms(searchData);
-            //Filter out unwanted fields
-            JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(users.getPageItems(), FilterFactory.getUserFilter());
-            ObjectMapper mapper = new ObjectMapper();
-            List<Object> trimmedUsers = mapper.convertValue(node,List.class);
-            return new PrevNextListPage<>(trimmedUsers,users.getPageData());
-        }
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws DBException {
+    String searchString = null;
+    Integer limit = null;
+    Integer pageNum = null;
+    if (input.containsKey(GetUsersValidator.LIMIT_KEY)) {
+      limit = Integer.parseInt(input.get(GetUsersValidator.LIMIT_KEY));
     }
+    if (input.containsKey(GetUsersValidator.PAGE_KEY)) {
+      pageNum = Integer.parseInt(input.get(GetUsersValidator.PAGE_KEY));
+    }
+    if (input.containsKey(GetUsersValidator.SEARCH_KEY)) {
+      searchString = input.get(GetUsersValidator.SEARCH_KEY);
+      RandomAccessListPage<User> usersPage = userService.getUsers(searchString, limit, pageNum);
+      //Filter out unwanted fields
+      JsonNode node = JsonTransformer
+          .filterFieldsOfMultiLevelObject(usersPage.getPageItems(), FilterFactory.getUserFilter());
+      ObjectMapper mapper = new ObjectMapper();
+      List<Object> trimmedUsers = mapper.convertValue(node, List.class);
+      return new RandomAccessListPage<>(trimmedUsers, usersPage.getPageData());
+    } else {
+      //Search by firstName, lastName and email
+      UserSearchData searchData = new UserSearchData();
+      if (input.containsKey(GetUsersValidator.FIRST_NAME_SEARCH_KEY)) {
+        searchData.setFirstName(input.get(GetUsersValidator.FIRST_NAME_SEARCH_KEY));
+      }
+      if (input.containsKey(GetUsersValidator.LAST_NAME_SEARCH_KEY)) {
+        searchData.setLastName(input.get(GetUsersValidator.LAST_NAME_SEARCH_KEY));
+      }
+      if (input.containsKey(GetUsersValidator.EMAIL_SEARCH_KEY)) {
+        searchData.setEmail(input.get(GetUsersValidator.EMAIL_SEARCH_KEY));
+      }
+      if (input.containsKey(GetUsersValidator.LENGTH_KEY)) {
+        searchData.setLength(Integer.parseInt(input.get(GetUsersValidator.LENGTH_KEY)));
+      }
+      if (input.containsKey(GetUsersValidator.BEFORE_KEY)) {
+        searchData.setBefore(Long.parseLong(input.get(GetUsersValidator.BEFORE_KEY)));
+      }
+      if (input.containsKey(GetUsersValidator.AFTER_KEY)) {
+        searchData.setAfter(Long.parseLong(input.get(GetUsersValidator.AFTER_KEY)));
+      }
+      PrevNextListPage<User> users = userService.getUsersBySearchTerms(searchData);
+      //Filter out unwanted fields
+      JsonNode node = JsonTransformer
+          .filterFieldsOfMultiLevelObject(users.getPageItems(), FilterFactory.getUserFilter());
+      ObjectMapper mapper = new ObjectMapper();
+      List<Object> trimmedUsers = mapper.convertValue(node, List.class);
+      return new PrevNextListPage<>(trimmedUsers, users.getPageData());
+    }
+  }
 }

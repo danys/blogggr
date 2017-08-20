@@ -18,19 +18,24 @@ import java.util.Map;
  */
 public class InvokeGetPostByLabelService implements ServiceInvocationStrategy {
 
-    private PostService postService;
+  private PostService postService;
 
-    public InvokeGetPostByLabelService(PostService postService){
-        this.postService = postService;
-    }
+  public InvokeGetPostByLabelService(PostService postService) {
+    this.postService = postService;
+  }
 
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, NotAuthorizedException, DBException {
-        if (!input.containsKey(GetPostByLabelValidator.userIDKey) || !input.containsKey(GetPostByLabelValidator.postShortNameKey)) return null;
-        Long posterUserID = Long.parseLong(input.get(GetPostByLabelValidator.userIDKey));
-        String postShortTitle = input.get(GetPostByLabelValidator.postShortNameKey);
-        Post post = postService.getPostByUserAndLabel(userID, posterUserID, postShortTitle);
-        //Filter fields of the post
-        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(post, FilterFactory.getPostFilter());
-        return node;
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, NotAuthorizedException, DBException {
+    if (!input.containsKey(GetPostByLabelValidator.userIDKey) || !input
+        .containsKey(GetPostByLabelValidator.postShortNameKey)) {
+      return null;
     }
+    Long posterUserID = Long.parseLong(input.get(GetPostByLabelValidator.userIDKey));
+    String postShortTitle = input.get(GetPostByLabelValidator.postShortNameKey);
+    Post post = postService.getPostByUserAndLabel(userID, posterUserID, postShortTitle);
+    //Filter fields of the post
+    JsonNode node = JsonTransformer
+        .filterFieldsOfMultiLevelObject(post, FilterFactory.getPostFilter());
+    return node;
+  }
 }

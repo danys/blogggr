@@ -22,34 +22,32 @@ import java.util.Map;
  */
 public class InvokePutPostService implements ServiceInvocationStrategy {
 
-    private PostService postService;
+  private PostService postService;
 
-    public InvokePutPostService(PostService postService){
-        this.postService = postService;
-    }
+  public InvokePutPostService(PostService postService) {
+    this.postService = postService;
+  }
 
-    @Override
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, WrongPasswordException, NotAuthorizedException {
-        if (!input.containsKey(IdValidator.idName)){
-            return null;
-        }
-        String idStr = input.get(IdValidator.idName);
-        Long postID = Long.parseLong(idStr);
-        //Parse the body and perform the update of the associated record
-        ObjectMapper mapper = new ObjectMapper();
-        PostData postData;
-        try{
-            postData = mapper.readValue(body, PostData.class);
-        }
-        catch(JsonParseException e){
-            return null;
-        }
-        catch(JsonProcessingException e){
-            return null;
-        }
-        catch(IOException e){
-            return null;
-        }
-        return JsonTransformer.filterFieldsOfMultiLevelObject(postService.updatePost(postID, userID, postData), FilterFactory.getPostFilter());
+  @Override
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, WrongPasswordException, NotAuthorizedException {
+    if (!input.containsKey(IdValidator.idName)) {
+      return null;
     }
+    String idStr = input.get(IdValidator.idName);
+    Long postID = Long.parseLong(idStr);
+    //Parse the body and perform the update of the associated record
+    ObjectMapper mapper = new ObjectMapper();
+    PostData postData;
+    try {
+      postData = mapper.readValue(body, PostData.class);
+    } catch (JsonProcessingException e) {
+      return null;
+    } catch (IOException e) {
+      return null;
+    }
+    return JsonTransformer
+        .filterFieldsOfMultiLevelObject(postService.updatePost(postID, userID, postData),
+            FilterFactory.getPostFilter());
+  }
 }

@@ -19,68 +19,73 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 01.11.16.
  */
-public class AppModelImpl implements AppModel{
+public class AppModelImpl implements AppModel {
 
-    private final String duplicateKeyError = "Unique key violation";
-    private final String exceptionError = "Exceptional error";
-    private final String nonTransientExceptionError = "Non-transient database error.";
-    private final String recoverableExceptionError = "Recoverable database error, please retry.";
-    private final String scriptExceptionError = "Error processing SQL.";
-    private final String transientExceptionError = "Transient database error, please retry.";
+  private final String duplicateKeyError = "Unique key violation";
+  private final String exceptionError = "Exceptional error";
+  private final String nonTransientExceptionError = "Non-transient database error.";
+  private final String recoverableExceptionError = "Recoverable database error, please retry.";
+  private final String scriptExceptionError = "Error processing SQL.";
+  private final String transientExceptionError = "Transient database error, please retry.";
 
-    private AuthorizationStrategy authBehavior;
-    private ValidationStrategy validationBehavior;
-    private ServiceInvocationStrategy serviceBehavior;
-    private ResponseStrategy responseBehavior;
+  private AuthorizationStrategy authBehavior;
+  private ValidationStrategy validationBehavior;
+  private ServiceInvocationStrategy serviceBehavior;
+  private ResponseStrategy responseBehavior;
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+  private final Log logger = LogFactory.getLog(this.getClass());
 
-    public AppModelImpl(AuthorizationStrategy authStrategy, ValidationStrategy validationStrategy,
-                    ServiceInvocationStrategy serviceStrategy, ResponseStrategy responseStrategy){
-        this.authBehavior = authStrategy;
-        this.validationBehavior = validationStrategy;
-        this.serviceBehavior = serviceStrategy;
-        this.responseBehavior = responseStrategy;
+  public AppModelImpl(AuthorizationStrategy authStrategy, ValidationStrategy validationStrategy,
+      ServiceInvocationStrategy serviceStrategy, ResponseStrategy responseStrategy) {
+    this.authBehavior = authStrategy;
+    this.validationBehavior = validationStrategy;
+    this.serviceBehavior = serviceStrategy;
+    this.responseBehavior = responseStrategy;
+  }
+
+  public ResponseEntity execute(Map<String, String> input, Map<String, String> header,
+      String body) {
+    if (!authBehavior.isAuthorized(header)) {
+      return responseBehavior.notAuthenticatedResponse(authBehavior.getError());
     }
-
-    public ResponseEntity execute(Map<String,String> input, Map<String,String> header, String body){
-        if (!authBehavior.isAuthorized(header)) return responseBehavior.notAuthenticatedResponse(authBehavior.getError());
-        if (!validationBehavior.inputIsValid(input, body)) return responseBehavior.invalidInputResponse(validationBehavior.getError());
-        Object responseData;
-        //Invoke service and catch the different exceptions that might be raised
-        try{
-            responseData = serviceBehavior.invokeService(input, body, authBehavior.getUserId(header));
-        }catch(DataIntegrityViolationException e){
-            e.printStackTrace();
-            return responseBehavior.exceptionResponse(duplicateKeyError);
-        }catch(NonTransientDataAccessException e){
-            e.printStackTrace();
-            return responseBehavior.exceptionResponse(nonTransientExceptionError);
-        }catch(RecoverableDataAccessException e){
-            e.printStackTrace();
-            return responseBehavior.exceptionResponse(recoverableExceptionError);
-        }catch(ScriptException e){
-            e.printStackTrace();
-            return responseBehavior.exceptionResponse(scriptExceptionError);
-        }catch(TransientDataAccessException e){
-            e.printStackTrace();
-            return responseBehavior.exceptionResponse(transientExceptionError);
-        }catch(ResourceNotFoundException e){
-            e.printStackTrace();
-            return responseBehavior.notFound(e.getMessage());
-        }catch(WrongPasswordException e){
-            e.printStackTrace();
-            return responseBehavior.notAuthenticatedResponse("Wrong password!");
-        }catch(NotAuthorizedException e){
-            e.printStackTrace();
-            return responseBehavior.notAuthorizedResponse(e.getMessage());
-        }catch(DBException e){
-            e.printStackTrace();
-            return responseBehavior.exceptionResponse(e.getMessage());
-        }catch(Exception e){
-            e.printStackTrace();
-            return responseBehavior.exceptionResponse(exceptionError);
-        }
-        return responseBehavior.successResponse(responseData);
+    if (!validationBehavior.inputIsValid(input, body)) {
+      return responseBehavior.invalidInputResponse(validationBehavior.getError());
     }
+    Object responseData;
+    //Invoke service and catch the different exceptions that might be raised
+    try {
+      responseData = serviceBehavior.invokeService(input, body, authBehavior.getUserId(header));
+    } catch (DataIntegrityViolationException e) {
+      e.printStackTrace();
+      return responseBehavior.exceptionResponse(duplicateKeyError);
+    } catch (NonTransientDataAccessException e) {
+      e.printStackTrace();
+      return responseBehavior.exceptionResponse(nonTransientExceptionError);
+    } catch (RecoverableDataAccessException e) {
+      e.printStackTrace();
+      return responseBehavior.exceptionResponse(recoverableExceptionError);
+    } catch (ScriptException e) {
+      e.printStackTrace();
+      return responseBehavior.exceptionResponse(scriptExceptionError);
+    } catch (TransientDataAccessException e) {
+      e.printStackTrace();
+      return responseBehavior.exceptionResponse(transientExceptionError);
+    } catch (ResourceNotFoundException e) {
+      e.printStackTrace();
+      return responseBehavior.notFound(e.getMessage());
+    } catch (WrongPasswordException e) {
+      e.printStackTrace();
+      return responseBehavior.notAuthenticatedResponse("Wrong password!");
+    } catch (NotAuthorizedException e) {
+      e.printStackTrace();
+      return responseBehavior.notAuthorizedResponse(e.getMessage());
+    } catch (DBException e) {
+      e.printStackTrace();
+      return responseBehavior.exceptionResponse(e.getMessage());
+    } catch (Exception e) {
+      e.printStackTrace();
+      return responseBehavior.exceptionResponse(exceptionError);
+    }
+    return responseBehavior.successResponse(responseData);
+  }
 }

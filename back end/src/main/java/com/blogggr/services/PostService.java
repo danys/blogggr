@@ -13,15 +13,21 @@ import com.blogggr.requestdata.PostData;
  */
 public interface PostService {
 
-    Post createPost(long userID, PostData postData) throws ResourceNotFoundException;
+  Post createPost(long userID, PostData postData) throws ResourceNotFoundException;
 
-    Post updatePost(long postID, long userID, PostData postData) throws ResourceNotFoundException, NotAuthorizedException;
+  Post updatePost(long postID, long userID, PostData postData)
+      throws ResourceNotFoundException, NotAuthorizedException;
 
-    void deletePost(long postId, long userID) throws ResourceNotFoundException, NotAuthorizedException;
+  void deletePost(long postId, long userID)
+      throws ResourceNotFoundException, NotAuthorizedException;
 
-    Post getPostById(long postId, long userID) throws ResourceNotFoundException, DBException, NotAuthorizedException;
+  Post getPostById(long postId, long userID)
+      throws ResourceNotFoundException, DBException, NotAuthorizedException;
 
-    PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws ResourceNotFoundException, DBException;
+  PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title,
+      PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit)
+      throws ResourceNotFoundException, DBException;
 
-    Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle) throws ResourceNotFoundException, DBException, NotAuthorizedException;
+  Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle)
+      throws ResourceNotFoundException, DBException, NotAuthorizedException;
 }

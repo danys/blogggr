@@ -10,9 +10,11 @@ import java.util.List;
 /**
  * Created by Daniel Sunnen on 27.10.16.
  */
-public interface PostDAO extends GenericDAO<Post>{
+public interface PostDAO extends GenericDAO<Post> {
 
-    PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws DBException, ResourceNotFoundException;
+  PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title,
+      PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit)
+      throws DBException, ResourceNotFoundException;
 
-    Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle);
+  Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle);
 }

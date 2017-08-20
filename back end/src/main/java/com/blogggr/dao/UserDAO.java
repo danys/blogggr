@@ -10,11 +10,12 @@ import com.blogggr.requestdata.UserSearchData;
 /**
  * Created by Daniel Sunnen on 25.10.16.
  */
-public interface UserDAO extends GenericDAO<User>{
+public interface UserDAO extends GenericDAO<User> {
 
-    User getUserByEmail(String email) throws DBException, ResourceNotFoundException;
+  User getUserByEmail(String email) throws DBException, ResourceNotFoundException;
 
-    RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber) throws DBException;
+  RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber)
+      throws DBException;
 
-    PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData) throws DBException;
+  PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData) throws DBException;
 }

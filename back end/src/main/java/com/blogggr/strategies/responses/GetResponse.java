@@ -12,8 +12,8 @@ import org.springframework.http.ResponseEntity;
  */
 public class GetResponse extends GenericResponse implements ResponseStrategy {
 
-    @Override
-    public ResponseEntity successResponse(Object data) {
-        return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(data), HttpStatus.OK);
-    }
+  @Override
+  public ResponseEntity successResponse(Object data) {
+    return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(data), HttpStatus.OK);
+  }
 }

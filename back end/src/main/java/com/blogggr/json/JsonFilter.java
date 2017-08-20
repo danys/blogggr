@@ -7,17 +7,17 @@ import java.util.Map;
  */
 public class JsonFilter {
 
-    private Map<String, JsonFilter> keysFilter;
+  private Map<String, JsonFilter> keysFilter;
 
-    public JsonFilter(Map<String, JsonFilter> keysFilter){
-        this.keysFilter = keysFilter;
-    }
+  public JsonFilter(Map<String, JsonFilter> keysFilter) {
+    this.keysFilter = keysFilter;
+  }
 
-    public boolean containsKey(String key){
-        return keysFilter.containsKey(key);
-    }
+  public boolean containsKey(String key) {
+    return keysFilter.containsKey(key);
+  }
 
-    public JsonFilter get(String key){
-        return keysFilter.get(key);
-    }
+  public JsonFilter get(String key) {
+    return keysFilter.get(key);
+  }
 }

@@ -5,17 +5,17 @@ package com.blogggr.requestdata;
  */
 public class SessionPutData {
 
-    private Long validTill;
+  private Long validTill;
 
-    public SessionPutData(){
-        //
-    }
+  public SessionPutData() {
+    //
+  }
 
-    public Long getValidTill() {
-        return validTill;
-    }
+  public Long getValidTill() {
+    return validTill;
+  }
 
-    public void setValidTill(Long validTill) {
-        this.validTill = validTill;
-    }
+  public void setValidTill(Long validTill) {
+    this.validTill = validTill;
+  }
 }

@@ -11,21 +11,22 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 26.11.16.
  */
-public class InvokeDeletePostService implements ServiceInvocationStrategy{
+public class InvokeDeletePostService implements ServiceInvocationStrategy {
 
-    private PostService postService;
+  private PostService postService;
 
-    public InvokeDeletePostService(PostService postService){
-        this.postService = postService;
+  public InvokeDeletePostService(PostService postService) {
+    this.postService = postService;
+  }
+
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, NotAuthorizedException {
+    if (!input.containsKey(IdValidator.idName)) {
+      return null;
     }
-
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, NotAuthorizedException {
-        if (!input.containsKey(IdValidator.idName)){
-            return null;
-        }
-        String idStr = input.get(IdValidator.idName);
-        Long id = Long.parseLong(idStr);
-        postService.deletePost(id,userID);
-        return null;
-    }
+    String idStr = input.get(IdValidator.idName);
+    Long id = Long.parseLong(idStr);
+    postService.deletePost(id, userID);
+    return null;
+  }
 }

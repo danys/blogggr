@@ -9,22 +9,22 @@ import java.util.Map;
  */
 public class NoAuthorization implements AuthorizationStrategy {
 
-    public NoAuthorization(){
-        //
-    }
+  public NoAuthorization() {
+    //
+  }
 
-    @Override
-    public boolean isAuthorized(Map<String,String> header){
-        return true;
-    }
+  @Override
+  public boolean isAuthorized(Map<String, String> header) {
+    return true;
+  }
 
-    @Override
-    public Long getUserId(Map<String,String> header){
-        return null;
-    }
+  @Override
+  public Long getUserId(Map<String, String> header) {
+    return null;
+  }
 
-    @Override
-    public String getError(){
-        return "";
-    }
+  @Override
+  public String getError() {
+    return "";
+  }
 }

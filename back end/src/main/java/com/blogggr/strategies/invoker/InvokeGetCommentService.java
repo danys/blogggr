@@ -19,22 +19,26 @@ import java.util.Map;
  */
 public class InvokeGetCommentService implements ServiceInvocationStrategy {
 
-    private CommentService commentService;
+  private CommentService commentService;
 
-    public InvokeGetCommentService(CommentService commentService){
-        this.commentService = commentService;
-    }
+  public InvokeGetCommentService(CommentService commentService) {
+    this.commentService = commentService;
+  }
 
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, NotAuthorizedException{
-        if (!input.containsKey(IdValidator.idName)){
-            return null;
-        }
-        String idStr = input.get(IdValidator.idName);
-        Long id = Long.parseLong(idStr);
-        Comment comment = commentService.getCommentById(id, userID);
-        if (comment==null) throw new ResourceNotFoundException("Comment not found!");
-        //Filter comment fields
-        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(comment, FilterFactory.getCommentFilter());
-        return node;
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, NotAuthorizedException {
+    if (!input.containsKey(IdValidator.idName)) {
+      return null;
     }
+    String idStr = input.get(IdValidator.idName);
+    Long id = Long.parseLong(idStr);
+    Comment comment = commentService.getCommentById(id, userID);
+    if (comment == null) {
+      throw new ResourceNotFoundException("Comment not found!");
+    }
+    //Filter comment fields
+    JsonNode node = JsonTransformer
+        .filterFieldsOfMultiLevelObject(comment, FilterFactory.getCommentFilter());
+    return node;
+  }
 }

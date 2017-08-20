@@ -9,19 +9,19 @@ import java.util.List;
  */
 public class PrevNextListPage<T> {
 
-    private List<T> pageItems;
-    private PageData pageData;
+  private List<T> pageItems;
+  private PageData pageData;
 
-    public PrevNextListPage(List<T> pageItems, PageData pageData){
-        this.pageItems = pageItems;
-        this.pageData = pageData;
-    }
+  public PrevNextListPage(List<T> pageItems, PageData pageData) {
+    this.pageItems = pageItems;
+    this.pageData = pageData;
+  }
 
-    public List<T> getPageItems() {
-        return pageItems;
-    }
+  public List<T> getPageItems() {
+    return pageItems;
+  }
 
-    public PageData getPageData() {
-        return pageData;
-    }
+  public PageData getPageData() {
+    return pageData;
+  }
 }

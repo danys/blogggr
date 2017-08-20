@@ -11,21 +11,22 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 05.12.16.
  */
-public class CommentPostDataValidator extends GenericValidator{
+public class CommentPostDataValidator extends GenericValidator {
 
-    protected boolean validate(Map<String, String> input, String body) throws JsonParseException, JsonProcessingException, IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        CommentData postCommentData = mapper.readValue(body, CommentData.class);
-        //Check that all fields are present
-        if ((postCommentData.getCommentID()==null) || (postCommentData.getText()==null)){
-            errorMessage = "All fields need to be filled!";
-            return false;
-        }
-        //Check text length
-        if (postCommentData.getText().length()<=3){
-            errorMessage = "Comment is a little short!";
-            return false;
-        }
-        return true;
+  protected boolean validate(Map<String, String> input, String body)
+      throws JsonParseException, JsonProcessingException, IOException {
+    ObjectMapper mapper = new ObjectMapper();
+    CommentData postCommentData = mapper.readValue(body, CommentData.class);
+    //Check that all fields are present
+    if ((postCommentData.getCommentId() == null) || (postCommentData.getText() == null)) {
+      errorMessage = "All fields need to be filled!";
+      return false;
     }
+    //Check text length
+    if (postCommentData.getText().length() <= 3) {
+      errorMessage = "Comment is a little short!";
+      return false;
+    }
+    return true;
+  }
 }

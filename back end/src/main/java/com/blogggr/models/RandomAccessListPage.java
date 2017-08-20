@@ -9,19 +9,19 @@ import java.util.List;
  */
 public class RandomAccessListPage<T> {
 
-    List<T> pageItems;
-    PageMetaData pageData;
+  List<T> pageItems;
+  PageMetaData pageData;
 
-    public RandomAccessListPage(List<T> pageItems, PageMetaData pageData){
-        this.pageItems = pageItems;
-        this.pageData = pageData;
-    }
+  public RandomAccessListPage(List<T> pageItems, PageMetaData pageData) {
+    this.pageItems = pageItems;
+    this.pageData = pageData;
+  }
 
-    public List<T> getPageItems() {
-        return pageItems;
-    }
+  public List<T> getPageItems() {
+    return pageItems;
+  }
 
-    public PageMetaData getPageData() {
-        return pageData;
-    }
+  public PageMetaData getPageData() {
+    return pageData;
+  }
 }

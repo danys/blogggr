@@ -30,126 +30,153 @@ import java.util.List;
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class PostServiceImpl implements PostService{
+public class PostServiceImpl implements PostService {
 
-    private PostDAO postDAO;
-    private UserDAO userDAO;
-    private FriendDAO friendDAO;
+  private PostDAO postDAO;
+  private UserDAO userDAO;
+  private FriendDAO friendDAO;
 
-    private final String postNotFound = "Post not found!";
-    private final String noModifyAuthorization = "No authorization to modify this post!";
-    private final String noReadAuthorization = "No authorization to view this post!";
-    private final String dbException = "Database exception!";
+  private final String postNotFound = "Post not found!";
+  private final String noModifyAuthorization = "No authorization to modify this post!";
+  private final String noReadAuthorization = "No authorization to view this post!";
+  private final String dbException = "Database exception!";
 
-    private final Log logger = LogFactory.getLog(this.getClass());
+  private final Log logger = LogFactory.getLog(this.getClass());
 
-    public PostServiceImpl(PostDAO postDAO, UserDAO userDAO, FriendDAO friendDAO){
-        this.postDAO = postDAO;
-        this.userDAO = userDAO;
-        this.friendDAO = friendDAO;
+  public PostServiceImpl(PostDAO postDAO, UserDAO userDAO, FriendDAO friendDAO) {
+    this.postDAO = postDAO;
+    this.userDAO = userDAO;
+    this.friendDAO = friendDAO;
+  }
+
+
+  @Override
+  public Post createPost(long userID, PostData postData) throws ResourceNotFoundException {
+    User user = userDAO.findById(userID);
+    if (user == null) {
+      throw new ResourceNotFoundException("User not found!");
     }
+    Post post = new Post();
+    post.setUser(user);
+    post.setTitle(postData.getTitle());
+    post.setTextBody(postData.getTextBody());
+    post.setTimestamp(TimeUtilities.getCurrentTimestamp());
+    post.setShortTitle(StringUtilities.compactTitle(postData.getTitle()));
+    post.setGlobal(postData.getGlobal());
+    postDAO.save(post);
+    return post;
+  }
 
+  @Override
+  public Post updatePost(long postID, long userID, PostData postData)
+      throws ResourceNotFoundException, NotAuthorizedException {
+    Post post = postDAO.findById(postID);
+    if (post == null) {
+      throw new ResourceNotFoundException(postNotFound);
+    }
+    if (post.getUser().getUserId() != userID) {
+      throw new NotAuthorizedException(noModifyAuthorization);
+    }
+    //Update timestamp
+    post.setTimestamp(TimeUtilities.getCurrentTimestamp());
+    if (postData.getTextBody() != null) {
+      post.setTextBody(postData.getTextBody());
+    }
+    if (postData.getTitle() != null) {
+      post.setTitle(postData.getTitle());
+      post.setShortTitle(StringUtilities.compactTitle(postData.getTitle()));
+    }
+    if (postData.getGlobal() != null) {
+      post.setGlobal(postData.getGlobal());
+    }
+    postDAO.save(post);
+    return post;
+  }
 
+  //Delete a session by its primary key
+  @Override
+  public void deletePost(long postId, long userID)
+      throws ResourceNotFoundException, NotAuthorizedException {
+    Post post = postDAO.findById(postId);
+    if (post == null) {
+      throw new ResourceNotFoundException(postNotFound);
+    }
+    if (post.getUser().getUserId() != userID) {
+      throw new NotAuthorizedException(noModifyAuthorization);
+    }
+    postDAO.deleteById(postId);
+  }
 
-    @Override
-    public Post createPost(long userID, PostData postData) throws ResourceNotFoundException{
-        User user = userDAO.findById(userID);
-        if (user==null) throw new ResourceNotFoundException("User not found!");
-        Post post = new Post();
-        post.setUser(user);
-        post.setTitle(postData.getTitle());
-        post.setTextBody(postData.getTextBody());
-        post.setTimestamp(TimeUtilities.getCurrentTimestamp());
-        post.setShortTitle(StringUtilities.compactTitle(postData.getTitle()));
-        post.setGlobal(postData.getGlobal());
-        postDAO.save(post);
+  //Simple function to check that this user is friends with the poster
+  private boolean isFriendOfUser(long postUserID, long userID) throws DBException {
+    try {
+      long smallNum, bigNum;
+      smallNum = (postUserID < userID) ? postUserID : userID;
+      bigNum = (postUserID >= userID) ? postUserID : userID;
+      friendDAO.getFriendByUserIDs(smallNum, bigNum);
+      return true;
+    } catch (ResourceNotFoundException e) {
+      return false;
+    }
+  }
+
+  @Override
+  public Post getPostById(long postId, long userID)
+      throws ResourceNotFoundException, DBException, NotAuthorizedException {
+    Post post = postDAO.findById(postId);
+    if (post == null) {
+      throw new ResourceNotFoundException(postNotFound);
+    }
+    User postAuthor = post.getUser();
+    //1. Post can be viewed if current session user is the owner or the post has global flag
+    if (postAuthor.getUserId() == userID || post.getGlobal()) {
+      return post;
+    }
+    //2. Post can be viewed if the current user is friends with the poster
+    if (isFriendOfUser(postAuthor.getUserId(), userID)) {
+      return post;
+    }
+    //Otherwise access denied
+    throw new NotAuthorizedException(noReadAuthorization);
+  }
+
+  @Override
+  public PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title,
+      PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit)
+      throws ResourceNotFoundException, DBException {
+    PrevNextListPage<Post> postsPage = postDAO
+        .getPosts(userID, postUserID, title, visibility, before, after, limit);
+    return postsPage;
+  }
+
+  @Override
+  public Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle)
+      throws ResourceNotFoundException, DBException, NotAuthorizedException {
+    try {
+      Post post = postDAO.getPostByUserAndLabel(userID, postUserID, postShortTitle);
+      //Order comments by date
+      List<Comment> comments = post.getComments();
+      Collections.sort(comments, new Comparator<Comment>() {
+        @Override
+        public int compare(Comment o1, Comment o2) {
+          return (int) (o1.getRealTimestamp().getTime() - o2.getRealTimestamp().getTime());
+        }
+      });
+      post.setComments(comments);
+      //1. Post can be viewed if current session user is the owner or the post has global flag
+      if (post.getUser().getUserId() == userID || post.getGlobal()) {
         return post;
-    }
-
-    @Override
-    public Post updatePost(long postID, long userID, PostData postData) throws ResourceNotFoundException, NotAuthorizedException{
-        Post post = postDAO.findById(postID);
-        if (post==null) throw new ResourceNotFoundException(postNotFound);
-        if (post.getUser().getUserId()!=userID) throw new NotAuthorizedException(noModifyAuthorization);
-        //Update timestamp
-        post.setTimestamp(TimeUtilities.getCurrentTimestamp());
-        if (postData.getTextBody()!=null) post.setTextBody(postData.getTextBody());
-        if (postData.getTitle()!=null) {
-            post.setTitle(postData.getTitle());
-            post.setShortTitle(StringUtilities.compactTitle(postData.getTitle()));
-        }
-        if (postData.getGlobal()!=null) post.setGlobal(postData.getGlobal());
-        postDAO.save(post);
+      }
+      //2. Post can be viewed if the current user is friends with the poster
+      if (isFriendOfUser(post.getUser().getUserId(), userID)) {
         return post;
+      }
+      //Otherwise access denied
+      throw new NotAuthorizedException(noReadAuthorization);
+    } catch (NoResultException e) {
+      throw new ResourceNotFoundException(postNotFound);
+    } catch (RuntimeException e) {
+      throw new DBException(dbException, e);
     }
-
-    //Delete a session by its primary key
-    @Override
-    public void deletePost(long postId, long userID) throws ResourceNotFoundException, NotAuthorizedException{
-        Post post = postDAO.findById(postId);
-        if (post==null) throw new ResourceNotFoundException(postNotFound);
-        if (post.getUser().getUserId()!=userID) throw new NotAuthorizedException(noModifyAuthorization);
-        postDAO.deleteById(postId);
-    }
-
-    //Simple function to check that this user is friends with the poster
-    private boolean isFriendOfUser(long postUserID, long userID) throws DBException{
-        try {
-            long smallNum, bigNum;
-            smallNum = (postUserID < userID) ? postUserID : userID;
-            bigNum = (postUserID >= userID) ? postUserID : userID;
-            friendDAO.getFriendByUserIDs(smallNum, bigNum);
-            return true;
-        }
-        catch(ResourceNotFoundException e){
-            return false;
-        }
-    }
-
-    @Override
-    public Post getPostById(long postId, long userID) throws ResourceNotFoundException, DBException, NotAuthorizedException {
-        Post post = postDAO.findById(postId);
-        if (post==null) throw new ResourceNotFoundException(postNotFound);
-        User postAuthor = post.getUser();
-        //1. Post can be viewed if current session user is the owner or the post has global flag
-        if (postAuthor.getUserId()==userID || post.getGlobal()) return post;
-        //2. Post can be viewed if the current user is friends with the poster
-        if (isFriendOfUser(postAuthor.getUserId(),userID)) return post;
-        //Otherwise access denied
-        throw new NotAuthorizedException(noReadAuthorization);
-    }
-
-    @Override
-    public PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title, PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit) throws ResourceNotFoundException, DBException{
-        PrevNextListPage<Post> postsPage = postDAO.getPosts(userID, postUserID, title, visibility, before, after, limit);
-        return postsPage;
-    }
-
-    @Override
-    public Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle) throws ResourceNotFoundException, DBException, NotAuthorizedException{
-        try{
-            Post post = postDAO.getPostByUserAndLabel(userID, postUserID, postShortTitle);
-            //Order comments by date
-            List<Comment> comments = post.getComments();
-            Collections.sort(comments, new Comparator<Comment>() {
-                @Override
-                public int compare(Comment o1, Comment o2) {
-                    return (int)(o1.getRealTimestamp().getTime()-o2.getRealTimestamp().getTime());
-                }
-            });
-            post.setComments(comments);
-            //1. Post can be viewed if current session user is the owner or the post has global flag
-            if (post.getUser().getUserId()==userID || post.getGlobal()) return post;
-            //2. Post can be viewed if the current user is friends with the poster
-            if (isFriendOfUser(post.getUser().getUserId(),userID)) return post;
-            //Otherwise access denied
-            throw new NotAuthorizedException(noReadAuthorization);
-        }
-        catch(NoResultException e){
-            throw new ResourceNotFoundException(postNotFound);
-        }
-        catch(RuntimeException e){
-            throw new DBException(dbException, e);
-        }
-    }
+  }
 }

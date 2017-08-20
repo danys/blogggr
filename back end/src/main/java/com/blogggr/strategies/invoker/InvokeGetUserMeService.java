@@ -14,17 +14,22 @@ import java.util.Map;
  * Created by Daniel Sunnen on 21.04.17.
  */
 public class InvokeGetUserMeService implements ServiceInvocationStrategy {
-    private UserService userService;
 
-    public InvokeGetUserMeService(UserService userService){
-        this.userService = userService;
-    }
+  private UserService userService;
 
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException {
-        User user = userService.getUserById(userID);
-        if (user==null) throw new ResourceNotFoundException("User not found!");
-        //Filter out unwanted fields
-        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(user, FilterFactory.getUserFilter());
-        return node;
+  public InvokeGetUserMeService(UserService userService) {
+    this.userService = userService;
+  }
+
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException {
+    User user = userService.getUserById(userID);
+    if (user == null) {
+      throw new ResourceNotFoundException("User not found!");
     }
+    //Filter out unwanted fields
+    JsonNode node = JsonTransformer
+        .filterFieldsOfMultiLevelObject(user, FilterFactory.getUserFilter());
+    return node;
+  }
 }

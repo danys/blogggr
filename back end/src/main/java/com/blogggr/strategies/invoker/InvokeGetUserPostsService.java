@@ -21,41 +21,44 @@ import java.util.Map;
  */
 public class InvokeGetUserPostsService implements ServiceInvocationStrategy {
 
-    private PostService postService;
+  private PostService postService;
 
-    public InvokeGetUserPostsService(PostService postService){
-        this.postService = postService;
-    }
+  public InvokeGetUserPostsService(PostService postService) {
+    this.postService = postService;
+  }
 
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, DBException {
-        //Check if the poster id is present
-        Long posterID = null;
-        if (input.containsKey(IdValidator.idName)) {
-            posterID = Long.parseLong(input.get(IdValidator.idName));
-        }
-        //Before key
-        Long before = null;
-        if (input.containsKey(GetPostsValidator.beforeKey)){
-            before = Long.parseLong(input.get(GetPostsValidator.beforeKey));
-        }
-        //After key
-        Long after = null;
-        if (input.containsKey(GetPostsValidator.afterKey)){
-            after = Long.parseLong(input.get(GetPostsValidator.afterKey));
-        }
-        //Limit key
-        Integer limit = null;
-        if (input.containsKey(GetPostsValidator.limitKey)){
-            limit = Integer.parseInt(input.get(GetPostsValidator.limitKey));
-        }
-        PrevNextListPage<Post> page = postService.getPosts(userID,posterID,null,null,before,after,limit);
-        List<Post> posts = page.getPageItems();
-        //Filter attributes of the posts
-        JsonNode node = JsonTransformer.filterFieldsOfMultiLevelObject(posts, FilterFactory.getReducedPostFilter());
-        ObjectMapper mapper = new ObjectMapper();
-        List<Object> trimmedPosts = mapper.convertValue(node,List.class);
-        PrevNextListPage<Object> resultPage = new PrevNextListPage<>(trimmedPosts,page.getPageData());
-        return resultPage;
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, DBException {
+    //Check if the poster id is present
+    Long posterID = null;
+    if (input.containsKey(IdValidator.idName)) {
+      posterID = Long.parseLong(input.get(IdValidator.idName));
     }
+    //Before key
+    Long before = null;
+    if (input.containsKey(GetPostsValidator.beforeKey)) {
+      before = Long.parseLong(input.get(GetPostsValidator.beforeKey));
+    }
+    //After key
+    Long after = null;
+    if (input.containsKey(GetPostsValidator.afterKey)) {
+      after = Long.parseLong(input.get(GetPostsValidator.afterKey));
+    }
+    //Limit key
+    Integer limit = null;
+    if (input.containsKey(GetPostsValidator.limitKey)) {
+      limit = Integer.parseInt(input.get(GetPostsValidator.limitKey));
+    }
+    PrevNextListPage<Post> page = postService
+        .getPosts(userID, posterID, null, null, before, after, limit);
+    List<Post> posts = page.getPageItems();
+    //Filter attributes of the posts
+    JsonNode node = JsonTransformer
+        .filterFieldsOfMultiLevelObject(posts, FilterFactory.getReducedPostFilter());
+    ObjectMapper mapper = new ObjectMapper();
+    List<Object> trimmedPosts = mapper.convertValue(node, List.class);
+    PrevNextListPage<Object> resultPage = new PrevNextListPage<>(trimmedPosts, page.getPageData());
+    return resultPage;
+  }
 
 }

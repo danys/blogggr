@@ -12,45 +12,42 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 13.11.16.
  */
-public abstract class GenericValidator implements ValidationStrategy{
+public abstract class GenericValidator implements ValidationStrategy {
 
-    protected String errorMessage;
-    private final Log logger = LogFactory.getLog(this.getClass());
+  protected String errorMessage;
+  private final Log logger = LogFactory.getLog(this.getClass());
 
-    public boolean stringIsNumber(String numStr){
-        try{
-            Long.parseLong(numStr);
-        }
-        catch(NumberFormatException e){
-            //Not a valid number
-            return false;
-        }
-        return true;
+  public boolean stringIsNumber(String numStr) {
+    try {
+      Long.parseLong(numStr);
+    } catch (NumberFormatException e) {
+      //Not a valid number
+      return false;
     }
+    return true;
+  }
 
-    @Override
-    public boolean inputIsValid(Map<String, String> input, String body) {
-        try{
-            return validate(input, body);
-        }
-        catch(JsonParseException e){
-            errorMessage = "JSON parse exception";
-            return false;
-        }
-        catch(JsonProcessingException e){
-            errorMessage = "JSON processing exception";
-            return false;
-        }
-        catch(IOException e){
-            errorMessage = "JSON input exception";
-            return false;
-        }
+  @Override
+  public boolean inputIsValid(Map<String, String> input, String body) {
+    try {
+      return validate(input, body);
+    } catch (JsonParseException e) {
+      errorMessage = "JSON parse exception";
+      return false;
+    } catch (JsonProcessingException e) {
+      errorMessage = "JSON processing exception";
+      return false;
+    } catch (IOException e) {
+      errorMessage = "JSON input exception";
+      return false;
     }
+  }
 
-    protected abstract boolean validate(Map<String, String> input, String body) throws JsonParseException, JsonProcessingException, IOException;
+  protected abstract boolean validate(Map<String, String> input, String body)
+      throws JsonParseException, JsonProcessingException, IOException;
 
-    @Override
-    public final String getError(){
-        return errorMessage;
-    }
+  @Override
+  public final String getError() {
+    return errorMessage;
+  }
 }

@@ -22,33 +22,31 @@ import java.util.Map;
  */
 public class InvokePostCommentService implements ServiceInvocationStrategy {
 
-    private CommentService commentService;
+  private CommentService commentService;
 
-    public InvokePostCommentService(CommentService commentService){
-        this.commentService = commentService;
-    }
+  public InvokePostCommentService(CommentService commentService) {
+    this.commentService = commentService;
+  }
 
-    @Override
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, DBException, NotAuthorizedException {
-        ObjectMapper mapper = new ObjectMapper();
-        CommentData commentData;
-        try{
-            commentData = mapper.readValue(body, CommentData.class);
-        }
-        catch(JsonParseException e){
-            return null;
-        }
-        catch(JsonProcessingException e){
-            return null;
-        }
-        catch(IOException e){
-            return null;
-        }
-        Comment comment = commentService.createComment(userID, commentData);
-        //Create location string and return it
-        //Create location string and session id hash. Then return it as a map.
-        Map<String, String> responseMap = new HashMap<>();
-        String put = responseMap.put(AppConfig.locationHeaderKey, AppConfig.fullBaseUrl + CommentsController.commentsPath + "/" + String.valueOf(comment.getCommentId()));
-        return responseMap;
+  @Override
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, DBException, NotAuthorizedException {
+    ObjectMapper mapper = new ObjectMapper();
+    CommentData commentData;
+    try {
+      commentData = mapper.readValue(body, CommentData.class);
+    } catch (JsonProcessingException e) {
+      return null;
+    } catch (IOException e) {
+      return null;
     }
+    Comment comment = commentService.createComment(userID, commentData);
+    //Create location string and return it
+    //Create location string and session id hash. Then return it as a map.
+    Map<String, String> responseMap = new HashMap<>();
+    String put = responseMap.put(AppConfig.locationHeaderKey,
+        AppConfig.fullBaseUrl + CommentsController.commentsPath + "/" + String
+            .valueOf(comment.getCommentId()));
+    return responseMap;
+  }
 }

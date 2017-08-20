@@ -18,35 +18,31 @@ import java.util.Map;
  */
 public class InvokePutCommentService implements ServiceInvocationStrategy {
 
-    private CommentService commentService;
+  private CommentService commentService;
 
-    public InvokePutCommentService(CommentService commentService){
-        this.commentService = commentService;
-    }
+  public InvokePutCommentService(CommentService commentService) {
+    this.commentService = commentService;
+  }
 
-    @Override
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, NotAuthorizedException {
-        if (!input.containsKey(IdValidator.idName)){
-            return null;
-        }
-        String idStr = input.get(IdValidator.idName);
-        Long commentID = Long.parseLong(idStr);
-        //Parse the body and perform the update of the associated record
-        ObjectMapper mapper = new ObjectMapper();
-        CommentData commentData;
-        try{
-            commentData = mapper.readValue(body, CommentData.class);
-        }
-        catch(JsonParseException e){
-            return null;
-        }
-        catch(JsonProcessingException e){
-            return null;
-        }
-        catch(IOException e){
-            return null;
-        }
-        commentService.updateComment(commentID, userID, commentData);
-        return null;
+  @Override
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, NotAuthorizedException {
+    if (!input.containsKey(IdValidator.idName)) {
+      return null;
     }
+    String idStr = input.get(IdValidator.idName);
+    Long commentID = Long.parseLong(idStr);
+    //Parse the body and perform the update of the associated record
+    ObjectMapper mapper = new ObjectMapper();
+    CommentData commentData;
+    try {
+      commentData = mapper.readValue(body, CommentData.class);
+    } catch (JsonProcessingException e) {
+      return null;
+    } catch (IOException e) {
+      return null;
+    }
+    commentService.updateComment(commentID, userID, commentData);
+    return null;
+  }
 }

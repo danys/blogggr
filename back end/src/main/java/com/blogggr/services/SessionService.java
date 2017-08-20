@@ -10,5 +10,6 @@ import java.io.UnsupportedEncodingException;
  */
 public interface SessionService {
 
-    SessionServiceImpl.SessionDetails createSession(SessionPostData sessionData) throws ResourceNotFoundException, DBException, WrongPasswordException, UnsupportedEncodingException; //Resource not found if user cannot be found
+  SessionServiceImpl.SessionDetails createSession(SessionPostData sessionData)
+      throws ResourceNotFoundException, DBException, WrongPasswordException, UnsupportedEncodingException; //Resource not found if user cannot be found
 }

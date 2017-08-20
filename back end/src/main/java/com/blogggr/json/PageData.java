@@ -7,57 +7,57 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  */
 public class PageData {
 
-    private Long totalCount; //total count of items
-    private Long filteredCount; //filtered count of items
-    private Integer pageItemsCount; //items per page
+  private Long totalCount; //total count of items
+  private Long filteredCount; //filtered count of items
+  private Integer pageItemsCount; //items per page
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String next;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private String next;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String previous;
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  private String previous;
 
-    public PageData(){
-        //
-    }
+  public PageData() {
+    //
+  }
 
-    public Long getFilteredCount() {
-        return filteredCount;
-    }
+  public Long getFilteredCount() {
+    return filteredCount;
+  }
 
-    public void setFilteredCount(Long filteredCount) {
-        this.filteredCount = filteredCount;
-    }
+  public void setFilteredCount(Long filteredCount) {
+    this.filteredCount = filteredCount;
+  }
 
-    public Long getTotalCount() {
-        return totalCount;
-    }
+  public Long getTotalCount() {
+    return totalCount;
+  }
 
-    public void setTotalCount(Long totalCount) {
-        this.totalCount = totalCount;
-    }
+  public void setTotalCount(Long totalCount) {
+    this.totalCount = totalCount;
+  }
 
-    public Integer getPageItemsCount() {
-        return pageItemsCount;
-    }
+  public Integer getPageItemsCount() {
+    return pageItemsCount;
+  }
 
-    public void setPageItemsCount(Integer pageItemsCount) {
-        this.pageItemsCount = pageItemsCount;
-    }
+  public void setPageItemsCount(Integer pageItemsCount) {
+    this.pageItemsCount = pageItemsCount;
+  }
 
-    public String getNext() {
-        return next;
-    }
+  public String getNext() {
+    return next;
+  }
 
-    public void setNext(String next) {
-        this.next = next;
-    }
+  public void setNext(String next) {
+    this.next = next;
+  }
 
-    public String getPrevious() {
-        return previous;
-    }
+  public String getPrevious() {
+    return previous;
+  }
 
-    public void setPrevious(String previous) {
-        this.previous = previous;
-    }
+  public void setPrevious(String previous) {
+    this.previous = previous;
+  }
 }

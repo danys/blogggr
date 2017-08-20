@@ -10,24 +10,24 @@ import java.util.Map;
  */
 public class IdValidator extends GenericValidator {
 
-    public static final String idName = "id";
+  public static final String idName = "id";
 
-    public IdValidator(){
-        //
-    }
+  public IdValidator() {
+    //
+  }
 
-    @Override
-    protected boolean validate(Map<String,String> input, String body){
-        if (!input.containsKey(idName)){
-            errorMessage = "Error getting resource id!";
-            return false;
-        }
-        if  (!stringIsNumber(input.get(idName))){
-            errorMessage = "Resource id not a valid number!";
-            return false;
-        }
-        errorMessage="";
-        return true;
+  @Override
+  protected boolean validate(Map<String, String> input, String body) {
+    if (!input.containsKey(idName)) {
+      errorMessage = "Error getting resource id!";
+      return false;
     }
+    if (!stringIsNumber(input.get(idName))) {
+      errorMessage = "Resource id not a valid number!";
+      return false;
+    }
+    errorMessage = "";
+    return true;
+  }
 
 }

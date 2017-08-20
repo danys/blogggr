@@ -14,19 +14,20 @@ import java.util.Map;
  */
 public class InvokeDeleteCommentService implements ServiceInvocationStrategy {
 
-    private CommentService commentService;
+  private CommentService commentService;
 
-    public InvokeDeleteCommentService(CommentService commentService){
-        this.commentService = commentService;
-    }
+  public InvokeDeleteCommentService(CommentService commentService) {
+    this.commentService = commentService;
+  }
 
-    public Object invokeService(Map<String,String> input, String body, Long userID) throws ResourceNotFoundException, NotAuthorizedException, DBException {
-        if (!input.containsKey(IdValidator.idName)){
-            return null;
-        }
-        String idStr = input.get(IdValidator.idName);
-        Long id = Long.parseLong(idStr);
-        commentService.deleteComment(id,userID);
-        return null;
+  public Object invokeService(Map<String, String> input, String body, Long userID)
+      throws ResourceNotFoundException, NotAuthorizedException, DBException {
+    if (!input.containsKey(IdValidator.idName)) {
+      return null;
     }
+    String idStr = input.get(IdValidator.idName);
+    Long id = Long.parseLong(idStr);
+    commentService.deleteComment(id, userID);
+    return null;
+  }
 }
