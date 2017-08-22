@@ -27,6 +27,11 @@ public class User implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  private static final String WOMAN_NAME = "woman.png";
+  private static final String MAN_NAME = "man.png";
+  private static final int IMG_WIDTH = 128;
+  private static final int IMG_HEIGHT = 128;
+
   @Id
   @Column(name = "user_id")
   @SequenceGenerator(name = "seq", sequenceName = "blogggr.user_id_seq", allocationSize = 1)
@@ -102,6 +107,17 @@ public class User implements Serializable {
     this.image = (this.userImages == null) ? null
         : this.userImages.stream().filter(userImage -> userImage.getCurrent() == true).findFirst()
             .orElse(null);
+    if (this.image == null) { //set a default image
+      UserImage manImage = new UserImage();
+      manImage.setWidth(IMG_WIDTH);
+      manImage.setHeight(IMG_HEIGHT);
+      manImage.setName(MAN_NAME);
+      UserImage womanImage = new UserImage();
+      womanImage.setWidth(IMG_WIDTH);
+      womanImage.setHeight(IMG_HEIGHT);
+      womanImage.setName(WOMAN_NAME);
+      this.image = (this.sex == 0) ? manImage : womanImage;
+    }
     return image;
   }
 
