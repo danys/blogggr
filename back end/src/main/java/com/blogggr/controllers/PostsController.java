@@ -13,8 +13,8 @@ import com.blogggr.strategies.responses.PostResponse;
 import com.blogggr.strategies.responses.PutResponse;
 import com.blogggr.strategies.validators.*;
 import com.blogggr.utilities.Cryptography;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +34,7 @@ public class PostsController {
   private PostService postService;
   private Cryptography cryptography;
 
-  private final Log logger = LogFactory.getLog(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public PostsController(UserService userService, PostService postService,
       Cryptography cryptography) {
@@ -91,7 +91,7 @@ public class PostsController {
   }
 
   //GET /users/{userID}/posts/{post-short-name}
-  @RequestMapping(path = UsersController.userPath
+  @RequestMapping(path = UsersController.USER_PATH
       + "/{userID}/posts/{postShortName}", method = RequestMethod.GET)
   public ResponseEntity getPost(@PathVariable String userID, @PathVariable String postShortName,
       @RequestHeader Map<String, String> header) {

@@ -4,7 +4,7 @@ import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.services.FriendService;
-import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.strategies.validators.IdValidator;
 
 import java.util.Map;
@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 13.12.16.
  */
-public class InvokeDeleteFriendService implements ServiceInvocationStrategy {
+public class InvokeDeleteFriendService extends ServiceInvocation {
 
   private FriendService friendService;
 

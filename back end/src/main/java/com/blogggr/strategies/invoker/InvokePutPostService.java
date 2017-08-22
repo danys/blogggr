@@ -7,11 +7,9 @@ import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.requestdata.PostData;
 import com.blogggr.services.PostService;
-import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.strategies.validators.IdValidator;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -20,7 +18,7 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 11.12.16.
  */
-public class InvokePutPostService implements ServiceInvocationStrategy {
+public class InvokePutPostService extends ServiceInvocation {
 
   private PostService postService;
 

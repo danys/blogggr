@@ -4,20 +4,18 @@ import com.blogggr.entities.Comment;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.FilterFactory;
-import com.blogggr.json.JsonFilter;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.CommentService;
-import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.strategies.validators.IdValidator;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by Daniel Sunnen on 11.12.16.
  */
-public class InvokeGetCommentService implements ServiceInvocationStrategy {
+public class InvokeGetCommentService extends ServiceInvocation {
 
   private CommentService commentService;
 

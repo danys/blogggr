@@ -5,18 +5,16 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.UserService;
-import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.strategies.validators.IdValidator;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Daniel Sunnen on 10.11.16.
  */
-public class InvokeGetUserService implements ServiceInvocationStrategy {
+public class InvokeGetUserService extends ServiceInvocation {
 
   private UserService userService;
 

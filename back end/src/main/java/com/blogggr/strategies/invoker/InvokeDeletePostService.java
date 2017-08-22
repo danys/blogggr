@@ -3,7 +3,7 @@ package com.blogggr.strategies.invoker;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.services.PostService;
-import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.strategies.validators.IdValidator;
 
 import java.util.Map;
@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 26.11.16.
  */
-public class InvokeDeletePostService implements ServiceInvocationStrategy {
+public class InvokeDeletePostService extends ServiceInvocation {
 
   private PostService postService;
 

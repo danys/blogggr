@@ -6,7 +6,7 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.FriendService;
-import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.strategies.ServiceInvocation;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.*;
@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * Created by Daniel Sunnen on 13.12.16.
  */
-public class InvokeGetFriendsService implements ServiceInvocationStrategy {
+public class InvokeGetFriendsService extends ServiceInvocation {
 
   private FriendService friendService;
 

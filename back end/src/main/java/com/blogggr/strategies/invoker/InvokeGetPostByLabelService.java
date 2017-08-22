@@ -7,7 +7,7 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.PostService;
-import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.strategies.validators.GetPostByLabelValidator;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 13.05.17.
  */
-public class InvokeGetPostByLabelService implements ServiceInvocationStrategy {
+public class InvokeGetPostByLabelService extends ServiceInvocation {
 
   private PostService postService;
 

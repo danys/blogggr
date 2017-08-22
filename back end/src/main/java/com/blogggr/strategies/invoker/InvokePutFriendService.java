@@ -5,10 +5,8 @@ import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.requestdata.FriendData;
 import com.blogggr.services.FriendService;
-import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.strategies.validators.FriendPutDataValidator;
-import com.blogggr.strategies.validators.IdValidator;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -18,7 +16,7 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 13.12.16.
  */
-public class InvokePutFriendService implements ServiceInvocationStrategy {
+public class InvokePutFriendService extends ServiceInvocation {
 
   private FriendService friendService;
 

@@ -7,6 +7,7 @@ import com.blogggr.exceptions.WrongPasswordException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created by Daniel Sunnen on 01.11.16.
@@ -14,5 +15,8 @@ import java.util.Map;
 public interface ServiceInvocationStrategy {
 
   Object invokeService(Map<String, String> input, String body, Long userID)
+      throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException;
+
+  Object invokeFileService(MultipartFile file, Long userID)
       throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException;
 }

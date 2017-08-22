@@ -16,8 +16,8 @@ import com.blogggr.strategies.validators.CommentPostDataValidator;
 import com.blogggr.strategies.validators.CommentPutDataValidator;
 import com.blogggr.strategies.validators.IdValidator;
 import com.blogggr.utilities.Cryptography;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +38,7 @@ public class CommentsController {
   private CommentService commentService;
   private Cryptography cryptography;
 
-  private final Log logger = LogFactory.getLog(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public CommentsController(UserService userService, PostService postService,
       CommentService commentService, Cryptography cryptography) {

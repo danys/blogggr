@@ -5,7 +5,7 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.services.UserService;
-import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.strategies.ServiceInvocation;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.Map;
@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 21.04.17.
  */
-public class InvokeGetUserMeService implements ServiceInvocationStrategy {
+public class InvokeGetUserMeService extends ServiceInvocation {
 
   private UserService userService;
 

@@ -5,8 +5,7 @@ import com.blogggr.controllers.UsersController;
 import com.blogggr.entities.User;
 import com.blogggr.requestdata.UserPostData;
 import com.blogggr.services.UserService;
-import com.blogggr.strategies.ServiceInvocationStrategy;
-import com.fasterxml.jackson.core.JsonParseException;
+import com.blogggr.strategies.ServiceInvocation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -17,7 +16,7 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 04.11.16.
  */
-public class InvokePostUserService implements ServiceInvocationStrategy {
+public class InvokePostUserService extends ServiceInvocation {
 
   private UserService userService;
 
@@ -40,7 +39,7 @@ public class InvokePostUserService implements ServiceInvocationStrategy {
     //Create location string and session id hash. Then return it as a map.
     Map<String, String> responseMap = new HashMap<>();
     responseMap.put(AppConfig.locationHeaderKey,
-        AppConfig.fullBaseUrl + UsersController.userPath + "/" + String.valueOf(user.getUserId()));
+        AppConfig.fullBaseUrl + UsersController.USER_PATH + "/" + String.valueOf(user.getUserId()));
     return responseMap;
   }
 

@@ -7,9 +7,8 @@ import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.requestdata.SessionPostData;
 import com.blogggr.services.SessionService;
 import com.blogggr.services.SessionServiceImpl;
-import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.utilities.Cryptography;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,7 +21,7 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 13.11.16.
  */
-public class InvokePostSessionService implements ServiceInvocationStrategy {
+public class InvokePostSessionService extends ServiceInvocation {
 
   private SessionService sessionService;
   private Cryptography cryptography;

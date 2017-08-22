@@ -9,8 +9,8 @@ import com.blogggr.strategies.invoker.InvokePostSessionService;
 import com.blogggr.strategies.responses.PostResponse;
 import com.blogggr.strategies.validators.SessionPostDataValidator;
 import com.blogggr.utilities.Cryptography;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +26,7 @@ public class SessionsController {
   private SessionService sessionService;
   private Cryptography cryptography;
 
-  private final Log logger = LogFactory.getLog(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public SessionsController(SessionService sessionService, Cryptography cryptography) {
     this.sessionService = sessionService;

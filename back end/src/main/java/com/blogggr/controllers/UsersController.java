@@ -12,9 +12,8 @@ import com.blogggr.strategies.responses.PostResponse;
 import com.blogggr.strategies.responses.PutResponse;
 import com.blogggr.strategies.validators.*;
 import com.blogggr.utilities.Cryptography;
-import com.blogggr.utilities.HTTPMethod;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,13 +27,13 @@ import java.util.Map;
 @RequestMapping(AppConfig.baseUrl)
 public class UsersController {
 
-  public static final String userPath = "/users";
+  public static final String USER_PATH = "/users";
 
   private UserService userService;
   private PostService postService;
   private Cryptography cryptography;
 
-  private final Log logger = LogFactory.getLog(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public UsersController(UserService userService, PostService postService,
       Cryptography cryptography) {
@@ -44,7 +43,7 @@ public class UsersController {
   }
 
   //GET /users
-  @RequestMapping(path = userPath, method = RequestMethod.GET)
+  @RequestMapping(path = USER_PATH, method = RequestMethod.GET)
   public ResponseEntity getUsers(@RequestParam Map<String, String> params,
       @RequestHeader Map<String, String> header) {
     logger.debug(
@@ -55,7 +54,7 @@ public class UsersController {
   }
 
   //GET /users/me
-  @RequestMapping(path = userPath + "/me", method = RequestMethod.GET)
+  @RequestMapping(path = USER_PATH + "/me", method = RequestMethod.GET)
   public ResponseEntity getCurrentUser(@RequestHeader Map<String, String> header) {
     logger.debug("[GET /users/me] RequestHeader: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
@@ -64,7 +63,7 @@ public class UsersController {
   }
 
   //GET /users/id
-  @RequestMapping(path = userPath + "/{id:[\\d]+}", method = RequestMethod.GET)
+  @RequestMapping(path = USER_PATH + "/{id:[\\d]+}", method = RequestMethod.GET)
   public ResponseEntity getUser(@PathVariable String id,
       @RequestHeader Map<String, String> header) {
     logger.debug("[GET /users/id] Id: " + id + ". Header: " + header.toString());
@@ -76,7 +75,7 @@ public class UsersController {
   }
 
   //GET /users/id/posts
-  @RequestMapping(path = userPath + "/{id}/posts", method = RequestMethod.GET)
+  @RequestMapping(path = USER_PATH + "/{id}/posts", method = RequestMethod.GET)
   public ResponseEntity getUserPosts(@PathVariable String id,
       @RequestHeader Map<String, String> header) {
     logger.debug("[GET /users/id/posts] Id: " + id + ". Header: " + header.toString());
@@ -88,7 +87,7 @@ public class UsersController {
   }
 
   //POST /users
-  @RequestMapping(path = userPath, method = RequestMethod.POST)
+  @RequestMapping(path = USER_PATH, method = RequestMethod.POST)
   public ResponseEntity createUser(@RequestBody String bodyData) {
     logger.debug("[POST /users] RequestBody: " + bodyData);
     AppModel model = new AppModelImpl(new NoAuthorization(), new UserPostDataValidator(),
@@ -97,7 +96,7 @@ public class UsersController {
   }
 
   //PUT /users/id
-  @RequestMapping(path = userPath + "/{id}", method = RequestMethod.PUT)
+  @RequestMapping(path = USER_PATH + "/{id}", method = RequestMethod.PUT)
   public ResponseEntity updateUser(@PathVariable String id, @RequestBody String bodyData,
       @RequestHeader Map<String, String> header) {
     logger.debug("[PUT /users/id] Id: " + id + ". RequestBody: " + bodyData + ". Header: " + header

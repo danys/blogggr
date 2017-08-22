@@ -7,7 +7,7 @@ import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.models.PrevNextListPage;
 import com.blogggr.services.PostService;
-import com.blogggr.strategies.ServiceInvocationStrategy;
+import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.strategies.validators.GetPostsValidator;
 import com.blogggr.strategies.validators.IdValidator;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 19.01.17.
  */
-public class InvokeGetUserPostsService implements ServiceInvocationStrategy {
+public class InvokeGetUserPostsService extends ServiceInvocation {
 
   private PostService postService;
 

@@ -89,7 +89,7 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO {
       pageMetaData.setPageItemsCount(users.size());
       StringBuilder sb = new StringBuilder();
       sb.append(AppConfig.fullBaseUrl);
-      sb.append(UsersController.userPath);
+      sb.append(UsersController.USER_PATH);
       sb.append("?");
       if (searchString != null && searchString.length() > 0) {
         sb.append(GetUsersValidator.SEARCH_KEY);

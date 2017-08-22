@@ -7,8 +7,7 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.requestdata.PostData;
 import com.blogggr.services.PostService;
-import com.blogggr.strategies.ServiceInvocationStrategy;
-import com.fasterxml.jackson.core.JsonParseException;
+import com.blogggr.strategies.ServiceInvocation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -19,7 +18,7 @@ import java.util.Map;
 /**
  * Created by Daniel Sunnen on 19.11.16.
  */
-public class InvokePostPostService implements ServiceInvocationStrategy {
+public class InvokePostPostService extends ServiceInvocation {
 
   private PostService postService;
 
