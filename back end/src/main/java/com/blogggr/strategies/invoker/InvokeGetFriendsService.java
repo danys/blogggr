@@ -22,6 +22,7 @@ public class InvokeGetFriendsService extends ServiceInvocation {
     this.friendService = friendService;
   }
 
+  @Override
   public Object invokeService(Map<String, String> input, String body, Long userID)
       throws ResourceNotFoundException, DBException {
     List<User> friends = friendService.getFriends(userID);

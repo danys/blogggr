@@ -20,6 +20,7 @@ public class InvokeDeleteFriendService extends ServiceInvocation {
     this.friendService = friendService;
   }
 
+  @Override
   public Object invokeService(Map<String, String> input, String body, Long userID)
       throws ResourceNotFoundException, NotAuthorizedException, DBException {
     if (!input.containsKey(IdValidator.idName)) {

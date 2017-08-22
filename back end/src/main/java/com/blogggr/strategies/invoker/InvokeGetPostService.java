@@ -24,6 +24,7 @@ public class InvokeGetPostService extends ServiceInvocation {
     this.postService = postService;
   }
 
+  @Override
   public Object invokeService(Map<String, String> input, String body, Long userID)
       throws ResourceNotFoundException, NotAuthorizedException, DBException {
     if (!input.containsKey(IdValidator.idName)) {

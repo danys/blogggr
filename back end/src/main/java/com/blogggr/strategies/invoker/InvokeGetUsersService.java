@@ -27,6 +27,7 @@ public class InvokeGetUsersService extends ServiceInvocation {
     this.userService = userService;
   }
 
+  @Override
   public Object invokeService(Map<String, String> input, String body, Long userID)
       throws DBException {
     String searchString = null;

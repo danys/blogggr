@@ -23,6 +23,7 @@ public class InvokeGetCommentService extends ServiceInvocation {
     this.commentService = commentService;
   }
 
+  @Override
   public Object invokeService(Map<String, String> input, String body, Long userID)
       throws ResourceNotFoundException, NotAuthorizedException {
     if (!input.containsKey(IdValidator.idName)) {

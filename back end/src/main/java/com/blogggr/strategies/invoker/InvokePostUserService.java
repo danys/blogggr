@@ -24,6 +24,7 @@ public class InvokePostUserService extends ServiceInvocation {
     this.userService = userService;
   }
 
+  @Override
   public Object invokeService(Map<String, String> input, String body, Long userID) {
     ObjectMapper mapper = new ObjectMapper();
     UserPostData userData;
