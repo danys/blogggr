@@ -43,7 +43,7 @@ public class UserImageController {
   public ResponseEntity postUserImage(@RequestParam("file") MultipartFile file,
       @RequestHeader Map<String, String> header) {
     logger.debug(
-        "[POST /userimages] Header: {}", header.toString());
+        "[POST /userimages] Header: {}", header);
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         null, new InvokePostUserImageService(), new PostResponse());
     return model.executeFile(file, header);

@@ -13,7 +13,7 @@ import java.util.Map;
 public abstract class FileServiceInvocation implements ServiceInvocationStrategy{
 
   @Override
-  public Object invokeService(Map<String, String> input, String body, Long userID)
+  public final Object invokeService(Map<String, String> input, String body, Long userID)
       throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException{
     return null;
   }

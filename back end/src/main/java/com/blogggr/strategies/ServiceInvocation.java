@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 public abstract class ServiceInvocation implements ServiceInvocationStrategy{
 
   @Override
-  public Object invokeFileService(MultipartFile file, Long userID)
+  public final Object invokeFileService(MultipartFile file, Long userID)
       throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException{
     return null;
   }
