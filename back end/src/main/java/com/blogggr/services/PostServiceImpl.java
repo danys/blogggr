@@ -51,8 +51,8 @@ public class PostServiceImpl implements PostService {
 
 
   @Override
-  public Post createPost(long userID, PostData postData) throws ResourceNotFoundException {
-    User user = userDAO.findById(userID);
+  public Post createPost(long userId, PostData postData) throws ResourceNotFoundException {
+    User user = userDAO.findById(userId);
     if (user == null) {
       throw new ResourceNotFoundException("User not found!");
     }
@@ -68,13 +68,13 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
-  public Post updatePost(long postID, long userID, PostData postData)
+  public Post updatePost(long postID, long userId, PostData postData)
       throws ResourceNotFoundException, NotAuthorizedException {
     Post post = postDAO.findById(postID);
     if (post == null) {
       throw new ResourceNotFoundException(postNotFound);
     }
-    if (post.getUser().getUserId() != userID) {
+    if (post.getUser().getUserId() != userId) {
       throw new NotAuthorizedException(noModifyAuthorization);
     }
     //Update timestamp
@@ -95,24 +95,24 @@ public class PostServiceImpl implements PostService {
 
   //Delete a session by its primary key
   @Override
-  public void deletePost(long postId, long userID)
+  public void deletePost(long postId, long userId)
       throws ResourceNotFoundException, NotAuthorizedException {
     Post post = postDAO.findById(postId);
     if (post == null) {
       throw new ResourceNotFoundException(postNotFound);
     }
-    if (post.getUser().getUserId() != userID) {
+    if (post.getUser().getUserId() != userId) {
       throw new NotAuthorizedException(noModifyAuthorization);
     }
     postDAO.deleteById(postId);
   }
 
   //Simple function to check that this user is friends with the poster
-  private boolean isFriendOfUser(long postUserID, long userID) throws DBException {
+  private boolean isFriendOfUser(long postUserID, long userId) throws DBException {
     try {
       long smallNum, bigNum;
-      smallNum = (postUserID < userID) ? postUserID : userID;
-      bigNum = (postUserID >= userID) ? postUserID : userID;
+      smallNum = (postUserID < userId) ? postUserID : userId;
+      bigNum = (postUserID >= userId) ? postUserID : userId;
       friendDAO.getFriendByUserIDs(smallNum, bigNum);
       return true;
     } catch (ResourceNotFoundException e) {
@@ -121,7 +121,7 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
-  public Post getPostById(long postId, long userID)
+  public Post getPostById(long postId, long userId)
       throws ResourceNotFoundException, DBException, NotAuthorizedException {
     Post post = postDAO.findById(postId);
     if (post == null) {
@@ -129,11 +129,11 @@ public class PostServiceImpl implements PostService {
     }
     User postAuthor = post.getUser();
     //1. Post can be viewed if current session user is the owner or the post has global flag
-    if (postAuthor.getUserId() == userID || post.getGlobal()) {
+    if (postAuthor.getUserId() == userId || post.getGlobal()) {
       return post;
     }
     //2. Post can be viewed if the current user is friends with the poster
-    if (isFriendOfUser(postAuthor.getUserId(), userID)) {
+    if (isFriendOfUser(postAuthor.getUserId(), userId)) {
       return post;
     }
     //Otherwise access denied
@@ -141,19 +141,19 @@ public class PostServiceImpl implements PostService {
   }
 
   @Override
-  public PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title,
+  public PrevNextListPage<Post> getPosts(long userId, Long postUserID, String title,
       PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit)
       throws ResourceNotFoundException, DBException {
     PrevNextListPage<Post> postsPage = postDAO
-        .getPosts(userID, postUserID, title, visibility, before, after, limit);
+        .getPosts(userId, postUserID, title, visibility, before, after, limit);
     return postsPage;
   }
 
   @Override
-  public Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle)
+  public Post getPostByUserAndLabel(Long userId, Long postUserID, String postShortTitle)
       throws ResourceNotFoundException, DBException, NotAuthorizedException {
     try {
-      Post post = postDAO.getPostByUserAndLabel(userID, postUserID, postShortTitle);
+      Post post = postDAO.getPostByUserAndLabel(userId, postUserID, postShortTitle);
       //Order comments by date
       List<Comment> comments = post.getComments();
       Collections.sort(comments, new Comparator<Comment>() {
@@ -164,11 +164,11 @@ public class PostServiceImpl implements PostService {
       });
       post.setComments(comments);
       //1. Post can be viewed if current session user is the owner or the post has global flag
-      if (post.getUser().getUserId() == userID || post.getGlobal()) {
+      if (post.getUser().getUserId() == userId || post.getGlobal()) {
         return post;
       }
       //2. Post can be viewed if the current user is friends with the poster
-      if (isFriendOfUser(post.getUser().getUserId(), userID)) {
+      if (isFriendOfUser(post.getUser().getUserId(), userId)) {
         return post;
       }
       //Otherwise access denied

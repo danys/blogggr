@@ -9,7 +9,7 @@ public class DBException extends Exception {
     super(message);
   }
 
-  public DBException(String message, Exception e) {
+  public DBException(String message, Throwable e) {
     super(message, e);
   }
 }

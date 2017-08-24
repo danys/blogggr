@@ -41,8 +41,8 @@ public class GenericDAOImpl<T extends Serializable> implements GenericDAO<T> {
     entityManager.persist(entity);
   }
 
-  public void update(T entity) {
-    entityManager.merge(entity);
+  public T update(T entity) {
+    return entityManager.merge(entity);
   }
 
   public void delete(T entity) {
