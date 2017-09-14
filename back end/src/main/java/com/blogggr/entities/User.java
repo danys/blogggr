@@ -105,7 +105,7 @@ public class User implements Serializable {
 
   public UserImage getImage() {
     this.image = (this.userImages == null) ? null
-        : this.userImages.stream().filter(userImage -> userImage.getCurrent() == true).findFirst()
+        : this.userImages.stream().filter(UserImage::getCurrent).findFirst()
             .orElse(null);
     if (this.image == null) { //set a default image
       UserImage manImage = new UserImage();

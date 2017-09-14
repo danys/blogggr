@@ -100,7 +100,7 @@ public class Cryptography {
   }
 
   /**
-   * Extract expiraiton date from valid JWT
+   * Extract expiration date from valid JWT
    */
   public java.util.Date getExpirationFromValidJWT(String token)
       throws UnsupportedEncodingException, JWTVerificationException {
