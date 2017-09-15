@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
-import {get, put} from '../utils/ajax'
+import {get, put, postFile} from '../utils/ajax'
 import {green, red} from '../consts/Constants'
 
 class Settings extends React.Component{
@@ -10,6 +10,7 @@ class Settings extends React.Component{
         super(props);
         this.userMeURL = "/api/v1.0/users/me";
         this.userBaseURL = "/api/v1.0/users/";
+        this.userImagesBaseURL = "/api/v1.0/userimages";
         this.state = {
             userMe: null,
             passwordData: null
@@ -89,10 +90,30 @@ class Settings extends React.Component{
             {'Authorization': this.props.token});
     }
 
+    uploadUserImage(){
+        let formData = new FormData($('#fileform')[0]);
+        formData.append('file', $('input[type=file]')[0].files[0]);
+        postFile(this.userImagesBaseURL,
+          formData,
+          (data)=>{
+            let successMsg = "Successfully changed user image!";
+            this.props.showOverlayMsg('Success', successMsg, green);
+            this.setState({passwordData: null});
+          },
+          (jqXHR)=>{
+            let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
+            errorMsg = errorMsg.substring(1,errorMsg.length-1);
+            this.props.showOverlayMsg('Error uploading new user image!', errorMsg, red);
+            this.setState({passwordData: null});
+          },
+          {'Authorization': this.props.token});
+    }
+
     render() {
         let userEmailDisabled = {};
         userEmailDisabled.disabled=true;
         return (
+            <div>
             <div className="row">
                 <div className="col-lg-6">
                     <div className="panel panel-default">
@@ -168,6 +189,35 @@ class Settings extends React.Component{
                         </div>
                     </div>
                 </div>
+            </div>
+            <div className="row">
+                <div className="col-lg-4">
+                    <div className="panel panel-default">
+                        <div className="panel-heading">
+                            <h3 className="panel-title">User image</h3>
+                        </div>
+                        <div className="panel-body">
+                            <div className="profile-header-container">
+                                <div className="profile-header-img">
+                                    <img src={this.state.userMe && this.state.userMe.image ? this.userImagesBaseURL+'/'+this.state.userMe.image.name : ''} />
+                                </div>
+                            </div>
+                            <form className="form-horizontal" id="fileform" encType="multipart/form-data">
+                                <div className="form-group">
+                                    <div className="col-sm-12">
+                                        <input type="file" className="form-control" id="file" />
+                                    </div>
+                                </div>
+                                <div className="form-group">
+                                    <div className="col-sm-12">
+                                        <button type="button" className="btn btn-primary btn-block" onClick={this.uploadUserImage.bind(this)}>Upload</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
             </div>
         );
     }

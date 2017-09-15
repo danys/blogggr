@@ -2,6 +2,7 @@ package com.blogggr.dao;
 
 import com.blogggr.entities.UserImage;
 import com.blogggr.entities.UserImage_;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -18,7 +19,7 @@ public class UserImageDAOImpl extends GenericDAOImpl<UserImage> implements UserI
   }
 
   @Override
-  public UserImage findByName(String name){
+  public UserImage findByName(String name) throws NoResultException{
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<UserImage> query = cb.createQuery(UserImage.class);
     Root<UserImage> root = query.from(UserImage.class);

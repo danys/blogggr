@@ -76,14 +76,6 @@ class User extends React.Component{
                                     <img src={this.state.userMe && this.state.userMe.image ? this.userImagesBaseURL+'/'+this.state.userMe.image.name : ''} />
                                 </div>
                             </div>
-                            <form className="form-horizontal">
-                                <div className="form-group">
-                                    <label className="control-label col-sm-3" htmlFor="file">Upload a new image:</label>
-                                    <div className="col-sm-9">
-                                        <input type="file" className="form-control" id="file" value="" {...disabledProp}/>
-                                    </div>
-                                </div>
-                            </form>
                         </div>
                     </div>
                 </div>

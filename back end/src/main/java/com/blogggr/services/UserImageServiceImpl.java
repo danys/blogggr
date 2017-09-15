@@ -60,7 +60,7 @@ public class UserImageServiceImpl implements UserImageService {
     while (!ok && tries < MAX_TRIES) {
       name = Cryptography
           .computeSHA256Hash(String.valueOf(TimeUtilities.getCurrentTimestamp().getTime()))
-          .substring(0, 64);
+          .substring(0, 51);
       tries++;
       try {
         userImageDAO.findByName(name);
@@ -107,6 +107,7 @@ public class UserImageServiceImpl implements UserImageService {
     selectedUserImage.setWidth(IMG_WIDTH);
     selectedUserImage.setHeight(IMG_HEIGHT);
     selectedUserImage.setCurrent(true);
+    userImageDAO.save(selectedUserImage);
     return selectedUserImage;
   }
 

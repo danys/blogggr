@@ -1,3 +1,17 @@
+export function postFile(url, file, successHandler, errorHandler, headers={}) {
+  jQuery.ajax({
+    url: url,
+    method: 'POST',
+    data: file,
+    dataType: 'json',
+    contentType: false,
+    processData: false,
+    headers: headers,
+    success: successHandler,
+    error: errorHandler
+  });
+}
+
 export function post(url, requestData, successHandler, errorHandler, headers={}) {
     jQuery.ajax({
         url: url,
