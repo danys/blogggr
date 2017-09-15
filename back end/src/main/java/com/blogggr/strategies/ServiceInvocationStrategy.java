@@ -3,6 +3,7 @@ package com.blogggr.strategies;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.exceptions.StorageException;
 import com.blogggr.exceptions.WrongPasswordException;
 
 import java.io.UnsupportedEncodingException;
@@ -18,5 +19,5 @@ public interface ServiceInvocationStrategy {
       throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException;
 
   Object invokeFileService(MultipartFile file, Long userID)
-      throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException;
+      throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException, StorageException;
 }

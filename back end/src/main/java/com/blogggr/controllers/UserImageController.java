@@ -3,6 +3,7 @@ package com.blogggr.controllers;
 import com.blogggr.config.AppConfig;
 import com.blogggr.models.AppModel;
 import com.blogggr.models.AppModelImpl;
+import com.blogggr.services.UserImageService;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.auth.AuthenticatedAuthorization;
 import com.blogggr.strategies.invoker.InvokePostUserImageService;
@@ -32,10 +33,12 @@ public class UserImageController {
 
   private UserService userService;
   private Cryptography cryptography;
+  private UserImageService userImageService;
 
-  public UserImageController(UserService userService, Cryptography cryptography) {
+  public UserImageController(UserService userService, Cryptography cryptography, UserImageService userImageService) {
     this.userService = userService;
     this.cryptography = cryptography;
+    this.userImageService = userImageService;
   }
 
   //POST /userimages
@@ -45,7 +48,7 @@ public class UserImageController {
     logger.debug(
         "[POST /userimages] Header: {}", header);
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        null, new InvokePostUserImageService(), new PostResponse());
+        null, new InvokePostUserImageService(userImageService), new PostResponse());
     return model.executeFile(file, header);
   }
 }

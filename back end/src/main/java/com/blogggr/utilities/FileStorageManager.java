@@ -23,7 +23,7 @@ public class FileStorageManager {
     this.storageDirectory = Paths.get(folderName);
   }
 
-  public void store(MultipartFile file, String newFileName) {
+  public void store(MultipartFile file, String newFileName) throws StorageException{
     String filename = StringUtils.cleanPath(file.getOriginalFilename());
     try {
       if (file.isEmpty()) {
@@ -36,7 +36,7 @@ public class FileStorageManager {
     }
   }
 
-  public Resource loadAsResource(String filename) {
+  public Resource loadAsResource(String filename) throws StorageException{
     try {
       Path file = storageDirectory.resolve(filename);
       Resource resource = new UrlResource(file.toUri());
@@ -49,6 +49,10 @@ public class FileStorageManager {
     } catch (MalformedURLException e) {
       throw new StorageException("Unable to read file: " + filename, e);
     }
+  }
+
+  public Path getStorageDirectory(){
+    return storageDirectory;
   }
 
 }

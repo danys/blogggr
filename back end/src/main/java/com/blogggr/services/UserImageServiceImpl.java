@@ -4,9 +4,13 @@ import com.blogggr.dao.UserDAO;
 import com.blogggr.dao.UserImageDAO;
 import com.blogggr.entities.User;
 import com.blogggr.entities.UserImage;
+import com.blogggr.exceptions.StorageException;
 import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.FileStorageManager;
+import com.blogggr.utilities.ImageScaler;
+import com.blogggr.utilities.ImageScaler.ImageSize;
 import com.blogggr.utilities.TimeUtilities;
+import java.io.IOException;
 import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,6 +32,11 @@ public class UserImageServiceImpl implements UserImageService {
 
   private static final int MAX_TRIES = 100;
 
+  private final String IMG_EXTENSION = ".png";
+  private final String ORIGINAL_IMG_EXTENSION = "_original" + IMG_EXTENSION;
+  private final int IMG_HEIGHT = 128;
+  private final int IMG_WIDTH = 128;
+
   @Autowired
   public UserImageServiceImpl(UserImageDAO userImageDAO,
       UserDAO userDAO,
@@ -38,7 +47,7 @@ public class UserImageServiceImpl implements UserImageService {
   }
 
   @Override
-  public UserImage postImage(long userId, MultipartFile file) {
+  public UserImage postImage(long userId, MultipartFile file) throws StorageException {
     User user = userDAO.findById(userId);
     if (user == null) {
       throw new IllegalArgumentException("User not found!");
@@ -62,19 +71,42 @@ public class UserImageServiceImpl implements UserImageService {
     if (tries == MAX_TRIES) {
       throw new IllegalStateException("Too many tries!");
     }
-    userImage.setName(name);
+    String originalImageName = name + ORIGINAL_IMG_EXTENSION;
+    String scaledImageName = name + IMG_EXTENSION;
+    userImage.setName(originalImageName);
     userImage.setUser(user);
-    //Set dummy date that will be updated later (null constraint)
     userImage.setWidth(0);
     userImage.setHeight(0);
+    userImage.setCurrent(false);
     userImageDAO.save(userImage);
 
-    //Write image to disk
-    fileStorageManager.store(file, file.getName());
+    //Write original image to disk and store correct image size in the db
+    fileStorageManager.store(file, originalImageName);
+    ImageSize imageSize;
+    try {
+      imageSize = ImageScaler
+          .getImageSize(fileStorageManager.getStorageDirectory().resolve(originalImageName));
+    }catch(IOException e){
+      throw new StorageException("Error getting image size of file!", e);
+    }
+    userImage.setWidth(imageSize.getWidth());
+    userImage.setHeight(imageSize.getHeight());
+
     //Scale image
-
-    //TODO set file details
-
-    return userImage;
+    try {
+      ImageScaler.scaleImageFile(
+          fileStorageManager.getStorageDirectory().resolve(originalImageName),
+          fileStorageManager.getStorageDirectory().resolve(scaledImageName),
+          IMG_WIDTH, IMG_HEIGHT);
+    } catch(IOException e){
+      throw new StorageException("Scaling image file!", e);
+    }
+    UserImage selectedUserImage = new UserImage();
+    selectedUserImage.setName(scaledImageName);
+    selectedUserImage.setUser(user);
+    selectedUserImage.setWidth(IMG_WIDTH);
+    selectedUserImage.setHeight(IMG_HEIGHT);
+    selectedUserImage.setCurrent(true);
+    return selectedUserImage;
   }
 }

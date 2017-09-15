@@ -1,6 +1,7 @@
 package com.blogggr.services;
 
 import com.blogggr.entities.UserImage;
+import com.blogggr.exceptions.StorageException;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -8,6 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface UserImageService {
 
-  UserImage postImage(long userId, MultipartFile file);
+  UserImage postImage(long userId, MultipartFile file) throws StorageException;
 
 }
