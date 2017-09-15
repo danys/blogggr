@@ -73,7 +73,7 @@ public class FilterFactory {
 
   public static JsonFilter getUserFilter() {
     Map<String, JsonFilter> userFilterMap = new HashMap<>();
-    userFilterMap.put("userID", null);
+    userFilterMap.put("userId", null);
     userFilterMap.put("email", null);
     userFilterMap.put("lastName", null);
     userFilterMap.put("firstName", null);
