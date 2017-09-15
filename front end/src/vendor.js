@@ -34,5 +34,3 @@ import 'react-select/dist/react-select.css'
 //Img
 import './styling/dist/img/blogBgImage.png'
 import './styling/dist/img/blogCommentImage.png'
-import './styling/dist/img/man.png'
-import './styling/dist/img/woman.png'

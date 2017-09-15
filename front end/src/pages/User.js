@@ -9,6 +9,7 @@ class User extends React.Component{
     constructor(props){
         super(props);
         this.userBaseURL = "/api/v1.0/users/";
+        this.userImagesBaseURL = "/api/v1.0/userimages/";
         this.state = {
             userMe: null,
             passwordData: null
@@ -30,8 +31,6 @@ class User extends React.Component{
     componentDidMount(){
         this.fetchUser();
     }
-
-
 
     render() {
         let disabledProp = {disabled:true};
@@ -60,6 +59,28 @@ class User extends React.Component{
                                     <label className="control-label col-sm-3" htmlFor="lastName">Last name:</label>
                                     <div className="col-sm-9">
                                         <input type="text" className="form-control" id="lastName" value={(this.state.userMe?this.state.userMe.lastName:'')} {...disabledProp}/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-lg-6">
+                    <div className="panel panel-default">
+                        <div className="panel-heading">
+                            <h3 className="panel-title">User image</h3>
+                        </div>
+                        <div className="panel-body">
+                            <div className="profile-header-container">
+                                <div className="profile-header-img">
+                                    <img src={this.state.userMe && this.state.userMe.image ? this.userImagesBaseURL+'/'+this.state.userMe.image.name : ''} />
+                                </div>
+                            </div>
+                            <form className="form-horizontal">
+                                <div className="form-group">
+                                    <label className="control-label col-sm-3" htmlFor="file">Upload a new image:</label>
+                                    <div className="col-sm-9">
+                                        <input type="file" className="form-control" id="file" value="" {...disabledProp}/>
                                     </div>
                                 </div>
                             </form>

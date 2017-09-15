@@ -109,4 +109,8 @@ public class UserImageServiceImpl implements UserImageService {
     selectedUserImage.setCurrent(true);
     return selectedUserImage;
   }
+
+  public FileStorageManager getFileStorageManager(){
+    return this.fileStorageManager;
+  }
 }

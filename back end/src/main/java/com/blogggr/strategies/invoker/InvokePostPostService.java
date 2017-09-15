@@ -40,7 +40,6 @@ public class InvokePostPostService extends ServiceInvocation {
     }
     Post post = postService.createPost(userID, postData);
     //Create location string and return it
-    //Create location string and session id hash. Then return it as a map.
     Map<String, String> responseMap = new HashMap<>();
     responseMap.put(AppConfig.locationHeaderKey,
         AppConfig.fullBaseUrl + PostsController.postsPath + "/" + String.valueOf(post.getPostId()));

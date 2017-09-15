@@ -1,6 +1,7 @@
 package com.blogggr.controllers;
 
 import com.blogggr.config.AppConfig;
+import com.blogggr.exceptions.StorageException;
 import com.blogggr.models.AppModel;
 import com.blogggr.models.AppModelImpl;
 import com.blogggr.services.UserImageService;
@@ -12,11 +13,16 @@ import com.blogggr.utilities.Cryptography;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,7 +41,8 @@ public class UserImageController {
   private Cryptography cryptography;
   private UserImageService userImageService;
 
-  public UserImageController(UserService userService, Cryptography cryptography, UserImageService userImageService) {
+  public UserImageController(UserService userService, Cryptography cryptography,
+      UserImageService userImageService) {
     this.userService = userService;
     this.cryptography = cryptography;
     this.userImageService = userImageService;
@@ -50,5 +57,18 @@ public class UserImageController {
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         null, new InvokePostUserImageService(userImageService), new PostResponse());
     return model.executeFile(file, header);
+  }
+
+  //GET /userimages/filename
+  @GetMapping("/userimages/{filename:.+}")
+  @ResponseBody
+  public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
+    try {
+      Resource file = userImageService.getFileStorageManager().loadAsResource(filename);
+      return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+          "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+    } catch(StorageException e){
+      return null;
+    }
   }
 }

@@ -1,5 +1,7 @@
 package com.blogggr.strategies.invoker;
 
+import com.blogggr.config.AppConfig;
+import com.blogggr.controllers.PostsController;
 import com.blogggr.entities.UserImage;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
@@ -9,6 +11,8 @@ import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.services.UserImageService;
 import com.blogggr.strategies.FileServiceInvocation;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -26,6 +30,10 @@ public class InvokePostUserImageService extends FileServiceInvocation {
   public Object invokeFileService(MultipartFile file, Long userID)
       throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException, StorageException {
     UserImage userImage = userImageService.postImage(userID, file);
-    return null;
+    Map<String, String> responseMap = new HashMap<>();
+    responseMap.put(AppConfig.locationHeaderKey,
+        AppConfig.fullBaseUrl + "/" + userImageService.getFileStorageManager().getStorageDirectory()
+            .toString() + "/" + userImage.getName());
+    return responseMap;
   }
 }

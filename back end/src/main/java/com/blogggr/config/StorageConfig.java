@@ -8,9 +8,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("storage")
 public class StorageConfig {
 
-  private String userImagesLocation = "userimages";
+  private String userImagesLocation = "/var/blogggrimages/userimages";
 
-  private String postImagesLocation = "postimages";
+  private String postImagesLocation = "/var/blogggrimages/postimages";
 
   public String getUserImagesLocation() {
     return userImagesLocation;
