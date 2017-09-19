@@ -64,7 +64,7 @@ public class UserImageController {
   @ResponseBody
   public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
     try {
-      Resource file = userImageService.getFileStorageManager().loadAsResource(filename);
+      Resource file = userImageService.getFileStorageManager().getImageResourceFromCloud(filename);
       return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
           "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     } catch(StorageException e){

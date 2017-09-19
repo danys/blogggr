@@ -1,14 +1,21 @@
 package com.blogggr.utilities;
 
 import com.blogggr.exceptions.StorageException;
+import com.cloudinary.Cloudinary;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,9 +25,17 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileStorageManager {
 
   private final Path storageDirectory;
+  private Cloudinary cloudinary;
 
-  public FileStorageManager(String folderName){
+  private static final String CLOUDINARY_IMG_ROOT = "http://res.cloudinary.com/blogggr/image/upload/";
+
+  public FileStorageManager(String folderName, String imageApiKey, String imageApiSecret){
     this.storageDirectory = Paths.get(folderName);
+    Map<String, String> imgCloudConfig = new HashMap();
+    imgCloudConfig.put("cloud_name", "blogggr");
+    imgCloudConfig.put("api_key", imageApiKey);
+    imgCloudConfig.put("api_secret", imageApiSecret);
+    this.cloudinary = new Cloudinary(imgCloudConfig);
   }
 
   public void store(MultipartFile file, String newFileName) throws StorageException{
@@ -36,18 +51,25 @@ public class FileStorageManager {
     }
   }
 
-  public Resource loadAsResource(String filename) throws StorageException{
+  public void storeOnCloud(String fullFileName, String name) throws IOException{
+    Map<String, String> params = new HashMap<>();
+    params.put("public_id",name);
+    cloudinary.uploader().upload(storageDirectory.resolve(fullFileName).toFile(), params);
+  }
+
+  public Resource getImageResourceFromCloud(String imageTag) throws StorageException{
+    String url = CLOUDINARY_IMG_ROOT+imageTag;
+    Resource resource;
     try {
-      Path file = storageDirectory.resolve(filename);
-      Resource resource = new UrlResource(file.toUri());
-      if (resource.exists() || resource.isReadable()) {
-        return resource;
-      } else {
-        throw new StorageException(
-            "Unable to load file: " + filename);
-      }
-    } catch (MalformedURLException e) {
-      throw new StorageException("Unable to read file: " + filename, e);
+      resource = new UrlResource(new URL(url));
+    } catch(MalformedURLException e){
+      throw new StorageException("Malformed image cloud URL!" ,e);
+    }
+    if (resource.exists() || resource.isReadable()) {
+      return resource;
+    } else {
+      throw new StorageException(
+          "Unable to load file: " + url);
     }
   }
 

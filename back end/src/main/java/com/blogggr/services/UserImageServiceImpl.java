@@ -52,18 +52,19 @@ public class UserImageServiceImpl implements UserImageService {
     if (user == null) {
       throw new IllegalArgumentException("User not found!");
     }
-    UserImage userImage = new UserImage();
     //Generate img name: 64 char sequence
     String name = "";
+    String scaledImageName;
     boolean ok = false;
     int tries = 0;
     while (!ok && tries < MAX_TRIES) {
       name = Cryptography
           .computeSHA256Hash(String.valueOf(TimeUtilities.getCurrentTimestamp().getTime()))
           .substring(0, 51);
+      scaledImageName = name + IMG_EXTENSION;
       tries++;
       try {
-        userImageDAO.findByName(name);
+        userImageDAO.findByName(scaledImageName);
       } catch (NoResultException e) {
         ok = true;
       }
@@ -72,25 +73,10 @@ public class UserImageServiceImpl implements UserImageService {
       throw new IllegalStateException("Too many tries!");
     }
     String originalImageName = name + ORIGINAL_IMG_EXTENSION;
-    String scaledImageName = name + IMG_EXTENSION;
-    userImage.setName(originalImageName);
-    userImage.setUser(user);
-    userImage.setWidth(0);
-    userImage.setHeight(0);
-    userImage.setCurrent(false);
-    userImageDAO.save(userImage);
+    scaledImageName = name + IMG_EXTENSION;
 
     //Write original image to disk and store correct image size in the db
     fileStorageManager.store(file, originalImageName);
-    ImageSize imageSize;
-    try {
-      imageSize = ImageScaler
-          .getImageSize(fileStorageManager.getStorageDirectory().resolve(originalImageName));
-    }catch(IOException e){
-      throw new StorageException("Error getting image size of file!", e);
-    }
-    userImage.setWidth(imageSize.getWidth());
-    userImage.setHeight(imageSize.getHeight());
 
     //Scale image
     try {
@@ -98,9 +84,17 @@ public class UserImageServiceImpl implements UserImageService {
           fileStorageManager.getStorageDirectory().resolve(originalImageName),
           fileStorageManager.getStorageDirectory().resolve(scaledImageName),
           IMG_WIDTH, IMG_HEIGHT);
-    } catch(IOException e){
+    } catch (IOException e) {
       throw new StorageException("Scaling image file!", e);
     }
+
+    //Store image in the cloud
+    try {
+      fileStorageManager.storeOnCloud(scaledImageName, name);
+    } catch (IOException e) {
+      throw new StorageException("Error storing image in the cloud!", e);
+    }
+
     UserImage selectedUserImage = new UserImage();
     selectedUserImage.setName(scaledImageName);
     selectedUserImage.setUser(user);
@@ -111,7 +105,7 @@ public class UserImageServiceImpl implements UserImageService {
     return selectedUserImage;
   }
 
-  public FileStorageManager getFileStorageManager(){
+  public FileStorageManager getFileStorageManager() {
     return this.fileStorageManager;
   }
 }
