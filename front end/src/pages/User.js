@@ -11,7 +11,7 @@ class User extends React.Component{
         this.userBaseURL = "/api/v1.0/users/";
         this.userImagesBaseURL = "/api/v1.0/userimages/";
         this.state = {
-            userMe: null,
+            user: null,
             passwordData: null
         };
         this.fetchUser = this.fetchUser.bind(this);
@@ -20,7 +20,7 @@ class User extends React.Component{
     fetchUser(){
         get(this.userBaseURL+this.props.match.params.userId,
             {},
-            (data)=>{this.setState({userMe: data.data})},
+            (data)=>{this.setState({user: data.data})},
             (jqXHR)=>{
                 let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
                 errorMsg = errorMsg.substring(1,errorMsg.length-1);
@@ -46,19 +46,19 @@ class User extends React.Component{
                                 <div className="form-group">
                                     <label className="control-label col-sm-3" htmlFor="email">Email:</label>
                                     <div className="col-sm-9">
-                                        <input type="email" className="form-control" id="email" value={(this.state.userMe?this.state.userMe.email:'')} {...disabledProp}/>
+                                        <input type="email" className="form-control" id="email" value={(this.state.user?this.state.user.email:'')} {...disabledProp}/>
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <label className="control-label col-sm-3" htmlFor="firstName">First name:</label>
                                     <div className="col-sm-9">
-                                        <input type="text" className="form-control" id="firstName" value={(this.state.userMe?this.state.userMe.firstName:'')} {...disabledProp}/>
+                                        <input type="text" className="form-control" id="firstName" value={(this.state.user?this.state.user.firstName:'')} {...disabledProp}/>
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <label className="control-label col-sm-3" htmlFor="lastName">Last name:</label>
                                     <div className="col-sm-9">
-                                        <input type="text" className="form-control" id="lastName" value={(this.state.userMe?this.state.userMe.lastName:'')} {...disabledProp}/>
+                                        <input type="text" className="form-control" id="lastName" value={(this.state.user?this.state.user.lastName:'')} {...disabledProp}/>
                                     </div>
                                 </div>
                             </form>
@@ -73,7 +73,7 @@ class User extends React.Component{
                         <div className="panel-body">
                             <div className="profile-header-container">
                                 <div className="profile-header-img">
-                                    <img src={this.state.userMe && this.state.userMe.image ? this.userImagesBaseURL+'/'+this.state.userMe.image.name : ''} />
+                                    <img src={this.state.user && this.state.user.image ? this.userImagesBaseURL+'/'+this.state.user.image.name : ''} />
                                 </div>
                             </div>
                         </div>
