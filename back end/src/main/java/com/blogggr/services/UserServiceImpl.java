@@ -39,6 +39,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public User getUserByIdWithImages(long id) {
+    return userDAO.findByIdWithImages(id);
+  }
+
+  @Override
   public User getUserByEmail(String email) throws ResourceNotFoundException, DBException {
     return userDAO.getUserByEmail(email);
   }

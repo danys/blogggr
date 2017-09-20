@@ -91,7 +91,7 @@ public class User implements Serializable {
 
   //bi-directional many-to-one association to Post
   @JsonIgnore
-  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "user")
   private List<UserImage> userImages;
 
   @Transient
@@ -104,9 +104,11 @@ public class User implements Serializable {
   }
 
   public UserImage getImage() {
-    this.image = (this.userImages == null) ? null
-        : this.userImages.stream().filter(UserImage::getCurrent).findFirst()
-            .orElse(null);
+    if (this.userImages == null) {
+      return null;
+    }
+    this.image = this.userImages.stream().filter(UserImage::getCurrent).findFirst()
+        .orElse(null);
     if (this.image == null) { //set a default image
       UserImage manImage = new UserImage();
       manImage.setWidth(IMG_WIDTH);

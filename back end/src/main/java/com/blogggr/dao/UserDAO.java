@@ -18,4 +18,6 @@ public interface UserDAO extends GenericDAO<User> {
       throws DBException;
 
   PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData) throws DBException;
+
+  User findByIdWithImages(Long id);
 }

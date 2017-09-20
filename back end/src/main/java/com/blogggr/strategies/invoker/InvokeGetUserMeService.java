@@ -24,7 +24,7 @@ public class InvokeGetUserMeService extends ServiceInvocation {
   @Override
   public Object invokeService(Map<String, String> input, String body, Long userID)
       throws ResourceNotFoundException {
-    User user = userService.getUserById(userID);
+    User user = userService.getUserByIdWithImages(userID);
     if (user == null) {
       throw new ResourceNotFoundException("User not found!");
     }

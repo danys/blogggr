@@ -14,6 +14,7 @@ import com.blogggr.models.PrevNextListPage;
 import com.blogggr.models.RandomAccessListPage;
 import com.blogggr.requestdata.UserSearchData;
 import com.blogggr.strategies.validators.GetUsersValidator;
+import javax.persistence.criteria.JoinType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
@@ -42,6 +43,20 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO {
 
   public UserDAOImpl() {
     super(User.class);
+  }
+
+  @Override
+  public User findByIdWithImages(Long id){
+    try {
+      CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+      CriteriaQuery<User> query = cb.createQuery(User.class);
+      Root<User> root = query.from(User.class);
+      root.fetch(User_.userImages, JoinType.LEFT);
+      query.where(cb.equal(root.get(User_.userId), id));
+      return entityManager.createQuery(query).getSingleResult();
+    } catch (NoResultException e) {
+      return null; //same semantics as findById
+    }
   }
 
   @Override

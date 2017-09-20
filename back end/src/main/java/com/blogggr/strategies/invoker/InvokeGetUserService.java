@@ -30,7 +30,7 @@ public class InvokeGetUserService extends ServiceInvocation {
     }
     String idStr = input.get(IdValidator.idName);
     Long id = Long.parseLong(idStr);
-    User user = userService.getUserById(id);
+    User user = userService.getUserByIdWithImages(id);
     if (user == null) {
       throw new ResourceNotFoundException("User not found!");
     }

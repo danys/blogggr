@@ -17,6 +17,8 @@ public interface UserService {
 
   User getUserById(long id);
 
+  User getUserByIdWithImages(long id);
+
   User createUser(UserPostData userData);
 
   User getUserByEmail(String email) throws ResourceNotFoundException, DBException;
