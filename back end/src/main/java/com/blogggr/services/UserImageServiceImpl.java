@@ -95,6 +95,11 @@ public class UserImageServiceImpl implements UserImageService {
       throw new StorageException("Error storing image in the cloud!", e);
     }
 
+
+    //Update isCurrent to false on all user images
+    userImageDAO.unsetCurrent(user.getUserId());
+
+    //Store image reference in db
     UserImage selectedUserImage = new UserImage();
     selectedUserImage.setName(scaledImageName);
     selectedUserImage.setUser(user);

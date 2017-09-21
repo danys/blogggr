@@ -8,4 +8,6 @@ import com.blogggr.entities.UserImage;
 public interface UserImageDAO extends GenericDAO<UserImage>{
 
   UserImage findByName(String name);
+
+  void unsetCurrent(Long userId);
 }

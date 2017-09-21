@@ -44,6 +44,7 @@ public class FileStorageManager {
       if (file.isEmpty()) {
         throw new StorageException("Empty files are not accepted: " + filename);
       }
+      this.storageDirectory.toFile().mkdirs();
       Files.copy(file.getInputStream(), this.storageDirectory.resolve(newFileName),
           StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
