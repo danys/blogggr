@@ -98,13 +98,12 @@ class Settings extends React.Component{
           (data)=>{
             let successMsg = "Successfully changed user image!";
             this.props.showOverlayMsg('Success', successMsg, green);
-            this.setState({passwordData: null});
+            this.fetchUserMe();
           },
           (jqXHR)=>{
             let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
             errorMsg = errorMsg.substring(1,errorMsg.length-1);
             this.props.showOverlayMsg('Error uploading new user image!', errorMsg, red);
-            this.setState({passwordData: null});
           },
           {'Authorization': this.props.token});
     }
