@@ -95,6 +95,13 @@ public class UserImageServiceImpl implements UserImageService {
       throw new StorageException("Error storing image in the cloud!", e);
     }
 
+    //Remove the the original as well as the scaled image
+    try {
+      fileStorageManager
+          .delete(fileStorageManager.getStorageDirectory().resolve(originalImageName));
+    } catch (IOException e) {
+      throw new StorageException("Error removing temporary image files", e);
+    }
 
     //Update isCurrent to false on all user images
     userImageDAO.unsetCurrent(user.getUserId());

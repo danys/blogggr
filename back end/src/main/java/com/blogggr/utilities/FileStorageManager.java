@@ -58,6 +58,10 @@ public class FileStorageManager {
     cloudinary.uploader().upload(storageDirectory.resolve(fullFileName).toFile(), params);
   }
 
+  public void delete(Path filePath) throws IOException{
+    Files.delete(filePath);
+  }
+
   public Resource getImageResourceFromCloud(String imageTag) throws StorageException{
     String url = CLOUDINARY_IMG_ROOT+imageTag;
     Resource resource;
