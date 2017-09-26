@@ -32,5 +32,9 @@ import './styling/dist/css/style.css'
 import 'react-select/dist/react-select.css'
 
 //Img
-import './styling/dist/img/blogBgImage.png'
-import './styling/dist/img/blogCommentImage.png'
+import './styling/img/blogBgImage.png'
+import './styling/img/blogCommentImage.png'
+
+//Croppie
+import 'croppie/croppie.min.js'
+import 'croppie/croppie.css'
