@@ -4,7 +4,7 @@
   "description": "Blogggr JavaScript React frontend",
   "main": "index.js",
   "scripts": {
-    "scss": "./node-scripts/sass-compiler.js",
+    "scss": "node ./node-scripts/sass-compiler.js",
     "transpile": "babel src --out-dir dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run scss && webpack-dev-server --hot --inline",
@@ -25,7 +25,9 @@
     "react-select": "~1.0.0-rc.3",
     "lodash": "~4.17.4",
     "prop-types": "~15.5.10",
-    "fixed-data-table-2": "~0.7.17"
+    "fixed-data-table-2": "~0.7.17",
+    "croppie": "~2.5.0",
+    "mkdirp": "~0.5.1"
   },
   "devDependencies": {
     "node-sass": "~4.3.0",

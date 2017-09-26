@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 var sass = require('node-sass');
 var fs = require('fs');
+var mkdirp = require('mkdirp');
 var cssDir = './src/styling/dist/css/';
 var cssOutputFile = cssDir+'style.css';
 var scssMapOutputFile = cssDir+'style.css.map';
+if (!fs.existsSync(cssDir)){
+  mkdirp.sync(cssDir);
+}
 sass.render({
   file: './src/styling/scss/style.scss',
   outFile: cssOutputFile,
