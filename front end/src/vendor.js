@@ -36,5 +36,5 @@ import './styling/img/blogBgImage.png'
 import './styling/img/blogCommentImage.png'
 
 //Croppie
-import 'croppie/croppie.min.js'
+import 'croppie/croppie.js'
 import 'croppie/croppie.css'

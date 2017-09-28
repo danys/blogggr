@@ -87,6 +87,8 @@ const config = {
             jQuery: 'jquery',
             $: 'jquery',
             jquery: 'jquery',
+            'window.jQuery': 'jquery',
+            'window.$': 'jquery',
             moment: 'moment'
         })
     ]
