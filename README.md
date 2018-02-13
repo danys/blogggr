@@ -1,1 +1,1 @@
-#Blogggr - A simple blogging application
+# Blogggr - A simple blogging application
