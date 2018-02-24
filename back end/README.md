@@ -1,2 +1,2 @@
-#Blogggr
+# Blogggr
 A simple blogging platform
