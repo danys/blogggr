@@ -1,0 +1,14 @@
+description = 'Blogggr frontend'
+
+task install(type: Exec) {
+    commandLine('npm','install')
+}
+
+task build(type: Exec, dependsOn: ':frontend:install') {
+    commandLine('npm','run','build')
+}
+
+task copyFrontendFiles(type: Copy, dependsOn: ':frontend:build'){
+    from 'dist'
+    into '../back end/build/classes/java/main/static'
+}
