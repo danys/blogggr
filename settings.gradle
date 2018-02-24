@@ -1,0 +1,6 @@
+rootProject.name = 'blogggr'
+include ':frontend'
+include ':backend'
+
+project(':frontend').projectDir = "$rootDir/front end" as File
+project(':backend').projectDir = "$rootDir/back end" as File
