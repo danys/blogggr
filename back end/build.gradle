@@ -13,7 +13,7 @@ apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 
 jar {
-    baseName = 'backend'
+    baseName = 'blogggr-web'
     version = '0.0.1'
     manifest {
         attributes(
