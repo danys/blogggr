@@ -16,3 +16,6 @@ spring:
     url: jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
     password:
+hmackey: 7A7CFC99DB9802272D1987E287926AC52642417BF2D68455E180412C22
+imgapikey: 5956613189922509
+imgapisecret: LzieIBsBfTaPJ8qqdLjVjiGKVAs
