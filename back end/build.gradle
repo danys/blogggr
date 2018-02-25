@@ -13,7 +13,7 @@ apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 
 jar {
-    baseName = 'blogggr-web'
+    baseName = 'blogggr'
     version = '0.0.1'
     manifest {
         attributes(
@@ -23,11 +23,7 @@ jar {
 }
 
 jar{
-    doFirst{
-        tasks.getByPath(':frontend:install').execute()
-        tasks.getByPath(':frontend:build').execute()
-        tasks.getByPath(':frontend:copyFrontendFiles').execute()
-    }
+    dependsOn(':frontend:copyFrontendFiles')
 }
 
 repositories {
