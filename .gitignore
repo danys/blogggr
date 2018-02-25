@@ -33,3 +33,4 @@ front end/src/styling/dist/css/
 userimages/
 resources/*.yml
 .gradle
+.architect~
