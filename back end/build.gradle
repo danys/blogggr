@@ -2,28 +2,23 @@ description = 'A simple blogging application'
 
 buildscript {
     repositories {
-        mavenCentral()
+        maven { url "http://repo.maven.apache.org/maven2" }
+        maven { url "http://repository.jboss.com" }
+        maven { url "https://repo.spring.io/release" }
+        maven { url "https://repo.spring.io/snapshot" }
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.0.BUILD-SNAPSHOT")
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 
-jar {
+bootJar {
+    dependsOn(':frontend:copyFrontendFiles')
     baseName = 'blogggr'
     version = '0.0.1'
-    manifest {
-        attributes(
-                'Main-Class': 'com.blogggr.Application'
-        )
-    }
-}
-
-jar{
-    dependsOn(':frontend:copyFrontendFiles')
 }
 
 repositories {
@@ -34,18 +29,18 @@ repositories {
     maven { url "https://repo.spring.io/snapshot" }
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.9
+targetCompatibility = 1.9
 
 dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.5.10.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '1.5.10.RELEASE'
-    compile group: 'org.hibernate', name: 'hibernate-jpamodelgen', version: '5.0.12.Final'
-    compile group: 'com.auth0', name: 'java-jwt', version: '3.2.0'
-    compile group: 'com.cloudinary', name: 'cloudinary-http44', version: '1.15.0'
-    runtime group: 'org.postgresql', name: 'postgresql', version: '9.4.1212.jre7'
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.10.RELEASE') {
+    compile 'org.springframework.boot:spring-boot-starter-web:2.0.0.BUILD-SNAPSHOT'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa:2.0.0.BUILD-SNAPSHOT'
+    compile 'com.auth0:java-jwt:3.2.0'
+    compile 'com.cloudinary:cloudinary-http44:1.15.0'
+    compile 'javax.xml.bind:jaxb-api:2.3.0'
+    runtime 'org.postgresql:postgresql:9.4.1212.jre7'
+    testCompile('org.springframework.boot:spring-boot-starter-test:2.0.0.BUILD-SNAPSHOT') {
         exclude(module: 'commons-logging')
     }
-    testCompile group: 'com.h2database', name: 'h2', version: '1.4.196'
+    testCompile 'com.h2database:h2:1.4.196'
 }
