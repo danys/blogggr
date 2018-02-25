@@ -1,14 +1,11 @@
 package com.blogggr.dao;
 
 import com.blogggr.entities.Friend;
-import com.blogggr.entities.Friend_;
 import com.blogggr.entities.User;
-import com.blogggr.entities.User_;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -53,22 +50,22 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<User> query = cb.createQuery(User.class);
       Root<Friend> root = query.from(Friend.class);
-      Join<Friend, User> user1Join = root.join(Friend_.user1);
-      Join<Friend, User> user2Join = root.join(Friend_.user2);
+      Join<Friend, User> user1Join = root.join("user1");
+      Join<Friend, User> user2Join = root.join("user2");
       if (!userOne) {
         query.select(user2Join);
         query.where(
             cb.and(
-                cb.equal(root.get(Friend_.status), 1),
-                cb.equal(user1Join.get(User_.userId), userID)
+                cb.equal(root.get("status"), 1),
+                cb.equal(user1Join.get("userId"), userID)
             )
         );
       } else {
         query.select(user1Join);
         query.where(
             cb.and(
-                cb.equal(root.get(Friend_.status), 1),
-                cb.equal(user2Join.get(User_.userId), userID)
+                cb.equal(root.get("status"), 1),
+                cb.equal(user2Join.get("userId"), userID)
             )
         );
       }
@@ -89,8 +86,8 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO {
       Root<Friend> root = query.from(Friend.class);
       query.where(
           cb.and(
-              cb.equal(root.get(Friend_.user1), userID1),
-              cb.equal(root.get(Friend_.user2), userID2)
+              cb.equal(root.get("user1"), userID1),
+              cb.equal(root.get("user2"), userID2)
           )
       );
       return entityManager.createQuery(query).getSingleResult();
@@ -110,9 +107,9 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO {
       Root<Friend> root = query.from(Friend.class);
       query.where(
           cb.and(
-              cb.equal(root.get(Friend_.user1), userID1),
-              cb.equal(root.get(Friend_.user2), userID2),
-              cb.equal(root.get(Friend_.status), state)
+              cb.equal(root.get("user1"), userID1),
+              cb.equal(root.get("user2"), userID2),
+              cb.equal(root.get("status"), state)
           )
       );
       return entityManager.createQuery(query).getSingleResult();

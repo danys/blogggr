@@ -24,8 +24,8 @@ public class UserImage implements Serializable {
 
   @Id
   @Column(name = "user_image_id")
-  @SequenceGenerator(name = "seq", sequenceName = "blogggr.user_image_id_seq", allocationSize = 1)
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+  @SequenceGenerator(name = "seqUserImage", sequenceName = "blogggr.user_image_id_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqUserImage")
   private Long userImageId;
 
   @JsonIgnore

@@ -31,8 +31,8 @@ public class Post implements Serializable {
 
   @Id
   @Column(name = "post_id")
-  @SequenceGenerator(name = "seq", sequenceName = "blogggr.post_id_seq", allocationSize = 1)
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+  @SequenceGenerator(name = "seqPost", sequenceName = "blogggr.post_id_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqPost")
   private Long postId;
 
   @Column(name = "short_title")

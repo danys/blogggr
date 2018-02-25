@@ -24,8 +24,8 @@ public class PostImage implements Serializable {
 
   @Id
   @Column(name = "post_image_id")
-  @SequenceGenerator(name = "seq", sequenceName = "blogggr.post_image_id_seq", allocationSize = 1)
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+  @SequenceGenerator(name = "seqPostImage", sequenceName = "blogggr.post_image_id_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqPostImage")
   private Long postImageId;
 
   @JsonIgnore

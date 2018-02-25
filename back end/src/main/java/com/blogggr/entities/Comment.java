@@ -28,8 +28,8 @@ public class Comment implements Serializable {
 
   @Id
   @Column(name = "comment_id")
-  @SequenceGenerator(name = "seq", sequenceName = "blogggr.comment_id_seq", allocationSize = 1)
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+  @SequenceGenerator(name = "seqComment", sequenceName = "blogggr.comment_id_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqComment")
   private Long commentId;
 
   private String text;

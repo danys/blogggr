@@ -1,11 +1,8 @@
 package com.blogggr.dao;
 
 import com.blogggr.config.AppConfig;
-import com.blogggr.controllers.PostsController;
 import com.blogggr.controllers.UsersController;
-import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
-import com.blogggr.entities.User_;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.PageData;
@@ -51,8 +48,8 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<User> query = cb.createQuery(User.class);
       Root<User> root = query.from(User.class);
-      root.fetch(User_.userImages, JoinType.LEFT);
-      query.where(cb.equal(root.get(User_.userId), id));
+      root.fetch("userImages", JoinType.LEFT);
+      query.where(cb.equal(root.get("userId"), id));
       return entityManager.createQuery(query).getSingleResult();
     } catch (NoResultException e) {
       return null; //same semantics as findById
@@ -65,7 +62,7 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<User> query = cb.createQuery(User.class);
       Root<User> root = query.from(User.class);
-      query.where(cb.equal(root.get(User_.email), email));
+      query.where(cb.equal(root.get("email"), email));
       return entityManager.createQuery(query).getSingleResult();
     } catch (NoResultException e) {
       throw new ResourceNotFoundException(noUserFound);
@@ -144,16 +141,16 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO {
       String searchVar = "%" + searchString.toLowerCase() + "%";
       query.where(
           cb.or(
-              cb.like(cb.lower(root.get(User_.email)), searchVar),
-              cb.like(cb.lower(root.get(User_.firstName)), searchVar),
-              cb.like(cb.lower(root.get(User_.lastName)), searchVar)
+              cb.like(cb.lower(root.get("email")), searchVar),
+              cb.like(cb.lower(root.get("firstName")), searchVar),
+              cb.like(cb.lower(root.get("lastName")), searchVar)
           )
       );
     }
     if (countOnly) {
       query.select(cb.countDistinct(root));
     } else {
-      query.orderBy(cb.asc(root.get(User_.userId)));
+      query.orderBy(cb.asc(root.get("userId")));
     }
     return query;
   }
@@ -181,25 +178,25 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO {
     List<Predicate> predicates = new LinkedList<>();
     if (doFilter) {
       if (searchData.getFirstName() != null) {
-        predicates.add(cb.like(cb.lower(root.get(User_.firstName)),
+        predicates.add(cb.like(cb.lower(root.get("firstName")),
             searchData.getFirstName().toLowerCase() + "%"));
       }
       if (searchData.getLastName() != null) {
-        predicates.add(cb.like(cb.lower(root.get(User_.lastName)),
+        predicates.add(cb.like(cb.lower(root.get("lastName")),
             searchData.getLastName().toLowerCase() + "%"));
       }
       if (searchData.getEmail() != null) {
         predicates.add(
-            cb.like(cb.lower(root.get(User_.email)), searchData.getEmail().toLowerCase() + "%"));
+            cb.like(cb.lower(root.get("email")), searchData.getEmail().toLowerCase() + "%"));
       }
     }
 
     Predicate beforeAfter = null;
     //Before and after cannot be set at the same time
     if (searchData.getBefore() != null) {
-      beforeAfter = cb.lessThan(root.get(User_.userId), searchData.getBefore());
+      beforeAfter = cb.lessThan(root.get("userId"), searchData.getBefore());
     } else if (searchData.getAfter() != null) {
-      beforeAfter = cb.greaterThan(root.get(User_.userId), searchData.getAfter());
+      beforeAfter = cb.greaterThan(root.get("userId"), searchData.getAfter());
     }
 
     Predicate predicatesArray[];
@@ -225,7 +222,7 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO {
       query.where(beforeAfter);
     }
     if (resultClass != Long.class) {
-      query.orderBy(cb.asc(root.get(User_.userId)));
+      query.orderBy(cb.asc(root.get("userId")));
     } else {
       query.select(cb.count(root));
     }
