@@ -5,7 +5,6 @@ task install(type: Exec) {
     if (packageTmp.exists()){
         def lastInstallTime = Long.parseLong(packageTmp.getText())
         def lastPackageModifiedTime = new File("front end/package.json").lastModified()
-        println "Time is =$lastPackageModifiedTime"
         if (lastPackageModifiedTime > lastInstallTime){
             packageTmp.write(String.valueOf(System.currentTimeMillis()))
             commandLine('npm','install')
