@@ -1,7 +1,21 @@
 description = 'Blogggr frontend'
 
 task install(type: Exec) {
-    commandLine('npm','install')
+    def packageTmp = new File("front end/package.tmp")
+    if (packageTmp.exists()){
+        def lastInstallTime = Long.parseLong(packageTmp.getText())
+        def lastPackageModifiedTime = new File("front end/package.json").lastModified()
+        println "Time is =$lastPackageModifiedTime"
+        if (lastPackageModifiedTime > lastInstallTime){
+            packageTmp.write(String.valueOf(System.currentTimeMillis()))
+            commandLine('npm','install')
+        } else {
+            commandLine('npm','-v')
+        }
+    } else {
+        packageTmp.write(String.valueOf(System.currentTimeMillis()))
+        commandLine('npm','install')
+    }
 }
 
 task build(type: Exec, dependsOn: ':frontend:install') {
