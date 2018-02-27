@@ -6,14 +6,18 @@ buildscript {
         maven { url "http://repository.jboss.com" }
         maven { url "https://repo.spring.io/release" }
         maven { url "https://repo.spring.io/snapshot" }
+        maven { url "http://repo.spring.io/milestone"}
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.0.BUILD-SNAPSHOT")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.0.RC2")
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
+
+sourceCompatibility = 1.9
+targetCompatibility = 1.9
 
 bootJar {
     dependsOn(':frontend:copyFrontendFiles')
@@ -27,19 +31,17 @@ repositories {
     maven { url "http://repository.jboss.com" }
     maven { url "https://repo.spring.io/release" }
     maven { url "https://repo.spring.io/snapshot" }
+    maven { url "http://repo.spring.io/milestone"}
 }
 
-sourceCompatibility = 1.9
-targetCompatibility = 1.9
-
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-web:2.0.0.BUILD-SNAPSHOT'
-    compile 'org.springframework.boot:spring-boot-starter-data-jpa:2.0.0.BUILD-SNAPSHOT'
+    compile 'org.springframework.boot:spring-boot-starter-web:2.0.0.RC2'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa:2.0.0.RC2'
     compile 'com.auth0:java-jwt:3.2.0'
     compile 'com.cloudinary:cloudinary-http44:1.15.0'
     compile 'javax.xml.bind:jaxb-api:2.3.0'
     runtime 'org.postgresql:postgresql:9.4.1212.jre7'
-    testCompile('org.springframework.boot:spring-boot-starter-test:2.0.0.BUILD-SNAPSHOT') {
+    testCompile('org.springframework.boot:spring-boot-starter-test:2.0.0.RC2') {
         exclude(module: 'commons-logging')
     }
     testCompile 'com.h2database:h2:1.4.196'
