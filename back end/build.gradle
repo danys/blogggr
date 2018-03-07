@@ -5,24 +5,26 @@ buildscript {
         maven { url "http://repo.maven.apache.org/maven2" }
         maven { url "http://repository.jboss.com" }
         maven { url "https://repo.spring.io/release" }
-        maven { url "https://repo.spring.io/snapshot" }
-        maven { url "http://repo.spring.io/milestone"}
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.0.RC2")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.0.RELEASE")
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'maven-publish'
+
+group = 'com.blogggr'
+version = '0.0.1'
 
 sourceCompatibility = 1.9
 targetCompatibility = 1.9
 
 bootJar {
     dependsOn(':frontend:copyFrontendFiles')
-    baseName = 'blogggr'
-    version = '0.0.1'
+    baseName = project.name
+    version = project.version
 }
 
 repositories {
@@ -30,19 +32,34 @@ repositories {
     maven { url "http://repo.maven.apache.org/maven2" }
     maven { url "http://repository.jboss.com" }
     maven { url "https://repo.spring.io/release" }
-    maven { url "https://repo.spring.io/snapshot" }
-    maven { url "http://repo.spring.io/milestone"}
 }
 
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-web:2.0.0.RC2'
-    compile 'org.springframework.boot:spring-boot-starter-data-jpa:2.0.0.RC2'
+    compile 'org.springframework.boot:spring-boot-starter-web:2.0.0.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa:2.0.0.RELEASE'
     compile 'com.auth0:java-jwt:3.2.0'
     compile 'com.cloudinary:cloudinary-http44:1.15.0'
     compile 'javax.xml.bind:jaxb-api:2.3.0'
     runtime 'org.postgresql:postgresql:9.4.1212.jre7'
-    testCompile('org.springframework.boot:spring-boot-starter-test:2.0.0.RC2') {
+    testCompile('org.springframework.boot:spring-boot-starter-test:2.0.0.RELEASE') {
         exclude(module: 'commons-logging')
     }
     testCompile 'com.h2database:h2:1.4.196'
+}
+
+publishing {
+    publications {
+        blogggr(MavenPublication) {
+            artifact bootJar
+        }
+    }
+    repositories {
+        maven {
+            url 'https://bin.sunnen.me/repository/maven-releases/'
+            credentials {
+                username nexus_username
+                password nexus_password
+            }
+        }
+    }
 }
