@@ -4,3 +4,5 @@ include ':backend'
 
 project(':frontend').projectDir = "$rootDir/front end" as File
 project(':backend').projectDir = "$rootDir/back end" as File
+
+project(":backend").name = "blogggr"
