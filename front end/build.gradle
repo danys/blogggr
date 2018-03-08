@@ -17,7 +17,11 @@ task install(type: Exec) {
     }
 }
 
-task build(type: Exec, dependsOn: ':frontend:install') {
+task scss(type: Exec, dependsOn: ':frontend:install') {
+    commandLine('npm','run','scss')
+}
+
+task build(type: Exec, dependsOn: ':frontend:scss') {
     commandLine('npm','run','build')
 }
 
