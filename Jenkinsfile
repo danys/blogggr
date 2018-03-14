@@ -26,7 +26,9 @@ pipeline {
 
   stages{
     stage('Clean') {
-      sh './gradlew clean'
+      steps{
+        sh './gradlew clean'
+      }
     }
     stage('Compile') {
       steps {
@@ -39,10 +41,10 @@ pipeline {
       }
     }
     stage('Package') {
-          steps {
-            sh './gradlew build'
-          }
-        }
+      steps {
+        sh './gradlew build'
+      }
+    }
     stage('Deploy') {
       steps {
           echo 'Deploying....'
