@@ -48,7 +48,9 @@ pipeline {
     stage('Deploy') {
       steps {
           sh 'sudo systemctl stop blogggr'
-          sh 'cp ./back end/build/libs/blogggr-0.0.1.jar /var/www/blogggr/blogggr.jar'
+          sh '''
+            cp './back end/build/libs/blogggr-0.0.1.jar' '/var/www/blogggr/blogggr.jar'
+          '''
           sh 'sudo systemctl start blogggr'
       }
     }
