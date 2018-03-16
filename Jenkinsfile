@@ -47,9 +47,13 @@ pipeline {
     }
     stage('Deploy') {
       steps {
+          def jarName = sh(
+            script: './gradlew getJarName -q'
+            returnStdout: true
+          ).trim()
           sh 'sudo systemctl stop blogggr'
           sh '''
-            cp './back end/build/libs/blogggr-0.0.1.jar' '/var/www/blogggr/blogggr.jar'
+            sudo cp './back end/build/libs/${jarName}' '/var/www/blogggr/blogggr.jar'
           '''
           sh 'sudo systemctl start blogggr'
       }
