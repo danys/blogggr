@@ -34,4 +34,3 @@ userimages/
 resources/*.yml
 .gradle
 .architect~
-*.tmp
