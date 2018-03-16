@@ -24,6 +24,13 @@ pipeline {
     gitlab(triggerOnPush: true, triggerOnMergeRequest: true, branchFilterType: 'All')
   }
 
+  environment {
+     jarName = sh(
+      script: './gradlew getJarName -q',
+      returnStdout: true
+     ).trim()
+   }
+
   stages{
     stage('Clean') {
       steps{
@@ -47,10 +54,6 @@ pipeline {
     }
     stage('Deploy') {
       steps {
-          def jarName = sh(
-            script: './gradlew getJarName -q',
-            returnStdout: true
-          ).trim()
           sh 'sudo systemctl stop blogggr'
           sh '''
             sudo cp './back end/build/libs/${jarName}' '/var/www/blogggr/blogggr.jar'
