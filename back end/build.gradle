@@ -63,3 +63,7 @@ publishing {
         }
     }
 }
+
+task getJarName {
+    println project.name + '-' + project.version + '.jar'
+}
