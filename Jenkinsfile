@@ -48,7 +48,7 @@ pipeline {
     stage('Deploy') {
       steps {
           def jarName = sh(
-            script: './gradlew getJarName -q'
+            script: './gradlew getJarName -q',
             returnStdout: true
           ).trim()
           sh 'sudo systemctl stop blogggr'
