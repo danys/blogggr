@@ -54,6 +54,7 @@ pipeline {
     }
     stage('Deploy') {
       steps {
+          println 'Deploy ' + jarName
           sh 'sudo systemctl stop blogggr'
           sh '''
             cp './back end/build/libs/$jarName' '/var/www/blogggr/blogggr.jar'
