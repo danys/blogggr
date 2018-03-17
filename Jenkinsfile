@@ -56,7 +56,7 @@ pipeline {
       steps {
           sh 'sudo systemctl stop blogggr'
           sh '''
-            "cp \\"./back end/build/libs/$jarName\\" \\"/var/www/blogggr/blogggr.jar\\""
+            cp \\"./back end/build/libs/$jarName\\" \\"/var/www/blogggr/blogggr.jar\\"
           '''
           sh 'sudo systemctl start blogggr'
       }
