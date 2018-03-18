@@ -54,11 +54,17 @@ pipeline {
     }
     stage('Deploy') {
       steps {
-          sh 'sudo systemctl stop blogggr'
-          sh '''
-            cp "./back end/build/libs/$jarName" "/var/www/blogggr/blogggr.jar"
-          '''
-          sh 'sudo systemctl start blogggr'
+          script {
+            if(env.BRANCH_NAME == 'master') {
+              sh 'sudo systemctl stop blogggr'
+              sh '''
+                cp "./back end/build/libs/$jarName" "/var/www/blogggr/blogggr.jar"
+              '''
+              sh 'sudo systemctl start blogggr'
+            } else {
+              echo 'Deployment skipped!'
+            }
+           }
       }
     }
   }
