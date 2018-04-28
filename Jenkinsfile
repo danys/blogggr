@@ -56,11 +56,9 @@ pipeline {
       steps {
           script {
             if(env.BRANCH_NAME == 'master') {
-              sh 'sudo systemctl stop blogggr'
-              sh '''
-                cp "./back end/build/libs/$jarName" "/var/www/blogggr/blogggr.jar"
-              '''
-              sh 'sudo systemctl start blogggr'
+              sh 'ssh blogggr@blogggr.com "sudo systemctl stop blogggr"'
+              sh 'scp "./back end/build/libs/$jarName" blogggr@blogggr.com:/var/www/blogggr/blogggr.jar'
+              sh 'ssh blogggr@blogggr.com "sudo systemctl start blogggr"'
             } else {
               echo 'Deployment skipped!'
             }
