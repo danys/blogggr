@@ -30,7 +30,7 @@
     "mkdirp": "~0.5.1"
   },
   "devDependencies": {
-    "node-sass": "~4.3.0",
+    "node-sass": "~4.9.0",
     "babel-cli": "^6.0.0",
     "babel-core": "~6.25.0",
     "babel-loader": "~7.1.0",
