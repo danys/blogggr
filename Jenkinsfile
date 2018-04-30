@@ -84,9 +84,7 @@ pipeline {
             def baseVersion = String.valueOf(majorVersion) + "." + String.valueOf(minorVersion) + "." + String.valueOf(patchVersion)
             def releaseVersion = baseVersion
             def newVersion = baseVersion + "-SNAPSHOT"
-            println "ReleaseVersion " + releaseVersion
-            println "NewVersion " + newVersion
-            sh './gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion="${releaseVersion}" -Prelease.newVersion="${newVersion}"'
+            sh "./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${releaseVersion} -Prelease.newVersion=${newVersion}"
           } else { //publish in nexus only
             sh './gradlew publish'
           }
