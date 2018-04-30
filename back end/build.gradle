@@ -72,7 +72,12 @@ publishing {
 }
 
 release {
-    requireBranch = ""
+    scmAdapters = [
+            net.researchgate.release.GitAdapter
+    ]
+    git {
+        requireBranch = 'develop|master'
+    }
 }
 
 afterReleaseBuild.dependsOn publish
