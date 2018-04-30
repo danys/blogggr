@@ -73,6 +73,7 @@ publishing {
 
 release {
     failOnCommitNeeded = false
+    failOnUnversionedFiles = false
     scmAdapters = [
             net.researchgate.release.GitAdapter
     ]
