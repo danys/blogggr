@@ -61,8 +61,8 @@ pipeline {
        script{
           def splitVersion = version.split('\\.')
           env.majorVersion = splitVersion[0]
-          env.minorVersion = (splitVersion.length()>1) ? splitVersion[1] : '0'
-          env.patchVersion = (splitVersion.length()>2) ? splitVersion[2].split("-")[0] : '0'
+          env.minorVersion = (splitVersion.length>1) ? splitVersion[1] : '0'
+          env.patchVersion = (splitVersion.length>2) ? splitVersion[2].split("-")[0] : '0'
           echo "MajorVersion ${env.majorVersion}"
           echo "MinorVersion ${env.minorVersion}"
           echo "PatchVersion ${env.patchVersion}"
