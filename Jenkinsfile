@@ -29,6 +29,10 @@ pipeline {
       script: './gradlew getJarName -q',
       returnStdout: true
      ).trim()
+     version = sh(
+      script: './gradlew getVersion -q',
+      returnStdout: true
+     ).trim()
    }
 
   stages{
