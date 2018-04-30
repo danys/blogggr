@@ -78,7 +78,7 @@ release {
             net.researchgate.release.GitAdapter
     ]
     git {
-        requireBranch = ''
+        requireBranch = 'master'
     }
 }
 
