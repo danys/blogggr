@@ -58,7 +58,11 @@ publishing {
     }
     repositories {
         maven {
-            url 'https://bin.sunnen.me/repository/maven-releases/'
+            if(project.version.endsWith('-SNAPSHOT')) {
+                url "${nexus_url}maven-snapshots/"
+            } else {
+                url "${nexus_url}maven-releases/"
+            }
             credentials {
                 username nexus_username
                 password nexus_password

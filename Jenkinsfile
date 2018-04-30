@@ -62,7 +62,7 @@ pipeline {
             } else {
               echo 'Deployment skipped!'
             }
-           }
+          }
       }
     }
   }
