@@ -63,14 +63,14 @@ pipeline {
           env.majorVersion = splitVersion[0]
           env.minorVersion = (splitVersion.length()>1) ? splitVersion[1] : '0'
           env.patchVersion = (splitVersion.length()>2) ? splitVersion[2].split("-")[0] : '0'
-       }
-       echo "MajorVersion ${env.majorVersion}"
-       echo "MinorVersion ${env.minorVersion}"
-       echo "PatchVersion ${env.patchVersion}"
-       if(env.BRANCH_NAME == 'master') {
-         sh './gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=0.0.1 -Prelease.newVersion=0.0.1-SNAPSHOT'
-       } else {
-         sh './gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion="$version" -Prelease.newVersion="$version"'
+          echo "MajorVersion ${env.majorVersion}"
+          echo "MinorVersion ${env.minorVersion}"
+          echo "PatchVersion ${env.patchVersion}"
+          if(env.BRANCH_NAME == 'master') {
+            sh './gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=0.0.1 -Prelease.newVersion=0.0.1-SNAPSHOT'
+          } else {
+            sh './gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion="$version" -Prelease.newVersion="$version"'
+          }
        }
       }
     }
