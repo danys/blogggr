@@ -52,6 +52,11 @@ pipeline {
         sh './gradlew build'
       }
     }
+    stage('Release') {
+      steps {
+       sh './gradlew release'
+      }
+    }
     stage('Deploy') {
       steps {
           script {

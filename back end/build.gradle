@@ -71,6 +71,10 @@ publishing {
     }
 }
 
+release {
+    requireBranch = ""
+}
+
 afterReleaseBuild.dependsOn publish
 
 task getJarName {
