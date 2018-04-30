@@ -64,7 +64,23 @@ pipeline {
           env.minorVersion = (splitVersion.length>1) ? splitVersion[1] : '0'
           env.patchVersion = (splitVersion.length>2) ? splitVersion[2].split("-")[0] : '0'
           if(env.BRANCH_NAME == 'master') { //release and publish in nexus
-            sh './gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=0.0.1 -Prelease.newVersion=0.0.1-SNAPSHOT'
+            def userInput = input(
+             id: 'userInput', message: 'Which release version would you like to create?', parameters: [
+             choice(name: 'release_version', choices: 'major\nminor\npatch', description: 'What kind of release would you like to create?')
+            ])
+            int majorVersion = env.majorVersion as Integer
+            int minorVersion = env.minorVersion as Integer
+            int patchVersion = env.patchVersion as Integer
+            if (userInput == major){
+              majorVersion++
+            } else if (userInput == minor){
+              minorVersion++
+            } else if (userInput == patch){
+              patchVersion++
+            }
+            def releaseVersion = env.majorVersion + '.' + env.minorVersion + '.' + env.patchVersion
+            def newVersion = majorVersion + '.' + minorVersion + '.' + patchVersion + '-SNAPSHOT'
+            sh './gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion="${releaseVersion}" -Prelease.newVersion="${newVersion}"'
           } else { //publish in nexus only
             sh './gradlew publish'
           }
