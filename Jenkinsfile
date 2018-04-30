@@ -73,13 +73,17 @@ pipeline {
             int patchVersion = env.patchVersion as Integer
             if (userInput == 'major'){
               majorVersion++
+              minorVersion=0
+              patchVersion=0
             } else if (userInput == 'minor'){
               minorVersion++
+              patchVersion=0
             } else if (userInput == 'patch'){
               patchVersion++
             }
-            def releaseVersion = env.majorVersion + '.' + env.minorVersion + '.' + env.patchVersion
-            def newVersion = majorVersion + '.' + minorVersion + '.' + patchVersion + '-SNAPSHOT'
+            def baseVersion = Integer.toString(majorVersion) + '.' + Integer.toString(minorVersion) + '.' + Integer.toString(patchVersion)
+            def releaseVersion = baseVersion
+            def newVersion = baseVersion + '-SNAPSHOT'
             sh './gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion="${releaseVersion}" -Prelease.newVersion="${newVersion}"'
           } else { //publish in nexus only
             sh './gradlew publish'
