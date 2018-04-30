@@ -63,10 +63,10 @@ pipeline {
           env.majorVersion = splitVersion[0]
           env.minorVersion = (splitVersion.length>1) ? splitVersion[1] : '0'
           env.patchVersion = (splitVersion.length>2) ? splitVersion[2].split("-")[0] : '0'
-          if(env.BRANCH_NAME == 'master') {
+          if(env.BRANCH_NAME == 'master') { //release and publish in nexus
             sh './gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=0.0.1 -Prelease.newVersion=0.0.1-SNAPSHOT'
-          } else {
-            sh './gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion="$version" -Prelease.newVersion="$version"'
+          } else { //publish in nexus only
+            sh './gradlew publish'
           }
        }
       }
