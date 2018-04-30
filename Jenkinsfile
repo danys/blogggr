@@ -71,11 +71,11 @@ pipeline {
             int majorVersion = env.majorVersion as Integer
             int minorVersion = env.minorVersion as Integer
             int patchVersion = env.patchVersion as Integer
-            if (userInput == major){
+            if (userInput == 'major'){
               majorVersion++
-            } else if (userInput == minor){
+            } else if (userInput == 'minor'){
               minorVersion++
-            } else if (userInput == patch){
+            } else if (userInput == 'patch'){
               patchVersion++
             }
             def releaseVersion = env.majorVersion + '.' + env.minorVersion + '.' + env.patchVersion
