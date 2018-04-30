@@ -33,10 +33,10 @@ pipeline {
       script: './gradlew getVersion -q',
       returnStdout: true
      ).trim()
-     splitVersion = version.split("\\.")
+     splitVersion = version.split('\\.')
      majorVersion = splitVersion[0]
-     minorVersion = (splitVersion.length>1) ? splitVersion[1] : '0';
-     patchVersion = (splitVersion.length>2) ? splitVersion[2].split("-")[0] : '0';
+     minorVersion = (splitVersion.length()>1) ? splitVersion[1] : '0'
+     patchVersion = (splitVersion.length()>2) ? splitVersion[2].split("-")[0] : '0'
    }
 
   stages{
