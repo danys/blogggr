@@ -81,7 +81,7 @@ pipeline {
             } else if (userInput == 'patch'){
               patchVersion++
             }
-            def baseVersion = Integer.toString(majorVersion) + '.' + Integer.toString(minorVersion) + '.' + Integer.toString(patchVersion)
+            def baseVersion = String.valueOf(majorVersion) + '.' + String.valueOf(minorVersion) + '.' + String.valueOf(patchVersion)
             def releaseVersion = baseVersion
             def newVersion = baseVersion + '-SNAPSHOT'
             sh './gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion="${releaseVersion}" -Prelease.newVersion="${newVersion}"'
