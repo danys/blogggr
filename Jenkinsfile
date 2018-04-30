@@ -33,10 +33,6 @@ pipeline {
       script: './gradlew getVersion -q',
       returnStdout: true
      ).trim()
-     splitVersion = version.split('\\.')
-     majorVersion = splitVersion[0]
-     minorVersion = (splitVersion.length()>1) ? splitVersion[1] : '0'
-     patchVersion = (splitVersion.length()>2) ? splitVersion[2].split("-")[0] : '0'
    }
 
   stages{
@@ -62,9 +58,15 @@ pipeline {
     }
     stage('Release') {
       steps {
-              println "MajorVersion " + majorVersion
-              println "MinorVersion " + minorVersion
-              println "PatchVersion " + patchVersion
+       script{
+          def splitVersion = version.split('\\.')
+          env.majorVersion = splitVersion[0]
+          env.minorVersion = (splitVersion.length()>1) ? splitVersion[1] : '0'
+          env.patchVersion = (splitVersion.length()>2) ? splitVersion[2].split("-")[0] : '0'
+       }
+       echo "MajorVersion ${env.majorVersion}"
+       echo "MinorVersion ${env.minorVersion}"
+       echo "PatchVersion ${env.patchVersion}"
        if(env.BRANCH_NAME == 'master') {
          sh './gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=0.0.1 -Prelease.newVersion=0.0.1-SNAPSHOT'
        } else {
