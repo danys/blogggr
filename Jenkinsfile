@@ -41,12 +41,14 @@ pipeline {
 
   stages{
     stage('Clean') {
-      script{
-        if (lastCommitMsg.contains("Gradle release plugin")){
-          currentBuild.result = 'SUCCESS'
-          return
-        } else {
-          sh './gradlew clean'
+      steps{
+        script{
+          if (lastCommitMsg.contains("Gradle release plugin")){
+            currentBuild.result = 'SUCCESS'
+            return
+          } else {
+            sh './gradlew clean'
+          }
         }
       }
     }
