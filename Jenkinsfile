@@ -33,12 +33,21 @@ pipeline {
       script: './gradlew getVersion -q',
       returnStdout: true
      ).trim()
+     lastCommitMsg = sh(
+       script: 'git log -1 --pretty=%B',
+       returnStdout: true
+     ).trim()
    }
 
   stages{
     stage('Clean') {
-      steps{
-        sh './gradlew clean'
+      script{
+        if (lastCommitMsg.contains("Gradle release plugin")){
+          currentBuild.result = 'SUCCESS'
+          return
+        } else {
+          sh './gradlew clean'
+        }
       }
     }
     stage('Compile') {
