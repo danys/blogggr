@@ -1,7 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const config = {
     entry: {
@@ -22,7 +22,7 @@ const config = {
                     {
                         loader: 'babel-loader',
                         options: {
-                            presets: ['es2015', 'react'],
+                            presets: ['env', 'react'],
                             "plugins": [
                                 ["transform-object-rest-spread", { "useBuiltIns": true }]
                             ]
@@ -32,10 +32,10 @@ const config = {
             },
             {
                 test: /\.css$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: "css-loader"
-                })
+                use: [
+                  MiniCssExtractPlugin.loader,
+                  "css-loader"
+                ]
             },
             {
                 test: /\.(svg|woff|woff2|otf|eot|ttf)$/,
@@ -82,7 +82,10 @@ const config = {
             name: ['app', 'vendor'],
             minChunk: Infinity
         }),
-        new ExtractTextPlugin("styles.css"),
+        new MiniCssExtractPlugin({
+            filename: "[name].css",
+            chunkFilename: "[id].css"
+        }),
         new webpack.ProvidePlugin({
             jQuery: 'jquery',
             $: 'jquery',
