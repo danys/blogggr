@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Link from './navigation/Link';
 
 export class HomePost extends React.Component {
@@ -32,10 +33,10 @@ export class HomePost extends React.Component {
 }
 
 HomePost.propTypes = {
-    title: React.PropTypes.string.isRequired,
-    author: React.PropTypes.string.isRequired,
-    authorProfileURL: React.PropTypes.string.isRequired,
-    timestamp: React.PropTypes.string.isRequired,
-    textBody: React.PropTypes.string.isRequired,
-    postURL: React.PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    authorProfileURL: PropTypes.string.isRequired,
+    timestamp: PropTypes.string.isRequired,
+    textBody: PropTypes.string.isRequired,
+    postURL: PropTypes.string.isRequired
 }
