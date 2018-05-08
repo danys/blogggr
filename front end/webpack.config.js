@@ -4,6 +4,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const config = {
+    mode: 'development',
     entry: {
         app: './src/index.js',
         vendor: './src/vendor.js'
@@ -77,10 +78,6 @@ const config = {
             title:"Blogggr",
             template: 'src/index.ejs',
             publicPath: '/'
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: ['app', 'vendor'],
-            minChunk: Infinity
         }),
         new MiniCssExtractPlugin({
             filename: "[name].css",
