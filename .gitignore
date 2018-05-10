@@ -34,3 +34,4 @@ userimages/
 resources/*.yml
 .gradle
 .architect~
+back end/out/
