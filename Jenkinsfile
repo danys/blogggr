@@ -1,5 +1,7 @@
 #!/usr/bin/env groovy
 
+def releaseVersion = 'version'
+
 pipeline {
 
   agent any
@@ -100,7 +102,7 @@ pipeline {
             } else if (userInput == 'patch'){
               newPatchVersion++
             }
-            def releaseVersion = String.valueOf(majorVersion) + "." + String.valueOf(minorVersion) + "." + String.valueOf(patchVersion)
+            releaseVersion = String.valueOf(majorVersion) + "." + String.valueOf(minorVersion) + "." + String.valueOf(patchVersion)
             def newVersion = String.valueOf(newMajorVersion) + "." + String.valueOf(newMinorVersion) + "." + String.valueOf(newPatchVersion) + "-SNAPSHOT"
             sh "./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${releaseVersion} -Prelease.newVersion=${newVersion}"
           } else { //publish in nexus only
@@ -113,9 +115,7 @@ pipeline {
       steps {
           script {
             if(env.BRANCH_NAME == 'master') {
-              sh 'ssh blogggr@blogggr.com "sudo systemctl stop blogggr"'
-              sh 'scp "./back end/build/libs/$jarName" blogggr@blogggr.com:/var/www/blogggr/blogggr.jar'
-              sh 'ssh blogggr@blogggr.com "sudo systemctl start blogggr"'
+              build job: 'blogggr-config/' + env.BRANCH_NAME.replace("/", "%2F"), parameters: [[$class: 'StringParameterValue', name: 'version', value: "${releaseVersion}"]], propagate: false'
             } else {
               echo 'Deployment skipped!'
             }
