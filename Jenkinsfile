@@ -1,6 +1,7 @@
 #!/usr/bin/env groovy
 
 def releaseVersion = 'version'
+boolean noOp = false
 
 pipeline {
 
@@ -46,8 +47,7 @@ pipeline {
       steps{
         script{
           if (lastCommitMsg.contains("Gradle Release Plugin")){
-            currentBuild.result = 'SUCCESS'
-            return
+            noOp = true
           } else {
             sh './gradlew clean'
           }
@@ -56,65 +56,79 @@ pipeline {
     }
     stage('Compile') {
       steps {
-        sh './gradlew compileJava'
+        script{
+          if (!noOp) {
+            sh './gradlew compileJava'
+          }
+        }
       }
     }
     stage('Test') {
       steps {
-        sh './gradlew test'
+        script{
+          if (!noOp) {
+            sh './gradlew test'
+          }
+        }
       }
     }
     stage('Package') {
       steps {
-        sh './gradlew build'
+        script{
+          if (!noOp) {
+            sh './gradlew build'
+          }
+        }
       }
     }
     stage('Release') {
       steps {
        script{
-          def splitVersion = version.split('\\.')
-          env.majorVersion = splitVersion[0]
-          env.minorVersion = (splitVersion.length>1) ? splitVersion[1] : '0'
-          env.patchVersion = (splitVersion.length>2) ? splitVersion[2].split("-")[0] : '0'
-          if(env.BRANCH_NAME == 'master') { //release and publish in nexus
-            def userInput = input(
-             id: 'userInput', message: 'Which release version would you like to create?', parameters: [
-             choice(name: 'release_version', choices: 'major\nminor\npatch', description: 'What kind of release would you like to create?')
-            ])
-            int majorVersion = env.majorVersion as Integer
-            int minorVersion = env.minorVersion as Integer
-            int patchVersion = env.patchVersion as Integer
-            int newMajorVersion = env.majorVersion as Integer
-            int newMinorVersion = env.minorVersion as Integer
-            int newPatchVersion = env.patchVersion as Integer
-            if (userInput == 'major'){
-              majorVersion++
-              minorVersion=0
-              patchVersion=0
-              newMajorVersion++
-              newMinorVersion=0
-              newPatchVersion=1
-            } else if (userInput == 'minor'){
-              minorVersion++
-              patchVersion=0
-              newMinorVersion=0
-              newPatchVersion=1
-            } else if (userInput == 'patch'){
-              newPatchVersion++
+          if (!noOp) {
+            def splitVersion = version.split('\\.')
+            env.majorVersion = splitVersion[0]
+            env.minorVersion = (splitVersion.length>1) ? splitVersion[1] : '0'
+            env.patchVersion = (splitVersion.length>2) ? splitVersion[2].split("-")[0] : '0'
+            if(env.BRANCH_NAME == 'master') { //release and publish in nexus
+              def userInput = input(
+              id: 'userInput', message: 'Which release version would you like to create?', parameters: [
+              choice(name: 'release_version', choices: 'major\nminor\npatch', description: 'What kind of release would you like to create?')
+              ])
+              int majorVersion = env.majorVersion as Integer
+              int minorVersion = env.minorVersion as Integer
+              int patchVersion = env.patchVersion as Integer
+              int newMajorVersion = env.majorVersion as Integer
+              int newMinorVersion = env.minorVersion as Integer
+              int newPatchVersion = env.patchVersion as Integer
+              if (userInput == 'major'){
+                majorVersion++
+                minorVersion=0
+                patchVersion=0
+                newMajorVersion++
+                newMinorVersion=0
+                newPatchVersion=1
+              } else if (userInput == 'minor'){
+                minorVersion++
+                patchVersion=0
+                newMinorVersion=0
+                newPatchVersion=1
+              } else if (userInput == 'patch'){
+                newPatchVersion++
+              }
+              releaseVersion = String.valueOf(majorVersion) + "." + String.valueOf(minorVersion) + "." + String.valueOf(patchVersion)
+              def newVersion = String.valueOf(newMajorVersion) + "." + String.valueOf(newMinorVersion) + "." + String.valueOf(newPatchVersion) + "-SNAPSHOT"
+              sh "./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${releaseVersion} -Prelease.newVersion=${newVersion}"
+            } else { //publish in nexus only
+              sh './gradlew publish'
             }
-            releaseVersion = String.valueOf(majorVersion) + "." + String.valueOf(minorVersion) + "." + String.valueOf(patchVersion)
-            def newVersion = String.valueOf(newMajorVersion) + "." + String.valueOf(newMinorVersion) + "." + String.valueOf(newPatchVersion) + "-SNAPSHOT"
-            sh "./gradlew release -Prelease.useAutomaticVersion=true -Prelease.releaseVersion=${releaseVersion} -Prelease.newVersion=${newVersion}"
-          } else { //publish in nexus only
-            sh './gradlew publish'
           }
-       }
+        }
       }
     }
     stage('Deploy') {
       steps {
           script {
-            if(env.BRANCH_NAME == 'master') {
+            if(!noOp && env.BRANCH_NAME == 'master') {
               build job: 'blogggr-config/' + env.BRANCH_NAME.replace("/", "%2F"), parameters: [[$class: 'StringParameterValue', name: 'version', value: "${releaseVersion}"]], propagate: false
             } else {
               echo 'Deployment skipped!'
