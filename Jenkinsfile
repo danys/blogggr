@@ -115,7 +115,7 @@ pipeline {
       steps {
           script {
             if(env.BRANCH_NAME == 'master') {
-              build job: 'blogggr-config/' + env.BRANCH_NAME.replace("/", "%2F"), parameters: [[$class: 'StringParameterValue', name: 'version', value: "${releaseVersion}"]], propagate: false'
+              build job: 'blogggr-config/' + env.BRANCH_NAME.replace("/", "%2F"), parameters: [[$class: 'StringParameterValue', name: 'version', value: "${releaseVersion}"]], propagate: false
             } else {
               echo 'Deployment skipped!'
             }
