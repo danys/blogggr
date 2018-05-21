@@ -12,7 +12,12 @@ task build(type: Exec, dependsOn: ':frontend:scss') {
     commandLine('npm','run','build')
 }
 
-task copyFrontendFiles(type: Copy, dependsOn: ':frontend:build'){
+task copyFavicon(type: Copy, dependsOn: ':frontend:build') {
+    from 'favicon.ico'
+    into 'dist'
+}
+
+task copyFrontendFiles(type: Copy, dependsOn: ':frontend:copyFavicon'){
     from 'dist'
     into '../back end/build/classes/java/main/static'
 }
