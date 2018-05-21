@@ -116,6 +116,7 @@ pipeline {
               sh './gradlew publish'
             }
           }
+        }
       }
     }
     stage('Deploy') {
