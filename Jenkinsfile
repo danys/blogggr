@@ -56,22 +56,28 @@ pipeline {
     }
     stage('Compile') {
       steps {
-        if (!noOp) {
-          sh './gradlew compileJava'
+        script{
+          if (!noOp) {
+            sh './gradlew compileJava'
+          }
         }
       }
     }
     stage('Test') {
       steps {
-        if (!noOp) {
-          sh './gradlew test'
+        script{
+          if (!noOp) {
+            sh './gradlew test'
+          }
         }
       }
     }
     stage('Package') {
       steps {
-        if (!noOp) {
-          sh './gradlew build'
+        script{
+          if (!noOp) {
+            sh './gradlew build'
+          }
         }
       }
     }
