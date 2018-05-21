@@ -45,7 +45,7 @@ pipeline {
     stage('Clean') {
       steps{
         script{
-          if (lastCommitMsg.contains("Gradle release plugin")){
+          if (lastCommitMsg.contains("Gradle Release Plugin")){
             currentBuild.result = 'SUCCESS'
             return
           } else {
