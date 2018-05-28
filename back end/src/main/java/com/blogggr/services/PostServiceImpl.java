@@ -1,16 +1,14 @@
 package com.blogggr.services;
 
-import com.blogggr.dao.FriendDAO;
-import com.blogggr.dao.PostDAO;
-import com.blogggr.dao.PostDAOImpl;
-import com.blogggr.dao.UserDAO;
+import com.blogggr.dao.FriendDao;
+import com.blogggr.dao.PostDao;
+import com.blogggr.dao.UserDao;
 import com.blogggr.entities.Comment;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.json.PageData;
 import com.blogggr.models.PrevNextListPage;
 import com.blogggr.requestdata.PostData;
 import com.blogggr.utilities.StringUtilities;
@@ -32,9 +30,9 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class)
 public class PostServiceImpl implements PostService {
 
-  private PostDAO postDAO;
-  private UserDAO userDAO;
-  private FriendDAO friendDAO;
+  private PostDao postDao;
+  private UserDao userDao;
+  private FriendDao friendDao;
 
   private final String postNotFound = "Post not found!";
   private final String noModifyAuthorization = "No authorization to modify this post!";
@@ -43,16 +41,16 @@ public class PostServiceImpl implements PostService {
 
   private final Log logger = LogFactory.getLog(this.getClass());
 
-  public PostServiceImpl(PostDAO postDAO, UserDAO userDAO, FriendDAO friendDAO) {
-    this.postDAO = postDAO;
-    this.userDAO = userDAO;
-    this.friendDAO = friendDAO;
+  public PostServiceImpl(PostDao postDao, UserDao userDao, FriendDao friendDao) {
+    this.postDao = postDao;
+    this.userDao = userDao;
+    this.friendDao = friendDao;
   }
 
 
   @Override
   public Post createPost(long userId, PostData postData) throws ResourceNotFoundException {
-    User user = userDAO.findById(userId);
+    User user = userDao.findById(userId);
     if (user == null) {
       throw new ResourceNotFoundException("User not found!");
     }
@@ -63,14 +61,14 @@ public class PostServiceImpl implements PostService {
     post.setTimestamp(TimeUtilities.getCurrentTimestamp());
     post.setShortTitle(StringUtilities.compactTitle(postData.getTitle()));
     post.setGlobal(postData.getGlobal());
-    postDAO.save(post);
+    postDao.save(post);
     return post;
   }
 
   @Override
   public Post updatePost(long postID, long userId, PostData postData)
       throws ResourceNotFoundException, NotAuthorizedException {
-    Post post = postDAO.findById(postID);
+    Post post = postDao.findById(postID);
     if (post == null) {
       throw new ResourceNotFoundException(postNotFound);
     }
@@ -89,7 +87,7 @@ public class PostServiceImpl implements PostService {
     if (postData.getGlobal() != null) {
       post.setGlobal(postData.getGlobal());
     }
-    postDAO.save(post);
+    postDao.save(post);
     return post;
   }
 
@@ -97,14 +95,14 @@ public class PostServiceImpl implements PostService {
   @Override
   public void deletePost(long postId, long userId)
       throws ResourceNotFoundException, NotAuthorizedException {
-    Post post = postDAO.findById(postId);
+    Post post = postDao.findById(postId);
     if (post == null) {
       throw new ResourceNotFoundException(postNotFound);
     }
     if (post.getUser().getUserId() != userId) {
       throw new NotAuthorizedException(noModifyAuthorization);
     }
-    postDAO.deleteById(postId);
+    postDao.deleteById(postId);
   }
 
   //Simple function to check that this user is friends with the poster
@@ -113,7 +111,7 @@ public class PostServiceImpl implements PostService {
       long smallNum, bigNum;
       smallNum = (postUserID < userId) ? postUserID : userId;
       bigNum = (postUserID >= userId) ? postUserID : userId;
-      friendDAO.getFriendByUserIDs(smallNum, bigNum);
+      friendDao.getFriendByUserIDs(smallNum, bigNum);
       return true;
     } catch (ResourceNotFoundException e) {
       return false;
@@ -123,7 +121,7 @@ public class PostServiceImpl implements PostService {
   @Override
   public Post getPostById(long postId, long userId)
       throws ResourceNotFoundException, DBException, NotAuthorizedException {
-    Post post = postDAO.findById(postId);
+    Post post = postDao.findById(postId);
     if (post == null) {
       throw new ResourceNotFoundException(postNotFound);
     }
@@ -142,9 +140,9 @@ public class PostServiceImpl implements PostService {
 
   @Override
   public PrevNextListPage<Post> getPosts(long userId, Long postUserID, String title,
-      PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit)
+      PostDao.Visibility visibility, Long before, Long after, Integer limit)
       throws ResourceNotFoundException, DBException {
-    PrevNextListPage<Post> postsPage = postDAO
+    PrevNextListPage<Post> postsPage = postDao
         .getPosts(userId, postUserID, title, visibility, before, after, limit);
     return postsPage;
   }
@@ -153,7 +151,7 @@ public class PostServiceImpl implements PostService {
   public Post getPostByUserAndLabel(Long userId, Long postUserID, String postShortTitle)
       throws ResourceNotFoundException, DBException, NotAuthorizedException {
     try {
-      Post post = postDAO.getPostByUserAndLabel(userId, postUserID, postShortTitle);
+      Post post = postDao.getPostByUserAndLabel(userId, postUserID, postShortTitle);
       //Order comments by date
       List<Comment> comments = post.getComments();
       Collections.sort(comments, new Comparator<Comment>() {

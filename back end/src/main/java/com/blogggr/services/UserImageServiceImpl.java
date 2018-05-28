@@ -1,14 +1,13 @@
 package com.blogggr.services;
 
-import com.blogggr.dao.UserDAO;
-import com.blogggr.dao.UserImageDAO;
+import com.blogggr.dao.UserDao;
+import com.blogggr.dao.UserImageDao;
 import com.blogggr.entities.User;
 import com.blogggr.entities.UserImage;
 import com.blogggr.exceptions.StorageException;
 import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.FileStorageManager;
 import com.blogggr.utilities.ImageScaler;
-import com.blogggr.utilities.ImageScaler.ImageSize;
 import com.blogggr.utilities.TimeUtilities;
 import java.io.IOException;
 import javax.persistence.NoResultException;
@@ -25,8 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional(rollbackFor = Exception.class)
 public class UserImageServiceImpl implements UserImageService {
 
-  private UserImageDAO userImageDAO;
-  private UserDAO userDAO;
+  private UserImageDao userImageDao;
+  private UserDao userDao;
 
   private FileStorageManager fileStorageManager;
 
@@ -38,17 +37,17 @@ public class UserImageServiceImpl implements UserImageService {
   private final int IMG_WIDTH = 128;
 
   @Autowired
-  public UserImageServiceImpl(UserImageDAO userImageDAO,
-      UserDAO userDAO,
+  public UserImageServiceImpl(UserImageDao userImageDao,
+      UserDao userDao,
       @Qualifier("userimage") FileStorageManager fileStorageManager) {
-    this.userImageDAO = userImageDAO;
+    this.userImageDao = userImageDao;
     this.fileStorageManager = fileStorageManager;
-    this.userDAO = userDAO;
+    this.userDao = userDao;
   }
 
   @Override
   public UserImage postImage(long userId, MultipartFile file) throws StorageException {
-    User user = userDAO.findById(userId);
+    User user = userDao.findById(userId);
     if (user == null) {
       throw new IllegalArgumentException("User not found!");
     }
@@ -64,7 +63,7 @@ public class UserImageServiceImpl implements UserImageService {
       scaledImageName = name + IMG_EXTENSION;
       tries++;
       try {
-        userImageDAO.findByName(scaledImageName);
+        userImageDao.findByName(scaledImageName);
       } catch (NoResultException e) {
         ok = true;
       }
@@ -104,7 +103,7 @@ public class UserImageServiceImpl implements UserImageService {
     }
 
     //Update isCurrent to false on all user images
-    userImageDAO.unsetCurrent(user.getUserId());
+    userImageDao.unsetCurrent(user.getUserId());
 
     //Store image reference in db
     UserImage selectedUserImage = new UserImage();
@@ -113,7 +112,7 @@ public class UserImageServiceImpl implements UserImageService {
     selectedUserImage.setWidth(IMG_WIDTH);
     selectedUserImage.setHeight(IMG_HEIGHT);
     selectedUserImage.setCurrent(true);
-    userImageDAO.save(selectedUserImage);
+    userImageDao.save(selectedUserImage);
     return selectedUserImage;
   }
 

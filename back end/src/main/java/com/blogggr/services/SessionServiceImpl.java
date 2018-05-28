@@ -1,6 +1,6 @@
 package com.blogggr.services;
 
-import com.blogggr.dao.UserDAO;
+import com.blogggr.dao.UserDao;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.*;
 import com.blogggr.requestdata.SessionPostData;
@@ -27,18 +27,18 @@ public class SessionServiceImpl implements SessionService {
   }
 
   private final Log logger = LogFactory.getLog(this.getClass());
-  private UserDAO userDAO;
+  private UserDao userDao;
   private Cryptography cryptography;
 
-  public SessionServiceImpl(UserDAO userDAO, Cryptography cryptography) {
-    this.userDAO = userDAO;
+  public SessionServiceImpl(UserDao userDao, Cryptography cryptography) {
+    this.userDao = userDao;
     this.cryptography = cryptography;
   }
 
   @Override
   public SessionDetails createSession(SessionPostData sessionData)
       throws ResourceNotFoundException, DBException, WrongPasswordException, UnsupportedEncodingException {
-    User user = userDAO.getUserByEmail(sessionData.getEmail());
+    User user = userDao.getUserByEmail(sessionData.getEmail());
     //Check that the supplied password is correct
     String storedPasswordHash = user.getPasswordHash();
     String storedSalt = user.getSalt();

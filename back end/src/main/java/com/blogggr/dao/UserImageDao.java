@@ -12,13 +12,12 @@ import org.springframework.stereotype.Repository;
  * Created by Daniel Sunnen on 25.08.17.
  */
 @Repository
-public class UserImageDAOImpl extends GenericDAOImpl<UserImage> implements UserImageDAO{
+public class UserImageDao extends GenericDAOImpl<UserImage>{
 
-  public UserImageDAOImpl(){
+  public UserImageDao(){
     super(UserImage.class);
   }
 
-  @Override
   public UserImage findByName(String name) throws NoResultException{
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<UserImage> query = cb.createQuery(UserImage.class);
@@ -29,7 +28,6 @@ public class UserImageDAOImpl extends GenericDAOImpl<UserImage> implements UserI
     return entityManager.createQuery(query).getSingleResult();
   }
 
-  @Override
   public void unsetCurrent(Long userId){
     Query q = entityManager.createNativeQuery("UPDATE blogggr.user_images SET is_current = ? WHERE user_id = ?");
     q.setParameter(1, false);

@@ -1,6 +1,6 @@
 package com.blogggr.services;
 
-import com.blogggr.dao.UserDAO;
+import com.blogggr.dao.UserDao;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
@@ -26,26 +26,26 @@ import java.sql.Timestamp;
 @Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
 
-  private UserDAO userDAO;
+  private UserDao userDao;
   private final Log logger = LogFactory.getLog(this.getClass());
 
-  public UserServiceImpl(UserDAO userDAO) {
-    this.userDAO = userDAO;
+  public UserServiceImpl(UserDao userDao) {
+    this.userDao = userDao;
   }
 
   @Override
   public User getUserById(long id) {
-    return userDAO.findById(id);
+    return userDao.findById(id);
   }
 
   @Override
   public User getUserByIdWithImages(long id) {
-    return userDAO.findByIdWithImages(id);
+    return userDao.findByIdWithImages(id);
   }
 
   @Override
   public User getUserByEmail(String email) throws ResourceNotFoundException, DBException {
-    return userDAO.getUserByEmail(email);
+    return userDao.getUserByEmail(email);
   }
 
   //For POST request
@@ -75,14 +75,14 @@ public class UserServiceImpl implements UserService {
     Timestamp currentTimestamp = TimeUtilities.getCurrentTimestamp();
     user.setLastChange(currentTimestamp);
     user.setStatus(0);
-    userDAO.save(user);
+    userDao.save(user);
     return user;
   }
 
   @Override
   public void updateUser(long userResourceID, long userID, UserPutData userData)
       throws ResourceNotFoundException, DBException, NotAuthorizedException {
-    User user = userDAO.findById(userResourceID);
+    User user = userDao.findById(userResourceID);
     if (user == null) {
       throw new ResourceNotFoundException("User not found!");
     }
@@ -113,19 +113,19 @@ public class UserServiceImpl implements UserService {
       user.setFirstName(userData.getFirstName());
     }
     user.setLastChange(TimeUtilities.getCurrentTimestamp());
-    userDAO.save(user);
+    userDao.save(user);
   }
 
   @Override
   public RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber)
       throws DBException {
-    RandomAccessListPage<User> usersPage = userDAO.getUsers(searchString, limit, pageNumber);
+    RandomAccessListPage<User> usersPage = userDao.getUsers(searchString, limit, pageNumber);
     return usersPage;
   }
 
   @Override
   public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData)
       throws DBException {
-    return userDAO.getUsersBySearchTerms(searchData);
+    return userDao.getUsersBySearchTerms(searchData);
   }
 }

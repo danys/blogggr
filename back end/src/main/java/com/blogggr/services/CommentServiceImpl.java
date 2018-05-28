@@ -1,9 +1,10 @@
 package com.blogggr.services;
 
 import com.blogggr.dao.CommentDAO;
-import com.blogggr.dao.FriendDAO;
-import com.blogggr.dao.PostDAO;
-import com.blogggr.dao.UserDAO;
+import com.blogggr.dao.CommentDao;
+import com.blogggr.dao.FriendDao;
+import com.blogggr.dao.PostDao;
+import com.blogggr.dao.UserDao;
 import com.blogggr.entities.Comment;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
@@ -26,31 +27,31 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class)
 public class CommentServiceImpl implements CommentService {
 
-  private CommentDAO commentDAO;
-  private UserDAO userDAO;
-  private PostDAO postDAO;
-  private FriendDAO friendDAO;
+  private CommentDao commentDao;
+  private UserDao userDao;
+  private PostDao postDao;
+  private FriendDao friendDao;
 
   private final String notCommentFound = "Comment not found!";
 
   private final Log logger = LogFactory.getLog(this.getClass());
 
-  public CommentServiceImpl(CommentDAO commentDAO, UserDAO userDAO, PostDAO postDAO,
-      FriendDAO friendDAO) {
-    this.commentDAO = commentDAO;
-    this.userDAO = userDAO;
-    this.postDAO = postDAO;
-    this.friendDAO = friendDAO;
+  public CommentServiceImpl(CommentDao commentDao, UserDao userDao, PostDao postDao,
+      FriendDao friendDao) {
+    this.commentDao = commentDao;
+    this.userDao = userDao;
+    this.postDao = postDao;
+    this.friendDao = friendDao;
   }
 
   @Override
   public Comment createComment(long userID, CommentData commentData)
       throws ResourceNotFoundException, DBException, NotAuthorizedException {
-    User user = userDAO.findById(userID);
+    User user = userDao.findById(userID);
     if (user == null) {
       throw new ResourceNotFoundException("User not found!");
     }
-    Post post = postDAO.findById(commentData.getCommentId());
+    Post post = postDao.findById(commentData.getCommentId());
     if (post == null) {
       throw new ResourceNotFoundException("Post not found!");
     }
@@ -60,7 +61,7 @@ public class CommentServiceImpl implements CommentService {
       long smaller = (posterUserID < userID) ? posterUserID : userID;
       long bigger = (posterUserID >= userID) ? posterUserID : userID;
       try {
-        friendDAO.getFriendByUserIDs(smaller, bigger);
+        friendDao.getFriendByUserIDs(smaller, bigger);
       } catch (ResourceNotFoundException e) {
         throw new NotAuthorizedException(
             "User must be friends with poster as post is not globally visible!");
@@ -71,14 +72,14 @@ public class CommentServiceImpl implements CommentService {
     comment.setPost(post);
     comment.setText(commentData.getText());
     comment.setTimestamp(TimeUtilities.getCurrentTimestamp());
-    commentDAO.save(comment);
+    commentDao.save(comment);
     return comment;
   }
 
   @Override
   public void updateComment(long commentID, long userID, CommentData commentData)
       throws ResourceNotFoundException, NotAuthorizedException {
-    Comment comment = commentDAO.findById(commentID);
+    Comment comment = commentDao.findById(commentID);
     if (comment == null) {
       throw new ResourceNotFoundException(notCommentFound);
     }
@@ -93,14 +94,14 @@ public class CommentServiceImpl implements CommentService {
   public void deleteComment(long commentID, long userID)
       throws ResourceNotFoundException, NotAuthorizedException, DBException {
     try {
-      Comment comment = commentDAO.findById(commentID);
+      Comment comment = commentDao.findById(commentID);
       if (comment == null) {
         throw new ResourceNotFoundException(notCommentFound);
       }
       if (comment.getUser().getUserId() != userID) {
         throw new NotAuthorizedException("Not allowed to delete comment!");
       }
-      commentDAO.deleteById(commentID);
+      commentDao.deleteById(commentID);
     } catch (Exception e) {
       throw new DBException("Database exception deleting comment!");
     }
@@ -108,7 +109,7 @@ public class CommentServiceImpl implements CommentService {
 
   @Override
   public Comment getCommentById(long commentID, long userID) throws ResourceNotFoundException {
-    Comment comment = commentDAO.findById(commentID);
+    Comment comment = commentDao.findById(commentID);
     //Everybody can read the comment
     if (comment == null) {
       throw new ResourceNotFoundException(notCommentFound);
@@ -120,7 +121,7 @@ public class CommentServiceImpl implements CommentService {
   public List<Comment> getCommentsByPostId(long postID, long userID)
       throws ResourceNotFoundException, NotAuthorizedException, DBException {
     //Fetch the post first
-    Post post = postDAO.findById(postID);
+    Post post = postDao.findById(postID);
     if (post == null) {
       throw new ResourceNotFoundException("Did not find post!");
     }
@@ -134,7 +135,7 @@ public class CommentServiceImpl implements CommentService {
     smallNum = (postAuthor.getUserId() < userID) ? postAuthor.getUserId() : userID;
     bigNum = (postAuthor.getUserId() >= userID) ? postAuthor.getUserId() : userID;
     try {
-      friendDAO.getFriendByUserIDs(smallNum, bigNum);
+      friendDao.getFriendByUserIDs(smallNum, bigNum);
       return post.getComments();
     } catch (ResourceNotFoundException e) {
       throw new NotAuthorizedException("Not allowed to view this post and its comments!");

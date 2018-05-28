@@ -29,7 +29,7 @@ import java.util.List;
  * Created by Daniel Sunnen on 25.10.16.
  */
 @Repository
-public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO {
+public class UserDao extends GenericDAOImpl<User> {
 
   public static final String noUserFound = "User not found!";
   public static final String dbException = "Database exception!";
@@ -38,11 +38,10 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO {
 
   private final Log logger = LogFactory.getLog(this.getClass());
 
-  public UserDAOImpl() {
+  public UserDao() {
     super(User.class);
   }
 
-  @Override
   public User findByIdWithImages(Long id){
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -56,7 +55,6 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO {
     }
   }
 
-  @Override
   public User getUserByEmail(String email) throws DBException, ResourceNotFoundException {
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -71,7 +69,6 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO {
     }
   }
 
-  @Override
   public RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber)
       throws DBException {
     try {
@@ -155,7 +152,6 @@ public class UserDAOImpl extends GenericDAOImpl<User> implements UserDAO {
     return query;
   }
 
-  @Override
   public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData)
       throws DBException {
     List<User> users = generateSearchTermQuery(searchData, User.class, true).getResultList();

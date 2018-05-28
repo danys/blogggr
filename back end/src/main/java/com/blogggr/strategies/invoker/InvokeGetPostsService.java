@@ -1,7 +1,7 @@
 package com.blogggr.strategies.invoker;
 
 import com.blogggr.config.AppConfig;
-import com.blogggr.dao.PostDAOImpl;
+import com.blogggr.dao.PostDao;
 import com.blogggr.entities.Post;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
@@ -45,22 +45,22 @@ public class InvokeGetPostsService extends ServiceInvocation {
     }
     //Check the visibility setting
     String visibility = null;
-    PostDAOImpl.Visibility visi = PostDAOImpl.Visibility.all; //return all (from friends, global and current user) posts by default
+    PostDao.Visibility visi = PostDao.Visibility.all; //return all (from friends, global and current user) posts by default
     if (input.containsKey(GetPostsValidator.visibilityKey)) {
       visibility = input.get(GetPostsValidator.visibilityKey);
     }
     if (visibility != null) {
-      if (visibility.compareTo(PostDAOImpl.Visibility.onlyGlobal.name()) == 0) {
-        visi = PostDAOImpl.Visibility.onlyGlobal;
-      } else if (visibility.compareTo(PostDAOImpl.Visibility.all.name()) == 0) {
-        visi = PostDAOImpl.Visibility.all;
-      } else if (visibility.compareTo(PostDAOImpl.Visibility.onlyFriends.name()) == 0) {
-        visi = PostDAOImpl.Visibility.onlyFriends;
-      } else if (visibility.compareTo(PostDAOImpl.Visibility.onlyCurrentUser.name()) == 0) {
-        visi = PostDAOImpl.Visibility.onlyCurrentUser;
+      if (visibility.compareTo(PostDao.Visibility.onlyGlobal.name()) == 0) {
+        visi = PostDao.Visibility.onlyGlobal;
+      } else if (visibility.compareTo(PostDao.Visibility.all.name()) == 0) {
+        visi = PostDao.Visibility.all;
+      } else if (visibility.compareTo(PostDao.Visibility.onlyFriends.name()) == 0) {
+        visi = PostDao.Visibility.onlyFriends;
+      } else if (visibility.compareTo(PostDao.Visibility.onlyCurrentUser.name()) == 0) {
+        visi = PostDao.Visibility.onlyCurrentUser;
       }
     } else if (visibility == null) {
-      visi = PostDAOImpl.Visibility.all;
+      visi = PostDao.Visibility.all;
     }
     //Before key
     Long before = null;

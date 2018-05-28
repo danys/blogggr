@@ -20,7 +20,7 @@ import java.util.*;
  * Created by Daniel Sunnen on 20.11.16.
  */
 @Repository
-public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
+public class PostDao extends GenericDAOImpl<Post> {
 
   private final Log logger = LogFactory.getLog(this.getClass());
 
@@ -31,7 +31,7 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
     onlyCurrentUser
   }
 
-  public PostDAOImpl() {
+  public PostDao() {
     super(Post.class);
   }
 
@@ -41,7 +41,6 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
   private final long defaultMinimumID = -1;
 
   //Get posts by userID, title and visibility
-  @Override
   public PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title,
       Visibility visibility, Long before, Long after, Integer limit)
       throws DBException, ResourceNotFoundException {
@@ -345,7 +344,6 @@ public class PostDAOImpl extends GenericDAOImpl<Post> implements PostDAO {
             buildListKV(null, previous, limit, postUserID, title, visibility));
   }
 
-  @Override
   public Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle) {
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<Post> query = cb.createQuery(Post.class);

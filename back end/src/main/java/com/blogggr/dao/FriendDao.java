@@ -19,17 +19,16 @@ import java.util.List;
  * Created by Daniel Sunnen on 27.11.16.
  */
 @Repository
-public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO {
+public class FriendDao extends GenericDAOImpl<Friend> {
 
   private final String noResult = "Did not find any friends!";
 
-  public FriendDAOImpl() {
+  public FriendDao() {
     super(Friend.class);
   }
 
   private final Log logger = LogFactory.getLog(this.getClass());
 
-  @Override
   public List<User> getUserFriends(long userID) throws ResourceNotFoundException, DBException {
     //Combine users from two queries
     List<User> friends = getUserFriendsHalf(userID, true);
@@ -77,7 +76,6 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO {
     }
   }
 
-  @Override
   public Friend getFriendByUserIDs(long userID1, long userID2)
       throws ResourceNotFoundException, DBException {
     try {
@@ -98,7 +96,6 @@ public class FriendDAOImpl extends GenericDAOImpl<Friend> implements FriendDAO {
     }
   }
 
-  @Override
   public Friend getFriendByUserIDsAndState(long userID1, long userID2, int state)
       throws ResourceNotFoundException, DBException {
     try {

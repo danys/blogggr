@@ -1,7 +1,7 @@
 package com.blogggr.services;
 
-import com.blogggr.dao.FriendDAO;
-import com.blogggr.dao.UserDAO;
+import com.blogggr.dao.FriendDao;
+import com.blogggr.dao.UserDao;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.FriendPk;
 import com.blogggr.entities.User;
@@ -23,14 +23,14 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class)
 public class FriendServiceImpl implements FriendService {
 
-  private UserDAO userDAO;
-  private FriendDAO friendDAO;
+  private UserDao userDao;
+  private FriendDao friendDao;
 
   private final Log logger = LogFactory.getLog(this.getClass());
 
-  public FriendServiceImpl(UserDAO userDAO, FriendDAO friendDAO) {
-    this.userDAO = userDAO;
-    this.friendDAO = friendDAO;
+  public FriendServiceImpl(UserDao userDao, FriendDao friendDao) {
+    this.userDao = userDao;
+    this.friendDao = friendDao;
   }
 
   @Override
@@ -47,11 +47,11 @@ public class FriendServiceImpl implements FriendService {
     small = (userID1 < userID2) ? userID1 : userID2;
     big = (userID1 > userID2) ? userID1 : userID2;
     //Fetch users
-    User userSmall = userDAO.findById(small);
+    User userSmall = userDao.findById(small);
     if (userSmall == null) {
       throw new ResourceNotFoundException("User not found!");
     }
-    User userBig = userDAO.findById(big);
+    User userBig = userDao.findById(big);
     if (userBig == null) {
       throw new ResourceNotFoundException("User not found!");
     }
@@ -68,7 +68,7 @@ public class FriendServiceImpl implements FriendService {
     fPk.setuserOneId(userSmall.getUserId());
     fPk.setuserTwoId(userBig.getUserId());
     friend.setId(fPk);
-    friendDAO.save(friend);
+    friendDao.save(friend);
     return friend;
   }
 
@@ -81,14 +81,14 @@ public class FriendServiceImpl implements FriendService {
     long small, big;
     small = (user1 < user2) ? user1 : user2;
     big = (user1 > user2) ? user1 : user2;
-    Friend friend = friendDAO.getFriendByUserIDs(small, big);
+    Friend friend = friendDao.getFriendByUserIDs(small, big);
     if (friend == null) {
       throw new ResourceNotFoundException("Friendship not found!");
     }
     if (friend.getUser1().getUserId() != userID && friend.getUser2().getUserId() != userID) {
       throw new NotAuthorizedException("Not authorized to change this friendship!");
     }
-    User currentUser = userDAO.findById(userID);
+    User currentUser = userDao.findById(userID);
     if (currentUser == null) {
       throw new ResourceNotFoundException("User not found!");
     }
@@ -97,20 +97,20 @@ public class FriendServiceImpl implements FriendService {
         //user at one side sets status to pending the other user can set it to 1, 2 or 3
         friend.setStatus(friendData.getAction());
         friend.setLastActionUserId(currentUser);
-        friendDAO.update(friend);
+        friendDao.update(friend);
       } else {
         throw new NotAuthorizedException("Cannot update friend status!");
       }
     } else if (friend.getStatus() == 1 && friendData.getAction() == 3) { //set status to blocked
       friend.setStatus(friendData.getAction());
       friend.setLastActionUserId(currentUser);
-      friendDAO.update(friend);
+      friendDao.update(friend);
     } else if ((friend.getStatus() == 2 || friend.getStatus() == 3)
         && friendData.getAction() == 1) { //set status to accepted from declined or blocked
       if (friend.getLastActionUserId().getUserId() == userID) {
         friend.setStatus(friendData.getAction());
         friend.setLastActionUserId(currentUser);
-        friendDAO.update(friend);
+        friendDao.update(friend);
       }
     } else {
       throw new NotAuthorizedException("Cannot update friend status!");
@@ -120,19 +120,19 @@ public class FriendServiceImpl implements FriendService {
   @Override
   public void deleteFriend(long friendId, long userID)
       throws ResourceNotFoundException, NotAuthorizedException {
-    Friend friend = friendDAO.findById(friendId);
+    Friend friend = friendDao.findById(friendId);
     if (friend == null) {
       throw new ResourceNotFoundException("Friendship not found");
     }
     if (friend.getUser1().getUserId() != userID || friend.getUser2().getUserId() != userID) {
       throw new NotAuthorizedException("Not authorized to delete friendship!");
     }
-    friendDAO.delete(friend);
+    friendDao.delete(friend);
   }
 
   @Override
   public List<User> getFriends(long userID) throws ResourceNotFoundException, DBException {
-    List<User> friends = friendDAO.getUserFriends(userID);
+    List<User> friends = friendDao.getUserFriends(userID);
     return friends;
   }
 }

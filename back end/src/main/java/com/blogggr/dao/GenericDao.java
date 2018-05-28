@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by Daniel Sunnen on 25.10.16.
  */
-public interface GenericDAO<T extends Serializable> {
+public interface GenericDao<T extends Serializable> {
 
   T findById(Long id);
 

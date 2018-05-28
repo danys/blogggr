@@ -1,6 +1,6 @@
 package com.blogggr.services;
 
-import com.blogggr.dao.PostDAOImpl;
+import com.blogggr.dao.PostDao;
 import com.blogggr.entities.Post;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
@@ -25,7 +25,7 @@ public interface PostService {
       throws ResourceNotFoundException, DBException, NotAuthorizedException;
 
   PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title,
-      PostDAOImpl.Visibility visibility, Long before, Long after, Integer limit)
+      PostDao.Visibility visibility, Long before, Long after, Integer limit)
       throws ResourceNotFoundException, DBException;
 
   Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle)

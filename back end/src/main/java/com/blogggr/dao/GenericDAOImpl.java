@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class GenericDAOImpl<T extends Serializable> implements GenericDAO<T> {
+public class GenericDAOImpl<T extends Serializable> implements GenericDao<T> {
 
   private final Log logger = LogFactory.getLog(this.getClass());
 
