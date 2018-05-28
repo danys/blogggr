@@ -5,11 +5,9 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.exceptions.SessionExpiredException;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.AuthorizationStrategy;
 import com.blogggr.utilities.Cryptography;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;

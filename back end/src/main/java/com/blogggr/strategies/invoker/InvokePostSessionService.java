@@ -6,7 +6,6 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.requestdata.SessionPostData;
 import com.blogggr.services.SessionService;
-import com.blogggr.services.SessionServiceImpl;
 import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.utilities.Cryptography;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,7 +42,7 @@ public class InvokePostSessionService extends ServiceInvocation {
     } catch (IOException e) {
       return null;
     }
-    SessionServiceImpl.SessionDetails jwt = sessionService.createSession(sessionData);
+    SessionService.SessionDetails jwt = sessionService.createSession(sessionData);
     //Return a map that contains the user email address, the JWT and its expiration timestamp
     Map<String, String> responseMap = new HashMap<>();
     responseMap.put(AppConfig.authKey, jwt.jwt);

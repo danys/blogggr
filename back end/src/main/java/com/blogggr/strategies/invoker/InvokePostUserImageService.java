@@ -1,7 +1,6 @@
 package com.blogggr.strategies.invoker;
 
 import com.blogggr.config.AppConfig;
-import com.blogggr.controllers.PostsController;
 import com.blogggr.entities.UserImage;
 import com.blogggr.exceptions.DBException;
 import com.blogggr.exceptions.NotAuthorizedException;
