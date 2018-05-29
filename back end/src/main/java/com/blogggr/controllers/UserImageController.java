@@ -52,7 +52,7 @@ public class UserImageController {
   @RequestMapping(path = USER_IMAGE_PATH, method = RequestMethod.POST)
   public ResponseEntity postUserImage(@RequestParam("file") MultipartFile file,
       @RequestHeader Map<String, String> header) {
-    logger.debug(
+    logger.info(
         "[POST /userimages] Header: {}", header);
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         null, new InvokePostUserImageService(userImageService), new PostResponse());
@@ -62,9 +62,11 @@ public class UserImageController {
   //GET /userimages/filename
   @GetMapping("/userimages/{filename:.+}")
   @ResponseBody
-  public ResponseEntity<Resource> serveFile(@PathVariable String filename) {
+  public ResponseEntity<Resource> serveFile(@PathVariable String fileName) {
+    logger.info(
+        "[GET /userimages/{}]", fileName);
     try {
-      Resource file = userImageService.getFileStorageManager().getImageResourceFromCloud(filename);
+      Resource file = userImageService.getFileStorageManager().getImageResourceFromCloud(fileName);
       return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
           "attachment; filename=\"" + file.getFilename() + "\"").body(file);
     } catch(StorageException e){

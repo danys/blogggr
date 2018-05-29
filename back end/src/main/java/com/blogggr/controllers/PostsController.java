@@ -47,7 +47,7 @@ public class PostsController {
   @RequestMapping(path = postsPath, method = RequestMethod.POST)
   public ResponseEntity createPost(@RequestBody String bodyData,
       @RequestHeader Map<String, String> header) {
-    logger.debug("[POST /posts] RequestBody: " + bodyData + ". Header: " + header.toString());
+    logger.info("[POST /posts] RequestBody: " + bodyData + ". Header: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new PostPostDataValidator(), new InvokePostPostService(postService), new PostResponse());
     return model.execute(null, header, bodyData);
@@ -57,7 +57,7 @@ public class PostsController {
   @RequestMapping(path = postsPath + "/{id}", method = RequestMethod.PUT)
   public ResponseEntity updatePost(@PathVariable String id, @RequestBody String bodyData,
       @RequestHeader Map<String, String> header) {
-    logger.debug("[PUT /posts] Id = " + id + ". RequestBody: " + bodyData + ". Header: " + header
+    logger.info("[PUT /posts] Id = " + id + ". RequestBody: " + bodyData + ". Header: " + header
         .toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new PostPutDataValidator(), new InvokePutPostService(postService), new PutResponse());
@@ -70,7 +70,7 @@ public class PostsController {
   @RequestMapping(path = postsPath + "/{id}", method = RequestMethod.DELETE)
   public ResponseEntity deletePost(@PathVariable String id,
       @RequestHeader Map<String, String> header) {
-    logger.debug("[DELETE /posts] Id = " + id + ". Header: " + header.toString());
+    logger.info("[DELETE /posts] Id = " + id + ". Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
@@ -82,7 +82,7 @@ public class PostsController {
   @RequestMapping(path = postsPath + "/{id}", method = RequestMethod.GET)
   public ResponseEntity getPost(@PathVariable String id,
       @RequestHeader Map<String, String> header) {
-    logger.debug("[GET /posts/id] Id = " + id + ". Header: " + header.toString());
+    logger.info("[GET /posts/id] Id = " + id + ". Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
@@ -95,7 +95,7 @@ public class PostsController {
       + "/{userID}/posts/{postShortName}", method = RequestMethod.GET)
   public ResponseEntity getPost(@PathVariable String userID, @PathVariable String postShortName,
       @RequestHeader Map<String, String> header) {
-    logger.debug(
+    logger.info(
         "[GET /users/{userID}/posts/{post-short-name}] UserID = " + userID + ". PostShortName = "
             + postShortName + ". Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
@@ -111,7 +111,7 @@ public class PostsController {
   @RequestMapping(path = postsPath, method = RequestMethod.GET)
   public ResponseEntity getPosts(@RequestParam Map<String, String> params,
       @RequestHeader Map<String, String> header) {
-    logger.debug(
+    logger.info(
         "[GET /posts] RequestParams = " + params.toString() + ". Header: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new GetPostsValidator(), new InvokeGetPostsService(postService), new GetResponse());

@@ -53,7 +53,7 @@ public class FriendsController {
   @RequestMapping(path = friendsPath, method = RequestMethod.POST)
   public ResponseEntity createFriendship(@RequestBody String bodyData,
       @RequestHeader Map<String, String> header) {
-    logger.debug("[POST /friends] RequestParams = " + bodyData + ". Header: " + header.toString());
+    logger.info("[POST /friends] RequestParams = " + bodyData + ". Header: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new FriendPostDataValidator(), new InvokePostFriendService(friendService),
         new PostResponse());
@@ -64,7 +64,7 @@ public class FriendsController {
   @RequestMapping(path = friendsPath + "/{id}/{id2}", method = RequestMethod.PUT)
   public ResponseEntity updateFriendship(@PathVariable String id, @PathVariable String id2,
       @RequestBody String bodyData, @RequestHeader Map<String, String> header) {
-    logger.debug(
+    logger.info(
         "[PUT /friends/id1/id2] Id = " + id + ". Id2 = " + id2 + " RequestBody = " + bodyData
             + "Header: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
@@ -79,7 +79,7 @@ public class FriendsController {
   @RequestMapping(path = friendsPath, method = RequestMethod.GET)
   public ResponseEntity getFriends(@RequestParam Map<String, String> params,
       @RequestHeader Map<String, String> header) {
-    logger.debug(
+    logger.info(
         "[GET /friends] RequestParams = " + params.toString() + "Header: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new NoCheckValidator(), new InvokeGetFriendsService(friendService), new GetResponse());
@@ -90,7 +90,7 @@ public class FriendsController {
   @RequestMapping(path = friendsPath + "/{id}", method = RequestMethod.DELETE)
   public ResponseEntity deleteFriend(@PathVariable String id,
       @RequestHeader Map<String, String> header) {
-    logger.debug("[DELETE /friends/id] Id = " + id + "Header: " + header.toString());
+    logger.info("[DELETE /friends/id] Id = " + id + "Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),

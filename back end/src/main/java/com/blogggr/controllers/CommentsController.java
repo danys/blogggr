@@ -52,7 +52,7 @@ public class CommentsController {
   @RequestMapping(path = commentsPath, method = RequestMethod.POST)
   public ResponseEntity createComment(@RequestBody String bodyData,
       @RequestHeader Map<String, String> header) {
-    logger.debug("[POST /comments] RequestBody = " + bodyData + ". Header: " + header.toString());
+    logger.info("[POST /comments] RequestBody = " + bodyData + ". Header: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new CommentPostDataValidator(), new InvokePostCommentService(commentService),
         new PostResponse());
@@ -63,7 +63,7 @@ public class CommentsController {
   @RequestMapping(path = commentsPath + "/{id}", method = RequestMethod.PUT)
   public ResponseEntity updateComment(@PathVariable String id, @RequestBody String bodyData,
       @RequestHeader Map<String, String> header) {
-    logger.debug(
+    logger.info(
         "[PUT /comments/id] Id = " + id + " RequestBody = " + bodyData + ". Header: " + header
             .toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
@@ -78,7 +78,7 @@ public class CommentsController {
   @RequestMapping(path = commentsPath + "/{id}", method = RequestMethod.DELETE)
   public ResponseEntity deleteComment(@PathVariable String id,
       @RequestHeader Map<String, String> header) {
-    logger.debug("[DELETE /comments] Id = " + id + "Header: " + header.toString());
+    logger.info("[DELETE /comments] Id = " + id + "Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
@@ -90,7 +90,7 @@ public class CommentsController {
   @RequestMapping(path = commentsPath + "/{id}", method = RequestMethod.GET)
   public ResponseEntity getComment(@PathVariable String id,
       @RequestHeader Map<String, String> header) {
-    logger.debug("[GET /comments/id] Id = " + id + ". Header: " + header.toString());
+    logger.info("[GET /comments/id] Id = " + id + ". Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
@@ -103,7 +103,7 @@ public class CommentsController {
       + commentsPath, method = RequestMethod.GET)
   public ResponseEntity getCommentsByPostId(@PathVariable String id,
       @RequestHeader Map<String, String> header) {
-    logger.debug("[GET /comments/id/comments] Id = " + id + ". Header: " + header.toString());
+    logger.info("[GET /comments/id/comments] Id = " + id + ". Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),

@@ -46,7 +46,7 @@ public class UsersController {
   @RequestMapping(path = USER_PATH, method = RequestMethod.GET)
   public ResponseEntity getUsers(@RequestParam Map<String, String> params,
       @RequestHeader Map<String, String> header) {
-    logger.debug(
+    logger.info(
         "[GET /users] RequestParams: " + params.toString() + ". Header: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new GetUsersValidator(), new InvokeGetUsersService(userService), new GetResponse());
@@ -56,7 +56,7 @@ public class UsersController {
   //GET /users/me
   @RequestMapping(path = USER_PATH + "/me", method = RequestMethod.GET)
   public ResponseEntity getCurrentUser(@RequestHeader Map<String, String> header) {
-    logger.debug("[GET /users/me] RequestHeader: " + header.toString());
+    logger.info("[GET /users/me] RequestHeader: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new NoCheckValidator(), new InvokeGetUserMeService(userService), new GetResponse());
     return model.execute(null, header, null);
@@ -66,7 +66,7 @@ public class UsersController {
   @RequestMapping(path = USER_PATH + "/{id:[\\d]+}", method = RequestMethod.GET)
   public ResponseEntity getUser(@PathVariable String id,
       @RequestHeader Map<String, String> header) {
-    logger.debug("[GET /users/id] Id: " + id + ". Header: " + header.toString());
+    logger.info("[GET /users/id] Id: " + id + ". Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
@@ -78,7 +78,7 @@ public class UsersController {
   @RequestMapping(path = USER_PATH + "/{id}/posts", method = RequestMethod.GET)
   public ResponseEntity getUserPosts(@PathVariable String id,
       @RequestHeader Map<String, String> header) {
-    logger.debug("[GET /users/id/posts] Id: " + id + ". Header: " + header.toString());
+    logger.info("[GET /users/id/posts] Id: " + id + ". Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
@@ -89,7 +89,7 @@ public class UsersController {
   //POST /users
   @RequestMapping(path = USER_PATH, method = RequestMethod.POST)
   public ResponseEntity createUser(@RequestBody String bodyData) {
-    logger.debug("[POST /users] RequestBody: " + bodyData);
+    logger.info("[POST /users] RequestBody: " + bodyData);
     AppModel model = new AppModelImpl(new NoAuthorization(), new UserPostDataValidator(),
         new InvokePostUserService(userService), new PostResponse());
     return model.execute(null, null, bodyData);
@@ -99,7 +99,7 @@ public class UsersController {
   @RequestMapping(path = USER_PATH + "/{id}", method = RequestMethod.PUT)
   public ResponseEntity updateUser(@PathVariable String id, @RequestBody String bodyData,
       @RequestHeader Map<String, String> header) {
-    logger.debug("[PUT /users/id] Id: " + id + ". RequestBody: " + bodyData + ". Header: " + header
+    logger.info("[PUT /users/id] Id: " + id + ". RequestBody: " + bodyData + ". Header: " + header
         .toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new UserPutDataValidator(), new InvokePutUserService(userService), new PutResponse());
