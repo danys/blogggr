@@ -15,6 +15,7 @@ import com.blogggr.strategies.validators.*;
 import com.blogggr.utilities.Cryptography;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,18 +31,16 @@ public class PostsController {
 
   public static final String postsPath = "/posts";
 
-  private UserService userService;
-  private PostService postService;
-  private Cryptography cryptography;
-
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  public PostsController(UserService userService, PostService postService,
-      Cryptography cryptography) {
-    this.userService = userService;
-    this.postService = postService;
-    this.cryptography = cryptography;
-  }
+  @Autowired
+  private UserService userService;
+
+  @Autowired
+  private PostService postService;
+
+  @Autowired
+  private Cryptography cryptography;
 
   //POST /posts
   @RequestMapping(path = postsPath, method = RequestMethod.POST)

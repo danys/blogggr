@@ -21,6 +21,7 @@ import com.blogggr.strategies.validators.NoCheckValidator;
 import com.blogggr.utilities.Cryptography;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,18 +37,16 @@ public class FriendsController {
 
   public static final String friendsPath = "/friends";
 
-  private UserService userService;
-  private FriendService friendService;
-  private Cryptography cryptography;
-
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  public FriendsController(UserService userService, FriendService friendService,
-      Cryptography cryptography) {
-    this.userService = userService;
-    this.friendService = friendService;
-    this.cryptography = cryptography;
-  }
+  @Autowired
+  private UserService userService;
+
+  @Autowired
+  private FriendService friendService;
+
+  @Autowired
+  private Cryptography cryptography;
 
   //POST /friends
   @RequestMapping(path = friendsPath, method = RequestMethod.POST)

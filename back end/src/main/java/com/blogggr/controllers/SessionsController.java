@@ -11,6 +11,7 @@ import com.blogggr.strategies.validators.SessionPostDataValidator;
 import com.blogggr.utilities.Cryptography;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,15 +24,13 @@ public class SessionsController {
 
   public static final String sessionPath = "/sessions";
 
-  private SessionService sessionService;
-  private Cryptography cryptography;
-
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  public SessionsController(SessionService sessionService, Cryptography cryptography) {
-    this.sessionService = sessionService;
-    this.cryptography = cryptography;
-  }
+  @Autowired
+  private SessionService sessionService;
+
+  @Autowired
+  private Cryptography cryptography;
 
   //POST /sessions
   @RequestMapping(path = sessionPath, method = RequestMethod.POST)

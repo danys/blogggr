@@ -18,6 +18,7 @@ import com.blogggr.strategies.validators.IdValidator;
 import com.blogggr.utilities.Cryptography;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,20 +34,19 @@ public class CommentsController {
 
   public static final String commentsPath = "/comments";
 
-  private UserService userService;
-  private PostService postService;
-  private CommentService commentService;
-  private Cryptography cryptography;
-
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  public CommentsController(UserService userService, PostService postService,
-      CommentService commentService, Cryptography cryptography) {
-    this.userService = userService;
-    this.postService = postService;
-    this.commentService = commentService;
-    this.cryptography = cryptography;
-  }
+  @Autowired
+  private UserService userService;
+
+  @Autowired
+  private PostService postService;
+
+  @Autowired
+  private CommentService commentService;
+
+  @Autowired
+  private Cryptography cryptography;
 
   //POST /comments
   @RequestMapping(path = commentsPath, method = RequestMethod.POST)

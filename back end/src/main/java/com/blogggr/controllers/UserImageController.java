@@ -13,6 +13,7 @@ import com.blogggr.utilities.Cryptography;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -37,16 +38,14 @@ public class UserImageController {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+  @Autowired
   private UserService userService;
-  private Cryptography cryptography;
-  private UserImageService userImageService;
 
-  public UserImageController(UserService userService, Cryptography cryptography,
-      UserImageService userImageService) {
-    this.userService = userService;
-    this.cryptography = cryptography;
-    this.userImageService = userImageService;
-  }
+  @Autowired
+  private Cryptography cryptography;
+
+  @Autowired
+  private UserImageService userImageService;
 
   //POST /userimages
   @RequestMapping(path = USER_IMAGE_PATH, method = RequestMethod.POST)
