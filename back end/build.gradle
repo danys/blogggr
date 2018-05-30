@@ -11,6 +11,7 @@ buildscript {
 
 plugins {
     id 'net.researchgate.release' version '2.6.0'
+    id 'net.ltgt.apt' version '0.10'
 }
 
 apply plugin: 'java'
@@ -47,6 +48,8 @@ dependencies {
         exclude(module: 'commons-logging')
     }
     testCompile 'com.h2database:h2:1.4.196'
+    compileOnly 'org.projectlombok:lombok:1.16.22'
+    apt "org.projectlombok:lombok:1.16.22"
 }
 
 publishing {
