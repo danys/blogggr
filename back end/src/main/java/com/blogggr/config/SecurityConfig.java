@@ -1,0 +1,88 @@
+package com.blogggr.config;
+
+import com.blogggr.filters.CredentialsAuthenticationFilter;
+import com.blogggr.filters.JwtAuthenticationFilter;
+import com.blogggr.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+/**
+ * Created by Daniel Sunnen on 01.06.18.
+ */
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+  @Autowired
+  private UserService userDetailsService;
+
+  public SecurityConfig() {
+    super();
+  }
+
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth)
+      throws Exception {
+    auth.authenticationProvider(authenticationProvider());
+  }
+
+  @Bean
+  public DaoAuthenticationProvider authenticationProvider() {
+    DaoAuthenticationProvider authProvider
+        = new DaoAuthenticationProvider();
+    authProvider.setUserDetailsService(userDetailsService);
+    authProvider.setPasswordEncoder(encoder());
+    return authProvider;
+  }
+
+  @Bean
+  public PasswordEncoder encoder() {
+    return new BCryptPasswordEncoder(11);
+  }
+
+  @Bean
+  public CredentialsAuthenticationFilter credentialsAuthenticationFilter() throws Exception {
+    CredentialsAuthenticationFilter authenticationFilter
+        = new CredentialsAuthenticationFilter();
+    authenticationFilter.setAuthenticationManager(authenticationManagerBean());
+    return authenticationFilter;
+  }
+
+  @Bean
+  public JwtAuthenticationFilter jwtAuthenticationFilter() {
+    JwtAuthenticationFilter authenticationFilter
+        = new JwtAuthenticationFilter();
+    return authenticationFilter;
+  }
+
+  @Override
+  protected void configure(final HttpSecurity http) throws Exception {
+    http
+        .csrf().disable()
+        .authorizeRequests()
+        .antMatchers("/login", "/signup", "/index.html").permitAll()
+        .antMatchers(HttpMethod.POST, "/api/v*/sessions", "/api/v*/users").permitAll()
+        .anyRequest().authenticated()
+        .and()
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .addFilterBefore(
+            credentialsAuthenticationFilter(),
+            UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(
+            jwtAuthenticationFilter(),
+            CredentialsAuthenticationFilter.class);
+  }
+}

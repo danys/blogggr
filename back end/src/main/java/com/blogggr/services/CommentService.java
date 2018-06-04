@@ -7,7 +7,7 @@ import com.blogggr.dao.UserDao;
 import com.blogggr.entities.Comment;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.requestdata.CommentData;
@@ -44,7 +44,7 @@ public class CommentService {
   }
 
   public Comment createComment(long userID, CommentData commentData)
-      throws ResourceNotFoundException, DBException, NotAuthorizedException {
+      throws ResourceNotFoundException, DbException, NotAuthorizedException {
     User user = userDao.findById(userID);
     if (user == null) {
       throw new ResourceNotFoundException("User not found!");
@@ -88,7 +88,7 @@ public class CommentService {
   }
 
   public void deleteComment(long commentID, long userID)
-      throws ResourceNotFoundException, NotAuthorizedException, DBException {
+      throws ResourceNotFoundException, NotAuthorizedException, DbException {
     try {
       Comment comment = commentDao.findById(commentID);
       if (comment == null) {
@@ -99,7 +99,7 @@ public class CommentService {
       }
       commentDao.deleteById(commentID);
     } catch (Exception e) {
-      throw new DBException("Database exception deleting comment!");
+      throw new DbException("Database exception deleting comment!");
     }
   }
 
@@ -113,7 +113,7 @@ public class CommentService {
   }
 
   public List<Comment> getCommentsByPostId(long postID, long userID)
-      throws ResourceNotFoundException, NotAuthorizedException, DBException {
+      throws ResourceNotFoundException, NotAuthorizedException, DbException {
     //Fetch the post first
     Post post = postDao.findById(postID);
     if (post == null) {

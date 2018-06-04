@@ -3,7 +3,7 @@ package com.blogggr.strategies.auth;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.blogggr.config.AppConfig;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.AuthorizationStrategy;
@@ -49,18 +49,12 @@ public class AuthenticatedAuthorization implements AuthorizationStrategy {
       user = userService.getUserByEmail(cryptography.getSubjectFromValidJWT(authHash));
       authenticatedUser = user;
       return true;
-    } catch (ResourceNotFoundException e) {
-      errorMessage = e.getMessage();
-      return false;
     } catch (UnsupportedEncodingException e) {
       //Actually an internal server error
       errorMessage = e.getMessage();
       return false;
     } catch (JWTVerificationException e) {
       errorMessage = sessionExpiredText;
-      return false;
-    } catch (DBException e) {
-      errorMessage = e.getMessage();
       return false;
     }
   }

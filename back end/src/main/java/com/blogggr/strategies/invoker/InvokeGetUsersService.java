@@ -1,12 +1,12 @@
 package com.blogggr.strategies.invoker;
 
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
 import com.blogggr.models.PrevNextListPage;
 import com.blogggr.models.RandomAccessListPage;
-import com.blogggr.requestdata.UserSearchData;
+import com.blogggr.dto.UserSearchData;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.strategies.validators.GetUsersValidator;
@@ -29,7 +29,7 @@ public class InvokeGetUsersService extends ServiceInvocation {
 
   @Override
   public Object invokeService(Map<String, String> input, String body, Long userID)
-      throws DBException {
+      throws DbException {
     String searchString = null;
     Integer limit = null;
     Integer pageNum = null;
@@ -61,7 +61,7 @@ public class InvokeGetUsersService extends ServiceInvocation {
         searchData.setEmail(input.get(GetUsersValidator.EMAIL_SEARCH_KEY));
       }
       if (input.containsKey(GetUsersValidator.LENGTH_KEY)) {
-        searchData.setLength(Integer.parseInt(input.get(GetUsersValidator.LENGTH_KEY)));
+        searchData.setMaxRecordsCount(Integer.parseInt(input.get(GetUsersValidator.LENGTH_KEY)));
       }
       if (input.containsKey(GetUsersValidator.BEFORE_KEY)) {
         searchData.setBefore(Long.parseLong(input.get(GetUsersValidator.BEFORE_KEY)));

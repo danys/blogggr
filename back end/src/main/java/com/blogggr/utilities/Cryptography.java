@@ -52,9 +52,9 @@ public class Cryptography {
     }
   }
 
-  private final String issuer = "blogggr";
-  private final long maxValidHours = 24L;
-  private Algorithm algorithm;
+  private static final String issuer = "blogggr";
+  private static final long maxValidHours = 24L;
+  private static Algorithm algorithm;
 
   /**
    * Generate a JWT token with a subject claim and an expiration time The token expires 24h after
@@ -62,7 +62,7 @@ public class Cryptography {
    *
    * @return a JWT
    */
-  public String generateJWT(String username) throws UnsupportedEncodingException {
+  public static String generateJWT(String username) throws UnsupportedEncodingException {
     Instant validTillDate = Instant.now().plus(Duration.ofHours(maxValidHours));
     Date expirationDate = Date.from(validTillDate);
     if (algorithm == null) {

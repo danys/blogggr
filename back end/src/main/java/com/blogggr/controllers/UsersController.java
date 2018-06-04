@@ -1,21 +1,26 @@
 package com.blogggr.controllers;
 
 import com.blogggr.config.AppConfig;
+import com.blogggr.entities.User;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.models.*;
+import com.blogggr.dto.UserSearchData;
+import com.blogggr.requestdata.UserPostData;
+import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.PostService;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.auth.AuthenticatedAuthorization;
-import com.blogggr.strategies.auth.NoAuthorization;
 import com.blogggr.strategies.invoker.*;
 import com.blogggr.strategies.responses.GetResponse;
-import com.blogggr.strategies.responses.PostResponse;
 import com.blogggr.strategies.responses.PutResponse;
 import com.blogggr.strategies.validators.*;
 import com.blogggr.utilities.Cryptography;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -42,7 +47,7 @@ public class UsersController {
   private Cryptography cryptography;
 
   //GET /users
-  @RequestMapping(path = USER_PATH, method = RequestMethod.GET)
+  /*@RequestMapping(path = USER_PATH, method = RequestMethod.GET)
   public ResponseEntity getUsers(@RequestParam Map<String, String> params,
       @RequestHeader Map<String, String> header) {
     logger.info(
@@ -50,6 +55,19 @@ public class UsersController {
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new GetUsersValidator(), new InvokeGetUsersService(userService), new GetResponse());
     return model.execute(params, header, null);
+  }*/
+
+  //GET /users
+  @RequestMapping(path = USER_PATH, method = RequestMethod.GET)
+  public PrevNextListPage<User> getUsers(@Valid UserSearchData userSearchData, @AuthenticationPrincipal UserPrincipal userPrincipal) throws DbException {
+    PrevNextListPage<User> users = userService.getUsersBySearchTerms(userSearchData);
+    return users;
+    //Filter out unwanted fields
+    /*JsonNode node = JsonTransformer
+        .filterFieldsOfMultiLevelObject(users.getPageItems(), FilterFactory.getUserFilter());
+    ObjectMapper mapper = new ObjectMapper();
+    List<Object> trimmedUsers = mapper.convertValue(node, List.class);
+    return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(new PrevNextListPage<>(trimmedUsers, users.getPageData())), HttpStatus.OK);*/
   }
 
   //GET /users/me
@@ -87,11 +105,12 @@ public class UsersController {
 
   //POST /users
   @RequestMapping(path = USER_PATH, method = RequestMethod.POST)
-  public ResponseEntity createUser(@RequestBody String bodyData) {
-    logger.info("[POST /users] RequestBody: " + bodyData);
-    AppModel model = new AppModelImpl(new NoAuthorization(), new UserPostDataValidator(),
+  public User createUser(@RequestBody @Valid UserPostData userPostData) {
+    logger.info("[POST /users] RequestBody: " + userPostData);
+    return userService.createUser(userPostData);
+    /*AppModel model = new AppModelImpl(new NoAuthorization(), new UserPostDataValidator(),
         new InvokePostUserService(userService), new PostResponse());
-    return model.execute(null, null, bodyData);
+    return model.execute(null, null, bodyData);*/
   }
 
   //PUT /users/id

@@ -1,7 +1,7 @@
 package com.blogggr.strategies.invoker;
 
 import com.blogggr.entities.Comment;
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.FilterFactory;
@@ -30,7 +30,7 @@ public class InvokeGetCommentsService extends ServiceInvocation {
 
   @Override
   public Object invokeService(Map<String, String> input, String body, Long userID)
-      throws ResourceNotFoundException, NotAuthorizedException, DBException {
+      throws ResourceNotFoundException, NotAuthorizedException, DbException {
     if (!input.containsKey(IdValidator.idName)) {
       return null;
     }

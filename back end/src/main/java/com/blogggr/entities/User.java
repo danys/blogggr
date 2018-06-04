@@ -7,7 +7,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,9 +47,6 @@ public class User implements Serializable {
 
   @Column(name = "password_hash", columnDefinition = "bpchar(64)")
   private String passwordHash;
-
-  @Column(columnDefinition = "bpchar(12)")
-  private String salt;
 
   @Column(columnDefinition = "bpchar(64)")
   private String challenge;
@@ -179,14 +175,6 @@ public class User implements Serializable {
 
   public void setPasswordHash(String passwordhash) {
     this.passwordHash = passwordhash;
-  }
-
-  public String getSalt() {
-    return this.salt;
-  }
-
-  public void setSalt(String salt) {
-    this.salt = salt;
   }
 
   public Integer getStatus() {

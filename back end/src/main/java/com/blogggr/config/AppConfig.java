@@ -1,6 +1,5 @@
 package com.blogggr.config;
 
-import com.blogggr.filters.XSSFilter;
 import com.blogggr.utilities.FileStorageManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -48,20 +47,6 @@ public class AppConfig {
     AppConfig.port = configPort;
     AppConfig.hostUrl = "http://localhost" + String.valueOf(AppConfig.port);
     AppConfig.fullBaseUrl = AppConfig.hostUrl + AppConfig.baseUrl;
-  }
-
-  @Bean
-  public FilterRegistrationBean filterRegistration() {
-    FilterRegistrationBean filterRegBean = new FilterRegistrationBean();
-    filterRegBean.setFilter(xssFilter());
-    filterRegBean.addUrlPatterns("/*");
-    filterRegBean.setName("xssFilter");
-    filterRegBean.setOrder(1);
-    return filterRegBean;
-  }
-
-  public Filter xssFilter() {
-    return new XSSFilter();
   }
 
   @Bean

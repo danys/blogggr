@@ -3,7 +3,7 @@ package com.blogggr.dao;
 import com.blogggr.config.AppConfig;
 import com.blogggr.controllers.PostsController;
 import com.blogggr.entities.*;
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.PageData;
 import com.blogggr.models.PrevNextListPage;
@@ -43,7 +43,7 @@ public class PostDao extends GenericDAOImpl<Post> {
   //Get posts by userID, title and visibility
   public PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title,
       Visibility visibility, Long before, Long after, Integer limit)
-      throws DBException, ResourceNotFoundException {
+      throws DbException, ResourceNotFoundException {
     try {
       //Check and maybe adjust limit, set default limit
       if (limit == null) {
@@ -92,7 +92,7 @@ public class PostDao extends GenericDAOImpl<Post> {
       PrevNextListPage<Post> page = new PrevNextListPage<>(posts, pData);
       return page;
     } catch (Exception e) {
-      throw new DBException("Database exception!", e);
+      throw new DbException("Database exception!", e);
     }
   }
 

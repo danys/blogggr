@@ -3,13 +3,13 @@ package com.blogggr.dao;
 import com.blogggr.config.AppConfig;
 import com.blogggr.controllers.UsersController;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.PageData;
 import com.blogggr.json.PageMetaData;
 import com.blogggr.models.PrevNextListPage;
 import com.blogggr.models.RandomAccessListPage;
-import com.blogggr.requestdata.UserSearchData;
+import com.blogggr.dto.UserSearchData;
 import com.blogggr.strategies.validators.GetUsersValidator;
 import javax.persistence.criteria.JoinType;
 import org.apache.commons.logging.Log;
@@ -55,22 +55,8 @@ public class UserDao extends GenericDAOImpl<User> {
     }
   }
 
-  public User getUserByEmail(String email) throws DBException, ResourceNotFoundException {
-    try {
-      CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-      CriteriaQuery<User> query = cb.createQuery(User.class);
-      Root<User> root = query.from(User.class);
-      query.where(cb.equal(root.get("email"), email));
-      return entityManager.createQuery(query).getSingleResult();
-    } catch (NoResultException e) {
-      throw new ResourceNotFoundException(noUserFound);
-    } catch (Exception e) {
-      throw new DBException(dbException);
-    }
-  }
-
   public RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber)
-      throws DBException {
+      throws DbException {
     try {
       //Check and maybe adjust limit, set default limit
       if (limit == null) {
@@ -117,7 +103,7 @@ public class UserDao extends GenericDAOImpl<User> {
       RandomAccessListPage<User> page = new RandomAccessListPage<>(users, pageMetaData);
       return page;
     } catch (Exception e) {
-      throw new DBException("Database exception!");
+      throw new DbException("Database exception!");
     }
   }
 
@@ -153,7 +139,7 @@ public class UserDao extends GenericDAOImpl<User> {
   }
 
   public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData)
-      throws DBException {
+      throws DbException {
     List<User> users = generateSearchTermQuery(searchData, User.class, true).getResultList();
     Long usersCountFiltered = generateSearchTermQuery(searchData, Long.class, true)
         .getSingleResult();
@@ -224,7 +210,7 @@ public class UserDao extends GenericDAOImpl<User> {
     }
     TypedQuery tQuery = entityManager.createQuery(query);
     if (resultClass != Long.class) {
-      tQuery.setMaxResults(searchData.getLength());
+      tQuery.setMaxResults(searchData.getMaxRecordsCount());
     }
     return tQuery;
   }

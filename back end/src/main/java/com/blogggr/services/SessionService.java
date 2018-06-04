@@ -1,10 +1,12 @@
 package com.blogggr.services;
 
 import com.blogggr.dao.UserDao;
+import com.blogggr.dao.UserRepository;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.*;
-import com.blogggr.requestdata.SessionPostData;
-import com.blogggr.utilities.Cryptography;
+import com.blogggr.utilities.JwtHelper;
+import java.security.Principal;
+import java.sql.Date;
+import java.time.Instant;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
@@ -27,29 +29,18 @@ public class SessionService {
   }
 
   private final Log logger = LogFactory.getLog(this.getClass());
-  private UserDao userDao;
-  private Cryptography cryptography;
 
-  public SessionService(UserDao userDao, Cryptography cryptography) {
-    this.userDao = userDao;
-    this.cryptography = cryptography;
-  }
-
-  public SessionDetails createSession(SessionPostData sessionData)
-      throws ResourceNotFoundException, DBException, WrongPasswordException, UnsupportedEncodingException {
-    User user = userDao.getUserByEmail(sessionData.getEmail());
-    //Check that the supplied password is correct
-    String storedPasswordHash = user.getPasswordHash();
-    String storedSalt = user.getSalt();
-    String submitPasswordHash = Cryptography
-        .computeSHA256Hash(sessionData.getPassword() + storedSalt);
-    if (submitPasswordHash.compareTo(storedPasswordHash) != 0) {
-      throw new WrongPasswordException("Supplied password is wrong!");
-    }
+  public SessionDetails createSession(User user)
+      throws UnsupportedEncodingException {
     SessionDetails details = new SessionDetails();
-    details.jwt = cryptography.generateJWT(user.getEmail());
-    details.expiration = cryptography.getExpirationFromValidJWT(details.jwt);
-    details.email = sessionData.getEmail();
+    details.jwt = JwtHelper.generateJwt(user.getEmail());
+    try {
+      details.expiration = JwtHelper.getExpirationFromValidJwt(details.jwt);
+    } catch(Exception e){
+      logger.error("Error determining expiration", e);
+      details.expiration = Date.from(Instant.now());
+    }
+    details.email = user.getEmail();
     return details;
   }
 }

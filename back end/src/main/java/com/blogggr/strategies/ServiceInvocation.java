@@ -1,6 +1,6 @@
 package com.blogggr.strategies;
 
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;
@@ -14,7 +14,7 @@ public abstract class ServiceInvocation implements ServiceInvocationStrategy{
 
   @Override
   public final Object invokeFileService(MultipartFile file, Long userID)
-      throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException{
+      throws DbException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException{
     return null;
   }
 }

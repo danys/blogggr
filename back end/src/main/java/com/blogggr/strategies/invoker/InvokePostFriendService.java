@@ -3,7 +3,7 @@ package com.blogggr.strategies.invoker;
 import com.blogggr.config.AppConfig;
 import com.blogggr.controllers.FriendsController;
 import com.blogggr.entities.Friend;
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.requestdata.FriendData;
@@ -29,7 +29,7 @@ public class InvokePostFriendService extends ServiceInvocation {
 
   @Override
   public Object invokeService(Map<String, String> input, String body, Long userID)
-      throws ResourceNotFoundException, DBException, NotAuthorizedException {
+      throws ResourceNotFoundException, DbException, NotAuthorizedException {
     ObjectMapper mapper = new ObjectMapper();
     FriendData friendData;
     try {

@@ -10,6 +10,7 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+    open-in-view: false
   datasource:
     driver-class-name: org.postgresql.Driver
     sql-script-encoding: UTF-8

@@ -2,7 +2,7 @@ package com.blogggr.dao;
 
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,7 +29,7 @@ public class FriendDao extends GenericDAOImpl<Friend> {
 
   private final Log logger = LogFactory.getLog(this.getClass());
 
-  public List<User> getUserFriends(long userID) throws ResourceNotFoundException, DBException {
+  public List<User> getUserFriends(long userID) throws ResourceNotFoundException, DbException {
     //Combine users from two queries
     List<User> friends = getUserFriendsHalf(userID, true);
     friends.addAll(getUserFriendsHalf(userID, false));
@@ -37,7 +37,7 @@ public class FriendDao extends GenericDAOImpl<Friend> {
   }
 
   private List<User> getUserFriendsHalf(long userID, boolean userOne)
-      throws ResourceNotFoundException, DBException {
+      throws ResourceNotFoundException, DbException {
     /**
      * SQL to produce (userOne boolean selects whether user one or two is selected):
      * SELECT u2.* FROM blogggr.friends f
@@ -72,12 +72,12 @@ public class FriendDao extends GenericDAOImpl<Friend> {
     } catch (NoResultException e) {
       throw new ResourceNotFoundException(noResult);
     } catch (Exception e) {
-      throw new DBException("Database exception!");
+      throw new DbException("Database exception!");
     }
   }
 
   public Friend getFriendByUserIDs(long userID1, long userID2)
-      throws ResourceNotFoundException, DBException {
+      throws ResourceNotFoundException, DbException {
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<Friend> query = cb.createQuery(Friend.class);
@@ -92,12 +92,12 @@ public class FriendDao extends GenericDAOImpl<Friend> {
     } catch (NoResultException e) {
       throw new ResourceNotFoundException(noResult);
     } catch (Exception e) {
-      throw new DBException("Database exception!");
+      throw new DbException("Database exception!");
     }
   }
 
   public Friend getFriendByUserIDsAndState(long userID1, long userID2, int state)
-      throws ResourceNotFoundException, DBException {
+      throws ResourceNotFoundException, DbException {
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<Friend> query = cb.createQuery(Friend.class);
@@ -113,7 +113,7 @@ public class FriendDao extends GenericDAOImpl<Friend> {
     } catch (NoResultException e) {
       throw new ResourceNotFoundException(noResult);
     } catch (Exception e) {
-      throw new DBException("Database exception!");
+      throw new DbException("Database exception!");
     }
   }
 }

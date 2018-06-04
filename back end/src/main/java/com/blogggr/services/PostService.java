@@ -6,7 +6,7 @@ import com.blogggr.dao.UserDao;
 import com.blogggr.entities.Comment;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.models.PrevNextListPage;
@@ -102,7 +102,7 @@ public class PostService {
   }
 
   //Simple function to check that this user is friends with the poster
-  private boolean isFriendOfUser(long postUserID, long userId) throws DBException {
+  private boolean isFriendOfUser(long postUserID, long userId) throws DbException {
     try {
       long smallNum, bigNum;
       smallNum = (postUserID < userId) ? postUserID : userId;
@@ -115,7 +115,7 @@ public class PostService {
   }
 
   public Post getPostById(long postId, long userId)
-      throws ResourceNotFoundException, DBException, NotAuthorizedException {
+      throws ResourceNotFoundException, DbException, NotAuthorizedException {
     Post post = postDao.findById(postId);
     if (post == null) {
       throw new ResourceNotFoundException(postNotFound);
@@ -135,14 +135,14 @@ public class PostService {
 
   public PrevNextListPage<Post> getPosts(long userId, Long postUserID, String title,
       PostDao.Visibility visibility, Long before, Long after, Integer limit)
-      throws ResourceNotFoundException, DBException {
+      throws ResourceNotFoundException, DbException {
     PrevNextListPage<Post> postsPage = postDao
         .getPosts(userId, postUserID, title, visibility, before, after, limit);
     return postsPage;
   }
 
   public Post getPostByUserAndLabel(Long userId, Long postUserID, String postShortTitle)
-      throws ResourceNotFoundException, DBException, NotAuthorizedException {
+      throws ResourceNotFoundException, DbException, NotAuthorizedException {
     try {
       Post post = postDao.getPostByUserAndLabel(userId, postUserID, postShortTitle);
       //Order comments by date
@@ -167,7 +167,7 @@ public class PostService {
     } catch (NoResultException e) {
       throw new ResourceNotFoundException(postNotFound);
     } catch (RuntimeException e) {
-      throw new DBException(dbException, e);
+      throw new DbException(dbException, e);
     }
   }
 }

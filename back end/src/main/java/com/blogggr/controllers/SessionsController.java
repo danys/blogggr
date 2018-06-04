@@ -1,18 +1,16 @@
 package com.blogggr.controllers;
 
 import com.blogggr.config.AppConfig;
-import com.blogggr.models.AppModel;
-import com.blogggr.models.AppModelImpl;
+import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.SessionService;
-import com.blogggr.strategies.auth.NoAuthorization;
-import com.blogggr.strategies.invoker.InvokePostSessionService;
-import com.blogggr.strategies.responses.PostResponse;
-import com.blogggr.strategies.validators.SessionPostDataValidator;
+import com.blogggr.services.SessionService.SessionDetails;
 import com.blogggr.utilities.Cryptography;
+import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -34,10 +32,8 @@ public class SessionsController {
 
   //POST /sessions
   @RequestMapping(path = sessionPath, method = RequestMethod.POST)
-  public ResponseEntity createSession(@RequestBody String bodyData) {
+  public SessionDetails createSession(@AuthenticationPrincipal UserPrincipal userPrincipal) throws UnsupportedEncodingException{
     logger.info("[POST /sessions]");
-    AppModel model = new AppModelImpl(new NoAuthorization(), new SessionPostDataValidator(),
-        new InvokePostSessionService(sessionService, cryptography), new PostResponse());
-    return model.execute(null, null, bodyData);
+    return sessionService.createSession(userPrincipal.getUser());
   }
 }

@@ -1,7 +1,7 @@
 package com.blogggr.strategies.invoker;
 
 import com.blogggr.entities.Post;
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
@@ -29,7 +29,7 @@ public class InvokeGetUserPostsService extends ServiceInvocation {
 
   @Override
   public Object invokeService(Map<String, String> input, String body, Long userID)
-      throws ResourceNotFoundException, DBException {
+      throws ResourceNotFoundException, DbException {
     //Check if the poster id is present
     Long posterID = null;
     if (input.containsKey(IdValidator.idName)) {

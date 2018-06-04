@@ -1,6 +1,6 @@
 package com.blogggr.models;
 
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;
@@ -82,7 +82,7 @@ public class AppModelImpl implements AppModel {
     } catch (NotAuthorizedException e) {
       e.printStackTrace();
       return responseBehavior.notAuthorizedResponse(e.getMessage());
-    } catch (DBException e) {
+    } catch (DbException e) {
       e.printStackTrace();
       return responseBehavior.exceptionResponse(e.getMessage());
     } catch (Exception e) {
@@ -125,7 +125,7 @@ public class AppModelImpl implements AppModel {
     } catch (NotAuthorizedException e) {
       e.printStackTrace();
       return responseBehavior.notAuthorizedResponse(e.getMessage());
-    } catch (DBException e) {
+    } catch (DbException e) {
       e.printStackTrace();
       return responseBehavior.exceptionResponse(e.getMessage());
     } catch (Exception e) {

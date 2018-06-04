@@ -2,7 +2,7 @@ package com.blogggr.strategies.invoker;
 
 import com.blogggr.config.AppConfig;
 import com.blogggr.entities.UserImage;
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.StorageException;
@@ -27,7 +27,7 @@ public class InvokePostUserImageService extends FileServiceInvocation {
 
   @Override
   public Object invokeFileService(MultipartFile file, Long userID)
-      throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException, StorageException {
+      throws DbException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException, StorageException {
     UserImage userImage = userImageService.postImage(userID, file);
     Map<String, String> responseMap = new HashMap<>();
     responseMap.put(AppConfig.locationHeaderKey,

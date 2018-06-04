@@ -3,13 +3,13 @@ package com.blogggr.exceptions;
 /**
  * Created by Daniel Sunnen on 25.11.16.
  */
-public class DBException extends Exception {
+public class DbException extends Exception {
 
-  public DBException(String message) {
+  public DbException(String message) {
     super(message);
   }
 
-  public DBException(String message, Throwable e) {
+  public DbException(String message, Throwable e) {
     super(message, e);
   }
 }

@@ -5,7 +5,7 @@ import com.blogggr.dao.UserDao;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.FriendPk;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.requestdata.FriendData;
@@ -72,7 +72,7 @@ public class FriendService {
   }
 
   public void updateFriend(long userID, long user1, long user2, FriendData friendData)
-      throws ResourceNotFoundException, NotAuthorizedException, DBException {
+      throws ResourceNotFoundException, NotAuthorizedException, DbException {
     if (user1 != userID && user2 != userID) {
       throw new NotAuthorizedException("Current user must be a part of the new friendship!");
     }
@@ -127,7 +127,7 @@ public class FriendService {
     friendDao.delete(friend);
   }
 
-  public List<User> getFriends(long userID) throws ResourceNotFoundException, DBException {
+  public List<User> getFriends(long userID) throws ResourceNotFoundException, DbException {
     List<User> friends = friendDao.getUserFriends(userID);
     return friends;
   }

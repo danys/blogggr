@@ -1,75 +1,34 @@
 package com.blogggr.requestdata;
 
+import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by Daniel Sunnen on 04.11.16.
  */
+@Getter
+@Setter
 public class UserPostData {
 
+  @NotNull
   private String firstName;
+
+  @NotNull
   private String lastName;
+
+  @NotNull
   private String email;
+
+  @NotNull
   private String password;
+
+  @NotNull
   private String passwordRepeat;
+
+  @NotNull
   private String sex;
+
+  @NotNull
   private String lang;
-
-  public UserPostData() {
-    //
-  }
-
-  public String getFirstName() {
-    return firstName;
-  }
-
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
-
-  public void setLastName(String lastName) {
-    this.lastName = lastName;
-  }
-
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public String getPasswordRepeat() {
-    return passwordRepeat;
-  }
-
-  public void setPasswordRepeat(String passwordRepeat) {
-    this.passwordRepeat = passwordRepeat;
-  }
-
-  public String getSex() {
-    return sex;
-  }
-
-  public void setSex(String sex) {
-    this.sex = sex;
-  }
-
-  public String getLang() {
-    return lang;
-  }
-
-  public void setLang(String lang) {
-    this.lang = lang;
-  }
 }

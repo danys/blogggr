@@ -1,6 +1,6 @@
 package com.blogggr.strategies;
 
-import com.blogggr.exceptions.DBException;
+import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.StorageException;
@@ -16,8 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ServiceInvocationStrategy {
 
   Object invokeService(Map<String, String> input, String body, Long userID)
-      throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException;
+      throws DbException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException;
 
   Object invokeFileService(MultipartFile file, Long userID)
-      throws DBException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException, StorageException;
+      throws DbException, ResourceNotFoundException, WrongPasswordException, NotAuthorizedException, UnsupportedEncodingException, StorageException;
 }
