@@ -5,7 +5,7 @@ import com.blogggr.controllers.PostsController;
 import com.blogggr.entities.Post;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;
-import com.blogggr.requestdata.PostData;
+import com.blogggr.dto.PostData;
 import com.blogggr.services.PostService;
 import com.blogggr.strategies.ServiceInvocation;
 import com.fasterxml.jackson.core.JsonProcessingException;

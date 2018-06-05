@@ -3,7 +3,7 @@ package com.blogggr.strategies.invoker;
 import com.blogggr.config.AppConfig;
 import com.blogggr.controllers.UsersController;
 import com.blogggr.entities.User;
-import com.blogggr.requestdata.UserPostData;
+import com.blogggr.dto.UserPostData;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.ServiceInvocation;
 import com.fasterxml.jackson.core.JsonProcessingException;

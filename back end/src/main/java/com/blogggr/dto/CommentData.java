@@ -1,4 +1,4 @@
-package com.blogggr.requestdata;
+package com.blogggr.dto;
 
 /**
  * Created by Daniel Sunnen on 05.12.16.

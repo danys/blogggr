@@ -6,7 +6,7 @@ import com.blogggr.entities.Friend;
 import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.requestdata.FriendData;
+import com.blogggr.dto.FriendData;
 import com.blogggr.services.FriendService;
 import com.blogggr.strategies.ServiceInvocation;
 import com.fasterxml.jackson.core.JsonProcessingException;

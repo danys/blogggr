@@ -1,4 +1,4 @@
-package com.blogggr.requestdata;
+package com.blogggr.dto;
 
 import javax.validation.constraints.NotNull;
 import lombok.Getter;

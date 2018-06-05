@@ -1,6 +1,6 @@
 package com.blogggr.strategies.validators;
 
-import com.blogggr.requestdata.CommentData;
+import com.blogggr.dto.CommentData;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

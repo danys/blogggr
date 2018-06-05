@@ -2,7 +2,7 @@ package com.blogggr.strategies.invoker;
 
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.requestdata.CommentData;
+import com.blogggr.dto.CommentData;
 import com.blogggr.services.CommentService;
 import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.strategies.validators.IdValidator;

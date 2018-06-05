@@ -8,7 +8,7 @@ import com.blogggr.entities.User;
 import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.requestdata.FriendData;
+import com.blogggr.dto.FriendData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;

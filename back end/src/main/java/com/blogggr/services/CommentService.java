@@ -10,7 +10,7 @@ import com.blogggr.entities.User;
 import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.requestdata.CommentData;
+import com.blogggr.dto.CommentData;
 import com.blogggr.utilities.TimeUtilities;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

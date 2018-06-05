@@ -5,7 +5,7 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.WrongPasswordException;
 import com.blogggr.json.FilterFactory;
 import com.blogggr.json.JsonTransformer;
-import com.blogggr.requestdata.PostData;
+import com.blogggr.dto.PostData;
 import com.blogggr.services.PostService;
 import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.strategies.validators.IdValidator;

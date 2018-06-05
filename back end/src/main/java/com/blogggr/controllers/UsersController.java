@@ -5,7 +5,7 @@ import com.blogggr.entities.User;
 import com.blogggr.exceptions.DbException;
 import com.blogggr.models.*;
 import com.blogggr.dto.UserSearchData;
-import com.blogggr.requestdata.UserPostData;
+import com.blogggr.dto.UserPostData;
 import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.PostService;
 import com.blogggr.services.UserService;

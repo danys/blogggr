@@ -1,7 +1,7 @@
 package com.blogggr.strategies.validators;
 
-import com.blogggr.requestdata.UserPostData;
-import com.blogggr.requestdata.UserPutData;
+import com.blogggr.dto.UserPostData;
+import com.blogggr.dto.UserPutData;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

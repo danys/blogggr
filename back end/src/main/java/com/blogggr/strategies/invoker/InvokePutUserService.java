@@ -3,7 +3,7 @@ package com.blogggr.strategies.invoker;
 import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.requestdata.UserPutData;
+import com.blogggr.dto.UserPutData;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.ServiceInvocation;
 import com.blogggr.strategies.validators.IdValidator;

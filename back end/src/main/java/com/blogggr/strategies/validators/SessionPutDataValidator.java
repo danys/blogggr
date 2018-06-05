@@ -2,9 +2,7 @@ package com.blogggr.strategies.validators;
 
 
 import com.blogggr.config.AppConfig;
-import com.blogggr.requestdata.SessionPostData;
-import com.blogggr.requestdata.SessionPutData;
-import com.blogggr.strategies.ValidationStrategy;
+import com.blogggr.dto.SessionPutData;
 import com.blogggr.utilities.TimeUtilities;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;

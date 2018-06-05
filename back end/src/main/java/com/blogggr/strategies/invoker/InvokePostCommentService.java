@@ -6,7 +6,7 @@ import com.blogggr.entities.Comment;
 import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.requestdata.CommentData;
+import com.blogggr.dto.CommentData;
 import com.blogggr.services.CommentService;
 import com.blogggr.strategies.ServiceInvocation;
 import com.fasterxml.jackson.core.JsonProcessingException;

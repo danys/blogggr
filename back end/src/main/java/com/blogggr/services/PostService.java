@@ -10,7 +10,7 @@ import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.models.PrevNextListPage;
-import com.blogggr.requestdata.PostData;
+import com.blogggr.dto.PostData;
 import com.blogggr.utilities.StringUtilities;
 import com.blogggr.utilities.TimeUtilities;
 import org.apache.commons.logging.Log;
