@@ -30,7 +30,7 @@ public class SessionsController {
   /**
    * POST /sessions <br/>
    * Can be used to get an initial JWT token using a username and a password <br/>
-   * or a new fresh token using an earlier JWT (see CredentialsAuthenticationFilter class).
+   * or a new fresh token using an earlier JWT that is still valid (see CredentialsAuthenticationFilter class).
    * @param userPrincipal the authenticated user
    * @return an object containing a new JWT, an expiration time and a email address of the principal
    * @throws UnsupportedEncodingException
