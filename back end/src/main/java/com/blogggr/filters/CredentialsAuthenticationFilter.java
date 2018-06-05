@@ -30,6 +30,9 @@ public class CredentialsAuthenticationFilter extends AbstractAuthenticationProce
 
   private final Log logger = LogFactory.getLog(this.getClass());
 
+  /**
+   * POST to /sessions with valid credentials in order to obtain a fresh JWT
+   */
   public CredentialsAuthenticationFilter() {
     super(new AntPathRequestMatcher("/api/v*/sessions", "POST"));
   }
