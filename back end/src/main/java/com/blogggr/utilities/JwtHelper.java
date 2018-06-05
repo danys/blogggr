@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.blogggr.config.AppConfig;
 import java.io.UnsupportedEncodingException;
 import java.time.Duration;
 import java.time.Instant;
@@ -28,8 +29,7 @@ public class JwtHelper {
    * @return a JWT
    */
   public static String generateJwt(String username) throws UnsupportedEncodingException {
-    ZoneId luxembourgZoneId = ZoneId.of("Europe/Luxembourg");
-    ZonedDateTime currentDateTime = LocalDateTime.now().atZone(luxembourgZoneId);
+    ZonedDateTime currentDateTime = LocalDateTime.now().atZone(AppConfig.luxembourgZoneId);
     ZonedDateTime validTillDateTime = currentDateTime.plus(Duration.ofHours(maxValidHours));
     Date expirationDate = Date.from(validTillDateTime.toInstant());
     Algorithm algorithm = Algorithm.HMAC512(hmacKey);
@@ -65,10 +65,10 @@ public class JwtHelper {
   /**
    * Extract expiration date from valid JWT
    */
-  public static java.util.Date getExpirationFromValidJwt(String token)
+  public static ZonedDateTime getExpirationFromValidJwt(String token)
       throws Exception {
     Algorithm algorithm = Algorithm.HMAC512(hmacKey);
     DecodedJWT jwtObject = getDecodedJwt(token, algorithm);
-    return jwtObject.getExpiresAt();
+    return ZonedDateTime.ofInstant(jwtObject.getExpiresAt().toInstant(), AppConfig.luxembourgZoneId);
   }
 }
