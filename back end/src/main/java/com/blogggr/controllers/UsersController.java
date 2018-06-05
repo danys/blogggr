@@ -72,7 +72,7 @@ public class UsersController {
 
   //GET /users/me
   @RequestMapping(path = USER_PATH + "/me", method = RequestMethod.GET)
-  public ResponseEntity getCurrentUser(@RequestHeader Map<String, String> header) {
+  public ResponseEntity getCurrentUser(@RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /users/me] RequestHeader: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new NoCheckValidator(), new InvokeGetUserMeService(userService), new GetResponse());
@@ -82,7 +82,7 @@ public class UsersController {
   //GET /users/id
   @RequestMapping(path = USER_PATH + "/{id:[\\d]+}", method = RequestMethod.GET)
   public ResponseEntity getUser(@PathVariable String id,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /users/id] Id: " + id + ". Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
@@ -94,7 +94,7 @@ public class UsersController {
   //GET /users/id/posts
   @RequestMapping(path = USER_PATH + "/{id}/posts", method = RequestMethod.GET)
   public ResponseEntity getUserPosts(@PathVariable String id,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /users/id/posts] Id: " + id + ". Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
@@ -105,7 +105,7 @@ public class UsersController {
 
   //POST /users
   @RequestMapping(path = USER_PATH, method = RequestMethod.POST)
-  public User createUser(@RequestBody @Valid UserPostData userPostData) {
+  public User createUser(@RequestBody @Valid UserPostData userPostData, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[POST /users] RequestBody: " + userPostData);
     return userService.createUser(userPostData);
     /*AppModel model = new AppModelImpl(new NoAuthorization(), new UserPostDataValidator(),
@@ -116,7 +116,7 @@ public class UsersController {
   //PUT /users/id
   @RequestMapping(path = USER_PATH + "/{id}", method = RequestMethod.PUT)
   public ResponseEntity updateUser(@PathVariable String id, @RequestBody String bodyData,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[PUT /users/id] Id: " + id + ". RequestBody: " + bodyData + ". Header: " + header
         .toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),

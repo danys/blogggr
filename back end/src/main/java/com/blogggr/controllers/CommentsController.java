@@ -3,6 +3,7 @@ package com.blogggr.controllers;
 import com.blogggr.config.AppConfig;
 import com.blogggr.models.AppModel;
 import com.blogggr.models.AppModelImpl;
+import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.CommentService;
 import com.blogggr.services.PostService;
 import com.blogggr.services.UserService;
@@ -20,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -51,7 +53,7 @@ public class CommentsController {
   //POST /comments
   @RequestMapping(path = commentsPath, method = RequestMethod.POST)
   public ResponseEntity createComment(@RequestBody String bodyData,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[POST /comments] RequestBody = " + bodyData + ". Header: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new CommentPostDataValidator(), new InvokePostCommentService(commentService),
@@ -62,7 +64,7 @@ public class CommentsController {
   //PUT /comments/id
   @RequestMapping(path = commentsPath + "/{id}", method = RequestMethod.PUT)
   public ResponseEntity updateComment(@PathVariable String id, @RequestBody String bodyData,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[PUT /comments/id] Id = " + id + " RequestBody = " + bodyData + ". Header: " + header
             .toString());
@@ -77,7 +79,7 @@ public class CommentsController {
   //DELETE /comments/id
   @RequestMapping(path = commentsPath + "/{id}", method = RequestMethod.DELETE)
   public ResponseEntity deleteComment(@PathVariable String id,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[DELETE /comments] Id = " + id + "Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
@@ -89,7 +91,7 @@ public class CommentsController {
   //GET /comments/id
   @RequestMapping(path = commentsPath + "/{id}", method = RequestMethod.GET)
   public ResponseEntity getComment(@PathVariable String id,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /comments/id] Id = " + id + ". Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
@@ -102,7 +104,7 @@ public class CommentsController {
   @RequestMapping(path = PostsController.postsPath + "/{id}"
       + commentsPath, method = RequestMethod.GET)
   public ResponseEntity getCommentsByPostId(@PathVariable String id,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /comments/id/comments] Id = " + id + ". Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);

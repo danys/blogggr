@@ -3,6 +3,7 @@ package com.blogggr.controllers;
 import com.blogggr.config.AppConfig;
 import com.blogggr.models.AppModel;
 import com.blogggr.models.AppModelImpl;
+import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.PostService;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.auth.AuthenticatedAuthorization;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -45,7 +47,7 @@ public class PostsController {
   //POST /posts
   @RequestMapping(path = postsPath, method = RequestMethod.POST)
   public ResponseEntity createPost(@RequestBody String bodyData,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[POST /posts] RequestBody: " + bodyData + ". Header: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new PostPostDataValidator(), new InvokePostPostService(postService), new PostResponse());
@@ -55,7 +57,7 @@ public class PostsController {
   //PUT /posts
   @RequestMapping(path = postsPath + "/{id}", method = RequestMethod.PUT)
   public ResponseEntity updatePost(@PathVariable String id, @RequestBody String bodyData,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[PUT /posts] Id = " + id + ". RequestBody: " + bodyData + ". Header: " + header
         .toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
@@ -68,7 +70,7 @@ public class PostsController {
   //DELETE /posts
   @RequestMapping(path = postsPath + "/{id}", method = RequestMethod.DELETE)
   public ResponseEntity deletePost(@PathVariable String id,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[DELETE /posts] Id = " + id + ". Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
@@ -80,7 +82,7 @@ public class PostsController {
   //GET /posts/id
   @RequestMapping(path = postsPath + "/{id}", method = RequestMethod.GET)
   public ResponseEntity getPost(@PathVariable String id,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /posts/id] Id = " + id + ". Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);
@@ -93,7 +95,7 @@ public class PostsController {
   @RequestMapping(path = UsersController.USER_PATH
       + "/{userID}/posts/{postShortName}", method = RequestMethod.GET)
   public ResponseEntity getPost(@PathVariable String userID, @PathVariable String postShortName,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[GET /users/{userID}/posts/{post-short-name}] UserID = " + userID + ". PostShortName = "
             + postShortName + ". Header: " + header.toString());
@@ -109,7 +111,7 @@ public class PostsController {
   //GET /posts
   @RequestMapping(path = postsPath, method = RequestMethod.GET)
   public ResponseEntity getPosts(@RequestParam Map<String, String> params,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[GET /posts] RequestParams = " + params.toString() + ". Header: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),

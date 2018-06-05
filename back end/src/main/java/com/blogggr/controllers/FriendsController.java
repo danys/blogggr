@@ -3,6 +3,7 @@ package com.blogggr.controllers;
 import com.blogggr.config.AppConfig;
 import com.blogggr.models.AppModel;
 import com.blogggr.models.AppModelImpl;
+import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.FriendService;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.auth.AuthenticatedAuthorization;
@@ -23,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -51,7 +53,7 @@ public class FriendsController {
   //POST /friends
   @RequestMapping(path = friendsPath, method = RequestMethod.POST)
   public ResponseEntity createFriendship(@RequestBody String bodyData,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[POST /friends] RequestParams = " + bodyData + ". Header: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
         new FriendPostDataValidator(), new InvokePostFriendService(friendService),
@@ -62,7 +64,7 @@ public class FriendsController {
   //PUT /friends/id1/id2
   @RequestMapping(path = friendsPath + "/{id}/{id2}", method = RequestMethod.PUT)
   public ResponseEntity updateFriendship(@PathVariable String id, @PathVariable String id2,
-      @RequestBody String bodyData, @RequestHeader Map<String, String> header) {
+      @RequestBody String bodyData, @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[PUT /friends/id1/id2] Id = " + id + ". Id2 = " + id2 + " RequestBody = " + bodyData
             + "Header: " + header.toString());
@@ -77,7 +79,7 @@ public class FriendsController {
   //GET /friends
   @RequestMapping(path = friendsPath, method = RequestMethod.GET)
   public ResponseEntity getFriends(@RequestParam Map<String, String> params,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[GET /friends] RequestParams = " + params.toString() + "Header: " + header.toString());
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
@@ -88,7 +90,7 @@ public class FriendsController {
   //DELETE /friends/id
   @RequestMapping(path = friendsPath + "/{id}", method = RequestMethod.DELETE)
   public ResponseEntity deleteFriend(@PathVariable String id,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[DELETE /friends/id] Id = " + id + "Header: " + header.toString());
     Map<String, String> map = new HashMap<>();
     map.put("id", id);

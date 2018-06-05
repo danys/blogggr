@@ -4,6 +4,7 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.exceptions.StorageException;
 import com.blogggr.models.AppModel;
 import com.blogggr.models.AppModelImpl;
+import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.UserImageService;
 import com.blogggr.services.UserService;
 import com.blogggr.strategies.auth.AuthenticatedAuthorization;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -50,7 +52,7 @@ public class UserImageController {
   //POST /userimages
   @RequestMapping(path = USER_IMAGE_PATH, method = RequestMethod.POST)
   public ResponseEntity postUserImage(@RequestParam("file") MultipartFile file,
-      @RequestHeader Map<String, String> header) {
+      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[POST /userimages] Header: {}", header);
     AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
