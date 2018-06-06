@@ -73,7 +73,7 @@ public class UsersController {
     List<UserDto> userDtos = usersPage.getPageItems().stream().map(user -> dtoConverter.toUserDto(user))
         .collect(Collectors.toList());
     PrevNextListPage<UserDto> userDtoPage = new PrevNextListPage<>(userDtos, usersPage.getPageData());
-    return ResponseBuilder.successResponse(userDtoPage);
+    return ResponseBuilder.getSuccessResponse(userDtoPage);
     //Filter out unwanted fields
     /*JsonNode node = JsonTransformer
         .filterFieldsOfMultiLevelObject(users.getPageItems(), FilterFactory.getUserFilter());

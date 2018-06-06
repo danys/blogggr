@@ -11,7 +11,8 @@ public class ResponseBuilder {
 
   private ResponseBuilder(){}
 
-  public static ResponseEntity successResponse(Object data){
+  //HTTP GET OK response
+  public static ResponseEntity getSuccessResponse(Object data){
     return new ResponseEntity(new DataResponseBody(AppConfig.apiVersion, data),
         HttpStatus.OK);
   }
