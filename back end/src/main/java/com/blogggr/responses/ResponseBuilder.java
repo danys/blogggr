@@ -12,7 +12,7 @@ public class ResponseBuilder {
   private ResponseBuilder(){}
 
   public static ResponseEntity successResponse(Object data){
-    return new ResponseEntity(new SuccessResponse(AppConfig.apiVersion, data),
+    return new ResponseEntity(new DataResponseBody(AppConfig.apiVersion, data),
         HttpStatus.OK);
   }
 }
