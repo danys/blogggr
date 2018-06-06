@@ -1,7 +1,9 @@
 package com.blogggr.config;
 
+import com.blogggr.utilities.DtoConverter;
 import com.blogggr.utilities.FileStorageManager;
 import java.time.ZoneId;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,5 +64,15 @@ public class AppConfig {
   @Qualifier("postimage")
   public FileStorageManager postImageFileStorageManager() {
     return new FileStorageManager(storageConfig.getPostImagesLocation(), imageApiKey, imageApiSecret);
+  }
+
+  @Bean
+  public ModelMapper modelMapper(){
+    return new ModelMapper();
+  }
+
+  @Bean
+  public DtoConverter dtoConverter() {
+    return new DtoConverter(modelMapper());
   }
 }
