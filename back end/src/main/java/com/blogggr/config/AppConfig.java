@@ -18,13 +18,12 @@ import javax.servlet.Filter;
 @Configuration
 public class AppConfig {
 
-  public static final String apiVersion = "1.0";
   private static final String urlPrefix = "/api/v";
+  public static final String apiVersion = "1.0";
   public static final String baseUrl = urlPrefix + apiVersion;
 
-  private static Integer port;
-  public static String hostUrl;
-  public static String fullBaseUrl = hostUrl + baseUrl;
+  public static String domain = "https://www.blogggr.com";
+  public static String fullBaseUrl = domain + '/' + baseUrl + '/';
 
   public static final String locationHeaderKey = "Location";
   public static final String authKey = "Auth";
@@ -46,13 +45,6 @@ public class AppConfig {
 
   @Autowired
   private StorageConfig storageConfig;
-
-  @Value("${server.port:8080}")
-  public void setPort(Integer configPort) {
-    AppConfig.port = configPort;
-    AppConfig.hostUrl = "http://localhost" + String.valueOf(AppConfig.port);
-    AppConfig.fullBaseUrl = AppConfig.hostUrl + AppConfig.baseUrl;
-  }
 
   @Bean
   @Qualifier("userimage")
