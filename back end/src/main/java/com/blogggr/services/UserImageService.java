@@ -110,7 +110,7 @@ public class UserImageService {
     selectedUserImage.setUser(user);
     selectedUserImage.setWidth(IMG_WIDTH);
     selectedUserImage.setHeight(IMG_HEIGHT);
-    selectedUserImage.setCurrent(true);
+    selectedUserImage.setIsCurrent(true);
     userImageDao.save(selectedUserImage);
     return selectedUserImage;
   }

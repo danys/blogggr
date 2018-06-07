@@ -16,6 +16,7 @@ public class DtoConverter {
   }
 
   public UserDto toUserDto(User user) {
+    user.getImage();
     UserDto userDto = modelMapper.map(user, UserDto.class);
     return userDto;
   }

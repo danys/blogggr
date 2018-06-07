@@ -3,6 +3,7 @@ package com.blogggr.dao;
 import com.blogggr.config.AppConfig;
 import com.blogggr.controllers.UsersController;
 import com.blogggr.entities.User;
+import com.blogggr.entities.UserImage;
 import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.json.PageData;
@@ -11,6 +12,7 @@ import com.blogggr.models.PrevNextListPage;
 import com.blogggr.models.RandomAccessListPage;
 import com.blogggr.dto.UserSearchData;
 import com.blogggr.strategies.validators.GetUsersValidator;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,7 +44,7 @@ public class UserDao extends GenericDAOImpl<User> {
     super(User.class);
   }
 
-  public User findByIdWithImages(Long id){
+  public User findByIdWithImages(Long id) {
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<User> query = cb.createQuery(User.class);
@@ -138,8 +140,7 @@ public class UserDao extends GenericDAOImpl<User> {
     return query;
   }
 
-  public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData)
-      throws DbException {
+  public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData) {
     List<User> users = generateSearchTermQuery(searchData, User.class, true).getResultList();
     Long usersCountFiltered = generateSearchTermQuery(searchData, Long.class, true)
         .getSingleResult();
@@ -157,6 +158,9 @@ public class UserDao extends GenericDAOImpl<User> {
     CriteriaQuery query =
         (resultClass != Long.class) ? cb.createQuery(User.class) : cb.createQuery(Long.class);
     Root<User> root = query.from(User.class);
+    if (resultClass != Long.class) {
+      root.fetch("userImages", JoinType.LEFT);
+    }
     List<Predicate> predicates = new LinkedList<>();
     if (doFilter) {
       if (searchData.getFirstName() != null) {

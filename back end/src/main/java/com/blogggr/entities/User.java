@@ -61,32 +61,26 @@ public class User implements Serializable {
   private Timestamp lastChange;
 
   //bi-directional many-to-one association to Comment
-  @JsonIgnore
   @OneToMany(mappedBy = "user")
   private List<Comment> comments;
 
   //bi-directional many-to-one association to Friend
-  @JsonIgnore
   @OneToMany(mappedBy = "user1")
   private List<Friend> friends1;
 
   //bi-directional many-to-one association to Friend
-  @JsonIgnore
   @OneToMany(mappedBy = "user2")
   private List<Friend> friends2;
 
   //bi-directional many-to-one association to Friend
-  @JsonIgnore
   @OneToMany(mappedBy = "lastActionUserId")
   private List<Friend> friends3;
 
   //bi-directional many-to-one association to Post
-  @JsonIgnore
   @OneToMany(mappedBy = "user")
   private List<Post> posts;
 
   //bi-directional many-to-one association to Post
-  @JsonIgnore
   @OneToMany(mappedBy = "user")
   private List<UserImage> userImages;
 
@@ -96,14 +90,11 @@ public class User implements Serializable {
   @Version
   private Long version;
 
-  public User() {
-  }
-
   public UserImage getImage() {
     if (this.userImages == null) {
       return null;
     }
-    this.image = this.userImages.stream().filter(UserImage::getCurrent).findFirst()
+    this.image = this.userImages.stream().filter(UserImage::getIsCurrent).findFirst()
         .orElse(null);
     if (this.image == null) { //set a default image
       UserImage manImage = new UserImage();
