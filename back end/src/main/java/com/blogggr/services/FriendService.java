@@ -64,8 +64,8 @@ public class FriendService {
       friend.setLastActionUserId(userBig);
     }
     FriendPk fPk = new FriendPk();
-    fPk.setuserOneId(userSmall.getUserId());
-    fPk.setuserTwoId(userBig.getUserId());
+    fPk.setUserOneId(userSmall.getUserId());
+    fPk.setUserTwoId(userBig.getUserId());
     friend.setId(fPk);
     friendDao.save(friend);
     return friend;
@@ -125,6 +125,17 @@ public class FriendService {
       throw new NotAuthorizedException("Not authorized to delete friendship!");
     }
     friendDao.delete(friend);
+  }
+
+  public Friend getFriend(long friendId, long userId)
+      throws ResourceNotFoundException, NotAuthorizedException {
+    Friend friend = friendDao.findById(friendId);
+    if (friend == null) {
+      throw new ResourceNotFoundException("Friendship not found");
+    } else if (friend.getUser1().getUserId() != userId || friend.getUser2().getUserId() != userId){
+      throw new NotAuthorizedException("Not allowed to view this friendship");
+    }
+    return friend;
   }
 
   public List<User> getFriends(long userID) throws ResourceNotFoundException, DbException {

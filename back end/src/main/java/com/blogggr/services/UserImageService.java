@@ -4,6 +4,7 @@ import com.blogggr.dao.UserDao;
 import com.blogggr.dao.UserImageDao;
 import com.blogggr.entities.User;
 import com.blogggr.entities.UserImage;
+import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.StorageException;
 import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.FileStorageManager;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -115,7 +117,12 @@ public class UserImageService {
     return selectedUserImage;
   }
 
-  public FileStorageManager getFileStorageManager() {
-    return this.fileStorageManager;
+  public Resource getUserImage(String fileName)
+      throws StorageException, ResourceNotFoundException {
+    UserImage userImage = userImageDao.findByName(fileName);
+    if (userImage == null) {
+      throw new ResourceNotFoundException("UserImage not found!");
+    }
+    return this.fileStorageManager.getImageResourceFromCloud(fileName);
   }
 }

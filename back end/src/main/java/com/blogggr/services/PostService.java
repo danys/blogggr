@@ -1,15 +1,17 @@
 package com.blogggr.services;
 
+import com.blogggr.config.AppConfig;
 import com.blogggr.dao.FriendDao;
 import com.blogggr.dao.PostDao;
 import com.blogggr.dao.UserDao;
+import com.blogggr.dto.PostSearchData;
 import com.blogggr.entities.Comment;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.models.PrevNextListPage;
+import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.dto.PostData;
 import com.blogggr.utilities.StringUtilities;
 import com.blogggr.utilities.TimeUtilities;
@@ -58,7 +60,7 @@ public class PostService {
     post.setTextBody(postData.getTextBody());
     post.setTimestamp(TimeUtilities.getCurrentTimestamp());
     post.setShortTitle(StringUtilities.compactTitle(postData.getTitle()));
-    post.setGlobal(postData.getGlobal());
+    post.setIsGlobal(postData.getIsGlobal());
     postDao.save(post);
     return post;
   }
@@ -81,8 +83,8 @@ public class PostService {
       post.setTitle(postData.getTitle());
       post.setShortTitle(StringUtilities.compactTitle(postData.getTitle()));
     }
-    if (postData.getGlobal() != null) {
-      post.setGlobal(postData.getGlobal());
+    if (postData.getIsGlobal() != null) {
+      post.setIsGlobal(postData.getIsGlobal());
     }
     postDao.save(post);
     return post;
@@ -122,7 +124,7 @@ public class PostService {
     }
     User postAuthor = post.getUser();
     //1. Post can be viewed if current session user is the owner or the post has global flag
-    if (postAuthor.getUserId() == userId || post.getGlobal()) {
+    if (postAuthor.getUserId() == userId || post.getIsGlobal()) {
       return post;
     }
     //2. Post can be viewed if the current user is friends with the poster
@@ -133,11 +135,19 @@ public class PostService {
     throw new NotAuthorizedException(noReadAuthorization);
   }
 
-  public PrevNextListPage<Post> getPosts(long userId, Long postUserID, String title,
-      PostDao.Visibility visibility, Long before, Long after, Integer limit)
-      throws ResourceNotFoundException, DbException {
+  public PrevNextListPage<Post> getPosts(PostSearchData postSearchData, User user)
+      throws DbException {
     PrevNextListPage<Post> postsPage = postDao
-        .getPosts(userId, postUserID, title, visibility, before, after, limit);
+        .getPosts(postSearchData, user);
+    List<Post> posts = postsPage.getPageItems();
+    //Shorten and append ... if the post's text is too long. Load image.
+    posts.forEach(post -> {
+      post.getUser().getImage();
+      if (post.getTextBody() != null
+          && post.getTextBody().length() > AppConfig.maxPostBodyLength) {
+        post.setTextBody(post.getTextBody().substring(0, AppConfig.maxPostBodyLength) + "...");
+      }
+    });
     return postsPage;
   }
 
@@ -150,12 +160,12 @@ public class PostService {
       Collections.sort(comments, new Comparator<Comment>() {
         @Override
         public int compare(Comment o1, Comment o2) {
-          return (int) (o1.getRealTimestamp().getTime() - o2.getRealTimestamp().getTime());
+          return (int) (o1.getTimestamp().getTime() - o2.getTimestamp().getTime());
         }
       });
       post.setComments(comments);
       //1. Post can be viewed if current session user is the owner or the post has global flag
-      if (post.getUser().getUserId() == userId || post.getGlobal()) {
+      if (post.getUser().getUserId() == userId || post.getIsGlobal()) {
         return post;
       }
       //2. Post can be viewed if the current user is friends with the poster

@@ -2,12 +2,13 @@ package com.blogggr.services;
 
 import com.blogggr.dao.UserDao;
 import com.blogggr.dao.UserRepository;
+import com.blogggr.dto.SimpleUserSearchData;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.models.PrevNextListPage;
-import com.blogggr.models.RandomAccessListPage;
+import com.blogggr.responses.PrevNextListPage;
+import com.blogggr.responses.RandomAccessListPage;
 import com.blogggr.dto.UserPostData;
 import com.blogggr.dto.UserPutData;
 import com.blogggr.dto.UserSearchData;
@@ -67,7 +68,7 @@ public class UserService implements UserDetailsService {
   }
 
   //For POST request
-  public User createUser(UserPostData userData) throws DataAccessException{
+  public User createUser(UserPostData userData) throws DataAccessException {
     //Check that userData does not contain nulls
     if ((userData.getFirstName() == null) || (userData.getLastName() == null)
         || (userData.getEmail() == null) || (userData.getPassword() == null)) {
@@ -91,7 +92,7 @@ public class UserService implements UserDetailsService {
   }
 
   public void updateUser(long userResourceID, long userID, UserPutData userData)
-      throws ResourceNotFoundException, DbException, NotAuthorizedException {
+      throws ResourceNotFoundException, NotAuthorizedException {
     User user = userDao.findById(userResourceID);
     if (user == null) {
       throw new ResourceNotFoundException("User not found!");
@@ -126,9 +127,10 @@ public class UserService implements UserDetailsService {
     userDao.save(user);
   }
 
-  public RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber)
+  public RandomAccessListPage<User> getUsers(SimpleUserSearchData searchData)
       throws DbException {
-    RandomAccessListPage<User> usersPage = userDao.getUsers(searchString, limit, pageNumber);
+    RandomAccessListPage<User> usersPage = userDao
+        .getUsers(searchData.getSearchString(), searchData.getLimit(), searchData.getPageNumber());
     return usersPage;
   }
 

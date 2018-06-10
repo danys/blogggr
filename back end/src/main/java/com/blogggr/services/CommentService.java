@@ -49,12 +49,12 @@ public class CommentService {
     if (user == null) {
       throw new ResourceNotFoundException("User not found!");
     }
-    Post post = postDao.findById(commentData.getCommentId());
+    Post post = postDao.findById(commentData.getPostId());
     if (post == null) {
       throw new ResourceNotFoundException("Post not found!");
     }
     //If post is not global then user must be friends with the poster (or be the poster)
-    if (!post.getGlobal() && post.getUser().getUserId() != userID) {
+    if (!post.getIsGlobal() && post.getUser().getUserId() != userID) {
       long posterUserID = post.getUser().getUserId();
       long smaller = (posterUserID < userID) ? posterUserID : userID;
       long bigger = (posterUserID >= userID) ? posterUserID : userID;
@@ -121,7 +121,7 @@ public class CommentService {
     }
     User postAuthor = post.getUser();
     //1. Comments of the post can be viewed if current session user is the owner or the post has global flag
-    if (postAuthor.getUserId() == userID || post.getGlobal()) {
+    if (postAuthor.getUserId() == userID || post.getIsGlobal()) {
       return post.getComments();
     }
     //2. Post and comments can be viewed if the current user is friends with the poster
