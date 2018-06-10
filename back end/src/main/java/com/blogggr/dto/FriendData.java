@@ -1,39 +1,22 @@
 package com.blogggr.dto;
 
+import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by Daniel Sunnen on 11.12.16.
  */
+@Getter
+@Setter
 public class FriendData {
 
+    @NotNull
     private Long userId1;
+
+    @NotNull
     private Long userId2;
+
+    @NotNull
     private Integer action;
-
-    public FriendData(){
-        //
-    }
-
-    public Long getUserId1() {
-        return userId1;
-    }
-
-    public void setUserId1(Long userId1) {
-        this.userId1 = userId1;
-    }
-
-    public Long getUserId2() {
-        return userId2;
-    }
-
-    public void setUserId2(Long userId2) {
-        this.userId2 = userId2;
-    }
-
-    public Integer getAction() {
-        return action;
-    }
-
-    public void setAction(Integer action) {
-        this.action = action;
-    }
 }

@@ -1,39 +1,25 @@
 package com.blogggr.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by Daniel Sunnen on 19.11.16.
  */
+@Getter
+@Setter
 public class PostData {
 
+  @NotNull
+  @Size(min=4)
   private String title;
+
+  @NotNull
+  @Size(min=10)
   private String textBody;
+
+  @NotNull
   private Boolean isGlobal;
-
-  public PostData() {
-    //
-  }
-
-  public String getTitle() {
-    return title;
-  }
-
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
-  public String getTextBody() {
-    return textBody;
-  }
-
-  public void setTextBody(String textBody) {
-    this.textBody = textBody;
-  }
-
-  public Boolean getGlobal() {
-    return isGlobal;
-  }
-
-  public void setGlobal(Boolean global) {
-    isGlobal = global;
-  }
 }

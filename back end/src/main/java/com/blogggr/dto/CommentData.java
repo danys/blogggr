@@ -1,31 +1,21 @@
 package com.blogggr.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by Daniel Sunnen on 05.12.16.
  */
+@Getter
+@Setter
 public class CommentData {
 
-    private Long commentId;
-    private String text;
+  @NotNull
+  private Long postId;
 
-    public CommentData(){
-        //
-    }
-
-
-    public Long getCommentId() {
-        return commentId;
-    }
-
-    public void setCommentId(Long postId) {
-        this.commentId = postId;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
+  @NotNull
+  @Size(min = 4)
+  private String text;
 }
