@@ -35,9 +35,6 @@ public class FriendsController {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Autowired
-  private UserService userService;
-
-  @Autowired
   private FriendService friendService;
 
   @Autowired
