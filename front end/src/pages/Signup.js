@@ -65,7 +65,6 @@ export class Signup extends React.Component{
             if (event.target.value==='English') this.setState({lang: 'en'});
             else if (event.target.value==='German') this.setState({lang: 'de'});
             else if (event.target.value==='French') this.setState({lang: 'fr'});
-            else if (event.target.value==='Luxembourgish') this.setState({lang: 'lu'});
         }
         else this.setState({[field]: event.target.value});
     }
@@ -118,7 +117,6 @@ export class Signup extends React.Component{
                                             <option>English</option>
                                             <option>German</option>
                                             <option>French</option>
-                                            <option>Luxembourgish</option>
                                         </select>
                                     </div>
                                     <Link url="/signup" cssClass="btn btn-lg btn-success btn-block" onClick={this.handleSignupClick} text="Sign up" tabIndex="7"/>
