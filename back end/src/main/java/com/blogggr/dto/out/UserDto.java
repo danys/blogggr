@@ -1,6 +1,5 @@
 package com.blogggr.dto;
 
-import com.blogggr.entities.UserImage;
 import lombok.Getter;
 import lombok.Setter;
 
