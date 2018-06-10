@@ -2,12 +2,12 @@ package com.blogggr.dao;
 
 import com.blogggr.config.AppConfig;
 import com.blogggr.controllers.PostsController;
+import com.blogggr.dto.PostSearchData;
 import com.blogggr.entities.*;
 import com.blogggr.exceptions.DbException;
-import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.json.PageData;
-import com.blogggr.models.PrevNextListPage;
-import com.blogggr.strategies.validators.GetPostsValidator;
+import com.blogggr.responses.PageData;
+import com.blogggr.responses.PrevNextListPage;
+import com.blogggr.validators.GetPostsValidator;
 import com.blogggr.utilities.StringUtilities;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,21 +41,25 @@ public class PostDao extends GenericDAOImpl<Post> {
   private final long defaultMinimumID = -1;
 
   //Get posts by userID, title and visibility
-  public PrevNextListPage<Post> getPosts(long userID, Long postUserID, String title,
-      Visibility visibility, Long before, Long after, Integer limit)
-      throws DbException, ResourceNotFoundException {
+  public PrevNextListPage<Post> getPosts(PostSearchData postSearchData, User user)
+      throws DbException {
     try {
       //Check and maybe adjust limit, set default limit
-      if (limit == null) {
-        limit = Integer.valueOf(defaultLimit);
-      } else if (limit.intValue() > defaultLimit) {
-        limit = Integer.valueOf(defaultLimit);
+      if (postSearchData.getMaxRecordsCount() == null) {
+        postSearchData.setMaxRecordsCount(defaultLimit);
+      } else if (postSearchData.getMaxRecordsCount().intValue() > defaultLimit) {
+        postSearchData.setMaxRecordsCount(defaultLimit);
       }
       //Generate query
-      CriteriaQuery<Post> postsQuery = generateQuery(userID, postUserID, title, visibility, before,
-          after, false);
-      List<Post> posts = entityManager.createQuery(postsQuery).setMaxResults(limit).getResultList();
-      CriteriaQuery<Long> postsCountQuery = generateQuery(userID, postUserID, title, visibility,
+      CriteriaQuery<Post> postsQuery = generateQuery(user.getUserId(),
+          postSearchData.getPosterUserId(), postSearchData.getTitle(),
+          postSearchData.getVisibility(), postSearchData.getBefore(),
+          postSearchData.getAfter(), false);
+      List<Post> posts = entityManager.createQuery(postsQuery)
+          .setMaxResults(postSearchData.getMaxRecordsCount()).getResultList();
+      CriteriaQuery<Long> postsCountQuery = generateQuery(user.getUserId(),
+          postSearchData.getPosterUserId(), postSearchData.getTitle(),
+          postSearchData.getVisibility(),
           null, null, true);
       Long totalCount = entityManager.createQuery(postsCountQuery).getSingleResult();
       Integer numberPageItems = posts.size();
@@ -63,7 +67,9 @@ public class PostDao extends GenericDAOImpl<Post> {
       Long nextBefore = null;
       //Figure out if a post is before or after the posts of this page
       if (totalCount > 0 && posts.size() > 0) {
-        CriteriaQuery<Post> beforePostQuery = generateQuery(userID, postUserID, title, visibility,
+        CriteriaQuery<Post> beforePostQuery = generateQuery(user.getUserId(),
+            postSearchData.getPosterUserId(), postSearchData.getTitle(),
+            postSearchData.getVisibility(),
             null, posts.get(0).getPostId(), false);
         List<Post> beforePosts = entityManager.createQuery(beforePostQuery).setMaxResults(1)
             .getResultList();
@@ -71,7 +77,9 @@ public class PostDao extends GenericDAOImpl<Post> {
           nextBefore = posts.get(0).getPostId();
         }
 
-        CriteriaQuery<Post> afterPostQuery = generateQuery(userID, postUserID, title, visibility,
+        CriteriaQuery<Post> afterPostQuery = generateQuery(user.getUserId(),
+            postSearchData.getPosterUserId(), postSearchData.getTitle(),
+            postSearchData.getVisibility(),
             posts.get(posts.size() - 1).getPostId(), null, false);
         List<Post> afterPosts = entityManager.createQuery(afterPostQuery).setMaxResults(1)
             .getResultList();
@@ -83,11 +91,15 @@ public class PostDao extends GenericDAOImpl<Post> {
       pData.setPageItemsCount(numberPageItems);
       pData.setTotalCount(totalCount);
       if (nextAfter != null) {
-        pData.setNext(buildNextPageUrl(nextAfter, limit, postUserID, title, visibility));
+        pData.setNext(buildNextPageUrl(nextAfter, postSearchData.getMaxRecordsCount(),
+            postSearchData.getPosterUserId(), postSearchData.getTitle(),
+            postSearchData.getVisibility()));
       }
       if (nextBefore != null) {
         pData.setPrevious(
-            buildPreviousPageUrl(nextBefore, limit, postUserID, title, visibility));
+            buildPreviousPageUrl(nextBefore, postSearchData.getMaxRecordsCount(),
+                postSearchData.getPosterUserId(), postSearchData.getTitle(),
+                postSearchData.getVisibility()));
       }
       PrevNextListPage<Post> page = new PrevNextListPage<>(posts, pData);
       return page;

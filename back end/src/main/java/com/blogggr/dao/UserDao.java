@@ -3,16 +3,13 @@ package com.blogggr.dao;
 import com.blogggr.config.AppConfig;
 import com.blogggr.controllers.UsersController;
 import com.blogggr.entities.User;
-import com.blogggr.entities.UserImage;
 import com.blogggr.exceptions.DbException;
-import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.json.PageData;
-import com.blogggr.json.PageMetaData;
-import com.blogggr.models.PrevNextListPage;
-import com.blogggr.models.RandomAccessListPage;
+import com.blogggr.responses.PageData;
+import com.blogggr.responses.PageMetaData;
+import com.blogggr.responses.PrevNextListPage;
+import com.blogggr.responses.RandomAccessListPage;
 import com.blogggr.dto.UserSearchData;
-import com.blogggr.strategies.validators.GetUsersValidator;
-import javax.persistence.criteria.Join;
+import com.blogggr.validators.GetUsersValidator;
 import javax.persistence.criteria.JoinType;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -78,10 +75,11 @@ public class UserDao extends GenericDAOImpl<User> {
       List<User> users = entityManager.createQuery(userQuery).setFirstResult(offset)
           .setMaxResults(limit).getResultList();
       Long count = entityManager.createQuery(userCountQuery).getSingleResult();
+      //Create the page meta data
       PageMetaData pageMetaData = new PageMetaData();
       pageMetaData.setTotalCount(count);
       int nPages = (count % limit == 0) ? (int) (count / limit) : (int) ((count / limit) + 1);
-      pageMetaData.setnPages(nPages);
+      pageMetaData.setNPages(nPages);
       pageMetaData.setPageId(pageNumber);
       pageMetaData.setPageItemsCount(users.size());
       StringBuilder sb = new StringBuilder();
