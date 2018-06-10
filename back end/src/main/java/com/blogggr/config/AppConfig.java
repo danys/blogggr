@@ -7,10 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import javax.servlet.Filter;
 
 /**
  * Created by Daniel Sunnen on 17.10.16.
@@ -23,12 +21,9 @@ public class AppConfig {
   public static final String baseUrl = urlPrefix + apiVersion;
 
   public static String domain = "https://www.blogggr.com";
-  public static String fullBaseUrl = domain + '/' + baseUrl + '/';
+  public static String fullBaseUrl = domain + '/' + baseUrl;
 
   public static final String locationHeaderKey = "Location";
-  public static final String authKey = "Auth";
-  public static final String validityUntilKey = "ValidUntil";
-  public static final String emailKey = "email";
   public static final long sessionValidityMillis = 1000 * 60 * 60
       * 24; //one day: maximum validity of a session. Max also applies for extensions.
   public static final String headerAuthorizationKey = "authorization";
@@ -36,6 +31,14 @@ public class AppConfig {
   public static final String validEmailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
   public static final ZoneId luxembourgZoneId = ZoneId.of("Europe/Luxembourg");
+
+  public static final String duplicateKeyError = "Unique key violation";
+  public static final String exceptionError = "Exceptional error";
+  public static final String nonTransientExceptionError = "Non-transient database error.";
+  public static final String recoverableExceptionError = "Recoverable database error, please retry.";
+  public static final String scriptExceptionError = "Error processing SQL.";
+  public static final String transientExceptionError = "Transient database error, please retry.";
+  public static final String wrongPasswordError = "Wrong password!";
 
   @Value("${imgapikey}")
   private String imageApiKey;
@@ -49,17 +52,19 @@ public class AppConfig {
   @Bean
   @Qualifier("userimage")
   public FileStorageManager userImageFileStorageManager() {
-    return new FileStorageManager(storageConfig.getUserImagesLocation(), imageApiKey, imageApiSecret);
+    return new FileStorageManager(storageConfig.getUserImagesLocation(), imageApiKey,
+        imageApiSecret);
   }
 
   @Bean
   @Qualifier("postimage")
   public FileStorageManager postImageFileStorageManager() {
-    return new FileStorageManager(storageConfig.getPostImagesLocation(), imageApiKey, imageApiSecret);
+    return new FileStorageManager(storageConfig.getPostImagesLocation(), imageApiKey,
+        imageApiSecret);
   }
 
   @Bean
-  public ModelMapper modelMapper(){
+  public ModelMapper modelMapper() {
     return new ModelMapper();
   }
 
