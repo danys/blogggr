@@ -2,13 +2,17 @@ package com.blogggr.config;
 
 import com.blogggr.utilities.DtoConverter;
 import com.blogggr.utilities.FileStorageManager;
+import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.time.ZoneId;
+import java.util.Locale;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 /**
  * Created by Daniel Sunnen on 17.10.16.
@@ -26,19 +30,10 @@ public class AppConfig {
   public static final String locationHeaderKey = "Location";
   public static final long sessionValidityMillis = 1000 * 60 * 60
       * 24; //one day: maximum validity of a session. Max also applies for extensions.
-  public static final String headerAuthorizationKey = "authorization";
   public static final int maxPostBodyLength = 100;
   public static final String validEmailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
   public static final ZoneId luxembourgZoneId = ZoneId.of("Europe/Luxembourg");
-
-  public static final String duplicateKeyError = "Unique key violation";
-  public static final String exceptionError = "Exceptional error";
-  public static final String nonTransientExceptionError = "Non-transient database error.";
-  public static final String recoverableExceptionError = "Recoverable database error, please retry.";
-  public static final String scriptExceptionError = "Error processing SQL.";
-  public static final String transientExceptionError = "Transient database error, please retry.";
-  public static final String wrongPasswordError = "Wrong password!";
 
   @Value("${imgapikey}")
   private String imageApiKey;
@@ -71,5 +66,20 @@ public class AppConfig {
   @Bean
   public DtoConverter dtoConverter() {
     return new DtoConverter(modelMapper());
+  }
+
+  @Bean
+  public LocaleResolver localeResolver() {
+    SessionLocaleResolver slr = new SessionLocaleResolver();
+    slr.setDefaultLocale(Locale.ENGLISH);
+    return slr;
+  }
+
+  @Bean
+  public SimpleBundleMessageSource messageSource() {
+    SimpleBundleMessageSource messageSource = new SimpleBundleMessageSource();
+    messageSource.setBasename("messages");
+    messageSource.setDefaultEncoding("UTF-8");
+    return messageSource;
   }
 }
