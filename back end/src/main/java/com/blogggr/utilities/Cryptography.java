@@ -21,6 +21,8 @@ import java.time.Instant;
 @Component
 public class Cryptography {
 
+  private Cryptography(){}
+
   final private static char[] lookupHexChars = "0123456789abcdef".toCharArray();
 
   private static String byteToString(byte[] data) {
@@ -42,72 +44,5 @@ public class Cryptography {
     } catch (NoSuchAlgorithmException e) {
       return "";
     }
-  }
-
-  public Cryptography(@Value("${hmackey}") String HMACKey) {
-    try {
-      this.algorithm = Algorithm.HMAC512(HMACKey);
-    } catch (UnsupportedEncodingException e) {
-      this.algorithm = null;
-    }
-  }
-
-  private static final String issuer = "blogggr";
-  private static final long maxValidHours = 24L;
-  private static Algorithm algorithm;
-
-  /**
-   * Generate a JWT token with a subject claim and an expiration time The token expires 24h after
-   * issuance
-   *
-   * @return a JWT
-   */
-  public static String generateJWT(String username) throws UnsupportedEncodingException {
-    Instant validTillDate = Instant.now().plus(Duration.ofHours(maxValidHours));
-    Date expirationDate = Date.from(validTillDate);
-    if (algorithm == null) {
-      throw new UnsupportedEncodingException();
-    }
-    return JWT.create()
-        .withSubject(username) //sub key
-        .withIssuer(issuer) //iss key
-        .withExpiresAt(expirationDate) //exp key
-        .sign(algorithm);
-  }
-
-  private DecodedJWT getDecodedJWT(String token)
-      throws UnsupportedEncodingException, JWTVerificationException {
-    if (algorithm == null) {
-      throw new UnsupportedEncodingException();
-    }
-    JWTVerifier verifier = JWT.require(algorithm)
-        .withIssuer(issuer)
-        .acceptExpiresAt(1L)
-        .build(); //Reusable verifier instance
-    return verifier.verify(token);
-  }
-
-  /**
-   * Extract subject from valid JWT
-   */
-  public String getSubjectFromValidJWT(String token)
-      throws UnsupportedEncodingException, JWTVerificationException {
-    if (algorithm == null) {
-      throw new UnsupportedEncodingException();
-    }
-    DecodedJWT jwtObject = getDecodedJWT(token);
-    return jwtObject.getSubject();
-  }
-
-  /**
-   * Extract expiration date from valid JWT
-   */
-  public java.util.Date getExpirationFromValidJWT(String token)
-      throws UnsupportedEncodingException, JWTVerificationException {
-    if (algorithm == null) {
-      throw new UnsupportedEncodingException();
-    }
-    DecodedJWT jwtObject = getDecodedJWT(token);
-    return jwtObject.getExpiresAt();
   }
 }
