@@ -1,4 +1,4 @@
-package com.blogggr.dto;
+package com.blogggr.dto.out;
 
 import lombok.Getter;
 import lombok.Setter;

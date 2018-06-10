@@ -1,4 +1,4 @@
-package com.blogggr.dto;
+package com.blogggr.dto.out;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,5 +14,4 @@ public class UserDto {
   private String email;
   private String firstName;
   private String lastName;
-  private UserImageDto image;
 }
