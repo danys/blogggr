@@ -1,22 +1,26 @@
 package com.blogggr.controllers;
 
 import com.blogggr.config.AppConfig;
-import com.blogggr.dto.UserDto;
+import com.blogggr.dao.PostDao.Visibility;
+import com.blogggr.dto.PostSearchData;
+import com.blogggr.dto.PrevNextData;
+import com.blogggr.dto.SimpleUserSearchData;
+import com.blogggr.dto.UserPutData;
+import com.blogggr.dto.out.PostDto;
+import com.blogggr.dto.out.UserWithImageDto;
+import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.DbException;
-import com.blogggr.models.*;
+import com.blogggr.exceptions.NotAuthorizedException;
+import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.responses.PrevNextListPage;
+import com.blogggr.responses.RandomAccessListPage;
 import com.blogggr.dto.UserSearchData;
 import com.blogggr.dto.UserPostData;
 import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.PostService;
 import com.blogggr.services.UserService;
-import com.blogggr.strategies.auth.AuthenticatedAuthorization;
-import com.blogggr.strategies.invoker.*;
-import com.blogggr.strategies.responses.GetResponse;
-import com.blogggr.strategies.responses.PutResponse;
-import com.blogggr.strategies.validators.*;
-import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.DtoConverter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,9 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Daniel Sunnen on 24.10.16.
@@ -49,97 +50,135 @@ public class UsersController {
   private PostService postService;
 
   @Autowired
-  private Cryptography cryptography;
-
-  @Autowired
   private DtoConverter dtoConverter;
 
-  //GET /users
-  /*@RequestMapping(path = USER_PATH, method = RequestMethod.GET)
-  public ResponseEntity getUsers(@RequestParam Map<String, String> params,
-      @RequestHeader Map<String, String> header) {
-    logger.info(
-        "[GET /users] RequestParams: " + params.toString() + ". Header: " + header.toString());
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new GetUsersValidator(), new InvokeGetUsersService(userService), new GetResponse());
-    return model.execute(params, header, null);
-  }*/
-
-  //GET /users
-  @RequestMapping(path = USER_PATH, method = RequestMethod.GET)
+  /**
+   * GET /users
+   * Search users by email and first name and last name
+   *
+   * @param userSearchData search users filter
+   * @param userPrincipal the logged in user
+   */
+  @RequestMapping(path = USER_PATH, method = RequestMethod.GET, params = "maxRecordsCount")
   public ResponseEntity getUsers(@Valid UserSearchData userSearchData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) throws DbException {
+    logger.info("[GET /users] UserSearchData, User: {}", userPrincipal.getUser().getEmail());
     PrevNextListPage<User> usersPage = userService.getUsersBySearchTerms(userSearchData);
-    List<UserDto> userDtos = usersPage.getPageItems().stream().map(user -> dtoConverter.toUserDto(user))
+    List<UserWithImageDto> userWithImageDtos = usersPage.getPageItems().stream()
+        .map(user -> dtoConverter.toUserWithImageDto(user))
         .collect(Collectors.toList());
-    PrevNextListPage<UserDto> userDtoPage = new PrevNextListPage<>(userDtos, usersPage.getPageData());
-    return ResponseBuilder.getSuccessResponse(userDtoPage);
-    //Filter out unwanted fields
-    /*JsonNode node = JsonTransformer
-        .filterFieldsOfMultiLevelObject(users.getPageItems(), FilterFactory.getUserFilter());
-    ObjectMapper mapper = new ObjectMapper();
-    List<Object> trimmedUsers = mapper.convertValue(node, List.class);
-    return new ResponseEntity(JSONResponseBuilder.generateSuccessResponse(new PrevNextListPage<>(trimmedUsers, users.getPageData())), HttpStatus.OK);*/
+    PrevNextListPage<UserWithImageDto> userWithImageDtoPage = new PrevNextListPage<>(
+        userWithImageDtos,
+        usersPage.getPageData());
+    return ResponseBuilder.getSuccessResponse(userWithImageDtoPage);
   }
 
-  //GET /users/me
+  /**
+   * GET /users
+   * Single search term to search across email, first name and last name
+   *
+   * @param userSearchData search term filter, maximum response size and page number
+   * @param userPrincipal the logged in user
+   */
+  @RequestMapping(path = USER_PATH, method = RequestMethod.GET, params = "searchString")
+  public ResponseEntity getUsersBySearchTerm(@Valid SimpleUserSearchData userSearchData,
+      @AuthenticationPrincipal UserPrincipal userPrincipal) throws DbException {
+    logger.info("[GET /users] SimpleUserSearchData, User: {}", userPrincipal.getUser().getEmail());
+    RandomAccessListPage<User> usersPage = userService.getUsers(userSearchData);
+    List<UserWithImageDto> userWithImageDtos = usersPage.getPageItems().stream()
+        .map(user -> dtoConverter.toUserWithImageDto(user))
+        .collect(Collectors.toList());
+    RandomAccessListPage<UserWithImageDto> userWithImageDtoPage = new RandomAccessListPage<>(
+        userWithImageDtos,
+        usersPage.getPageData());
+    return ResponseBuilder.getSuccessResponse(userWithImageDtoPage);
+  }
+
+  /**
+   * GET /users/me
+   * Request this users data with its main image
+   *
+   * @param userPrincipal the logged in user
+   */
   @RequestMapping(path = USER_PATH + "/me", method = RequestMethod.GET)
-  public ResponseEntity getCurrentUser(@RequestHeader Map<String, String> header,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    logger.info("[GET /users/me] RequestHeader: " + header.toString());
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new NoCheckValidator(), new InvokeGetUserMeService(userService), new GetResponse());
-    return model.execute(null, header, null);
+  public ResponseEntity getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+    logger.info("[GET /users/me] User: {}" + userPrincipal.getUser().getEmail());
+    User user = userService.getUserByIdWithImages(userPrincipal.getUser().getUserId());
+    UserWithImageDto userWithImageDto = dtoConverter.toUserWithImageDto(user);
+    return ResponseBuilder.getSuccessResponse(userWithImageDto);
   }
 
-  //GET /users/id
+  /**
+   * GET /users/id
+   *
+   * @param id the id of the user to be fetched
+   * @param userPrincipal the logged in user
+   */
   @RequestMapping(path = USER_PATH + "/{id:[\\d]+}", method = RequestMethod.GET)
   public ResponseEntity getUser(@PathVariable String id,
-      @RequestHeader Map<String, String> header,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    logger.info("[GET /users/id] Id: " + id + ". Header: " + header.toString());
-    Map<String, String> map = new HashMap<>();
-    map.put("id", id);
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new IdValidator(), new InvokeGetUserService(userService), new GetResponse());
-    return model.execute(map, header, null);
+    logger.info("[GET /users/id] Id: {}, user: {}", id, userPrincipal.getUser().getEmail());
+    User user = userService.getUserByIdWithImages(Long.parseLong(id));
+    UserWithImageDto userWithImageDto = dtoConverter.toUserWithImageDto(user);
+    return ResponseBuilder.getSuccessResponse(userWithImageDto);
   }
 
-  //GET /users/id/posts
-  @RequestMapping(path = USER_PATH + "/{id}/posts", method = RequestMethod.GET)
+  /**
+   * GET /users/id/posts
+   * Retrieve the posts of a particular user
+   *
+   * @param id the id of the user whose posts will be fetched
+   * @param userPrincipal the logged in user
+   */
+  @RequestMapping(path = USER_PATH + "/{id:[\\d]+}/posts", method = RequestMethod.GET)
   public ResponseEntity getUserPosts(@PathVariable String id,
-      @RequestHeader Map<String, String> header,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    logger.info("[GET /users/id/posts] Id: " + id + ". Header: " + header.toString());
-    Map<String, String> map = new HashMap<>();
-    map.put("id", id);
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new IdValidator(), new InvokeGetUserPostsService(postService), new GetResponse());
-    return model.execute(map, header, null);
+      @AuthenticationPrincipal UserPrincipal userPrincipal, @Valid PrevNextData<Long> searchData)
+      throws DbException, ResourceNotFoundException {
+    logger.info("[GET /users/id/posts] Id: {}, user: {}", id, userPrincipal.getUser().getEmail());
+    PostSearchData postSearchData = new PostSearchData();
+    postSearchData.setPosterUserId(Long.parseLong(id));
+    postSearchData.setVisibility(Visibility.all);
+    postSearchData.setMaxRecordsCount(searchData.getMaxRecordsCount());
+    postSearchData.setBefore(searchData.getBefore());
+    postSearchData.setAfter(searchData.getAfter());
+    PrevNextListPage<Post> page = postService
+        .getPosts(postSearchData, userPrincipal.getUser());
+    List<PostDto> postDtos = page.getPageItems().stream()
+        .map(post -> dtoConverter.toPostDto(post))
+        .collect(Collectors.toList());
+    PrevNextListPage<PostDto> postDtoPage = new PrevNextListPage<>(postDtos,
+        page.getPageData());
+    return ResponseBuilder.getSuccessResponse(postDtoPage);
   }
 
-  //POST /users
+  /**
+   * POST /users
+   * Create a new user
+   *
+   * @param userPostData the data of the new user
+   */
   @RequestMapping(path = USER_PATH, method = RequestMethod.POST)
-  public User createUser(@RequestBody @Valid UserPostData userPostData,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    logger.info("[POST /users] RequestBody: " + userPostData);
-    return userService.createUser(userPostData);
-    /*AppModel model = new AppModelImpl(new NoAuthorization(), new UserPostDataValidator(),
-        new InvokePostUserService(userService), new PostResponse());
-    return model.execute(null, null, bodyData);*/
+  public ResponseEntity createUser(@Valid UserPostData userPostData) {
+    logger.info("[POST /users] Create user with email: {}", userPostData.getEmail());
+    User user = userService.createUser(userPostData);
+    return ResponseBuilder.postSuccessResponse(
+        AppConfig.fullBaseUrl + USER_PATH + '/' + String.valueOf(user.getUserId()));
   }
 
-  //PUT /users/id
-  @RequestMapping(path = USER_PATH + "/{id}", method = RequestMethod.PUT)
-  public ResponseEntity updateUser(@PathVariable String id, @RequestBody String bodyData,
-      @RequestHeader Map<String, String> header,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    logger.info("[PUT /users/id] Id: " + id + ". RequestBody: " + bodyData + ". Header: " + header
-        .toString());
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new UserPutDataValidator(), new InvokePutUserService(userService), new PutResponse());
-    Map<String, String> map = new HashMap<>();
-    map.put("id", id);
-    return model.execute(map, header, bodyData);
+  /**
+   * PUT /users/id
+   * @param id the userId of the user to update
+   * @param userData the new data of the user
+   * @param userPrincipal the logged in user
+   * @return
+   * @throws ResourceNotFoundException
+   * @throws NotAuthorizedException
+   */
+  @RequestMapping(path = USER_PATH + "/{id:[\\d]+}", method = RequestMethod.PUT)
+  public ResponseEntity updateUser(@PathVariable String id, @Valid UserPutData userData,
+      @AuthenticationPrincipal UserPrincipal userPrincipal) throws ResourceNotFoundException, NotAuthorizedException{
+    logger.info("[PUT /users/id] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
+    userService.updateUser(Long.parseLong(id), userPrincipal.getUser().getUserId(), userData);
+    return ResponseBuilder.putSuccessResponse();
   }
 }

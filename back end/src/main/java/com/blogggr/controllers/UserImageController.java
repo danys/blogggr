@@ -1,17 +1,13 @@
 package com.blogggr.controllers;
 
 import com.blogggr.config.AppConfig;
+import com.blogggr.entities.UserImage;
+import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.StorageException;
-import com.blogggr.models.AppModel;
-import com.blogggr.models.AppModelImpl;
+import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.UserImageService;
 import com.blogggr.services.UserService;
-import com.blogggr.strategies.auth.AuthenticatedAuthorization;
-import com.blogggr.strategies.invoker.InvokePostUserImageService;
-import com.blogggr.strategies.responses.PostResponse;
-import com.blogggr.utilities.Cryptography;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,34 +39,42 @@ public class UserImageController {
   private UserService userService;
 
   @Autowired
-  private Cryptography cryptography;
-
-  @Autowired
   private UserImageService userImageService;
 
-  //POST /userimages
+  /**
+   * POST /userimages
+   *
+   * @param file the image that is uploaded
+   * @param userPrincipal the logged in user
+   */
   @RequestMapping(path = USER_IMAGE_PATH, method = RequestMethod.POST)
   public ResponseEntity postUserImage(@RequestParam("file") MultipartFile file,
-      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) throws StorageException {
     logger.info(
-        "[POST /userimages] Header: {}", header);
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        null, new InvokePostUserImageService(userImageService), new PostResponse());
-    return model.executeFile(file, header);
+        "[POST /userimages] User: {}", userPrincipal.getUser().getEmail());
+    UserImage userImage = userImageService.postImage(userPrincipal.getUser().getUserId(), file);
+    return ResponseBuilder.postSuccessResponse(
+        AppConfig.fullBaseUrl + USER_IMAGE_PATH + '/' + userImage.getName());
   }
 
-  //GET /userimages/filename
+  /**
+   * GET /userimages/filename
+   * @param fileName the filename of the file to retrieve
+   * @param userPrincipal the logged in user
+   * @return
+   * @throws StorageException
+   * @throws ResourceNotFoundException
+   */
   @GetMapping("/userimages/{filename:.+}")
   @ResponseBody
-  public ResponseEntity<Resource> serveFile(@PathVariable String fileName) {
+  public ResponseEntity<Resource> getUserImage(@PathVariable String fileName,
+      @AuthenticationPrincipal UserPrincipal userPrincipal) throws StorageException, ResourceNotFoundException {
     logger.info(
-        "[GET /userimages/{}]", fileName);
-    try {
-      Resource file = userImageService.getFileStorageManager().getImageResourceFromCloud(fileName);
-      return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-          "attachment; filename=\"" + file.getFilename() + "\"").body(file);
-    } catch(StorageException e){
-      return null;
-    }
+        "[GET /userimages/{}. User: {}]", fileName, userPrincipal.getUser().getEmail());
+
+    Resource file = userImageService.getUserImage(fileName);
+    return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+        "attachment; filename=\"" + file.getFilename() + "\"").body(file);
+
   }
 }

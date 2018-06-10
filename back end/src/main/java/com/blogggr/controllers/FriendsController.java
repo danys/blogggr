@@ -1,34 +1,27 @@
 package com.blogggr.controllers;
 
 import com.blogggr.config.AppConfig;
-import com.blogggr.models.AppModel;
-import com.blogggr.models.AppModelImpl;
+import com.blogggr.dto.FriendData;
+import com.blogggr.dto.out.UserDto;
+import com.blogggr.entities.Friend;
+import com.blogggr.entities.User;
+import com.blogggr.exceptions.DbException;
+import com.blogggr.exceptions.NotAuthorizedException;
+import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.FriendService;
 import com.blogggr.services.UserService;
-import com.blogggr.strategies.auth.AuthenticatedAuthorization;
-import com.blogggr.strategies.invoker.InvokeDeleteFriendService;
-import com.blogggr.strategies.invoker.InvokeGetFriendsService;
-import com.blogggr.strategies.invoker.InvokePostFriendService;
-import com.blogggr.strategies.invoker.InvokePutFriendService;
-import com.blogggr.strategies.responses.DeleteResponse;
-import com.blogggr.strategies.responses.GetResponse;
-import com.blogggr.strategies.responses.PostResponse;
-import com.blogggr.strategies.responses.PutResponse;
-import com.blogggr.strategies.validators.FriendPostDataValidator;
-import com.blogggr.strategies.validators.FriendPutDataValidator;
-import com.blogggr.strategies.validators.IdValidator;
-import com.blogggr.strategies.validators.NoCheckValidator;
-import com.blogggr.utilities.Cryptography;
+import com.blogggr.utilities.DtoConverter;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Daniel Sunnen on 11.12.16.
@@ -48,54 +41,94 @@ public class FriendsController {
   private FriendService friendService;
 
   @Autowired
-  private Cryptography cryptography;
+  DtoConverter dtoConverter;
 
-  //POST /friends
+  /**
+   * POST /friends
+   *
+   * @param friendData the data to create a new friendship
+   * @param userPrincipal the logged in user
+   */
   @RequestMapping(path = friendsPath, method = RequestMethod.POST)
-  public ResponseEntity createFriendship(@RequestBody String bodyData,
-      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    logger.info("[POST /friends] RequestParams = " + bodyData + ". Header: " + header.toString());
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new FriendPostDataValidator(), new InvokePostFriendService(friendService),
-        new PostResponse());
-    return model.execute(null, header, bodyData);
+  public ResponseEntity createFriendship(@Valid FriendData friendData,
+      @AuthenticationPrincipal UserPrincipal userPrincipal)
+      throws NotAuthorizedException, ResourceNotFoundException {
+    logger.info("[POST /friends] User: {}, id1: {}, id2: {}", userPrincipal.getUser().getEmail(),
+        friendData.getUserId1(), friendData.getUserId2());
+    Friend friend = friendService.createFriend(userPrincipal.getUser().getUserId(), friendData);
+    return ResponseBuilder
+        .postSuccessResponse(AppConfig.fullBaseUrl + friendsPath + '/' + friend.getId());
   }
 
-  //PUT /friends/id1/id2
-  @RequestMapping(path = friendsPath + "/{id}/{id2}", method = RequestMethod.PUT)
+  /**
+   * PUT /friends/id1/id2
+   *
+   * @param id the userId of a user
+   * @param id2 the userId of another user
+   * @param friendData the friendship update data
+   * @param userPrincipal the logged in user
+   */
+  @RequestMapping(path = friendsPath + "/{id:[\\d]+}/{id2:[\\d]+}", method = RequestMethod.PUT)
   public ResponseEntity updateFriendship(@PathVariable String id, @PathVariable String id2,
-      @RequestBody String bodyData, @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+      @Valid FriendData friendData, @AuthenticationPrincipal UserPrincipal userPrincipal)
+      throws ResourceNotFoundException, DbException, NotAuthorizedException {
     logger.info(
-        "[PUT /friends/id1/id2] Id = " + id + ". Id2 = " + id2 + " RequestBody = " + bodyData
-            + "Header: " + header.toString());
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new FriendPutDataValidator(), new InvokePutFriendService(friendService), new PutResponse());
-    Map<String, String> map = new HashMap<>();
-    map.put("id", id);
-    map.put("id2", id2);
-    return model.execute(map, header, bodyData);
+        "[PUT /friends/{}/{}] User: {}", id, id2, userPrincipal.getUser().getEmail());
+    friendService
+        .updateFriend(userPrincipal.getUser().getUserId(), Long.parseLong(id), Long.parseLong(id2),
+            friendData);
+    return ResponseBuilder.putSuccessResponse();
   }
 
-  //GET /friends
+  /**
+   * GET /friends
+   *
+   * @param userPrincipal the logged in user
+   */
   @RequestMapping(path = friendsPath, method = RequestMethod.GET)
-  public ResponseEntity getFriends(@RequestParam Map<String, String> params,
-      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
+  public ResponseEntity getFriends(@AuthenticationPrincipal UserPrincipal userPrincipal)
+      throws ResourceNotFoundException, DbException {
     logger.info(
-        "[GET /friends] RequestParams = " + params.toString() + "Header: " + header.toString());
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new NoCheckValidator(), new InvokeGetFriendsService(friendService), new GetResponse());
-    return model.execute(params, header, null);
+        "[GET /friends] User: {}", userPrincipal.getUser().getEmail());
+    List<User> friends = friendService.getFriends(userPrincipal.getUser().getUserId());
+    List<UserDto> userDtos = friends.stream().map(user -> dtoConverter.toUserDto(user))
+        .collect(Collectors.toList());
+    return ResponseBuilder.getSuccessResponse(userDtos);
   }
 
-  //DELETE /friends/id
-  @RequestMapping(path = friendsPath + "/{id}", method = RequestMethod.DELETE)
+  /**
+   * GET /friends/id
+   * Retrieve a single friendship
+   *
+   * @param id the id of the friendship to retrieve
+   * @param userPrincipal the logged in user
+   * @return
+   * @throws ResourceNotFoundException
+   * @throws NotAuthorizedException
+   */
+  @RequestMapping(path = friendsPath + "/{id:[\\d]+}", method = RequestMethod.GET)
+  public ResponseEntity getFriendship(@PathVariable String id,
+      @AuthenticationPrincipal UserPrincipal userPrincipal)
+      throws ResourceNotFoundException, NotAuthorizedException {
+    logger.info("[GET /friends/id] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
+    Friend friend = friendService.getFriend(Long.parseLong(id), userPrincipal.getUser().getUserId());
+    return ResponseBuilder.getSuccessResponse(dtoConverter.toFriendDto(friend));
+  }
+
+  /**
+   * DELETE /friends/id
+   * @param id the id of the friendship
+   * @param userPrincipal the logged in user
+   * @return
+   * @throws ResourceNotFoundException
+   * @throws NotAuthorizedException
+   */
+  @RequestMapping(path = friendsPath + "/{id:[\\d]+}", method = RequestMethod.DELETE)
   public ResponseEntity deleteFriend(@PathVariable String id,
-      @RequestHeader Map<String, String> header, @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    logger.info("[DELETE /friends/id] Id = " + id + "Header: " + header.toString());
-    Map<String, String> map = new HashMap<>();
-    map.put("id", id);
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new IdValidator(), new InvokeDeleteFriendService(friendService), new DeleteResponse());
-    return model.execute(map, header, null);
+      @AuthenticationPrincipal UserPrincipal userPrincipal)
+      throws ResourceNotFoundException, NotAuthorizedException {
+    logger.info("[DELETE /friends/id] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
+    friendService.deleteFriend(Long.parseLong(id), userPrincipal.getUser().getUserId());
+    return ResponseBuilder.deleteSuccessResponse();
   }
 }
