@@ -11,8 +11,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,10 +25,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  */
 public class CredentialsAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-  public static final String USERNAME_KEY = "email";
-  public static final String PASSWORD_KEY = "password";
+  private static final String USERNAME_KEY = "email";
+  private static final String PASSWORD_KEY = "password";
 
-  private final Log logger = LogFactory.getLog(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   /**
    * POST to /sessions with valid credentials in order to obtain a fresh JWT
