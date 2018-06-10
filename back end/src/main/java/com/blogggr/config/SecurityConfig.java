@@ -1,6 +1,7 @@
 package com.blogggr.config;
 
 import com.blogggr.filters.CredentialsAuthenticationFilter;
+import com.blogggr.filters.InternationalizationFilter;
 import com.blogggr.filters.JwtAuthenticationFilter;
 import com.blogggr.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Override
-  protected void configure(AuthenticationManagerBuilder auth)
-      throws Exception {
+  protected void configure(AuthenticationManagerBuilder auth) {
     auth.authenticationProvider(authenticationProvider());
   }
 
@@ -66,6 +66,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     return authenticationFilter;
   }
 
+  @Bean
+  public InternationalizationFilter internationalizationFilter() {
+    InternationalizationFilter internationalizationFilter = new InternationalizationFilter();
+    return internationalizationFilter;
+  }
+
+  /**
+   * Filter order: JWT filter -> credentials filter ->
+   * internationalization filter -> UsernamePasswordAuthenticationFilter
+   */
   @Override
   protected void configure(final HttpSecurity http) throws Exception {
     http
@@ -78,11 +88,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
-        .addFilterBefore(
-            credentialsAuthenticationFilter(),
-            UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(
-            jwtAuthenticationFilter(),
-            CredentialsAuthenticationFilter.class);
+        .addFilterBefore(internationalizationFilter(), UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(credentialsAuthenticationFilter(), InternationalizationFilter.class)
+        .addFilterBefore(jwtAuthenticationFilter(), CredentialsAuthenticationFilter.class);
   }
 }
