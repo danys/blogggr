@@ -1,6 +1,4 @@
-package com.blogggr.models;
-
-import com.blogggr.json.PageData;
+package com.blogggr.responses;
 
 import java.util.List;
 

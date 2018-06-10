@@ -1,4 +1,4 @@
-package com.blogggr.json;
+package com.blogggr.responses;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,12 +1,12 @@
-package com.blogggr.models;
-
-import com.blogggr.json.PageMetaData;
+package com.blogggr.responses;
 
 import java.util.List;
+import lombok.Getter;
 
 /**
  * Created by Daniel Sunnen on 12.01.17.
  */
+@Getter
 public class RandomAccessListPage<T> {
 
   List<T> pageItems;
@@ -15,13 +15,5 @@ public class RandomAccessListPage<T> {
   public RandomAccessListPage(List<T> pageItems, PageMetaData pageData) {
     this.pageItems = pageItems;
     this.pageData = pageData;
-  }
-
-  public List<T> getPageItems() {
-    return pageItems;
-  }
-
-  public PageMetaData getPageData() {
-    return pageData;
   }
 }

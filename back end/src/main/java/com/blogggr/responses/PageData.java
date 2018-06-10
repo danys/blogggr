@@ -1,4 +1,4 @@
-package com.blogggr.json;
+package com.blogggr.responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
