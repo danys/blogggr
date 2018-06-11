@@ -21,6 +21,9 @@ public class UserPostData {
   private String email;
 
   @NotNull
+  private String emailRepeat;
+
+  @NotNull
   private String password;
 
   @NotNull

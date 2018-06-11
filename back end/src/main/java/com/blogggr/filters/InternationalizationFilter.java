@@ -1,8 +1,12 @@
 package com.blogggr.filters;
 
+import com.blogggr.config.AppConfig;
 import com.blogggr.security.UserPrincipal;
+import com.cloudinary.utils.StringUtils;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
+import java.util.Locale.LanguageRange;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -20,6 +24,19 @@ import org.springframework.web.util.WebUtils;
  */
 public class InternationalizationFilter extends GenericFilterBean {
 
+  private static final String ACCEPT_LANG = "Accept-Language";
+
+  private String getBestLocale(List<LanguageRange> languageRanges) {
+    int index;
+    for (LanguageRange langRange : languageRanges) {
+      index = AppConfig.languages.indexOf(langRange.getRange());
+      if (index != -1) {
+        return AppConfig.languages.get(index);
+      }
+    }
+    return AppConfig.languages.get(0);
+  }
+
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
       throws IOException, ServletException {
@@ -33,6 +50,10 @@ public class InternationalizationFilter extends GenericFilterBean {
       Locale locale = new Locale(userPrincipal.getUser().getLang());
       WebUtils.setSessionAttribute(request, SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME,
           locale);
+    } else if (!StringUtils.isBlank(request.getHeader(ACCEPT_LANG))) {
+      List<LanguageRange> list = Locale.LanguageRange.parse(request.getHeader(ACCEPT_LANG));
+      WebUtils.setSessionAttribute(request, SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME,
+          new Locale(getBestLocale(list)));
     }
     chain.doFilter(request, response);
   }

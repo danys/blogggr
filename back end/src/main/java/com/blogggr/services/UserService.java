@@ -14,6 +14,7 @@ import com.blogggr.dto.UserPutData;
 import com.blogggr.dto.UserSearchData;
 import com.blogggr.security.UserPrincipal;
 import com.blogggr.utilities.Cryptography;
+import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.TimeUtilities;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,6 +47,9 @@ public class UserService implements UserDetailsService {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
+  @Autowired
+  private SimpleBundleMessageSource simpleBundleMessageSource;
+
   @Override
   public UserDetails loadUserByUsername(String username) {
     User user = userRepository.findByEmail(username);
@@ -69,10 +73,13 @@ public class UserService implements UserDetailsService {
 
   //For POST request
   public User createUser(UserPostData userData) throws DataAccessException {
-    //Check that userData does not contain nulls
-    if ((userData.getFirstName() == null) || (userData.getLastName() == null)
-        || (userData.getEmail() == null) || (userData.getPassword() == null)) {
-      return null;
+    if (userData.getEmail().compareTo(userData.getEmailRepeat()) != 0){
+      throw new IllegalArgumentException(
+          simpleBundleMessageSource.getMessage("service.user.createUser.emailMismatch"));
+    }
+    if (userData.getPassword().compareTo(userData.getPasswordRepeat()) != 0) {
+      throw new IllegalArgumentException(
+          simpleBundleMessageSource.getMessage("service.user.createUser.passwordMismatch"));
     }
     User user = new User();
     user.setFirstName(userData.getFirstName());
