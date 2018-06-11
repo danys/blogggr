@@ -51,7 +51,7 @@ public class PostsController {
    * @param userPrincipal the logged in user
    */
   @PostMapping(value = postsPath)
-  public ResponseEntity createPost(@Valid PostData postData,
+  public ResponseEntity createPost(@Valid @RequestBody PostData postData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) throws ResourceNotFoundException {
     logger.info("[POST /posts] Post title: {}. User: {}", postData.getTitle(),
         userPrincipal.getUser().getEmail());
@@ -68,7 +68,7 @@ public class PostsController {
    * @param userPrincipal the logged in user
    */
   @PutMapping(value = postsPath + "/{id:[\\d]+}")
-  public ResponseEntity updatePost(@PathVariable String id, PostData postData,
+  public ResponseEntity updatePost(@PathVariable String id, @RequestBody PostData postData,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws NotAuthorizedException, ResourceNotFoundException {
     logger.info("[PUT /posts] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());

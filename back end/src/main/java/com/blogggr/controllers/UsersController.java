@@ -158,7 +158,7 @@ public class UsersController {
    * @param userPostData the data of the new user
    */
   @PostMapping(value = USER_PATH)
-  public ResponseEntity createUser(@Valid UserPostData userPostData) {
+  public ResponseEntity createUser(@Valid @RequestBody UserPostData userPostData) {
     logger.info("[POST /users] Create user with email: {}", userPostData.getEmail());
     User user = userService.createUser(userPostData);
     return ResponseBuilder.postSuccessResponse(
@@ -175,7 +175,7 @@ public class UsersController {
    * @throws NotAuthorizedException
    */
   @PutMapping(value = USER_PATH + "/{id:[\\d]+}")
-  public ResponseEntity updateUser(@PathVariable String id, @Valid UserPutData userData,
+  public ResponseEntity updateUser(@PathVariable String id, @Valid @RequestBody UserPutData userData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) throws ResourceNotFoundException, NotAuthorizedException{
     logger.info("[PUT /users/id] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
     userService.updateUser(Long.parseLong(id), userPrincipal.getUser().getUserId(), userData);

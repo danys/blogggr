@@ -47,7 +47,7 @@ public class FriendsController {
    * @param userPrincipal the logged in user
    */
   @PostMapping(value = friendsPath)
-  public ResponseEntity createFriendship(@Valid FriendData friendData,
+  public ResponseEntity createFriendship(@Valid @RequestBody FriendData friendData,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws NotAuthorizedException, ResourceNotFoundException {
     logger.info("[POST /friends] User: {}, id1: {}, id2: {}", userPrincipal.getUser().getEmail(),
@@ -67,7 +67,7 @@ public class FriendsController {
    */
   @PutMapping(path = friendsPath + "/{id:[\\d]+}/{id2:[\\d]+}")
   public ResponseEntity updateFriendship(@PathVariable String id, @PathVariable String id2,
-      @Valid FriendData friendData, @AuthenticationPrincipal UserPrincipal userPrincipal)
+      @Valid @RequestBody FriendData friendData, @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws ResourceNotFoundException, DbException, NotAuthorizedException {
     logger.info(
         "[PUT /friends/{}/{}] User: {}", id, id2, userPrincipal.getUser().getEmail());
