@@ -50,7 +50,7 @@ public class PostsController {
    * @param postData the post's data
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = postsPath, method = RequestMethod.POST)
+  @PostMapping(value = postsPath)
   public ResponseEntity createPost(@Valid PostData postData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) throws ResourceNotFoundException {
     logger.info("[POST /posts] Post title: {}. User: {}", postData.getTitle(),
@@ -67,7 +67,7 @@ public class PostsController {
    * @param postData the updated post's data
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = postsPath + "/{id:[\\d]+}", method = RequestMethod.PUT)
+  @PutMapping(value = postsPath + "/{id:[\\d]+}")
   public ResponseEntity updatePost(@PathVariable String id, PostData postData,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws NotAuthorizedException, ResourceNotFoundException {
@@ -82,7 +82,7 @@ public class PostsController {
    * @param id the id of the post to delete
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = postsPath + "/{id:[\\d]+}", method = RequestMethod.DELETE)
+  @DeleteMapping(value = postsPath + "/{id:[\\d]+}")
   public ResponseEntity deletePost(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws ResourceNotFoundException, NotAuthorizedException {
@@ -97,7 +97,7 @@ public class PostsController {
    * @param id the id of the post to return
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = postsPath + "/{id:[\\d]+}", method = RequestMethod.GET)
+  @GetMapping(value = postsPath + "/{id:[\\d]+}")
   public ResponseEntity getPost(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws ResourceNotFoundException, NotAuthorizedException, DbException {
@@ -113,8 +113,8 @@ public class PostsController {
    * @param postShortName the short name of a post
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = UsersController.USER_PATH
-      + "/{userID:[\\d]+]}/posts/{postShortName:[\\.]+}", method = RequestMethod.GET)
+  @GetMapping(value = UsersController.USER_PATH
+      + "/{userID:[\\d]+]}/posts/{postShortName:[\\.]+}")
   public ResponseEntity getPost(@PathVariable String userId, @PathVariable String postShortName,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws NotAuthorizedException, ResourceNotFoundException, DbException {
@@ -134,7 +134,7 @@ public class PostsController {
    * @return
    * @throws DbException
    */
-  @RequestMapping(path = postsPath, method = RequestMethod.GET)
+  @GetMapping(value = postsPath)
   public ResponseEntity getPosts(@Valid PostSearchData postSearchData,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws DbException {

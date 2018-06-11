@@ -52,7 +52,7 @@ public class CommentsController {
    * @param commentData the comment content
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = commentsPath, method = RequestMethod.POST)
+  @PostMapping(value = commentsPath)
   public ResponseEntity createComment(@Valid CommentData commentData,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws DbException, ResourceNotFoundException, NotAuthorizedException {
@@ -70,7 +70,7 @@ public class CommentsController {
    * @param commentData the updated comment content
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = commentsPath + "/{id:[\\d]+}", method = RequestMethod.PUT)
+  @PutMapping(value = commentsPath + "/{id:[\\d]+}")
   public ResponseEntity updateComment(@PathVariable String id, @Valid CommentData commentData,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws ResourceNotFoundException, NotAuthorizedException {
@@ -87,7 +87,7 @@ public class CommentsController {
    * @param id the id of the comment to delete
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = commentsPath + "/{id:[\\d]+}", method = RequestMethod.DELETE)
+  @DeleteMapping(value = commentsPath + "/{id:[\\d]+}")
   public ResponseEntity deleteComment(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws ResourceNotFoundException, DbException, NotAuthorizedException {
@@ -102,7 +102,7 @@ public class CommentsController {
    * @param id the id of the comment to fetch
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = commentsPath + "/{id:[\\d]+}", method = RequestMethod.GET)
+  @GetMapping(value = commentsPath + "/{id:[\\d]+}")
   public ResponseEntity getComment(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal) throws ResourceNotFoundException {
     logger.info("[GET /comments/id] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
@@ -117,8 +117,8 @@ public class CommentsController {
    * @param userPrincipal the logged in user
    * @return
    */
-  @RequestMapping(path = PostsController.postsPath + "/{id:[\\d]+}"
-      + commentsPath, method = RequestMethod.GET)
+  @GetMapping(value = PostsController.postsPath + "/{id:[\\d]+}"
+      + commentsPath)
   public ResponseEntity getCommentsByPostId(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal) throws ResourceNotFoundException, DbException, NotAuthorizedException{
     logger.info("[GET /comments/id/comments] Id: {}. User: {}", id,

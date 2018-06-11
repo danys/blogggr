@@ -36,9 +36,6 @@ public class UserImageController {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Autowired
-  private UserService userService;
-
-  @Autowired
   private UserImageService userImageService;
 
   /**

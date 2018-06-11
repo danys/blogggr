@@ -35,7 +35,7 @@ public class SessionsController {
    * @return an object containing a new JWT, an expiration time and a email address of the principal
    * @throws UnsupportedEncodingException
    */
-  @RequestMapping(path = sessionPath, method = RequestMethod.POST)
+  @PostMapping(value = sessionPath)
   public ResponseEntity createSession(@AuthenticationPrincipal UserPrincipal userPrincipal) throws UnsupportedEncodingException{
     logger.info("[POST /sessions] User: {}", userPrincipal.getUser().getEmail());
     SessionDetails session = sessionService.createSession(userPrincipal.getUser());

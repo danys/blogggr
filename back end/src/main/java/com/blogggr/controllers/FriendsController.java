@@ -46,7 +46,7 @@ public class FriendsController {
    * @param friendData the data to create a new friendship
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = friendsPath, method = RequestMethod.POST)
+  @PostMapping(value = friendsPath)
   public ResponseEntity createFriendship(@Valid FriendData friendData,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws NotAuthorizedException, ResourceNotFoundException {
@@ -65,7 +65,7 @@ public class FriendsController {
    * @param friendData the friendship update data
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = friendsPath + "/{id:[\\d]+}/{id2:[\\d]+}", method = RequestMethod.PUT)
+  @PutMapping(path = friendsPath + "/{id:[\\d]+}/{id2:[\\d]+}")
   public ResponseEntity updateFriendship(@PathVariable String id, @PathVariable String id2,
       @Valid FriendData friendData, @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws ResourceNotFoundException, DbException, NotAuthorizedException {
@@ -82,7 +82,7 @@ public class FriendsController {
    *
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = friendsPath, method = RequestMethod.GET)
+  @GetMapping(path = friendsPath)
   public ResponseEntity getFriends(@AuthenticationPrincipal UserPrincipal userPrincipal)
       throws ResourceNotFoundException, DbException {
     logger.info(
@@ -103,7 +103,7 @@ public class FriendsController {
    * @throws ResourceNotFoundException
    * @throws NotAuthorizedException
    */
-  @RequestMapping(path = friendsPath + "/{id:[\\d]+}", method = RequestMethod.GET)
+  @GetMapping(value = friendsPath + "/{id:[\\d]+}")
   public ResponseEntity getFriendship(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws ResourceNotFoundException, NotAuthorizedException {
@@ -120,7 +120,7 @@ public class FriendsController {
    * @throws ResourceNotFoundException
    * @throws NotAuthorizedException
    */
-  @RequestMapping(path = friendsPath + "/{id:[\\d]+}", method = RequestMethod.DELETE)
+  @DeleteMapping(value = friendsPath + "/{id:[\\d]+}")
   public ResponseEntity deleteFriend(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws ResourceNotFoundException, NotAuthorizedException {

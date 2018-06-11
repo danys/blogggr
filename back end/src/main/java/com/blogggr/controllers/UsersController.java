@@ -59,7 +59,7 @@ public class UsersController {
    * @param userSearchData search users filter
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = USER_PATH, method = RequestMethod.GET, params = "maxRecordsCount")
+  @GetMapping(value = USER_PATH, params = "maxRecordsCount")
   public ResponseEntity getUsers(@Valid UserSearchData userSearchData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) throws DbException {
     logger.info("[GET /users] UserSearchData, User: {}", userPrincipal.getUser().getEmail());
@@ -80,7 +80,7 @@ public class UsersController {
    * @param userSearchData search term filter, maximum response size and page number
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = USER_PATH, method = RequestMethod.GET, params = "searchString")
+  @GetMapping(value = USER_PATH, params = "searchString")
   public ResponseEntity getUsersBySearchTerm(@Valid SimpleUserSearchData userSearchData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) throws DbException {
     logger.info("[GET /users] SimpleUserSearchData, User: {}", userPrincipal.getUser().getEmail());
@@ -100,7 +100,7 @@ public class UsersController {
    *
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = USER_PATH + "/me", method = RequestMethod.GET)
+  @GetMapping(value = USER_PATH + "/me")
   public ResponseEntity getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /users/me] User: {}" + userPrincipal.getUser().getEmail());
     User user = userService.getUserByIdWithImages(userPrincipal.getUser().getUserId());
@@ -114,7 +114,7 @@ public class UsersController {
    * @param id the id of the user to be fetched
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = USER_PATH + "/{id:[\\d]+}", method = RequestMethod.GET)
+  @GetMapping(value = USER_PATH + "/{id:[\\d]+}")
   public ResponseEntity getUser(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /users/id] Id: {}, user: {}", id, userPrincipal.getUser().getEmail());
@@ -130,10 +130,10 @@ public class UsersController {
    * @param id the id of the user whose posts will be fetched
    * @param userPrincipal the logged in user
    */
-  @RequestMapping(path = USER_PATH + "/{id:[\\d]+}/posts", method = RequestMethod.GET)
+  @GetMapping(value = USER_PATH + "/{id:[\\d]+}/posts")
   public ResponseEntity getUserPosts(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal, @Valid PrevNextData<Long> searchData)
-      throws DbException, ResourceNotFoundException {
+      throws DbException {
     logger.info("[GET /users/id/posts] Id: {}, user: {}", id, userPrincipal.getUser().getEmail());
     PostSearchData postSearchData = new PostSearchData();
     postSearchData.setPosterUserId(Long.parseLong(id));
