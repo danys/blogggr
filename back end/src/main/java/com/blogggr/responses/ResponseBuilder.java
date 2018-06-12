@@ -1,6 +1,8 @@
 package com.blogggr.responses;
 
 import com.blogggr.config.AppConfig;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,5 +45,15 @@ public class ResponseBuilder {
   //HTTP DELETE OK response
   public static ResponseEntity deleteSuccessResponse() {
     return new ResponseEntity(new DataResponseBody(AppConfig.apiVersion, null), HttpStatus.OK);
+  }
+
+  //Error response with a single error message
+  public static ResponseEntity errorResponse(String errorMessage, HttpStatus httpStatus){
+    return new ResponseEntity(new ErrorResponseBody(AppConfig.apiVersion, Arrays.asList(errorMessage)), httpStatus);
+  }
+
+  //Error response with a list of error messages
+  public static ResponseEntity errorResponse(List<String> errorMessages, HttpStatus httpStatus){
+    return new ResponseEntity(new ErrorResponseBody(AppConfig.apiVersion, errorMessages), httpStatus);
   }
 }
