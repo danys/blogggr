@@ -4,13 +4,12 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.controllers.PostsController;
 import com.blogggr.dto.PostSearchData;
 import com.blogggr.entities.*;
-import com.blogggr.exceptions.DbException;
 import com.blogggr.responses.PageData;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.validators.GetPostsValidator;
 import com.blogggr.utilities.StringUtilities;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.*;
@@ -22,7 +21,7 @@ import java.util.*;
 @Repository
 public class PostDao extends GenericDAOImpl<Post> {
 
-  private final Log logger = LogFactory.getLog(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public enum Visibility {
     onlyGlobal,
@@ -41,71 +40,66 @@ public class PostDao extends GenericDAOImpl<Post> {
   private final long defaultMinimumID = -1;
 
   //Get posts by userID, title and visibility
-  public PrevNextListPage<Post> getPosts(PostSearchData postSearchData, User user)
-      throws DbException {
-    try {
-      //Check and maybe adjust limit, set default limit
-      if (postSearchData.getMaxRecordsCount() == null) {
-        postSearchData.setMaxRecordsCount(defaultLimit);
-      } else if (postSearchData.getMaxRecordsCount().intValue() > defaultLimit) {
-        postSearchData.setMaxRecordsCount(defaultLimit);
-      }
-      //Generate query
-      CriteriaQuery<Post> postsQuery = generateQuery(user.getUserId(),
-          postSearchData.getPosterUserId(), postSearchData.getTitle(),
-          postSearchData.getVisibility(), postSearchData.getBefore(),
-          postSearchData.getAfter(), false);
-      List<Post> posts = entityManager.createQuery(postsQuery)
-          .setMaxResults(postSearchData.getMaxRecordsCount()).getResultList();
-      CriteriaQuery<Long> postsCountQuery = generateQuery(user.getUserId(),
+  public PrevNextListPage<Post> getPosts(PostSearchData postSearchData, User user) {
+    //Check and maybe adjust limit, set default limit
+    if (postSearchData.getMaxRecordsCount() == null) {
+      postSearchData.setMaxRecordsCount(defaultLimit);
+    } else if (postSearchData.getMaxRecordsCount().intValue() > defaultLimit) {
+      postSearchData.setMaxRecordsCount(defaultLimit);
+    }
+    //Generate query
+    CriteriaQuery<Post> postsQuery = generateQuery(user.getUserId(),
+        postSearchData.getPosterUserId(), postSearchData.getTitle(),
+        postSearchData.getVisibility(), postSearchData.getBefore(),
+        postSearchData.getAfter(), false);
+    List<Post> posts = entityManager.createQuery(postsQuery)
+        .setMaxResults(postSearchData.getMaxRecordsCount()).getResultList();
+    CriteriaQuery<Long> postsCountQuery = generateQuery(user.getUserId(),
+        postSearchData.getPosterUserId(), postSearchData.getTitle(),
+        postSearchData.getVisibility(),
+        null, null, true);
+    Long totalCount = entityManager.createQuery(postsCountQuery).getSingleResult();
+    Integer numberPageItems = posts.size();
+    Long nextAfter = null;
+    Long nextBefore = null;
+    //Figure out if a post is before or after the posts of this page
+    if (totalCount > 0 && posts.size() > 0) {
+      CriteriaQuery<Post> beforePostQuery = generateQuery(user.getUserId(),
           postSearchData.getPosterUserId(), postSearchData.getTitle(),
           postSearchData.getVisibility(),
-          null, null, true);
-      Long totalCount = entityManager.createQuery(postsCountQuery).getSingleResult();
-      Integer numberPageItems = posts.size();
-      Long nextAfter = null;
-      Long nextBefore = null;
-      //Figure out if a post is before or after the posts of this page
-      if (totalCount > 0 && posts.size() > 0) {
-        CriteriaQuery<Post> beforePostQuery = generateQuery(user.getUserId(),
-            postSearchData.getPosterUserId(), postSearchData.getTitle(),
-            postSearchData.getVisibility(),
-            null, posts.get(0).getPostId(), false);
-        List<Post> beforePosts = entityManager.createQuery(beforePostQuery).setMaxResults(1)
-            .getResultList();
-        if (beforePosts.size() == 1) {
-          nextBefore = posts.get(0).getPostId();
-        }
+          null, posts.get(0).getPostId(), false);
+      List<Post> beforePosts = entityManager.createQuery(beforePostQuery).setMaxResults(1)
+          .getResultList();
+      if (beforePosts.size() == 1) {
+        nextBefore = posts.get(0).getPostId();
+      }
 
-        CriteriaQuery<Post> afterPostQuery = generateQuery(user.getUserId(),
-            postSearchData.getPosterUserId(), postSearchData.getTitle(),
-            postSearchData.getVisibility(),
-            posts.get(posts.size() - 1).getPostId(), null, false);
-        List<Post> afterPosts = entityManager.createQuery(afterPostQuery).setMaxResults(1)
-            .getResultList();
-        if (afterPosts.size() == 1) {
-          nextAfter = posts.get(posts.size() - 1).getPostId();
-        }
+      CriteriaQuery<Post> afterPostQuery = generateQuery(user.getUserId(),
+          postSearchData.getPosterUserId(), postSearchData.getTitle(),
+          postSearchData.getVisibility(),
+          posts.get(posts.size() - 1).getPostId(), null, false);
+      List<Post> afterPosts = entityManager.createQuery(afterPostQuery).setMaxResults(1)
+          .getResultList();
+      if (afterPosts.size() == 1) {
+        nextAfter = posts.get(posts.size() - 1).getPostId();
       }
-      PageData pData = new PageData();
-      pData.setPageItemsCount(numberPageItems);
-      pData.setTotalCount(totalCount);
-      if (nextAfter != null) {
-        pData.setNext(buildNextPageUrl(nextAfter, postSearchData.getMaxRecordsCount(),
-            postSearchData.getPosterUserId(), postSearchData.getTitle(),
-            postSearchData.getVisibility()));
-      }
-      if (nextBefore != null) {
-        pData.setPrevious(
-            buildPreviousPageUrl(nextBefore, postSearchData.getMaxRecordsCount(),
-                postSearchData.getPosterUserId(), postSearchData.getTitle(),
-                postSearchData.getVisibility()));
-      }
-      PrevNextListPage<Post> page = new PrevNextListPage<>(posts, pData);
-      return page;
-    } catch (Exception e) {
-      throw new DbException("Database exception!", e);
     }
+    PageData pData = new PageData();
+    pData.setPageItemsCount(numberPageItems);
+    pData.setTotalCount(totalCount);
+    if (nextAfter != null) {
+      pData.setNext(buildNextPageUrl(nextAfter, postSearchData.getMaxRecordsCount(),
+          postSearchData.getPosterUserId(), postSearchData.getTitle(),
+          postSearchData.getVisibility()));
+    }
+    if (nextBefore != null) {
+      pData.setPrevious(
+          buildPreviousPageUrl(nextBefore, postSearchData.getMaxRecordsCount(),
+              postSearchData.getPosterUserId(), postSearchData.getTitle(),
+              postSearchData.getVisibility()));
+    }
+    PrevNextListPage<Post> page = new PrevNextListPage<>(posts, pData);
+    return page;
   }
 
   private CriteriaQuery generateQuery(long userID, Long postUserID, String title,

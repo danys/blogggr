@@ -3,16 +3,18 @@ package com.blogggr.dao;
 import com.blogggr.config.AppConfig;
 import com.blogggr.controllers.UsersController;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DbException;
+import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.PageData;
 import com.blogggr.responses.PageMetaData;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.responses.RandomAccessListPage;
 import com.blogggr.dto.UserSearchData;
+import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.validators.GetUsersValidator;
 import javax.persistence.criteria.JoinType;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -30,12 +32,12 @@ import java.util.List;
 @Repository
 public class UserDao extends GenericDAOImpl<User> {
 
-  public static final String noUserFound = "User not found!";
-  public static final String dbException = "Database exception!";
-
   private final int defaultLimit = 50;
 
-  private final Log logger = LogFactory.getLog(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+  @Autowired
+  private SimpleBundleMessageSource simpleBundleMessageSource;
 
   public UserDao() {
     super(User.class);
@@ -50,61 +52,58 @@ public class UserDao extends GenericDAOImpl<User> {
       query.where(cb.equal(root.get("userId"), id));
       return entityManager.createQuery(query).getSingleResult();
     } catch (NoResultException e) {
-      return null; //same semantics as findById
+      throw new ResourceNotFoundException(simpleBundleMessageSource
+          .getMessage("dao.user.findByIdWithImages.notFound"));
     }
   }
 
-  public RandomAccessListPage<User> getUsers(String searchString, Integer limit, Integer pageNumber)
-      throws DbException {
-    try {
-      //Check and maybe adjust limit, set default limit
-      if (limit == null) {
-        limit = Integer.valueOf(defaultLimit);
-      } else if (limit.intValue() > defaultLimit) {
-        limit = Integer.valueOf(defaultLimit);
-      }
-      if (pageNumber == null || pageNumber < 0) {
-        pageNumber = 1;
-      }
-      //Offset
-      int offset = (pageNumber - 1) * limit;
-      //Queries
-      CriteriaQuery<User> userQuery = generateQuery(searchString, false);
-      CriteriaQuery<Long> userCountQuery = generateQuery(searchString, true);
-      //Fetches
-      List<User> users = entityManager.createQuery(userQuery).setFirstResult(offset)
-          .setMaxResults(limit).getResultList();
-      Long count = entityManager.createQuery(userCountQuery).getSingleResult();
-      //Create the page meta data
-      PageMetaData pageMetaData = new PageMetaData();
-      pageMetaData.setTotalCount(count);
-      int nPages = (count % limit == 0) ? (int) (count / limit) : (int) ((count / limit) + 1);
-      pageMetaData.setNPages(nPages);
-      pageMetaData.setPageId(pageNumber);
-      pageMetaData.setPageItemsCount(users.size());
-      StringBuilder sb = new StringBuilder();
-      sb.append(AppConfig.fullBaseUrl);
-      sb.append(UsersController.USER_PATH);
-      sb.append("?");
-      if (searchString != null && searchString.length() > 0) {
-        sb.append(GetUsersValidator.SEARCH_KEY);
-        sb.append("=");
-        sb.append(searchString);
-        sb.append("&");
-      }
-      sb.append(GetUsersValidator.PAGE_KEY);
-      sb.append("=");
-      sb.append(Integer.toString(pageNumber));
-      sb.append("&");
-      sb.append(GetUsersValidator.LIMIT_KEY);
-      sb.append("=");
-      sb.append(Integer.toString(limit));
-      pageMetaData.setPageUrl(sb.toString());
-      RandomAccessListPage<User> page = new RandomAccessListPage<>(users, pageMetaData);
-      return page;
-    } catch (Exception e) {
-      throw new DbException("Database exception!");
+  public RandomAccessListPage<User> getUsers(String searchString, Integer limit,
+      Integer pageNumber) {
+    //Check and maybe adjust limit, set default limit
+    if (limit == null) {
+      limit = Integer.valueOf(defaultLimit);
+    } else if (limit.intValue() > defaultLimit) {
+      limit = Integer.valueOf(defaultLimit);
     }
+    if (pageNumber == null || pageNumber < 0) {
+      pageNumber = 1;
+    }
+    //Offset
+    int offset = (pageNumber - 1) * limit;
+    //Queries
+    CriteriaQuery<User> userQuery = generateQuery(searchString, false);
+    CriteriaQuery<Long> userCountQuery = generateQuery(searchString, true);
+    //Fetches
+    List<User> users = entityManager.createQuery(userQuery).setFirstResult(offset)
+        .setMaxResults(limit).getResultList();
+    Long count = entityManager.createQuery(userCountQuery).getSingleResult();
+    //Create the page meta data
+    PageMetaData pageMetaData = new PageMetaData();
+    pageMetaData.setTotalCount(count);
+    int nPages = (count % limit == 0) ? (int) (count / limit) : (int) ((count / limit) + 1);
+    pageMetaData.setNPages(nPages);
+    pageMetaData.setPageId(pageNumber);
+    pageMetaData.setPageItemsCount(users.size());
+    StringBuilder sb = new StringBuilder();
+    sb.append(AppConfig.fullBaseUrl);
+    sb.append(UsersController.USER_PATH);
+    sb.append("?");
+    if (searchString != null && searchString.length() > 0) {
+      sb.append(GetUsersValidator.SEARCH_KEY);
+      sb.append("=");
+      sb.append(searchString);
+      sb.append("&");
+    }
+    sb.append(GetUsersValidator.PAGE_KEY);
+    sb.append("=");
+    sb.append(Integer.toString(pageNumber));
+    sb.append("&");
+    sb.append(GetUsersValidator.LIMIT_KEY);
+    sb.append("=");
+    sb.append(Integer.toString(limit));
+    pageMetaData.setPageUrl(sb.toString());
+    RandomAccessListPage<User> page = new RandomAccessListPage<>(users, pageMetaData);
+    return page;
   }
 
   private CriteriaQuery generateQuery(String searchString, boolean countOnly) {
