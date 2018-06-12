@@ -3,7 +3,7 @@ package com.blogggr.exceptions;
 /**
  * Created by Daniel Sunnen on 24.08.17.
  */
-public class StorageException extends Exception {
+public class StorageException extends RuntimeException {
 
   public StorageException(String message) {
     super(message);
