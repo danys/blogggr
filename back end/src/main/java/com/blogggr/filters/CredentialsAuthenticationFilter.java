@@ -1,8 +1,13 @@
 package com.blogggr.filters;
 
+import com.blogggr.config.AppConfig;
+import com.blogggr.responses.ErrorResponseBody;
+import com.blogggr.responses.ResponseBuilder;
+import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.FilterChain;
@@ -13,7 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +38,9 @@ public class CredentialsAuthenticationFilter extends AbstractAuthenticationProce
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+  @Autowired
+  private SimpleBundleMessageSource simpleBundleMessageSource;
+
   /**
    * POST to /sessions with valid credentials in order to obtain a fresh JWT
    */
@@ -39,18 +50,18 @@ public class CredentialsAuthenticationFilter extends AbstractAuthenticationProce
 
   @Override
   public Authentication attemptAuthentication(HttpServletRequest request,
-      HttpServletResponse response) throws IOException{
+      HttpServletResponse response) throws IOException {
     if (!request.getMethod().equals("POST")) {
       return null;
     }
     BufferedReader br = request.getReader();
     StringBuilder sb = new StringBuilder();
     String line;
-    while((line = br.readLine())!=null){
+    while ((line = br.readLine()) != null) {
       sb.append(line);
     }
     br.close();
-    Map<String,String> parameterMap =
+    Map<String, String> parameterMap =
         new ObjectMapper().readValue(sb.toString(), HashMap.class);
     String username = parameterMap.get(USERNAME_KEY);
     String password = parameterMap.get(PASSWORD_KEY);
@@ -75,9 +86,22 @@ public class CredentialsAuthenticationFilter extends AbstractAuthenticationProce
     if (SecurityContextHolder.getContext().getAuthentication() == null || SecurityContextHolder
         .getContext()
         .getAuthentication() instanceof AnonymousAuthenticationToken) {
-      Authentication auth = attemptAuthentication(request, response);
-      if (auth != null) {
-        SecurityContextHolder.getContext().setAuthentication(auth);
+      try {
+        Authentication auth = attemptAuthentication(request, response);
+        if (auth != null) {
+          SecurityContextHolder.getContext().setAuthentication(auth);
+        }
+      } catch (BadCredentialsException e) {
+        //Log exception, exit the Spring Security filter chain and return
+        String message = simpleBundleMessageSource.getMessage("exception.db.wrongPasswordError");
+        logger.error(message);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setHeader("Content-Type", "application/json;charset=UTF-8");
+        String json = new ObjectMapper()
+            .writeValueAsString(new ErrorResponseBody(AppConfig.apiVersion,
+                Arrays.asList(message)));
+        response.getWriter().write(json);
+        return;
       }
     }
     chain.doFilter(request, response);
