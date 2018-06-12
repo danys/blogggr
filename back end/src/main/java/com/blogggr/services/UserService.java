@@ -4,7 +4,6 @@ import com.blogggr.dao.UserDao;
 import com.blogggr.dao.UserRepository;
 import com.blogggr.dto.SimpleUserSearchData;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.PrevNextListPage;
@@ -16,8 +15,8 @@ import com.blogggr.security.UserPrincipal;
 import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.TimeUtilities;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,10 +32,10 @@ import java.sql.Timestamp;
  * Created by Daniel Sunnen on 28.10.16.
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
+@Transactional
 public class UserService implements UserDetailsService {
 
-  private final Log logger = LogFactory.getLog(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Autowired
   private UserDao userDao;
@@ -134,15 +133,13 @@ public class UserService implements UserDetailsService {
     userDao.save(user);
   }
 
-  public RandomAccessListPage<User> getUsers(SimpleUserSearchData searchData)
-      throws DbException {
+  public RandomAccessListPage<User> getUsers(SimpleUserSearchData searchData) {
     RandomAccessListPage<User> usersPage = userDao
         .getUsers(searchData.getSearchString(), searchData.getLimit(), searchData.getPageNumber());
     return usersPage;
   }
 
-  public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData)
-      throws DbException {
+  public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData) {
     return userDao.getUsersBySearchTerms(searchData);
   }
 }

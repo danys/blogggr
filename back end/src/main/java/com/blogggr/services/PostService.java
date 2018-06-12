@@ -8,15 +8,14 @@ import com.blogggr.dto.PostSearchData;
 import com.blogggr.entities.Comment;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.dto.PostData;
 import com.blogggr.utilities.StringUtilities;
 import com.blogggr.utilities.TimeUtilities;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +28,7 @@ import java.util.List;
  * Created by Daniel Sunnen on 19.11.16.
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
+@Transactional
 public class PostService {
 
   private PostDao postDao;
@@ -39,9 +38,8 @@ public class PostService {
   private final String postNotFound = "Post not found!";
   private final String noModifyAuthorization = "No authorization to modify this post!";
   private final String noReadAuthorization = "No authorization to view this post!";
-  private final String dbException = "Database exception!";
 
-  private final Log logger = LogFactory.getLog(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public PostService(PostDao postDao, UserDao userDao, FriendDao friendDao) {
     this.postDao = postDao;
@@ -104,7 +102,7 @@ public class PostService {
   }
 
   //Simple function to check that this user is friends with the poster
-  private boolean isFriendOfUser(long postUserID, long userId) throws DbException {
+  private boolean isFriendOfUser(long postUserID, long userId) {
     try {
       long smallNum, bigNum;
       smallNum = (postUserID < userId) ? postUserID : userId;
@@ -117,7 +115,7 @@ public class PostService {
   }
 
   public Post getPostById(long postId, long userId)
-      throws ResourceNotFoundException, DbException, NotAuthorizedException {
+      throws ResourceNotFoundException, NotAuthorizedException {
     Post post = postDao.findById(postId);
     if (post == null) {
       throw new ResourceNotFoundException(postNotFound);
@@ -135,8 +133,7 @@ public class PostService {
     throw new NotAuthorizedException(noReadAuthorization);
   }
 
-  public PrevNextListPage<Post> getPosts(PostSearchData postSearchData, User user)
-      throws DbException {
+  public PrevNextListPage<Post> getPosts(PostSearchData postSearchData, User user) {
     PrevNextListPage<Post> postsPage = postDao
         .getPosts(postSearchData, user);
     List<Post> posts = postsPage.getPageItems();
@@ -152,7 +149,7 @@ public class PostService {
   }
 
   public Post getPostByUserAndLabel(Long userId, Long postUserID, String postShortTitle)
-      throws ResourceNotFoundException, DbException, NotAuthorizedException {
+      throws ResourceNotFoundException, NotAuthorizedException {
     try {
       Post post = postDao.getPostByUserAndLabel(userId, postUserID, postShortTitle);
       //Order comments by date
@@ -176,8 +173,6 @@ public class PostService {
       throw new NotAuthorizedException(noReadAuthorization);
     } catch (NoResultException e) {
       throw new ResourceNotFoundException(postNotFound);
-    } catch (RuntimeException e) {
-      throw new DbException(dbException, e);
     }
   }
 }

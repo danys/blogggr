@@ -7,13 +7,12 @@ import com.blogggr.dao.UserDao;
 import com.blogggr.entities.Comment;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.dto.CommentData;
 import com.blogggr.utilities.TimeUtilities;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +22,7 @@ import java.util.List;
  * Created by Daniel Sunnen on 05.12.16.
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
+@Transactional
 public class CommentService {
 
   private CommentDao commentDao;
@@ -33,7 +32,7 @@ public class CommentService {
 
   private final String notCommentFound = "Comment not found!";
 
-  private final Log logger = LogFactory.getLog(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public CommentService(CommentDao commentDao, UserDao userDao, PostDao postDao,
       FriendDao friendDao) {
@@ -44,7 +43,7 @@ public class CommentService {
   }
 
   public Comment createComment(long userID, CommentData commentData)
-      throws ResourceNotFoundException, DbException, NotAuthorizedException {
+      throws ResourceNotFoundException, NotAuthorizedException {
     User user = userDao.findById(userID);
     if (user == null) {
       throw new ResourceNotFoundException("User not found!");
@@ -88,19 +87,15 @@ public class CommentService {
   }
 
   public void deleteComment(long commentID, long userID)
-      throws ResourceNotFoundException, NotAuthorizedException, DbException {
-    try {
-      Comment comment = commentDao.findById(commentID);
-      if (comment == null) {
-        throw new ResourceNotFoundException(notCommentFound);
-      }
-      if (comment.getUser().getUserId() != userID) {
-        throw new NotAuthorizedException("Not allowed to delete comment!");
-      }
-      commentDao.deleteById(commentID);
-    } catch (Exception e) {
-      throw new DbException("Database exception deleting comment!");
+      throws ResourceNotFoundException, NotAuthorizedException {
+    Comment comment = commentDao.findById(commentID);
+    if (comment == null) {
+      throw new ResourceNotFoundException(notCommentFound);
     }
+    if (comment.getUser().getUserId() != userID) {
+      throw new NotAuthorizedException("Not allowed to delete comment!");
+    }
+    commentDao.deleteById(commentID);
   }
 
   public Comment getCommentById(long commentID, long userID) throws ResourceNotFoundException {
@@ -113,7 +108,7 @@ public class CommentService {
   }
 
   public List<Comment> getCommentsByPostId(long postID, long userID)
-      throws ResourceNotFoundException, NotAuthorizedException, DbException {
+      throws ResourceNotFoundException, NotAuthorizedException {
     //Fetch the post first
     Post post = postDao.findById(postID);
     if (post == null) {

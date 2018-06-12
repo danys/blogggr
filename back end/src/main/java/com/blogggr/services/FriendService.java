@@ -5,12 +5,11 @@ import com.blogggr.dao.UserDao;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.FriendPk;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.dto.FriendData;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +19,13 @@ import java.util.List;
  * Created by Daniel Sunnen on 11.12.16.
  */
 @Service
-@Transactional(rollbackFor = Exception.class)
+@Transactional
 public class FriendService {
 
   private UserDao userDao;
   private FriendDao friendDao;
 
-  private final Log logger = LogFactory.getLog(this.getClass());
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public FriendService(UserDao userDao, FriendDao friendDao) {
     this.userDao = userDao;
@@ -72,7 +71,7 @@ public class FriendService {
   }
 
   public void updateFriend(long userID, long user1, long user2, FriendData friendData)
-      throws ResourceNotFoundException, NotAuthorizedException, DbException {
+      throws ResourceNotFoundException, NotAuthorizedException {
     if (user1 != userID && user2 != userID) {
       throw new NotAuthorizedException("Current user must be a part of the new friendship!");
     }
@@ -138,7 +137,7 @@ public class FriendService {
     return friend;
   }
 
-  public List<User> getFriends(long userID) throws ResourceNotFoundException, DbException {
+  public List<User> getFriends(long userID) throws ResourceNotFoundException {
     List<User> friends = friendDao.getUserFriends(userID);
     return friends;
   }
