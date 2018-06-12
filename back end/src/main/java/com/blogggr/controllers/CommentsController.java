@@ -4,7 +4,6 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.dto.CommentData;
 import com.blogggr.dto.out.CommentDto;
 import com.blogggr.entities.Comment;
-import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.ResponseBuilder;
@@ -55,7 +54,7 @@ public class CommentsController {
   @PostMapping(value = commentsPath)
   public ResponseEntity createComment(@Valid CommentData commentData,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws DbException, ResourceNotFoundException, NotAuthorizedException {
+      throws ResourceNotFoundException, NotAuthorizedException {
     logger.info("[POST /comments] User: {}", userPrincipal.getUser().getEmail());
     Comment comment = commentService
         .createComment(userPrincipal.getUser().getUserId(), commentData);
@@ -90,7 +89,7 @@ public class CommentsController {
   @DeleteMapping(value = commentsPath + "/{id:[\\d]+}")
   public ResponseEntity deleteComment(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws ResourceNotFoundException, DbException, NotAuthorizedException {
+      throws ResourceNotFoundException, NotAuthorizedException {
     logger.info("[DELETE /comments] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
     commentService.deleteComment(Long.parseLong(id), userPrincipal.getUser().getUserId());
     return ResponseBuilder.deleteSuccessResponse();
@@ -120,7 +119,7 @@ public class CommentsController {
   @GetMapping(value = PostsController.postsPath + "/{id:[\\d]+}"
       + commentsPath)
   public ResponseEntity getCommentsByPostId(@PathVariable String id,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) throws ResourceNotFoundException, DbException, NotAuthorizedException{
+      @AuthenticationPrincipal UserPrincipal userPrincipal) throws ResourceNotFoundException, NotAuthorizedException{
     logger.info("[GET /comments/id/comments] Id: {}. User: {}", id,
         userPrincipal.getUser().getEmail());
     List<Comment> comments = commentService

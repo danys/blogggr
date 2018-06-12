@@ -5,7 +5,6 @@ import com.blogggr.dto.PostData;
 import com.blogggr.dto.PostSearchData;
 import com.blogggr.dto.out.PostDto;
 import com.blogggr.entities.Post;
-import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.PrevNextListPage;
@@ -100,7 +99,7 @@ public class PostsController {
   @GetMapping(value = postsPath + "/{id:[\\d]+}")
   public ResponseEntity getPost(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws ResourceNotFoundException, NotAuthorizedException, DbException {
+      throws ResourceNotFoundException, NotAuthorizedException {
     logger.info("[GET /posts/id] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
     Post post = postService.getPostById(Long.parseLong(id), userPrincipal.getUser().getUserId());
     return ResponseBuilder.getSuccessResponse(dtoConverter.toPostDto(post));
@@ -117,7 +116,7 @@ public class PostsController {
       + "/{userID:[\\d]+]}/posts/{postShortName:[\\.]+}")
   public ResponseEntity getPost(@PathVariable String userId, @PathVariable String postShortName,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws NotAuthorizedException, ResourceNotFoundException, DbException {
+      throws NotAuthorizedException, ResourceNotFoundException {
     logger.info(
         "[GET /users/{}/posts/{}] User:{}", userId, postShortName,
         userPrincipal.getUser().getEmail());
@@ -132,12 +131,10 @@ public class PostsController {
    * @param postSearchData the query data
    * @param userPrincipal the logged in user
    * @return
-   * @throws DbException
    */
   @GetMapping(value = postsPath)
   public ResponseEntity getPosts(@Valid PostSearchData postSearchData,
-      @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws DbException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[GET /posts] User: {}", userPrincipal.getUser().getEmail());
     PrevNextListPage<Post> page = postService

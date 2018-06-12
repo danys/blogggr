@@ -5,13 +5,11 @@ import com.blogggr.dto.FriendData;
 import com.blogggr.dto.out.UserDto;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.FriendService;
-import com.blogggr.services.UserService;
 import com.blogggr.utilities.DtoConverter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,7 +66,7 @@ public class FriendsController {
   @PutMapping(path = friendsPath + "/{id:[\\d]+}/{id2:[\\d]+}")
   public ResponseEntity updateFriendship(@PathVariable String id, @PathVariable String id2,
       @Valid @RequestBody FriendData friendData, @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws ResourceNotFoundException, DbException, NotAuthorizedException {
+      throws ResourceNotFoundException, NotAuthorizedException {
     logger.info(
         "[PUT /friends/{}/{}] User: {}", id, id2, userPrincipal.getUser().getEmail());
     friendService
@@ -84,7 +82,7 @@ public class FriendsController {
    */
   @GetMapping(path = friendsPath)
   public ResponseEntity getFriends(@AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws ResourceNotFoundException, DbException {
+      throws ResourceNotFoundException {
     logger.info(
         "[GET /friends] User: {}", userPrincipal.getUser().getEmail());
     List<User> friends = friendService.getFriends(userPrincipal.getUser().getUserId());

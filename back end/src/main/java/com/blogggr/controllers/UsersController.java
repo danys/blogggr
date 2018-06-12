@@ -10,7 +10,6 @@ import com.blogggr.dto.out.PostDto;
 import com.blogggr.dto.out.UserWithImageDto;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.DbException;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.PrevNextListPage;
@@ -61,7 +60,7 @@ public class UsersController {
    */
   @GetMapping(value = USER_PATH, params = "maxRecordsCount")
   public ResponseEntity getUsers(@Valid UserSearchData userSearchData,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) throws DbException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /users] UserSearchData, User: {}", userPrincipal.getUser().getEmail());
     PrevNextListPage<User> usersPage = userService.getUsersBySearchTerms(userSearchData);
     List<UserWithImageDto> userWithImageDtos = usersPage.getPageItems().stream()
@@ -82,7 +81,7 @@ public class UsersController {
    */
   @GetMapping(value = USER_PATH, params = "searchString")
   public ResponseEntity getUsersBySearchTerm(@Valid SimpleUserSearchData userSearchData,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) throws DbException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /users] SimpleUserSearchData, User: {}", userPrincipal.getUser().getEmail());
     RandomAccessListPage<User> usersPage = userService.getUsers(userSearchData);
     List<UserWithImageDto> userWithImageDtos = usersPage.getPageItems().stream()
@@ -132,8 +131,7 @@ public class UsersController {
    */
   @GetMapping(value = USER_PATH + "/{id:[\\d]+}/posts")
   public ResponseEntity getUserPosts(@PathVariable String id,
-      @AuthenticationPrincipal UserPrincipal userPrincipal, @Valid PrevNextData<Long> searchData)
-      throws DbException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal, @Valid PrevNextData<Long> searchData) {
     logger.info("[GET /users/id/posts] Id: {}, user: {}", id, userPrincipal.getUser().getEmail());
     PostSearchData postSearchData = new PostSearchData();
     postSearchData.setPosterUserId(Long.parseLong(id));
