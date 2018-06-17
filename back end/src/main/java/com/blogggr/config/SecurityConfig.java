@@ -80,9 +80,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(final HttpSecurity http) throws Exception {
     http
         .csrf().disable()
-        .authorizeRequests()
         .httpBasic().disable()
         .anonymous().disable()
+        .authorizeRequests()
         .antMatchers("/login", "/signup", "/index.html").permitAll()
         .antMatchers(HttpMethod.POST, "/api/v*/sessions", "/api/v*/users").permitAll()
         .anyRequest().authenticated()
