@@ -76,7 +76,7 @@ public class PostsController {
   }
 
   /**
-   * DELETE /posts
+   * DELETE /posts/id
    *
    * @param id the id of the post to delete
    * @param userPrincipal the logged in user
