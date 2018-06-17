@@ -41,7 +41,7 @@ public class JwtHelper {
   }
 
   private static DecodedJWT getDecodedJwt(String token, Algorithm algorithm)
-      throws Exception {
+      throws UnsupportedEncodingException {
     if (algorithm == null) {
       throw new UnsupportedEncodingException();
     }
@@ -56,7 +56,7 @@ public class JwtHelper {
    * Extract subject from valid JWT
    */
   public static String getSubjectFromValidJwt(String token)
-      throws Exception {
+      throws UnsupportedEncodingException {
     Algorithm algorithm = Algorithm.HMAC512(hmacKey);
     DecodedJWT jwtObject = getDecodedJwt(token, algorithm);
     return jwtObject.getSubject();
@@ -66,7 +66,7 @@ public class JwtHelper {
    * Extract expiration date from valid JWT
    */
   public static ZonedDateTime getExpirationFromValidJwt(String token)
-      throws Exception {
+      throws UnsupportedEncodingException {
     Algorithm algorithm = Algorithm.HMAC512(hmacKey);
     DecodedJWT jwtObject = getDecodedJwt(token, algorithm);
     return ZonedDateTime.ofInstant(jwtObject.getExpiresAt().toInstant(), AppConfig.luxembourgZoneId);
