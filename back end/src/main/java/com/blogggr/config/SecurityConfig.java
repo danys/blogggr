@@ -1,5 +1,6 @@
 package com.blogggr.config;
 
+import com.blogggr.exceptions.CustomizedAuthenticationEntryPoint;
 import com.blogggr.filters.CredentialsAuthenticationFilter;
 import com.blogggr.filters.InternationalizationFilter;
 import com.blogggr.filters.JwtAuthenticationFilter;
@@ -16,6 +17,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -72,6 +75,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     return internationalizationFilter;
   }
 
+  @Bean
+  public AuthenticationEntryPoint authenticationEntryPoint() {
+    return new CustomizedAuthenticationEntryPoint();
+  }
+
   /**
    * Filter order: JWT filter -> credentials filter ->
    * internationalization filter -> UsernamePasswordAuthenticationFilter
@@ -92,6 +100,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .addFilterBefore(internationalizationFilter(), UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(credentialsAuthenticationFilter(), InternationalizationFilter.class)
-        .addFilterBefore(jwtAuthenticationFilter(), CredentialsAuthenticationFilter.class);
+        .addFilterBefore(jwtAuthenticationFilter(), CredentialsAuthenticationFilter.class)
+        .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint());
   }
 }
