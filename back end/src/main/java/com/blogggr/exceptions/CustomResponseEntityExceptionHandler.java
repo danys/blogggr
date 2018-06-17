@@ -105,4 +105,20 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
     logging.error(message + " Exception message: " + ex.getMessage());
     return ResponseBuilder.errorResponse(message, HttpStatus.NOT_FOUND);
   }
+
+  /**
+   * HTTP verb not implemented exception handling
+   * @param ex
+   * @param headers
+   * @param status
+   * @param request
+   * @return
+   */
+  @Override
+  protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+      HttpHeaders headers, HttpStatus status, WebRequest request) {
+    String message = simpleBundleMessageSource.getMessage("exception.controller.noHandlerFoundHttpVerb");
+    logging.error(message + " Exception message: " + ex.getMessage());
+    return ResponseBuilder.errorResponse(message, HttpStatus.NOT_IMPLEMENTED);
+  }
 }
