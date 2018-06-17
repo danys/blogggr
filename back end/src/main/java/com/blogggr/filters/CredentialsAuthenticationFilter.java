@@ -36,7 +36,7 @@ public class CredentialsAuthenticationFilter extends AbstractAuthenticationProce
   private static final String USERNAME_KEY = "email";
   private static final String PASSWORD_KEY = "password";
 
-  private final Logger logger = LoggerFactory.getLogger(this.getClass());
+  private final Logger logging = LoggerFactory.getLogger(this.getClass());
 
   @Autowired
   private SimpleBundleMessageSource simpleBundleMessageSource;
@@ -94,13 +94,8 @@ public class CredentialsAuthenticationFilter extends AbstractAuthenticationProce
       } catch (BadCredentialsException e) {
         //Log exception, exit the Spring Security filter chain and return
         String message = simpleBundleMessageSource.getMessage("exception.db.wrongPasswordError");
-        logger.error(message);
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setHeader("Content-Type", "application/json;charset=UTF-8");
-        String json = new ObjectMapper()
-            .writeValueAsString(new ErrorResponseBody(AppConfig.apiVersion,
-                Arrays.asList(message)));
-        response.getWriter().write(json);
+        logging.error(message);
+        ResponseBuilder.filterResponse(response, message, HttpStatus.UNAUTHORIZED);
         return;
       }
     }

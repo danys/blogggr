@@ -1,8 +1,11 @@
 package com.blogggr.responses;
 
 import com.blogggr.config.AppConfig;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,12 +51,24 @@ public class ResponseBuilder {
   }
 
   //Error response with a single error message
-  public static ResponseEntity errorResponse(String errorMessage, HttpStatus httpStatus){
-    return new ResponseEntity(new ErrorResponseBody(AppConfig.apiVersion, Arrays.asList(errorMessage)), httpStatus);
+  public static ResponseEntity errorResponse(String errorMessage, HttpStatus httpStatus) {
+    return new ResponseEntity(
+        new ErrorResponseBody(AppConfig.apiVersion, Arrays.asList(errorMessage)), httpStatus);
   }
 
   //Error response with a list of error messages
-  public static ResponseEntity errorResponse(List<String> errorMessages, HttpStatus httpStatus){
-    return new ResponseEntity(new ErrorResponseBody(AppConfig.apiVersion, errorMessages), httpStatus);
+  public static ResponseEntity errorResponse(List<String> errorMessages, HttpStatus httpStatus) {
+    return new ResponseEntity(new ErrorResponseBody(AppConfig.apiVersion, errorMessages),
+        httpStatus);
+  }
+
+  public static void filterResponse(HttpServletResponse response, String message,
+      HttpStatus httpStatus) throws IOException {
+    response.setStatus(httpStatus.value());
+    response.setHeader("Content-Type", "application/json;charset=UTF-8");
+    String json = new ObjectMapper()
+        .writeValueAsString(new ErrorResponseBody(AppConfig.apiVersion,
+            Arrays.asList(message)));
+    response.getWriter().write(json);
   }
 }
