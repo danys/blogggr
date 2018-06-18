@@ -2,9 +2,12 @@ package com.blogggr.exceptions;
 
 import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.utilities.SimpleBundleMessageSource;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.ConversionNotSupportedException;
@@ -38,6 +41,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -248,5 +252,30 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
   protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body,
       HttpHeaders headers, HttpStatus status, WebRequest request) {
     return logAndRespond("exception.other.error", ex, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  /**
+   * Constraint validation handler
+   */
+  @ExceptionHandler(ConstraintViolationException.class)
+  public ResponseEntity handleConstraintViolation(
+      ConstraintViolationException ex) {
+    List<String> errors = new ArrayList<>();
+    for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
+      errors.add(violation.getRootBeanClass().getName() + " " +
+          violation.getPropertyPath() + ": " + violation.getMessage());
+    }
+    logging.error("Validation exception", ex);
+    return ResponseBuilder.errorResponse(errors, HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Type mismatch of a method argument
+   */
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity handleMethodArgumentTypeMismatch(
+      MethodArgumentTypeMismatchException ex, WebRequest request) {
+    logging.error("Argument type mismatch exception", ex);
+    return ResponseBuilder.errorResponse(ex.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
   }
 }
