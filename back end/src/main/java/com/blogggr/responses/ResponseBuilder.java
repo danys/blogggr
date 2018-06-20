@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +64,11 @@ public class ResponseBuilder {
         httpStatus);
   }
 
+  public static ResponseEntity fieldsErrorResponse(List<FieldError> fieldErrors, HttpStatus httpStatus){
+    return new ResponseEntity(new FieldsErrorResponseBody(AppConfig.apiVersion, fieldErrors),
+        httpStatus);
+  }
+
   public static void filterResponse(HttpServletResponse response, String message,
       HttpStatus httpStatus) throws IOException {
     response.setStatus(httpStatus.value());
@@ -70,5 +77,17 @@ public class ResponseBuilder {
         .writeValueAsString(new ErrorResponseBody(AppConfig.apiVersion,
             Arrays.asList(message)));
     response.getWriter().write(json);
+  }
+
+  @Getter
+  @Setter
+  public static class FieldError{
+    private String fieldName;
+    private String message;
+
+    public FieldError(String fieldName, String message){
+      this.fieldName = fieldName;
+      this.message = message;
+    }
   }
 }
