@@ -18,7 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -89,7 +88,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http
         .csrf().disable()
         .httpBasic().disable()
-        .anonymous().disable()
         .authorizeRequests()
         .antMatchers("/login", "/signup", "/index.html").permitAll()
         .antMatchers(HttpMethod.POST, "/api/v*/sessions", "/api/v*/users").permitAll()
