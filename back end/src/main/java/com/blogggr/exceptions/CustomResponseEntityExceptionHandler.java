@@ -4,8 +4,7 @@ import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.util.ArrayList;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -18,16 +17,15 @@ import org.springframework.dao.RecoverableDataAccessException;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.jdbc.datasource.init.ScriptException;
 import org.springframework.lang.Nullable;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -35,10 +33,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.UnsatisfiedServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -54,6 +51,9 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 
   private final Logger logging = LoggerFactory.getLogger(this.getClass());
 
+  @Autowired
+  private SimpleBundleMessageSource simpleBundleMessageSource;
+
   /**
    * Helper method called in other methods of this class
    */
@@ -62,9 +62,6 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
     logging.error(message, ex);
     return ResponseBuilder.errorResponse(message, httpStatus);
   }
-
-  @Autowired
-  private SimpleBundleMessageSource simpleBundleMessageSource;
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity handleGenericException(RuntimeException ex) {
@@ -106,6 +103,12 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
   @ExceptionHandler(TransientDataAccessResourceException.class)
   public ResponseEntity handleTransientDataAccessResourceException(RuntimeException ex) {
     return logAndRespond("exception.db.transientExceptionError", ex, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @ExceptionHandler(UnsatisfiedServletRequestParameterException.class)
+  public ResponseEntity handleUnsatisfiedServletRequestParameterException(UnsatisfiedServletRequestParameterException ex) {
+    logging.error(ex.getLocalizedMessage(), ex);
+    return ResponseBuilder.errorResponse(ex.getLocalizedMessage().replaceAll("\\{|\\}", "").replace('\"', '\''), HttpStatus.BAD_REQUEST);
   }
 
   /**
@@ -216,7 +219,12 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
       HttpHeaders headers, HttpStatus status, WebRequest request) {
-    return logAndRespond("exception.controller.methodArgumentNotValid", ex, HttpStatus.BAD_REQUEST);
+    List<com.blogggr.responses.ResponseBuilder.FieldError> errors = new ArrayList<>();
+    for (FieldError error : ex.getBindingResult().getFieldErrors()) {
+      errors.add(new com.blogggr.responses.ResponseBuilder.FieldError(error.getField(),simpleBundleMessageSource.getMessage(error.getCodes())));
+    }
+    logging.error(ex.getMessage(), ex);
+    return ResponseBuilder.fieldsErrorResponse(errors, HttpStatus.BAD_REQUEST);
   }
 
   /**
@@ -234,7 +242,13 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
   @Override
   protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers,
       HttpStatus status, WebRequest request) {
-    return logAndRespond("exception.controller.bindException", ex, HttpStatus.BAD_REQUEST);
+    List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+    List<com.blogggr.responses.ResponseBuilder.FieldError> errors = new ArrayList<>();
+    for(FieldError fieldError: fieldErrors){
+      errors.add(new ResponseBuilder.FieldError(fieldError.getField(), simpleBundleMessageSource.getMessage(fieldError.getCodes())));
+    }
+    logging.error(ex.getMessage(), ex);
+    return ResponseBuilder.fieldsErrorResponse(errors, HttpStatus.BAD_REQUEST);
   }
 
   /**
@@ -278,4 +292,5 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
     logging.error("Argument type mismatch exception", ex);
     return ResponseBuilder.errorResponse(ex.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
   }
+
 }
