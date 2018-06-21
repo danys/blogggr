@@ -7,12 +7,15 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
@@ -33,17 +36,30 @@ public class AppConfig {
   public static final long sessionValidityMillis = 1000 * 60 * 60
       * 24; //one day: maximum validity of a session. Max also applies for extensions.
   public static final int maxPostBodyLength = 100;
-  public static final String validEmailRegex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
   public static final ZoneId luxembourgZoneId = ZoneId.of("Europe/Luxembourg");
 
   public static final List<String> languages = Arrays.asList("en", "de", "fr");
 
-  @Value("${imgapikey}")
+  //Image storage
+  @Value("${imgapi.key}")
   private String imageApiKey;
 
-  @Value("${imgapisecret}")
+  @Value("${imgapi.secret}")
   private String imageApiSecret;
+
+  //SMTP server config
+  @Value("${smtp.host}")
+  private String smtpHost;
+
+  @Value("${smtp.port}")
+  private String smtpPort;
+
+  @Value("${smtp.username}")
+  private String smtpUsername;
+
+  @Value("${smtp.password}")
+  private String smtpPassword;
 
   @Autowired
   private StorageConfig storageConfig;
@@ -87,4 +103,18 @@ public class AppConfig {
     return messageSource;
   }
 
+  @Bean
+  public JavaMailSender getJavaMailSender() {
+    JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    mailSender.setHost(smtpHost);
+    mailSender.setPort(Integer.parseInt(smtpPort));
+    mailSender.setUsername(smtpUsername);
+    mailSender.setPassword(smtpPassword);
+    Properties props = mailSender.getJavaMailProperties();
+    props.put("mail.transport.protocol", "smtp");
+    props.put("mail.smtp.auth", "true");
+    props.put("mail.smtp.starttls.enable", "true");
+    props.put("mail.debug", "true");
+    return mailSender;
+  }
 }
