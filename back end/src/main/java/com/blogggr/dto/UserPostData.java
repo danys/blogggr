@@ -1,5 +1,6 @@
 package com.blogggr.dto;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,9 +19,11 @@ public class UserPostData {
   private String lastName;
 
   @NotNull
+  @Email
   private String email;
 
   @NotNull
+  @Email
   private String emailRepeat;
 
   @NotNull

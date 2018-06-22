@@ -30,7 +30,7 @@ public class SessionPostDataValidator extends GenericValidator {
       return false;
     }
     //Check the the given email address is valid (https://emailregex.com/)
-    if (!sessionPostData.getEmail().matches(AppConfig.validEmailRegex)) {
+    if (!sessionPostData.getEmail().matches("")) {
       errorMessage = "E-mail address does not validate!";
       return false;
     }

@@ -49,6 +49,9 @@ public class UserService implements UserDetailsService {
   @Autowired
   private SimpleBundleMessageSource simpleBundleMessageSource;
 
+  @Autowired
+  private EmailService emailService;
+
   @Override
   public UserDetails loadUserByUsername(String username) {
     User user = userRepository.findByEmail(username);
@@ -94,6 +97,8 @@ public class UserService implements UserDetailsService {
     Timestamp currentTimestamp = TimeUtilities.getCurrentTimestamp();
     user.setLastChange(currentTimestamp);
     user.setStatus(0);
+    //TODO send email with localized text
+    //emailService.sendSimpleMessage(userData.getEmail(),"bloggr.com - Validate your registration","");
     return userRepository.save(user);
   }
 

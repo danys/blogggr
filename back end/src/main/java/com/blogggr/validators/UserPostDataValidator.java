@@ -31,7 +31,7 @@ public class UserPostDataValidator extends GenericValidator {
     }
     //Check email
     if (userData.getEmail() != null) {
-      if (!userData.getEmail().matches(AppConfig.validEmailRegex)) {
+      if (!userData.getEmail().matches("")) {
         return "E-mail address does not validate!";
       }
     }

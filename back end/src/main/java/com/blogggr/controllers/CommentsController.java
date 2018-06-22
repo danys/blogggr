@@ -52,7 +52,7 @@ public class CommentsController {
    * @param userPrincipal the logged in user
    */
   @PostMapping(value = commentsPath)
-  public ResponseEntity createComment(@Valid CommentData commentData,
+  public ResponseEntity createComment(@Valid @RequestBody CommentData commentData,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws ResourceNotFoundException, NotAuthorizedException {
     logger.info("[POST /comments] User: {}", userPrincipal.getUser().getEmail());
@@ -70,7 +70,7 @@ public class CommentsController {
    * @param userPrincipal the logged in user
    */
   @PutMapping(value = commentsPath + "/{id:[\\d]+}")
-  public ResponseEntity updateComment(@PathVariable String id, @Valid CommentData commentData,
+  public ResponseEntity updateComment(@PathVariable String id, @Valid @RequestBody CommentData commentData,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws ResourceNotFoundException, NotAuthorizedException {
     logger.info(

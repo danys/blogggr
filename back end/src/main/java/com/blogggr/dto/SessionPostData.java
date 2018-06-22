@@ -1,5 +1,6 @@
 package com.blogggr.dto;
 
+import javax.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,11 +11,8 @@ import lombok.Setter;
 @Setter
 public class SessionPostData {
 
+  @Email
   private String email;
   private String password;
   private Boolean rememberMe;
-
-  public SessionPostData() {
-    //
-  }
 }
