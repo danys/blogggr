@@ -4,6 +4,7 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.dao.FriendDao;
 import com.blogggr.dao.PostDao;
 import com.blogggr.dao.UserDao;
+import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
 import com.blogggr.entities.Comment;
 import com.blogggr.entities.Post;
@@ -63,7 +64,7 @@ public class PostService {
     return post;
   }
 
-  public Post updatePost(long postID, long userId, PostData postData)
+  public Post updatePost(long postID, long userId, PostDataUpdate postData)
       throws ResourceNotFoundException, NotAuthorizedException {
     Post post = postDao.findById(postID);
     if (post == null) {
