@@ -1,7 +1,8 @@
 package com.blogggr.controllers;
 
 import com.blogggr.config.AppConfig;
-import com.blogggr.dto.FriendData;
+import com.blogggr.dto.FriendDataBase;
+import com.blogggr.dto.FriendDataUpdate;
 import com.blogggr.dto.out.UserDto;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.User;
@@ -45,7 +46,7 @@ public class FriendsController {
    * @param userPrincipal the logged in user
    */
   @PostMapping(value = friendsPath)
-  public ResponseEntity createFriendship(@Valid @RequestBody FriendData friendData,
+  public ResponseEntity createFriendship(@Valid @RequestBody FriendDataBase friendData,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws NotAuthorizedException, ResourceNotFoundException {
     logger.info("[POST /friends] User: {}, id1: {}, id2: {}", userPrincipal.getUser().getEmail(),
@@ -65,7 +66,8 @@ public class FriendsController {
    */
   @PutMapping(path = friendsPath + "/{id:[\\d]+}/{id2:[\\d]+}")
   public ResponseEntity updateFriendship(@PathVariable String id, @PathVariable String id2,
-      @Valid @RequestBody FriendData friendData, @AuthenticationPrincipal UserPrincipal userPrincipal)
+      @Valid @RequestBody FriendDataUpdate friendData,
+      @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws ResourceNotFoundException, NotAuthorizedException {
     logger.info(
         "[PUT /friends/{}/{}] User: {}", id, id2, userPrincipal.getUser().getEmail());
@@ -92,31 +94,26 @@ public class FriendsController {
   }
 
   /**
-   * GET /friends/id
-   * Retrieve a single friendship
+   * GET /friends/id Retrieve a single friendship
    *
    * @param id the id of the friendship to retrieve
    * @param userPrincipal the logged in user
-   * @return
-   * @throws ResourceNotFoundException
-   * @throws NotAuthorizedException
    */
   @GetMapping(value = friendsPath + "/{id:[\\d]+}")
   public ResponseEntity getFriendship(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws ResourceNotFoundException, NotAuthorizedException {
     logger.info("[GET /friends/id] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
-    Friend friend = friendService.getFriend(Long.parseLong(id), userPrincipal.getUser().getUserId());
+    Friend friend = friendService
+        .getFriend(Long.parseLong(id), userPrincipal.getUser().getUserId());
     return ResponseBuilder.getSuccessResponse(dtoConverter.toFriendDto(friend));
   }
 
   /**
    * DELETE /friends/id
+   *
    * @param id the id of the friendship
    * @param userPrincipal the logged in user
-   * @return
-   * @throws ResourceNotFoundException
-   * @throws NotAuthorizedException
    */
   @DeleteMapping(value = friendsPath + "/{id:[\\d]+}")
   public ResponseEntity deleteFriend(@PathVariable String id,
