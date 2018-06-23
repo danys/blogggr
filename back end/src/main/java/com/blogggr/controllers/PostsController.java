@@ -2,6 +2,7 @@ package com.blogggr.controllers;
 
 import com.blogggr.config.AppConfig;
 import com.blogggr.dto.PostData;
+import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
 import com.blogggr.dto.out.PostDto;
 import com.blogggr.entities.Post;
@@ -11,8 +12,8 @@ import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.PostService;
-import com.blogggr.services.UserService;
 import com.blogggr.utilities.DtoConverter;
+import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -35,13 +36,13 @@ public class PostsController {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   @Autowired
-  private UserService userService;
-
-  @Autowired
   private PostService postService;
 
   @Autowired
   private DtoConverter dtoConverter;
+
+  @Autowired
+  private SimpleBundleMessageSource simpleBundleMessageSource;
 
   /**
    * POST /posts
@@ -67,10 +68,15 @@ public class PostsController {
    * @param userPrincipal the logged in user
    */
   @PutMapping(value = postsPath + "/{id:[\\d]+}")
-  public ResponseEntity updatePost(@PathVariable String id, @RequestBody PostData postData,
+  public ResponseEntity updatePost(@PathVariable String id, @RequestBody PostDataUpdate postData,
       @AuthenticationPrincipal UserPrincipal userPrincipal)
       throws NotAuthorizedException, ResourceNotFoundException {
     logger.info("[PUT /posts] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
+    if (postData.getTitle() == null && postData.getTextBody() == null
+        && postData.getIsGlobal() == null) {
+      throw new IllegalArgumentException(
+          simpleBundleMessageSource.getMessage("PostController.updatePost.allFieldsNil"));
+    }
     postService.updatePost(Long.parseLong(id), userPrincipal.getUser().getUserId(), postData);
     return ResponseBuilder.putSuccessResponse();
   }
@@ -128,9 +134,9 @@ public class PostsController {
 
   /**
    * GET /posts
+   *
    * @param postSearchData the query data
    * @param userPrincipal the logged in user
-   * @return
    */
   @GetMapping(value = postsPath)
   public ResponseEntity getPosts(@Valid PostSearchData postSearchData,
@@ -139,8 +145,9 @@ public class PostsController {
         "[GET /posts] User: {}", userPrincipal.getUser().getEmail());
     PrevNextListPage<Post> page = postService
         .getPosts(postSearchData, userPrincipal.getUser());
-    List<PostDto> postDtos = page.getPageItems().stream().map(post -> dtoConverter.toPostDto(post)).collect(
-        Collectors.toList());
+    List<PostDto> postDtos = page.getPageItems().stream().map(post -> dtoConverter.toPostDto(post))
+        .collect(
+            Collectors.toList());
     PrevNextListPage<PostDto> dtoPage = new PrevNextListPage<>(postDtos, page.getPageData());
     return ResponseBuilder.getSuccessResponse(dtoPage);
   }
