@@ -6,7 +6,6 @@ import com.blogggr.dto.PostSearchData;
 import com.blogggr.entities.*;
 import com.blogggr.responses.PageData;
 import com.blogggr.responses.PrevNextListPage;
-import com.blogggr.validators.GetPostsValidator;
 import com.blogggr.utilities.StringUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
