@@ -2,12 +2,13 @@ package com.blogggr.services;
 
 import com.blogggr.dao.FriendDao;
 import com.blogggr.dao.UserDao;
+import com.blogggr.dto.FriendDataBase;
+import com.blogggr.dto.FriendDataUpdate;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.FriendPk;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
-import com.blogggr.dto.FriendData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class FriendService {
     this.friendDao = friendDao;
   }
 
-  public Friend createFriend(long userID, FriendData friendData)
+  public Friend createFriend(long userID, FriendDataBase friendData)
       throws ResourceNotFoundException, NotAuthorizedException {
     long userID1 = friendData.getUserId1();
     long userID2 = friendData.getUserId2();
@@ -70,7 +71,7 @@ public class FriendService {
     return friend;
   }
 
-  public void updateFriend(long userID, long user1, long user2, FriendData friendData)
+  public void updateFriend(long userID, long user1, long user2, FriendDataUpdate friendData)
       throws ResourceNotFoundException, NotAuthorizedException {
     if (user1 != userID && user2 != userID) {
       throw new NotAuthorizedException("Current user must be a part of the new friendship!");
