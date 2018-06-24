@@ -1,5 +1,3 @@
--- DDL
--- object: blogggr | type: SCHEMA --
 -- DROP SCHEMA IF EXISTS blogggr CASCADE;
 CREATE SCHEMA blogggr;
 -- ddl-end --
@@ -59,7 +57,7 @@ CREATE TABLE blogggr.friends(
 	status integer NOT NULL,
 	last_action_user_id bigint,
 	last_action_timestamp timestamp NOT NULL,
-	version bigint NOT NULL
+	version bigint NOT NULL,
 
 );
 -- ddl-end --
@@ -205,13 +203,6 @@ REFERENCES blogggr.users (user_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
--- object: user_images_user_id_fk | type: CONSTRAINT --
--- ALTER TABLE blogggr.user_images DROP CONSTRAINT IF EXISTS user_images_user_id_fk CASCADE;
-ALTER TABLE blogggr.user_images ADD CONSTRAINT user_images_user_id_fk FOREIGN KEY (user_id)
-REFERENCES blogggr.users (user_id) MATCH FULL
-ON DELETE NO ACTION ON UPDATE NO ACTION;
--- ddl-end --
-
 -- object: comments_postid_fk | type: CONSTRAINT --
 -- ALTER TABLE blogggr.comments DROP CONSTRAINT IF EXISTS comments_postid_fk CASCADE;
 ALTER TABLE blogggr.comments ADD CONSTRAINT comments_postid_fk FOREIGN KEY (post_id)
@@ -237,6 +228,13 @@ ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ALTER TABLE blogggr.post_images DROP CONSTRAINT IF EXISTS post_image_post_id_fk CASCADE;
 ALTER TABLE blogggr.post_images ADD CONSTRAINT post_image_post_id_fk FOREIGN KEY (post_id)
 REFERENCES blogggr.posts (post_id) MATCH FULL
+ON DELETE NO ACTION ON UPDATE NO ACTION;
+-- ddl-end --
+
+-- object: user_images_user_id_fk | type: CONSTRAINT --
+-- ALTER TABLE blogggr.user_images DROP CONSTRAINT IF EXISTS user_images_user_id_fk CASCADE;
+ALTER TABLE blogggr.user_images ADD CONSTRAINT user_images_user_id_fk FOREIGN KEY (user_id)
+REFERENCES blogggr.users (user_id) MATCH FULL
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 

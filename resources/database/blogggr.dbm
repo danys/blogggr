@@ -171,7 +171,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp"/>
 	</column>
 	<column name="sex" not-null="true">
-		<type name="smallint"/>
+		<type name="character"/>
 	</column>
 	<column name="lang" not-null="true">
 		<type name="character" length="2"/>
