@@ -29,6 +29,13 @@ public class PostDao extends GenericDAOImpl<Post> {
     onlyCurrentUser
   }
 
+  public static final String POSTER_USER_ID_KEY = "posterUserId";
+  public static final String TITLE_KEY = "title";
+  public static final String VISIBILITY_KEY = "visibility";
+  public static final String MAX_RECORDS_COUNT_KEY = "maxRecordsCount";
+  public static final String BEFORE_KEY = "before";
+  public static final String AFTER_KEY = "after";
+
   public PostDao() {
     super(Post.class);
   }
@@ -314,17 +321,17 @@ public class PostDao extends GenericDAOImpl<Post> {
       Long postUserID, String title, Visibility visibility) {
     List<Map.Entry<String, String>> l = new ArrayList<>(5);
     Map.Entry<String, String> entry = new AbstractMap.SimpleEntry<>(
-        GetPostsValidator.posterUserIDKey, String.valueOf(postUserID));
+        POSTER_USER_ID_KEY, String.valueOf(postUserID));
     l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(GetPostsValidator.titleKey, title);
+    entry = new AbstractMap.SimpleEntry<>(TITLE_KEY, title);
     l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(GetPostsValidator.visibilityKey, visibility.name());
+    entry = new AbstractMap.SimpleEntry<>(VISIBILITY_KEY, visibility.name());
     l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(GetPostsValidator.afterKey, String.valueOf(next));
+    entry = new AbstractMap.SimpleEntry<>(AFTER_KEY, String.valueOf(next));
     l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(GetPostsValidator.beforeKey, String.valueOf(previous));
+    entry = new AbstractMap.SimpleEntry<>(BEFORE_KEY, String.valueOf(previous));
     l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(GetPostsValidator.limitKey, String.valueOf(limit));
+    entry = new AbstractMap.SimpleEntry<>(MAX_RECORDS_COUNT_KEY, String.valueOf(limit));
     l.add(entry);
     return l;
   }
