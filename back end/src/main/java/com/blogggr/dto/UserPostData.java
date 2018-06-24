@@ -1,7 +1,10 @@
 package com.blogggr.dto;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,28 +16,36 @@ import lombok.Setter;
 public class UserPostData {
 
   @NotNull
+  @Size(min = 3, max = 100)
   private String firstName;
 
   @NotNull
+  @Size(min = 3, max = 100)
   private String lastName;
 
   @NotNull
   @Email
+  @Size(min = 6, max = 100)
   private String email;
 
   @NotNull
   @Email
+  @Size(min = 6, max = 100)
   private String emailRepeat;
 
   @NotNull
+  @Size(min = 8, max = 100)
   private String password;
 
   @NotNull
+  @Size(min = 8, max = 100)
   private String passwordRepeat;
 
   @NotNull
-  private String sex;
+  @Enumerated(EnumType.STRING)
+  private UserEnums.Sex sex;
 
   @NotNull
-  private String lang;
+  @Enumerated(EnumType.STRING)
+  private UserEnums.Lang lang;
 }
