@@ -21,6 +21,7 @@ import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.PostService;
 import com.blogggr.services.UserService;
 import com.blogggr.utilities.DtoConverter;
+import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -51,9 +52,11 @@ public class UsersController {
   @Autowired
   private DtoConverter dtoConverter;
 
+  @Autowired
+  private SimpleBundleMessageSource simpleBundleMessageSource;
+
   /**
-   * GET /users
-   * Search users by email and first name and last name
+   * GET /users Search users by email and first name and last name
    *
    * @param userSearchData search users filter
    * @param userPrincipal the logged in user
@@ -62,6 +65,10 @@ public class UsersController {
   public ResponseEntity getUsers(@Valid UserSearchData userSearchData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /users] UserSearchData, User: {}", userPrincipal.getUser().getEmail());
+    if (userSearchData.getBefore() != null && userSearchData.getAfter() != null) {
+      throw new IllegalArgumentException(
+          simpleBundleMessageSource.getMessage("UsersController.getUsers.afterBeforeBothSet"));
+    }
     PrevNextListPage<User> usersPage = userService.getUsersBySearchTerms(userSearchData);
     List<UserWithImageDto> userWithImageDtos = usersPage.getPageItems().stream()
         .map(user -> dtoConverter.toUserWithImageDto(user))
@@ -73,17 +80,16 @@ public class UsersController {
   }
 
   /**
-   * GET /users
-   * Single search term to search across email, first name and last name
+   * GET /users Single search term to search across email, first name and last name
    *
-   * @param userSearchData search term filter, maximum response size and page number
+   * @param simpleUserSearchData search term filter, maximum response size and page number
    * @param userPrincipal the logged in user
    */
   @GetMapping(value = USER_PATH, params = "searchString")
-  public ResponseEntity getUsersBySearchTerm(@Valid SimpleUserSearchData userSearchData,
+  public ResponseEntity getUsersBySearchTerm(@Valid SimpleUserSearchData simpleUserSearchData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /users] SimpleUserSearchData, User: {}", userPrincipal.getUser().getEmail());
-    RandomAccessListPage<User> usersPage = userService.getUsers(userSearchData);
+    RandomAccessListPage<User> usersPage = userService.getUsers(simpleUserSearchData);
     List<UserWithImageDto> userWithImageDtos = usersPage.getPageItems().stream()
         .map(user -> dtoConverter.toUserWithImageDto(user))
         .collect(Collectors.toList());
@@ -94,8 +100,7 @@ public class UsersController {
   }
 
   /**
-   * GET /users/me
-   * Request this users data with its main image
+   * GET /users/me Request this users data with its main image
    *
    * @param userPrincipal the logged in user
    */
@@ -123,8 +128,7 @@ public class UsersController {
   }
 
   /**
-   * GET /users/id/posts
-   * Retrieve the posts of a particular user
+   * GET /users/id/posts Retrieve the posts of a particular user
    *
    * @param id the id of the user whose posts will be fetched
    * @param userPrincipal the logged in user
@@ -150,31 +154,30 @@ public class UsersController {
   }
 
   /**
-   * POST /users
-   * Create a new user
+   * POST /users Create a new user
    *
-   * @param userPostData the data of the new user
+   * @param userData the data of the new user
    */
   @PostMapping(value = USER_PATH)
-  public ResponseEntity createUser(@Valid @RequestBody UserPostData userPostData) {
-    logger.info("[POST /users] Create user with email: {}", userPostData.getEmail());
-    User user = userService.createUser(userPostData);
+  public ResponseEntity createUser(@Valid @RequestBody UserPostData userData) {
+    logger.info("[POST /users] Create user with email: {}", userData.getEmail());
+    User user = userService.createUser(userData);
     return ResponseBuilder.postSuccessResponse(
         AppConfig.fullBaseUrl + USER_PATH + '/' + String.valueOf(user.getUserId()));
   }
 
   /**
    * PUT /users/id
+   *
    * @param id the userId of the user to update
    * @param userData the new data of the user
    * @param userPrincipal the logged in user
-   * @return
-   * @throws ResourceNotFoundException
-   * @throws NotAuthorizedException
    */
   @PutMapping(value = USER_PATH + "/{id:[\\d]+}")
-  public ResponseEntity updateUser(@PathVariable String id, @Valid @RequestBody UserPutData userData,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) throws ResourceNotFoundException, NotAuthorizedException{
+  public ResponseEntity updateUser(@PathVariable String id,
+      @Valid @RequestBody UserPutData userData,
+      @AuthenticationPrincipal UserPrincipal userPrincipal)
+      throws ResourceNotFoundException, NotAuthorizedException {
     logger.info("[PUT /users/id] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
     userService.updateUser(Long.parseLong(id), userPrincipal.getUser().getUserId(), userData);
     return ResponseBuilder.putSuccessResponse();

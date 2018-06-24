@@ -126,6 +126,9 @@ public class PostsController {
     logger.info(
         "[GET /users/{}/posts/{}] User:{}", userId, postShortName,
         userPrincipal.getUser().getEmail());
+    if (postShortName.length() < 3) {
+      throw new IllegalArgumentException(simpleBundleMessageSource.getMessage(""));
+    }
     Post post = postService
         .getPostByUserAndLabel(userPrincipal.getUser().getUserId(), Long.parseLong(userId),
             postShortName);
