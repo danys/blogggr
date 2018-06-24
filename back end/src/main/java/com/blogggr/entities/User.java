@@ -55,7 +55,7 @@ public class User implements Serializable {
 
   private Integer status;
 
-  private Integer sex; //0=male, 1=female
+  private String sex; //m=male, f=female
 
   private String lang;
 
@@ -101,7 +101,7 @@ public class User implements Serializable {
       womanImage.setWidth(IMG_WIDTH);
       womanImage.setHeight(IMG_HEIGHT);
       womanImage.setName(WOMAN_NAME);
-      this.image = (this.sex == 0) ? manImage : womanImage;
+      this.image = (this.sex.compareTo("m") == 0) ? manImage : womanImage;
     }
     return image;
   }

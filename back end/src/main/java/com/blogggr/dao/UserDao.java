@@ -10,7 +10,6 @@ import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.responses.RandomAccessListPage;
 import com.blogggr.dto.UserSearchData;
 import com.blogggr.utilities.SimpleBundleMessageSource;
-import com.blogggr.validators.GetUsersValidator;
 import javax.persistence.criteria.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +34,10 @@ public class UserDao extends GenericDAOImpl<User> {
   private final int defaultLimit = 50;
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+  private static final String SEARCH_KEY = "searchString";
+  private static final String LIMIT_KEY = "limit";
+  private static final String PAGE_NUMBER_KEY = "pageNumber";
 
   @Autowired
   private SimpleBundleMessageSource simpleBundleMessageSource;
@@ -89,16 +92,16 @@ public class UserDao extends GenericDAOImpl<User> {
     sb.append(UsersController.USER_PATH);
     sb.append("?");
     if (searchString != null && searchString.length() > 0) {
-      sb.append(GetUsersValidator.SEARCH_KEY);
+      sb.append(SEARCH_KEY);
       sb.append("=");
       sb.append(searchString);
       sb.append("&");
     }
-    sb.append(GetUsersValidator.PAGE_KEY);
+    sb.append(PAGE_NUMBER_KEY);
     sb.append("=");
     sb.append(Integer.toString(pageNumber));
     sb.append("&");
-    sb.append(GetUsersValidator.LIMIT_KEY);
+    sb.append(LIMIT_KEY);
     sb.append("=");
     sb.append(Integer.toString(limit));
     pageMetaData.setPageUrl(sb.toString());

@@ -87,8 +87,8 @@ public class UserService implements UserDetailsService {
     user.setFirstName(userData.getFirstName());
     user.setLastName(userData.getLastName());
     user.setEmail(userData.getEmail());
-    user.setSex(Integer.parseInt(userData.getSex()));
-    user.setLang(userData.getLang());
+    user.setSex(userData.getSex().name());
+    user.setLang(userData.getLang().name().toLowerCase());
     user.setPasswordHash(passwordEncoder.encode(userData.getPassword()));
     //Compute a 64 character challenge
     String challenge = Cryptography
@@ -98,7 +98,7 @@ public class UserService implements UserDetailsService {
     user.setLastChange(currentTimestamp);
     user.setStatus(0);
     //TODO send email with localized text
-    //emailService.sendSimpleMessage(userData.getEmail(),"bloggr.com - Validate your registration","");
+    //emailService.sendSimpleMessage(userData.getEmail(),"blogggr.com - Validate your registration","");
     return userRepository.save(user);
   }
 
