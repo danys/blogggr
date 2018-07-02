@@ -9,8 +9,6 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.CommentService;
-import com.blogggr.services.PostService;
-import com.blogggr.services.UserService;
 import com.blogggr.utilities.DtoConverter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,12 +30,6 @@ public class CommentsController {
   public static final String commentsPath = "/comments";
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-  @Autowired
-  private UserService userService;
-
-  @Autowired
-  private PostService postService;
 
   @Autowired
   private CommentService commentService;

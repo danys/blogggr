@@ -37,7 +37,7 @@ public class FriendsController {
   private FriendService friendService;
 
   @Autowired
-  DtoConverter dtoConverter;
+  private DtoConverter dtoConverter;
 
   /**
    * POST /friends
