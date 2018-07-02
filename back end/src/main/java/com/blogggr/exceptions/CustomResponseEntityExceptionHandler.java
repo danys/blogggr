@@ -63,6 +63,11 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
     return ResponseBuilder.errorResponse(message, httpStatus);
   }
 
+  private ResponseEntity logAndSimpleResponse(Exception ex, HttpStatus httpStatus){
+    logging.error(ex.getMessage(), ex);
+    return ResponseBuilder.errorResponse(ex.getMessage(), httpStatus);
+  }
+
   @ExceptionHandler(Exception.class)
   public ResponseEntity handleGenericException(RuntimeException ex) {
     return logAndRespond("exception.other.error", ex, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -75,7 +80,7 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 
   @ExceptionHandler(ResourceNotFoundException.class)
   public ResponseEntity handleResourceNotFoundException(RuntimeException ex) {
-    return logAndRespond(ex.getMessage(), ex, HttpStatus.NOT_FOUND);
+    return logAndSimpleResponse(ex, HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler(UsernameNotFoundException.class)
