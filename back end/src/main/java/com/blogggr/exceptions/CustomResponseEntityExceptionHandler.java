@@ -78,14 +78,25 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
     return logAndRespond(ex.getMessage(), ex, HttpStatus.BAD_REQUEST);
   }
 
-  @ExceptionHandler(ResourceNotFoundException.class)
-  public ResponseEntity handleResourceNotFoundException(RuntimeException ex) {
-    return logAndSimpleResponse(ex, HttpStatus.NOT_FOUND);
-  }
-
   @ExceptionHandler(UsernameNotFoundException.class)
   public ResponseEntity handleUsernameNotFoundException(RuntimeException ex) {
     return logAndRespond("exception.authentication.userNotFound", ex, HttpStatus.UNAUTHORIZED);
+  }
+
+  //Application specific exceptions
+  @ExceptionHandler(NotAuthorizedException.class)
+  public ResponseEntity handleNotAuthorizedException(RuntimeException ex) {
+    return logAndSimpleResponse(ex, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(StorageException.class)
+  public ResponseEntity handleStorageException(RuntimeException ex) {
+    return logAndSimpleResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ResponseEntity handleResourceNotFoundException(RuntimeException ex) {
+    return logAndSimpleResponse(ex, HttpStatus.NOT_FOUND);
   }
 
   //All Database exceptions of Repository beans translated by Spring into instances of DataAccessException

@@ -45,8 +45,7 @@ public class CommentsController {
    */
   @PostMapping(value = commentsPath)
   public ResponseEntity createComment(@Valid @RequestBody CommentData commentData,
-      @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws ResourceNotFoundException, NotAuthorizedException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[POST /comments] User: {}", userPrincipal.getUser().getEmail());
     Comment comment = commentService
         .createComment(userPrincipal.getUser().getUserId(), commentData);
@@ -63,8 +62,7 @@ public class CommentsController {
    */
   @PutMapping(value = commentsPath + "/{id:[\\d]+}")
   public ResponseEntity updateComment(@PathVariable String id, @Valid @RequestBody CommentData commentData,
-      @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws ResourceNotFoundException, NotAuthorizedException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[PUT /comments/id] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
     commentService
@@ -80,8 +78,7 @@ public class CommentsController {
    */
   @DeleteMapping(value = commentsPath + "/{id:[\\d]+}")
   public ResponseEntity deleteComment(@PathVariable String id,
-      @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws ResourceNotFoundException, NotAuthorizedException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[DELETE /comments] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
     commentService.deleteComment(Long.parseLong(id), userPrincipal.getUser().getUserId());
     return ResponseBuilder.deleteSuccessResponse();
@@ -95,7 +92,7 @@ public class CommentsController {
    */
   @GetMapping(value = commentsPath + "/{id:[\\d]+}")
   public ResponseEntity getComment(@PathVariable String id,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) throws ResourceNotFoundException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /comments/id] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
     Comment comment = commentService
         .getCommentById(Long.parseLong(id), userPrincipal.getUser().getUserId());
@@ -111,7 +108,7 @@ public class CommentsController {
   @GetMapping(value = PostsController.postsPath + "/{id:[\\d]+}"
       + commentsPath)
   public ResponseEntity getCommentsByPostId(@PathVariable String id,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) throws ResourceNotFoundException, NotAuthorizedException{
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /comments/id/comments] Id: {}. User: {}", id,
         userPrincipal.getUser().getEmail());
     List<Comment> comments = commentService

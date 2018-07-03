@@ -45,7 +45,7 @@ public class UserImageController {
    */
   @PostMapping(value = USER_IMAGE_PATH)
   public ResponseEntity postUserImage(@RequestParam("file") MultipartFile file,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) throws StorageException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[POST /userimages] User: {}", userPrincipal.getUser().getEmail());
     UserImage userImage = userImageService.postImage(userPrincipal.getUser().getUserId(), file);
@@ -64,7 +64,7 @@ public class UserImageController {
   @GetMapping("/userimages/{filename:.+}")
   @ResponseBody
   public ResponseEntity<Resource> getUserImage(@PathVariable String fileName,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) throws StorageException, ResourceNotFoundException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[GET /userimages/{}. User: {}]", fileName, userPrincipal.getUser().getEmail());
 

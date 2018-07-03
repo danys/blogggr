@@ -74,7 +74,7 @@ public class UserService implements UserDetailsService {
   }
 
   //For POST request
-  public User createUser(UserPostData userData) throws DataAccessException {
+  public User createUser(UserPostData userData) {
     if (userData.getEmail().compareTo(userData.getEmailRepeat()) != 0){
       throw new IllegalArgumentException(
           simpleBundleMessageSource.getMessage("service.user.createUser.emailMismatch"));
@@ -102,8 +102,7 @@ public class UserService implements UserDetailsService {
     return userRepository.save(user);
   }
 
-  public void updateUser(long userResourceID, long userID, UserPutData userData)
-      throws ResourceNotFoundException, NotAuthorizedException {
+  public void updateUser(long userResourceID, long userID, UserPutData userData) {
     User user = userDao.findById(userResourceID);
     if (user == null) {
       throw new ResourceNotFoundException("User not found!");

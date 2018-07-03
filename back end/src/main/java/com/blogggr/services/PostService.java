@@ -48,7 +48,7 @@ public class PostService {
     this.friendDao = friendDao;
   }
 
-  public Post createPost(long userId, PostData postData) throws ResourceNotFoundException {
+  public Post createPost(long userId, PostData postData) {
     User user = userDao.findById(userId);
     if (user == null) {
       throw new ResourceNotFoundException("User not found!");
@@ -64,8 +64,7 @@ public class PostService {
     return post;
   }
 
-  public Post updatePost(long postID, long userId, PostDataUpdate postData)
-      throws ResourceNotFoundException, NotAuthorizedException {
+  public Post updatePost(long postID, long userId, PostDataUpdate postData) {
     Post post = postDao.findById(postID);
     if (post == null) {
       throw new ResourceNotFoundException(postNotFound);
@@ -90,8 +89,7 @@ public class PostService {
   }
 
   //Delete a session by its primary key
-  public void deletePost(long postId, long userId)
-      throws ResourceNotFoundException, NotAuthorizedException {
+  public void deletePost(long postId, long userId) {
     Post post = postDao.findById(postId);
     if (post == null) {
       throw new ResourceNotFoundException(postNotFound);
@@ -115,8 +113,7 @@ public class PostService {
     }
   }
 
-  public Post getPostById(long postId, long userId)
-      throws ResourceNotFoundException, NotAuthorizedException {
+  public Post getPostById(long postId, long userId) {
     Post post = postDao.findById(postId);
     if (post == null) {
       throw new ResourceNotFoundException(postNotFound);
@@ -149,8 +146,7 @@ public class PostService {
     return postsPage;
   }
 
-  public Post getPostByUserAndLabel(Long userId, Long postUserID, String postShortTitle)
-      throws ResourceNotFoundException, NotAuthorizedException {
+  public Post getPostByUserAndLabel(Long userId, Long postUserID, String postShortTitle) {
     try {
       Post post = postDao.getPostByUserAndLabel(userId, postUserID, postShortTitle);
       //Order comments by date

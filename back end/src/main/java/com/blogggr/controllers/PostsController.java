@@ -52,7 +52,7 @@ public class PostsController {
    */
   @PostMapping(value = postsPath)
   public ResponseEntity createPost(@Valid @RequestBody PostData postData,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) throws ResourceNotFoundException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[POST /posts] Post title: {}. User: {}", postData.getTitle(),
         userPrincipal.getUser().getEmail());
     Post post = postService.createPost(userPrincipal.getUser().getUserId(), postData);
@@ -69,8 +69,7 @@ public class PostsController {
    */
   @PutMapping(value = postsPath + "/{id:[\\d]+}")
   public ResponseEntity updatePost(@PathVariable String id, @RequestBody PostDataUpdate postData,
-      @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws NotAuthorizedException, ResourceNotFoundException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[PUT /posts] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
     if (postData.getTitle() == null && postData.getTextBody() == null
         && postData.getIsGlobal() == null) {
@@ -89,8 +88,7 @@ public class PostsController {
    */
   @DeleteMapping(value = postsPath + "/{id:[\\d]+}")
   public ResponseEntity deletePost(@PathVariable String id,
-      @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws ResourceNotFoundException, NotAuthorizedException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[DELETE /posts] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
     postService.deletePost(Long.parseLong(id), userPrincipal.getUser().getUserId());
     return ResponseBuilder.deleteSuccessResponse();
@@ -104,8 +102,7 @@ public class PostsController {
    */
   @GetMapping(value = postsPath + "/{id:[\\d]+}")
   public ResponseEntity getPost(@PathVariable String id,
-      @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws ResourceNotFoundException, NotAuthorizedException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /posts/id] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
     Post post = postService.getPostById(Long.parseLong(id), userPrincipal.getUser().getUserId());
     return ResponseBuilder.getSuccessResponse(dtoConverter.toPostDto(post));
@@ -121,8 +118,7 @@ public class PostsController {
   @GetMapping(value = UsersController.USER_PATH
       + "/{userID:[\\d]+]}/posts/{postShortName:[\\.]+}")
   public ResponseEntity getPost(@PathVariable String userId, @PathVariable String postShortName,
-      @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws NotAuthorizedException, ResourceNotFoundException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[GET /users/{}/posts/{}] User:{}", userId, postShortName,
         userPrincipal.getUser().getEmail());

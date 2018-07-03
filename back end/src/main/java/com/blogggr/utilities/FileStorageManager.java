@@ -29,56 +29,66 @@ public class FileStorageManager {
 
   private static final String CLOUDINARY_IMG_ROOT = "http://res.cloudinary.com/blogggr/image/upload/";
 
-  public FileStorageManager(String folderName, String imageApiKey, String imageApiSecret){
+  private SimpleBundleMessageSource simpleBundleMessageSource;
+
+  public FileStorageManager(String folderName, String imageApiKey, String imageApiSecret,
+      SimpleBundleMessageSource simpleBundleMessageSource) {
     this.storageDirectory = Paths.get(folderName);
     Map<String, String> imgCloudConfig = new HashMap();
     imgCloudConfig.put("cloud_name", "blogggr");
     imgCloudConfig.put("api_key", imageApiKey);
     imgCloudConfig.put("api_secret", imageApiSecret);
     this.cloudinary = new Cloudinary(imgCloudConfig);
+    this.simpleBundleMessageSource = simpleBundleMessageSource;
   }
 
-  public void store(MultipartFile file, String newFileName) throws StorageException{
+  public void store(MultipartFile file, String newFileName) throws StorageException {
     String filename = StringUtils.cleanPath(file.getOriginalFilename());
     try {
       if (file.isEmpty()) {
-        throw new StorageException("Empty files are not accepted: " + filename);
+        throw new StorageException(simpleBundleMessageSource
+            .getMessage("FileStorageManager.store.emptyFileNotAcceptableException") + filename);
       }
       this.storageDirectory.toFile().mkdirs();
       Files.copy(file.getInputStream(), this.storageDirectory.resolve(newFileName),
           StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
-      throw new StorageException("Failed to store file " + newFileName, e);
+      throw new StorageException(
+          simpleBundleMessageSource.getMessage("FileStorageManager.store.failStoreFileException")
+              + newFileName, e);
     }
   }
 
-  public void storeOnCloud(String fullFileName, String name) throws IOException{
+  public void storeOnCloud(String fullFileName, String name) throws IOException {
     Map<String, String> params = new HashMap<>();
-    params.put("public_id",name);
+    params.put("public_id", name);
     cloudinary.uploader().upload(storageDirectory.resolve(fullFileName).toFile(), params);
   }
 
-  public void delete(Path filePath) throws IOException{
+  public void delete(Path filePath) throws IOException {
     Files.delete(filePath);
   }
 
-  public Resource getImageResourceFromCloud(String imageTag) throws StorageException{
-    String url = CLOUDINARY_IMG_ROOT+imageTag;
+  public Resource getImageResourceFromCloud(String imageTag) throws StorageException {
+    String url = CLOUDINARY_IMG_ROOT + imageTag;
     Resource resource;
     try {
       resource = new UrlResource(new URL(url));
-    } catch(MalformedURLException e){
-      throw new StorageException("Malformed image cloud URL!" ,e);
+    } catch (MalformedURLException e) {
+      throw new StorageException(simpleBundleMessageSource
+          .getMessage("FileStorageManager.getImageResourceFromCloud.malformedUrlException"), e);
     }
     if (resource.exists() || resource.isReadable()) {
       return resource;
     } else {
       throw new StorageException(
-          "Unable to load file: " + url);
+          simpleBundleMessageSource
+              .getMessage("FileStorageManager.getImageResourceFromCloud.unableLoadException")
+              + url);
     }
   }
 
-  public Path getStorageDirectory(){
+  public Path getStorageDirectory() {
     return storageDirectory;
   }
 

@@ -47,8 +47,7 @@ public class FriendsController {
    */
   @PostMapping(value = friendsPath)
   public ResponseEntity createFriendship(@Valid @RequestBody FriendDataBase friendData,
-      @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws NotAuthorizedException, ResourceNotFoundException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[POST /friends] User: {}, id1: {}, id2: {}", userPrincipal.getUser().getEmail(),
         friendData.getUserId1(), friendData.getUserId2());
     Friend friend = friendService.createFriend(userPrincipal.getUser().getUserId(), friendData);
@@ -67,8 +66,7 @@ public class FriendsController {
   @PutMapping(path = friendsPath + "/{id:[\\d]+}/{id2:[\\d]+}")
   public ResponseEntity updateFriendship(@PathVariable String id, @PathVariable String id2,
       @Valid @RequestBody FriendDataUpdate friendData,
-      @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws ResourceNotFoundException, NotAuthorizedException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[PUT /friends/{}/{}] User: {}", id, id2, userPrincipal.getUser().getEmail());
     friendService
@@ -83,8 +81,7 @@ public class FriendsController {
    * @param userPrincipal the logged in user
    */
   @GetMapping(path = friendsPath)
-  public ResponseEntity getFriends(@AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws ResourceNotFoundException {
+  public ResponseEntity getFriends(@AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[GET /friends] User: {}", userPrincipal.getUser().getEmail());
     List<User> friends = friendService.getFriends(userPrincipal.getUser().getUserId());
@@ -101,8 +98,7 @@ public class FriendsController {
    */
   @GetMapping(value = friendsPath + "/{id:[\\d]+}")
   public ResponseEntity getFriendship(@PathVariable String id,
-      @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws ResourceNotFoundException, NotAuthorizedException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /friends/id] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
     Friend friend = friendService
         .getFriend(Long.parseLong(id), userPrincipal.getUser().getUserId());
@@ -117,8 +113,7 @@ public class FriendsController {
    */
   @DeleteMapping(value = friendsPath + "/{id:[\\d]+}")
   public ResponseEntity deleteFriend(@PathVariable String id,
-      @AuthenticationPrincipal UserPrincipal userPrincipal)
-      throws ResourceNotFoundException, NotAuthorizedException {
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[DELETE /friends/id] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
     friendService.deleteFriend(Long.parseLong(id), userPrincipal.getUser().getUserId());
     return ResponseBuilder.deleteSuccessResponse();
