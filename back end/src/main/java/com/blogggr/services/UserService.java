@@ -18,7 +18,6 @@ import com.blogggr.utilities.TimeUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -77,11 +76,11 @@ public class UserService implements UserDetailsService {
   public User createUser(UserPostData userData) {
     if (userData.getEmail().compareTo(userData.getEmailRepeat()) != 0){
       throw new IllegalArgumentException(
-          simpleBundleMessageSource.getMessage("service.user.createUser.emailMismatch"));
+          simpleBundleMessageSource.getMessage("UserService.createUser.emailMismatch"));
     }
     if (userData.getPassword().compareTo(userData.getPasswordRepeat()) != 0) {
       throw new IllegalArgumentException(
-          simpleBundleMessageSource.getMessage("service.user.createUser.passwordMismatch"));
+          simpleBundleMessageSource.getMessage("UserService.createUser.passwordMismatch"));
     }
     User user = new User();
     user.setFirstName(userData.getFirstName());
@@ -105,22 +104,22 @@ public class UserService implements UserDetailsService {
   public void updateUser(long userResourceID, long userID, UserPutData userData) {
     User user = userDao.findById(userResourceID);
     if (user == null) {
-      throw new ResourceNotFoundException("User not found!");
+      throw new ResourceNotFoundException(simpleBundleMessageSource.getMessage("UserService.userNotFound"));
     }
     //A user can only change his own data
     if (user.getUserId() != userID) {
-      throw new NotAuthorizedException("Not authorized to change this user!");
+      throw new NotAuthorizedException(simpleBundleMessageSource.getMessage("UserService.updateUser.notAuthorizedModify"));
     }
     //If an old password has been provided check it!
     if (userData.getOldPassword() != null) {
       String oldHash = passwordEncoder.encode(userData.getOldPassword());
       if (oldHash.compareTo(user.getPasswordHash()) != 0) {
-        throw new NotAuthorizedException("Old password is wrong!");
+        throw new NotAuthorizedException(simpleBundleMessageSource.getMessage("UserService.updateUser.wrongOldPassword"));
       }
     }
     if (userData.getPassword() != null) {
       if (userData.getOldPassword() == null) {
-        throw new NotAuthorizedException("Old password must be provided!");
+        throw new NotAuthorizedException(simpleBundleMessageSource.getMessage("UserService.updateUser.oldPasswordEmpty"));
       }
       user.setPasswordHash(passwordEncoder.encode(userData.getPassword()));
     }

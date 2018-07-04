@@ -13,10 +13,12 @@ import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.dto.PostData;
+import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.StringUtilities;
 import com.blogggr.utilities.TimeUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,26 +34,24 @@ import java.util.List;
 @Transactional
 public class PostService {
 
+  @Autowired
   private PostDao postDao;
+
+  @Autowired
   private UserDao userDao;
+
+  @Autowired
   private FriendDao friendDao;
 
-  private final String postNotFound = "Post not found!";
-  private final String noModifyAuthorization = "No authorization to modify this post!";
-  private final String noReadAuthorization = "No authorization to view this post!";
+  @Autowired
+  private SimpleBundleMessageSource messageSource;
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-  public PostService(PostDao postDao, UserDao userDao, FriendDao friendDao) {
-    this.postDao = postDao;
-    this.userDao = userDao;
-    this.friendDao = friendDao;
-  }
 
   public Post createPost(long userId, PostData postData) {
     User user = userDao.findById(userId);
     if (user == null) {
-      throw new ResourceNotFoundException("User not found!");
+      throw new ResourceNotFoundException(messageSource.getMessage("PostService.userNotFound"));
     }
     Post post = new Post();
     post.setUser(user);
@@ -67,10 +67,10 @@ public class PostService {
   public Post updatePost(long postID, long userId, PostDataUpdate postData) {
     Post post = postDao.findById(postID);
     if (post == null) {
-      throw new ResourceNotFoundException(postNotFound);
+      throw new ResourceNotFoundException(messageSource.getMessage("PostService.postNotFound"));
     }
     if (post.getUser().getUserId() != userId) {
-      throw new NotAuthorizedException(noModifyAuthorization);
+      throw new NotAuthorizedException(messageSource.getMessage("PostService.notAuthorizedModify"));
     }
     //Update timestamp
     post.setTimestamp(TimeUtilities.getCurrentTimestamp());
@@ -92,10 +92,10 @@ public class PostService {
   public void deletePost(long postId, long userId) {
     Post post = postDao.findById(postId);
     if (post == null) {
-      throw new ResourceNotFoundException(postNotFound);
+      throw new ResourceNotFoundException(messageSource.getMessage("PostService.postNotFound"));
     }
     if (post.getUser().getUserId() != userId) {
-      throw new NotAuthorizedException(noModifyAuthorization);
+      throw new NotAuthorizedException(messageSource.getMessage("PostService.notAuthorizedModify"));
     }
     postDao.deleteById(postId);
   }
@@ -116,7 +116,7 @@ public class PostService {
   public Post getPostById(long postId, long userId) {
     Post post = postDao.findById(postId);
     if (post == null) {
-      throw new ResourceNotFoundException(postNotFound);
+      throw new ResourceNotFoundException(messageSource.getMessage("PostService.postNotFound"));
     }
     User postAuthor = post.getUser();
     //1. Post can be viewed if current session user is the owner or the post has global flag
@@ -128,7 +128,7 @@ public class PostService {
       return post;
     }
     //Otherwise access denied
-    throw new NotAuthorizedException(noReadAuthorization);
+    throw new NotAuthorizedException(messageSource.getMessage("PostService.notAuthorizedView"));
   }
 
   public PrevNextListPage<Post> getPosts(PostSearchData postSearchData, User user) {
@@ -167,9 +167,9 @@ public class PostService {
         return post;
       }
       //Otherwise access denied
-      throw new NotAuthorizedException(noReadAuthorization);
+      throw new NotAuthorizedException(messageSource.getMessage("PostService.notAuthorizedView"));
     } catch (NoResultException e) {
-      throw new ResourceNotFoundException(postNotFound);
+      throw new ResourceNotFoundException(messageSource.getMessage("PostService.postNotFound"));
     }
   }
 }

@@ -6,9 +6,11 @@ import com.blogggr.dto.PostSearchData;
 import com.blogggr.entities.*;
 import com.blogggr.responses.PageData;
 import com.blogggr.responses.PrevNextListPage;
+import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.StringUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.criteria.*;
@@ -21,6 +23,9 @@ import java.util.*;
 public class PostDao extends GenericDAOImpl<Post> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+  @Autowired
+  private SimpleBundleMessageSource messageSource;
 
   public enum Visibility {
     onlyGlobal,
@@ -40,7 +45,6 @@ public class PostDao extends GenericDAOImpl<Post> {
     super(Post.class);
   }
 
-  private final String noResult = "Did not find any posts!";
   private final int friendAccepted = 1;
   private final int defaultLimit = 50;
   private final long defaultMinimumID = -1;
@@ -141,7 +145,7 @@ public class PostDao extends GenericDAOImpl<Post> {
     }
     if (before != null && after != null) {
       //Can have either before or after but not both set
-      throw new IllegalArgumentException("Cannot set both before and after!");
+      throw new IllegalArgumentException(messageSource.getMessage("PostDao.afterBeforeSetException"));
     }
     //Post user condition
     Predicate postUserCondition = null;
@@ -339,7 +343,7 @@ public class PostDao extends GenericDAOImpl<Post> {
   private String buildNextPageUrl(Long next, Integer limit, Long postUserID, String title,
       Visibility visibility) {
     if (next == null || limit == null) {
-      throw new IllegalArgumentException("Next and limit should not be null!");
+      throw new IllegalArgumentException(messageSource.getMessage("PostDao.nextLimitNullException"));
     }
     return AppConfig.baseUrl + PostsController.postsPath + "?" +
         StringUtilities.buildQueryStringFromListOfKVPairs(
@@ -349,7 +353,7 @@ public class PostDao extends GenericDAOImpl<Post> {
   private String buildPreviousPageUrl(Long previous, Integer limit, Long postUserID, String title,
       Visibility visibility) {
     if (previous == null || limit == null) {
-      throw new IllegalArgumentException("Previous and limit should not be null!");
+      throw new IllegalArgumentException(messageSource.getMessage("PostDao.previousLimitNullException"));
     }
     return AppConfig.baseUrl + PostsController.postsPath + "?" +
         StringUtilities.buildQueryStringFromListOfKVPairs(

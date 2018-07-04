@@ -56,7 +56,7 @@ public class UserDao extends GenericDAOImpl<User> {
       return entityManager.createQuery(query).getSingleResult();
     } catch (NoResultException e) {
       throw new ResourceNotFoundException(simpleBundleMessageSource
-          .getMessage("dao.user.findByIdWithImages.notFound"));
+          .getMessage("UserDao.findByIdWithImages.notFound"));
     }
   }
 

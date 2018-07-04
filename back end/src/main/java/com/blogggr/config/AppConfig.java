@@ -64,21 +64,18 @@ public class AppConfig {
   @Autowired
   private StorageConfig storageConfig;
 
-  @Autowired
-  private SimpleBundleMessageSource simpleBundleMessageSource;
-
   @Bean
   @Qualifier("userimage")
-  public FileStorageManager userImageFileStorageManager() {
+  public FileStorageManager userImageFileStorageManager(SimpleBundleMessageSource messageSource) {
     return new FileStorageManager(storageConfig.getUserImagesLocation(), imageApiKey,
-        imageApiSecret, simpleBundleMessageSource);
+        imageApiSecret, messageSource);
   }
 
   @Bean
   @Qualifier("postimage")
-  public FileStorageManager postImageFileStorageManager() {
+  public FileStorageManager postImageFileStorageManager(SimpleBundleMessageSource messageSource) {
     return new FileStorageManager(storageConfig.getPostImagesLocation(), imageApiKey,
-        imageApiSecret, simpleBundleMessageSource);
+        imageApiSecret, messageSource);
   }
 
   @Bean

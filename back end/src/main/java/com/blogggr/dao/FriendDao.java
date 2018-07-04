@@ -3,8 +3,10 @@ package com.blogggr.dao;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.utilities.SimpleBundleMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -20,7 +22,8 @@ import java.util.List;
 @Repository
 public class FriendDao extends GenericDAOImpl<Friend> {
 
-  private final String noResult = "Did not find any friends!";
+  @Autowired
+  private SimpleBundleMessageSource messageSource;
 
   public FriendDao() {
     super(Friend.class);
@@ -69,7 +72,7 @@ public class FriendDao extends GenericDAOImpl<Friend> {
       }
       return entityManager.createQuery(query).getResultList();
     } catch (NoResultException e) {
-      throw new ResourceNotFoundException(noResult);
+      throw new ResourceNotFoundException(messageSource.getMessage("FriendDao.noResult"));
     }
   }
 
@@ -87,7 +90,7 @@ public class FriendDao extends GenericDAOImpl<Friend> {
       );
       return entityManager.createQuery(query).getSingleResult();
     } catch (NoResultException e) {
-      throw new ResourceNotFoundException(noResult);
+      throw new ResourceNotFoundException(messageSource.getMessage("FriendDao.noResult"));
     }
   }
 
@@ -106,7 +109,7 @@ public class FriendDao extends GenericDAOImpl<Friend> {
       );
       return entityManager.createQuery(query).getSingleResult();
     } catch (NoResultException e) {
-      throw new ResourceNotFoundException(noResult);
+      throw new ResourceNotFoundException(messageSource.getMessage("FriendDao.noResult"));
     }
   }
 }

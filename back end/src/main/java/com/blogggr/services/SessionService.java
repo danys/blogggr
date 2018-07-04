@@ -3,11 +3,13 @@ package com.blogggr.services;
 import com.blogggr.config.AppConfig;
 import com.blogggr.entities.User;
 import com.blogggr.utilities.JwtHelper;
+import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.time.ZonedDateTime;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,9 @@ public class SessionService {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+  @Autowired
+  private SimpleBundleMessageSource messageSource;
+
   public SessionDetails createSession(User user)
       throws UnsupportedEncodingException {
     SessionDetails details = new SessionDetails();
@@ -36,7 +41,7 @@ public class SessionService {
     try {
       details.expiration = JwtHelper.getExpirationFromValidJwt(details.jwt);
     } catch(Exception e){
-      logger.error("Error determining expiration", e);
+      logger.error(messageSource.getMessage("SessionService.expirationError"), e);
       details.expiration = ZonedDateTime.now(AppConfig.luxembourgZoneId);
     }
     details.email = user.getEmail();
