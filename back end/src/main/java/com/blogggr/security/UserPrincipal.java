@@ -51,7 +51,6 @@ public class UserPrincipal implements UserDetails {
 
   @Override
   public boolean isEnabled(){
-    //TODO return this.user.getStatus() == xy;
     return true;
   }
 }
