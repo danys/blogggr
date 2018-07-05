@@ -15,6 +15,7 @@ import com.blogggr.security.UserPrincipal;
 import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.TimeUtilities;
+import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,8 +74,8 @@ public class UserService implements UserDetailsService {
   }
 
   //For POST request
-  public User createUser(UserPostData userData) {
-    if (userData.getEmail().compareTo(userData.getEmailRepeat()) != 0){
+  public User createUser(UserPostData userData) throws MessagingException {
+    if (userData.getEmail().compareTo(userData.getEmailRepeat()) != 0) {
       throw new IllegalArgumentException(
           simpleBundleMessageSource.getMessage("UserService.createUser.emailMismatch"));
     }
@@ -91,35 +92,38 @@ public class UserService implements UserDetailsService {
     user.setPasswordHash(passwordEncoder.encode(userData.getPassword()));
     //Compute a 64 character challenge
     String challenge = Cryptography
-        .computeSHA256Hash(String.valueOf(System.currentTimeMillis() / 10)); //UTC time
+        .computeSHA256Hash(
+            user.getEmail() + String.valueOf(System.currentTimeMillis() / 10)); //UTC time
     user.setChallenge(challenge);
     Timestamp currentTimestamp = TimeUtilities.getCurrentTimestamp();
     user.setLastChange(currentTimestamp);
     user.setStatus(0);
-    //TODO send email with localized text
-    //emailService.sendSimpleMessage(userData.getEmail(),"blogggr.com - Validate your registration","");
     return userRepository.save(user);
   }
 
   public void updateUser(long userResourceID, long userID, UserPutData userData) {
     User user = userDao.findById(userResourceID);
     if (user == null) {
-      throw new ResourceNotFoundException(simpleBundleMessageSource.getMessage("UserService.userNotFound"));
+      throw new ResourceNotFoundException(
+          simpleBundleMessageSource.getMessage("UserService.userNotFound"));
     }
     //A user can only change his own data
     if (user.getUserId() != userID) {
-      throw new NotAuthorizedException(simpleBundleMessageSource.getMessage("UserService.updateUser.notAuthorizedModify"));
+      throw new NotAuthorizedException(
+          simpleBundleMessageSource.getMessage("UserService.updateUser.notAuthorizedModify"));
     }
     //If an old password has been provided check it!
     if (userData.getOldPassword() != null) {
       String oldHash = passwordEncoder.encode(userData.getOldPassword());
       if (oldHash.compareTo(user.getPasswordHash()) != 0) {
-        throw new NotAuthorizedException(simpleBundleMessageSource.getMessage("UserService.updateUser.wrongOldPassword"));
+        throw new NotAuthorizedException(
+            simpleBundleMessageSource.getMessage("UserService.updateUser.wrongOldPassword"));
       }
     }
     if (userData.getPassword() != null) {
       if (userData.getOldPassword() == null) {
-        throw new NotAuthorizedException(simpleBundleMessageSource.getMessage("UserService.updateUser.oldPasswordEmpty"));
+        throw new NotAuthorizedException(
+            simpleBundleMessageSource.getMessage("UserService.updateUser.oldPasswordEmpty"));
       }
       user.setPasswordHash(passwordEncoder.encode(userData.getPassword()));
     }

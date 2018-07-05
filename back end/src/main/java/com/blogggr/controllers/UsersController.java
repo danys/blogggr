@@ -10,24 +10,26 @@ import com.blogggr.dto.out.PostDto;
 import com.blogggr.dto.out.UserWithImageDto;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.NotAuthorizedException;
-import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.responses.RandomAccessListPage;
 import com.blogggr.dto.UserSearchData;
 import com.blogggr.dto.UserPostData;
 import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.security.UserPrincipal;
+import com.blogggr.services.EmailService;
 import com.blogggr.services.PostService;
 import com.blogggr.services.UserService;
 import com.blogggr.utilities.DtoConverter;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.mail.MessagingException;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +50,9 @@ public class UsersController {
 
   @Autowired
   private PostService postService;
+
+  @Autowired
+  private EmailService emailService;
 
   @Autowired
   private DtoConverter dtoConverter;
@@ -154,14 +159,45 @@ public class UsersController {
   }
 
   /**
+   * Construct the HTML e-mail message text
+   * @param userId the current user Id
+   * @param challenge the challenge token assigned to this user to verify his e-mail address
+   * @return
+   */
+  private String buildEmailHtml(Long userId, String challenge) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("<html><h1>");
+    sb.append(simpleBundleMessageSource.getMessage("UserService.createUser.emailWelcome"));
+    sb.append("</h1><p>");
+    sb.append(simpleBundleMessageSource.getMessage("UserService.createUser.emailConfirmText"));
+    sb.append(": <a href='https://www.blogggr.com/users/");
+    sb.append(userId);
+    sb.append("?challenge=");
+    sb.append(challenge);
+    sb.append("'>");
+    sb.append(simpleBundleMessageSource.getMessage("UserService.createUser.emailClickHere"));
+    sb.append("</a></p></html>");
+    return sb.toString();
+  }
+
+  /**
    * POST /users Create a new user
    *
    * @param userData the data of the new user
    */
   @PostMapping(value = USER_PATH)
-  public ResponseEntity createUser(@Valid @RequestBody UserPostData userData) {
+  public ResponseEntity createUser(@Valid @RequestBody UserPostData userData) throws MessagingException {
     logger.info("[POST /users] Create user with email: {}", userData.getEmail());
-    User user = userService.createUser(userData);
+    User user;
+    try{
+      user = userService.createUser(userData);
+    }
+    catch(DataIntegrityViolationException e){
+      return ResponseBuilder.errorResponse(simpleBundleMessageSource.getMessage("UserService.createUser.userExistsException"), HttpStatus.BAD_REQUEST);
+    }
+    emailService.sendSimpleMessage(userData.getEmail(),
+        simpleBundleMessageSource.getMessage("UserService.createUser.emailSubject"),
+        buildEmailHtml(user.getUserId(), user.getChallenge()));
     return ResponseBuilder.postSuccessResponse(
         AppConfig.fullBaseUrl + USER_PATH + '/' + String.valueOf(user.getUserId()));
   }

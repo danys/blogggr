@@ -4,6 +4,7 @@ import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.util.ArrayList;
 import java.util.List;
+import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -97,6 +98,11 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
   @ExceptionHandler(ResourceNotFoundException.class)
   public ResponseEntity handleResourceNotFoundException(RuntimeException ex) {
     return logAndSimpleResponse(ex, HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(MessagingException.class)
+  public ResponseEntity handleMessagingException(MessagingException e){
+    return logAndRespond("UserService.createUser.emailException", e, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   //All Database exceptions of Repository beans translated by Spring into instances of DataAccessException
