@@ -76,7 +76,7 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
 
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity handleIllegalArgumentException(RuntimeException ex) {
-    return logAndRespond(ex.getMessage(), ex, HttpStatus.BAD_REQUEST);
+    return logAndSimpleResponse(ex, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(UsernameNotFoundException.class)
