@@ -1,6 +1,7 @@
 package com.blogggr.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import com.blogggr.config.AppConfig;
@@ -32,5 +33,11 @@ public class UsersControllerTest {
   public void confirmEmail_Normal(){
     when(userService.confirmEmail(any(Long.class), any(String.class))).thenReturn("dan@domain.com");
     webClient.get().uri(baseUrl+"/1/enable?challenge=abc").exchange().expectStatus().isOk();
+  }
+
+  @Test
+  public void confirmEmail_Exception(){
+    doThrow(new IllegalArgumentException("Bad user id")).when(userService).confirmEmail(0L, "abc");
+    webClient.get().uri(baseUrl+"/0/enable?challenge=abc").exchange().expectStatus().isBadRequest();
   }
 }
