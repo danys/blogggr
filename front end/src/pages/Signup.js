@@ -58,13 +58,13 @@ export class Signup extends React.Component{
 
     formInputChange(field, event){
         if (field==='sex'){
-            if (event.target.value==='Male') this.setState({sex: '0'});
-            else if (event.target.value==='Female') this.setState({sex: '1'});
+            if (event.target.value==='Male') this.setState({sex: 'M'});
+            else if (event.target.value==='Female') this.setState({sex: 'F'});
         }
         else if (field==='lang'){
-            if (event.target.value==='English') this.setState({lang: 'en'});
-            else if (event.target.value==='German') this.setState({lang: 'de'});
-            else if (event.target.value==='French') this.setState({lang: 'fr'});
+            if (event.target.value==='English') this.setState({lang: 'EN'});
+            else if (event.target.value==='German') this.setState({lang: 'DE'});
+            else if (event.target.value==='French') this.setState({lang: 'FR'});
         }
         else this.setState({[field]: event.target.value});
     }
