@@ -58,14 +58,13 @@ export class Signup extends React.Component{
 
     formInputChange(field, event){
         if (field==='sex'){
-            if (event.target.value==='Male') this.setState({sex: '0'});
-            else if (event.target.value==='Female') this.setState({sex: '1'});
+            if (event.target.value==='Male') this.setState({sex: 'M'});
+            else if (event.target.value==='Female') this.setState({sex: 'F'});
         }
         else if (field==='lang'){
-            if (event.target.value==='English') this.setState({lang: 'en'});
-            else if (event.target.value==='German') this.setState({lang: 'de'});
-            else if (event.target.value==='French') this.setState({lang: 'fr'});
-            else if (event.target.value==='Luxembourgish') this.setState({lang: 'lu'});
+            if (event.target.value==='English') this.setState({lang: 'EN'});
+            else if (event.target.value==='German') this.setState({lang: 'DE'});
+            else if (event.target.value==='French') this.setState({lang: 'FR'});
         }
         else this.setState({[field]: event.target.value});
     }
@@ -118,7 +117,6 @@ export class Signup extends React.Component{
                                             <option>English</option>
                                             <option>German</option>
                                             <option>French</option>
-                                            <option>Luxembourgish</option>
                                         </select>
                                     </div>
                                     <Link url="/signup" cssClass="btn btn-lg btn-success btn-block" onClick={this.handleSignupClick} text="Sign up" tabIndex="7"/>

@@ -1,28 +1,24 @@
 package com.blogggr.controllers;
 
 import com.blogggr.config.AppConfig;
-import com.blogggr.models.AppModel;
-import com.blogggr.models.AppModelImpl;
+import com.blogggr.dto.CommentData;
+import com.blogggr.dto.out.CommentDto;
+import com.blogggr.entities.Comment;
+import com.blogggr.exceptions.NotAuthorizedException;
+import com.blogggr.exceptions.ResourceNotFoundException;
+import com.blogggr.responses.ResponseBuilder;
+import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.CommentService;
-import com.blogggr.services.PostService;
-import com.blogggr.services.UserService;
-import com.blogggr.strategies.auth.AuthenticatedAuthorization;
-import com.blogggr.strategies.invoker.*;
-import com.blogggr.strategies.responses.DeleteResponse;
-import com.blogggr.strategies.responses.GetResponse;
-import com.blogggr.strategies.responses.PostResponse;
-import com.blogggr.strategies.responses.PutResponse;
-import com.blogggr.strategies.validators.CommentPostDataValidator;
-import com.blogggr.strategies.validators.CommentPutDataValidator;
-import com.blogggr.strategies.validators.IdValidator;
-import com.blogggr.utilities.Cryptography;
+import com.blogggr.utilities.DtoConverter;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Daniel Sunnen on 05.12.16.
@@ -33,83 +29,93 @@ public class CommentsController {
 
   public static final String commentsPath = "/comments";
 
-  private UserService userService;
-  private PostService postService;
-  private CommentService commentService;
-  private Cryptography cryptography;
-
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  public CommentsController(UserService userService, PostService postService,
-      CommentService commentService, Cryptography cryptography) {
-    this.userService = userService;
-    this.postService = postService;
-    this.commentService = commentService;
-    this.cryptography = cryptography;
+  @Autowired
+  private CommentService commentService;
+
+  @Autowired
+  private DtoConverter dtoConverter;
+
+  /**
+   * POST /comments
+   *
+   * @param commentData the comment content
+   * @param userPrincipal the logged in user
+   */
+  @PostMapping(value = commentsPath)
+  public ResponseEntity createComment(@Valid @RequestBody CommentData commentData,
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    logger.info("[POST /comments] User: {}", userPrincipal.getUser().getEmail());
+    Comment comment = commentService
+        .createComment(userPrincipal.getUser().getUserId(), commentData);
+    return ResponseBuilder
+        .postSuccessResponse(AppConfig.fullBaseUrl + commentsPath + '/' + comment.getCommentId());
   }
 
-  //POST /comments
-  @RequestMapping(path = commentsPath, method = RequestMethod.POST)
-  public ResponseEntity createComment(@RequestBody String bodyData,
-      @RequestHeader Map<String, String> header) {
-    logger.debug("[POST /comments] RequestBody = " + bodyData + ". Header: " + header.toString());
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new CommentPostDataValidator(), new InvokePostCommentService(commentService),
-        new PostResponse());
-    return model.execute(null, header, bodyData);
+  /**
+   * PUT /comments/id
+   *
+   * @param id the id of the comment
+   * @param commentData the updated comment content
+   * @param userPrincipal the logged in user
+   */
+  @PutMapping(value = commentsPath + "/{id:[\\d]+}")
+  public ResponseEntity updateComment(@PathVariable String id, @Valid @RequestBody CommentData commentData,
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    logger.info(
+        "[PUT /comments/id] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
+    commentService
+        .updateComment(Long.parseLong(id), userPrincipal.getUser().getUserId(), commentData);
+    return ResponseBuilder.putSuccessResponse();
   }
 
-  //PUT /comments/id
-  @RequestMapping(path = commentsPath + "/{id}", method = RequestMethod.PUT)
-  public ResponseEntity updateComment(@PathVariable String id, @RequestBody String bodyData,
-      @RequestHeader Map<String, String> header) {
-    logger.debug(
-        "[PUT /comments/id] Id = " + id + " RequestBody = " + bodyData + ". Header: " + header
-            .toString());
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new CommentPutDataValidator(), new InvokePutCommentService(commentService),
-        new PutResponse());
-    Map<String, String> map = new HashMap<>();
-    map.put("id", id);
-    return model.execute(map, header, bodyData);
-  }
-
-  //DELETE /comments/id
-  @RequestMapping(path = commentsPath + "/{id}", method = RequestMethod.DELETE)
+  /**
+   * DELETE /comments/id
+   *
+   * @param id the id of the comment to delete
+   * @param userPrincipal the logged in user
+   */
+  @DeleteMapping(value = commentsPath + "/{id:[\\d]+}")
   public ResponseEntity deleteComment(@PathVariable String id,
-      @RequestHeader Map<String, String> header) {
-    logger.debug("[DELETE /comments] Id = " + id + "Header: " + header.toString());
-    Map<String, String> map = new HashMap<>();
-    map.put("id", id);
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new IdValidator(), new InvokeDeleteCommentService(commentService), new DeleteResponse());
-    return model.execute(map, header, null);
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    logger.info("[DELETE /comments] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
+    commentService.deleteComment(Long.parseLong(id), userPrincipal.getUser().getUserId());
+    return ResponseBuilder.deleteSuccessResponse();
   }
 
-  //GET /comments/id
-  @RequestMapping(path = commentsPath + "/{id}", method = RequestMethod.GET)
+  /**
+   * GET /comments/id
+   *
+   * @param id the id of the comment to fetch
+   * @param userPrincipal the logged in user
+   */
+  @GetMapping(value = commentsPath + "/{id:[\\d]+}")
   public ResponseEntity getComment(@PathVariable String id,
-      @RequestHeader Map<String, String> header) {
-    logger.debug("[GET /comments/id] Id = " + id + ". Header: " + header.toString());
-    Map<String, String> map = new HashMap<>();
-    map.put("id", id);
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new IdValidator(), new InvokeGetCommentService(commentService), new GetResponse());
-    return model.execute(map, header, null);
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    logger.info("[GET /comments/id] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
+    Comment comment = commentService
+        .getCommentById(Long.parseLong(id), userPrincipal.getUser().getUserId());
+    return ResponseBuilder.getSuccessResponse(dtoConverter.toCommentDto(comment));
   }
 
-  //GET /posts/id/comments
-  @RequestMapping(path = PostsController.postsPath + "/{id}"
-      + commentsPath, method = RequestMethod.GET)
+  /**
+   * GET /posts/id/comments
+   * @param id the id of the post for which comments should be fetched
+   * @param userPrincipal the logged in user
+   * @return
+   */
+  @GetMapping(value = PostsController.postsPath + "/{id:[\\d]+}"
+      + commentsPath)
   public ResponseEntity getCommentsByPostId(@PathVariable String id,
-      @RequestHeader Map<String, String> header) {
-    logger.debug("[GET /comments/id/comments] Id = " + id + ". Header: " + header.toString());
-    Map<String, String> map = new HashMap<>();
-    map.put("id", id);
-    AppModel model = new AppModelImpl(new AuthenticatedAuthorization(userService, cryptography),
-        new IdValidator(), new InvokeGetCommentsService(postService, commentService),
-        new GetResponse());
-    return model.execute(map, header, null);
+      @AuthenticationPrincipal UserPrincipal userPrincipal) {
+    logger.info("[GET /comments/id/comments] Id: {}. User: {}", id,
+        userPrincipal.getUser().getEmail());
+    List<Comment> comments = commentService
+        .getCommentsByPostId(Long.parseLong(id), userPrincipal.getUser().getUserId());
+    List<CommentDto> commentDtos = comments.stream().map(comment -> dtoConverter.toCommentDto(comment))
+        .collect(Collectors.toList());
+    return ResponseBuilder.getSuccessResponse(commentDtos);
   }
 
 }

@@ -3,11 +3,15 @@ package com.blogggr.entities;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The primary key class for the friends database table.
  */
 @Embeddable
+@Getter
+@Setter
 public class FriendPk implements Serializable {
 
   //default serial version id, required for serializable classes.
@@ -18,25 +22,6 @@ public class FriendPk implements Serializable {
 
   @Column(name = "user_two_id", insertable = false, updatable = false)
   private Long userTwoId;
-
-  public FriendPk() {
-  }
-
-  public Long getUserOneId() {
-    return this.userOneId;
-  }
-
-  public void setuserOneId(Long useroneId) {
-    this.userOneId = userOneId;
-  }
-
-  public Long getuserTwoId() {
-    return this.userTwoId;
-  }
-
-  public void setuserTwoId(Long usertwoId) {
-    this.userTwoId = usertwoId;
-  }
 
   public boolean equals(Object other) {
     if (this == other) {

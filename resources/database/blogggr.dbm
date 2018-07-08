@@ -42,7 +42,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="friends">
 	<schema name="blogggr"/>
 	<role name="postgres"/>
-	<position x="40" y="323"/>
+	<position x="40" y="320"/>
 	<column name="user_one_id">
 		<type name="bigint"/>
 	</column>
@@ -82,7 +82,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="comments">
 	<schema name="blogggr"/>
 	<role name="postgres"/>
-	<position x="540" y="303"/>
+	<position x="540" y="300"/>
 	<column name="comment_id" not-null="true" sequence="blogggr.comment_id_seq">
 		<type name="bigint"/>
 	</column>
@@ -109,7 +109,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="posts">
 	<schema name="blogggr"/>
 	<role name="postgres"/>
-	<position x="540" y="43"/>
+	<position x="540" y="40"/>
 	<column name="post_id" not-null="true" sequence="blogggr.post_id_seq">
 		<type name="bigint"/>
 	</column>
@@ -145,7 +145,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="users">
 	<schema name="blogggr"/>
 	<role name="postgres"/>
-	<position x="40" y="43"/>
+	<position x="40" y="40"/>
 	<column name="user_id" not-null="true" sequence="blogggr.user_id_seq">
 		<type name="bigint"/>
 	</column>
@@ -159,10 +159,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="varchar" length="255"/>
 	</column>
 	<column name="password_hash" not-null="true">
-		<type name="character" length="64"/>
-	</column>
-	<column name="salt" not-null="true">
-		<type name="character" length="12"/>
+		<type name="character" length="60"/>
 	</column>
 	<column name="challenge" not-null="true">
 		<type name="character" length="64"/>
@@ -174,7 +171,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 		<type name="timestamp"/>
 	</column>
 	<column name="sex" not-null="true">
-		<type name="smallint"/>
+		<type name="character"/>
 	</column>
 	<column name="lang" not-null="true">
 		<type name="character" length="2"/>
@@ -193,7 +190,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="post_images">
 	<schema name="blogggr"/>
 	<role name="postgres"/>
-	<position x="540" y="463"/>
+	<position x="540" y="460"/>
 	<column name="post_image_id" not-null="true" sequence="blogggr.post_image_id_seq">
 		<type name="bigint"/>
 	</column>
@@ -220,7 +217,7 @@ CAUTION: Do not modify this file unless you know what you are doing.
 <table name="user_images">
 	<schema name="blogggr"/>
 	<role name="postgres"/>
-	<position x="60" y="503"/>
+	<position x="60" y="500"/>
 	<column name="user_image_id" not-null="true" sequence="blogggr.user_image_id_seq">
 		<type name="bigint"/>
 	</column>
@@ -265,12 +262,6 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<columns names="user_id" ref-type="dst-columns"/>
 </constraint>
 
-<constraint name="user_images_user_id_fk" type="fk-constr" comparison-type="MATCH FULL"
-	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.users" table="blogggr.user_images">
-	<columns names="user_id" ref-type="src-columns"/>
-	<columns names="user_id" ref-type="dst-columns"/>
-</constraint>
-
 <constraint name="comments_postid_fk" type="fk-constr" comparison-type="MATCH FULL"
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.posts" table="blogggr.comments">
 	<columns names="post_id" ref-type="src-columns"/>
@@ -293,6 +284,12 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.posts" table="blogggr.post_images">
 	<columns names="post_id" ref-type="src-columns"/>
 	<columns names="post_id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="user_images_user_id_fk" type="fk-constr" comparison-type="MATCH FULL"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="blogggr.users" table="blogggr.user_images">
+	<columns names="user_id" ref-type="src-columns"/>
+	<columns names="user_id" ref-type="dst-columns"/>
 </constraint>
 
 <relationship name="rel_posts_users" type="relfk"
