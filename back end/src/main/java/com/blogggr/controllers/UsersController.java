@@ -104,6 +104,15 @@ public class UsersController {
     return ResponseBuilder.getSuccessResponse(userWithImageDtoPage);
   }
 
+  @GetMapping(value = USER_PATH + "/{id:[\\d]+}/enable", params = "challenge")
+  public ResponseEntity confirmEmail(@PathVariable String id, String challenge) {
+    logger.info("[GET /users/{}] confirmEmail, Challenge: {}", id, challenge);
+    String email = userService.confirmEmail(Long.parseLong(id), challenge);
+    String[] args = new String[]{email};
+    return ResponseBuilder.getSuccessResponse(
+        simpleBundleMessageSource.getMessage("UserController.confirmEmail.emailOK", args));
+  }
+
   /**
    * GET /users/me Request this users data with its main image
    *
@@ -170,9 +179,9 @@ public class UsersController {
     sb.append(simpleBundleMessageSource.getMessage("UserService.createUser.emailWelcome"));
     sb.append("</h1><p>");
     sb.append(simpleBundleMessageSource.getMessage("UserService.createUser.emailConfirmText"));
-    sb.append(": <a href='https://www.blogggr.com/users/");
+    sb.append(": <a href='https://www.blogggr.com/api/v" + AppConfig.apiVersion + "/users/");
     sb.append(userId);
-    sb.append("?challenge=");
+    sb.append("/enable?challenge=");
     sb.append(challenge);
     sb.append("'>");
     sb.append(simpleBundleMessageSource.getMessage("UserService.createUser.emailClickHere"));

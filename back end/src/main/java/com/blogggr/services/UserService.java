@@ -15,6 +15,7 @@ import com.blogggr.security.UserPrincipal;
 import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.TimeUtilities;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,5 +148,18 @@ public class UserService implements UserDetailsService {
 
   public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData) {
     return userDao.getUsersBySearchTerms(searchData);
+  }
+
+  public String confirmEmail(Long userId, String challenge){
+    Optional<User> userOptional = userRepository.findById(userId);
+    if (!userOptional.isPresent()){
+      throw new IllegalArgumentException(simpleBundleMessageSource.getMessage("UserService.userNotFound"));
+    }
+    User user = userOptional.get();
+    if (!user.getChallenge().equals(challenge)){
+      throw new IllegalArgumentException(simpleBundleMessageSource.getMessage("UserService.confirmEmail.wrongChallenge"));
+    }
+    user.setStatus(1);
+    return user.getEmail();
   }
 }
