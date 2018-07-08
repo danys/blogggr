@@ -102,16 +102,16 @@ pipeline {
               int newPatchVersion = env.patchVersion as Integer
               if (userInput == 'major'){
                 majorVersion++
-                minorVersion=0
-                patchVersion=0
+                minorVersion = 0
+                patchVersion = 0
                 newMajorVersion++
-                newMinorVersion=0
-                newPatchVersion=1
+                newMinorVersion = 0
+                newPatchVersion = 1
               } else if (userInput == 'minor'){
                 minorVersion++
-                patchVersion=0
-                newMinorVersion=0
-                newPatchVersion=1
+                patchVersion = 0
+                newMinorVersion = minorVersion
+                newPatchVersion = 1
               } else if (userInput == 'patch'){
                 newPatchVersion++
               }
