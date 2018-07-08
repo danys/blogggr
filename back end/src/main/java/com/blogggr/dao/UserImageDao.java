@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
  * Created by Daniel Sunnen on 25.08.17.
  */
 @Repository
-public class UserImageDao extends GenericDAOImpl<UserImage>{
+public class UserImageDao extends GenericDaoImpl<UserImage>{
 
   public UserImageDao(){
     super(UserImage.class);

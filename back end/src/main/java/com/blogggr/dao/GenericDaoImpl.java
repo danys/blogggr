@@ -2,9 +2,6 @@ package com.blogggr.dao;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -14,9 +11,7 @@ import java.util.List;
 /**
  * Created by Daniel Sunnen on 25.10.16.
  */
-@Repository
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class GenericDAOImpl<T extends Serializable> implements GenericDao<T> {
+public abstract class GenericDaoImpl<T extends Serializable> implements GenericDao<T> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -25,7 +20,7 @@ public class GenericDAOImpl<T extends Serializable> implements GenericDao<T> {
 
   protected Class<T> clazz;
 
-  public GenericDAOImpl(Class<T> clazz) {
+  public GenericDaoImpl(Class<T> clazz) {
     this.clazz = clazz;
   }
 

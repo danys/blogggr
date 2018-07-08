@@ -20,7 +20,7 @@ import java.util.*;
  * Created by Daniel Sunnen on 20.11.16.
  */
 @Repository
-public class PostDao extends GenericDAOImpl<Post> {
+public class PostDao extends GenericDaoImpl<Post> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

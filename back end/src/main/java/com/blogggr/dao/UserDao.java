@@ -29,7 +29,7 @@ import java.util.List;
  * Created by Daniel Sunnen on 25.10.16.
  */
 @Repository
-public class UserDao extends GenericDAOImpl<User> {
+public class UserDao extends GenericDaoImpl<User> {
 
   private final int defaultLimit = 50;
 

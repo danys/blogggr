@@ -20,7 +20,7 @@ import java.util.List;
  * Created by Daniel Sunnen on 27.11.16.
  */
 @Repository
-public class FriendDao extends GenericDAOImpl<Friend> {
+public class FriendDao extends GenericDaoImpl<Friend> {
 
   @Autowired
   private SimpleBundleMessageSource messageSource;
