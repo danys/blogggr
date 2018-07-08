@@ -33,8 +33,7 @@ public class AppConfig {
   public static String fullBaseUrl = domain + '/' + baseUrl;
 
   public static final String locationHeaderKey = "Location";
-  public static final long sessionValidityMillis = 1000 * 60 * 60
-      * 24; //one day: maximum validity of a session. Max also applies for extensions.
+
   public static final int maxPostBodyLength = 100;
 
   public static final ZoneId luxembourgZoneId = ZoneId.of("Europe/Luxembourg");

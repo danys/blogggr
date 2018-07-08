@@ -6,8 +6,6 @@ import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
 import com.blogggr.dto.out.PostDto;
 import com.blogggr.entities.Post;
-import com.blogggr.exceptions.NotAuthorizedException;
-import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.security.UserPrincipal;
