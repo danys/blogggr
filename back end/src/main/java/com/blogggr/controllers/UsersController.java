@@ -160,9 +160,9 @@ public class UsersController {
 
   /**
    * Construct the HTML e-mail message text
+   *
    * @param userId the current user Id
    * @param challenge the challenge token assigned to this user to verify his e-mail address
-   * @return
    */
   private String buildEmailHtml(Long userId, String challenge) {
     StringBuilder sb = new StringBuilder();
@@ -186,14 +186,16 @@ public class UsersController {
    * @param userData the data of the new user
    */
   @PostMapping(value = USER_PATH)
-  public ResponseEntity createUser(@Valid @RequestBody UserPostData userData) throws MessagingException {
+  public ResponseEntity createUser(@Valid @RequestBody UserPostData userData)
+      throws MessagingException {
     logger.info("[POST /users] Create user with email: {}", userData.getEmail());
     User user;
-    try{
+    try {
       user = userService.createUser(userData);
-    }
-    catch(DataIntegrityViolationException e){
-      return ResponseBuilder.errorResponse(simpleBundleMessageSource.getMessage("UserService.createUser.userExistsException"), HttpStatus.BAD_REQUEST);
+    } catch (DataIntegrityViolationException e) {
+      return ResponseBuilder.errorResponse(
+          simpleBundleMessageSource.getMessage("UserService.createUser.userExistsException"),
+          HttpStatus.BAD_REQUEST);
     }
     emailService.sendSimpleMessage(userData.getEmail(),
         simpleBundleMessageSource.getMessage("UserService.createUser.emailSubject"),

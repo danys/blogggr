@@ -15,7 +15,6 @@ import com.blogggr.security.UserPrincipal;
 import com.blogggr.utilities.Cryptography;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.TimeUtilities;
-import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +73,7 @@ public class UserService implements UserDetailsService {
   }
 
   //For POST request
-  public User createUser(UserPostData userData) throws MessagingException {
+  public User createUser(UserPostData userData) {
     if (userData.getEmail().compareTo(userData.getEmailRepeat()) != 0) {
       throw new IllegalArgumentException(
           simpleBundleMessageSource.getMessage("UserService.createUser.emailMismatch"));

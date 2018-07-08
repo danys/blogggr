@@ -5,8 +5,6 @@ import com.blogggr.entities.User;
 import com.blogggr.utilities.JwtHelper;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.time.ZonedDateTime;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
