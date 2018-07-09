@@ -72,6 +72,13 @@ pipeline {
         }
       }
     }
+    stage('SonarQube analysis') {
+      steps{
+        withSonarQubeEnv('SonarQube') {
+          sh './gradlew --info sonarqube'
+        }
+      }
+    }
     stage('Package') {
       steps {
         script{
