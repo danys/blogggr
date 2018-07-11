@@ -63,15 +63,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
   public JwtAuthenticationFilter jwtAuthenticationFilter() {
-    JwtAuthenticationFilter authenticationFilter
-        = new JwtAuthenticationFilter();
-    return authenticationFilter;
+    return new JwtAuthenticationFilter();
   }
 
   @Bean
   public InternationalizationFilter internationalizationFilter() {
-    InternationalizationFilter internationalizationFilter = new InternationalizationFilter();
-    return internationalizationFilter;
+    return new InternationalizationFilter();
   }
 
   @Bean
@@ -80,8 +77,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   /**
-   * Filter order: JWT filter -> credentials filter ->
-   * internationalization filter -> UsernamePasswordAuthenticationFilter
+   * Filter order: JWT filter -> credentials filter -> internationalization filter ->
+   * UsernamePasswordAuthenticationFilter
    */
   @Override
   protected void configure(final HttpSecurity http) throws Exception {
