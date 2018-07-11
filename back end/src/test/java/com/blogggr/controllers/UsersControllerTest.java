@@ -27,7 +27,7 @@ public class UsersControllerTest {
   @Autowired
   private WebTestClient webClient;
 
-  private static final String baseUrl = AppConfig.baseUrl + UsersController.USER_PATH;
+  private static final String baseUrl = AppConfig.BASE_URL + UsersController.USER_PATH;
 
   @Test
   public void confirmEmail_Normal(){
