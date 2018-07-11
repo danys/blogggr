@@ -63,9 +63,7 @@ public class UserDao extends GenericDaoImpl<User> {
   public RandomAccessListPage<User> getUsers(String searchString, Integer limit,
       Integer pageNumber) {
     //Check and maybe adjust limit, set default limit
-    if (limit == null) {
-      limit = Integer.valueOf(defaultLimit);
-    } else if (limit.intValue() > defaultLimit) {
+    if (limit == null || limit.intValue() > defaultLimit) {
       limit = Integer.valueOf(defaultLimit);
     }
     if (pageNumber == null || pageNumber < 0) {

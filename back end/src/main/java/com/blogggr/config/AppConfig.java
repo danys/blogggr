@@ -29,8 +29,8 @@ public class AppConfig {
   public static final String apiVersion = "1.0";
   public static final String baseUrl = urlPrefix + apiVersion;
 
-  public static String domain = "https://www.blogggr.com";
-  public static String fullBaseUrl = domain + '/' + baseUrl;
+  public static final String domain = "https://www.blogggr.com";
+  public static final String fullBaseUrl = domain + '/' + baseUrl;
 
   public static final String locationHeaderKey = "Location";
 
