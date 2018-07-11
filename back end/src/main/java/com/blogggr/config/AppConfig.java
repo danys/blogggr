@@ -5,6 +5,7 @@ import com.blogggr.utilities.FileStorageManager;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -38,7 +39,8 @@ public class AppConfig {
 
   public static final ZoneId LUXEMBOURG_ZONE_ID = ZoneId.of("Europe/Luxembourg");
 
-  public static final List<String> LANGUAGES = Arrays.asList("en", "de", "fr");
+  public static final List<String> LANGUAGES = Collections
+      .unmodifiableList(Arrays.asList("en", "de", "fr"));
 
   //Image storage
   @Value("${imgapi.key}")
