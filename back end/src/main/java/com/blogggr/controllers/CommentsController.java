@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by Daniel Sunnen on 05.12.16.
  */
 @RestController
-@RequestMapping(AppConfig.baseUrl)
+@RequestMapping(AppConfig.BASE_URL)
 public class CommentsController {
 
   public static final String commentsPath = "/comments";
@@ -50,7 +50,7 @@ public class CommentsController {
     Comment comment = commentService
         .createComment(userPrincipal.getUser().getUserId(), commentData);
     return ResponseBuilder
-        .postSuccessResponse(AppConfig.fullBaseUrl + commentsPath + '/' + comment.getCommentId());
+        .postSuccessResponse(AppConfig.FULL_BASE_URL + commentsPath + '/' + comment.getCommentId());
   }
 
   /**

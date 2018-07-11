@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by Daniel Sunnen on 24.10.16.
  */
 @RestController
-@RequestMapping(AppConfig.baseUrl)
+@RequestMapping(AppConfig.BASE_URL)
 public class UsersController {
 
   public static final String USER_PATH = "/users";
@@ -179,7 +179,7 @@ public class UsersController {
     sb.append(simpleBundleMessageSource.getMessage("UserService.createUser.emailWelcome"));
     sb.append("</h1><p>");
     sb.append(simpleBundleMessageSource.getMessage("UserService.createUser.emailConfirmText"));
-    sb.append(": <a href='https://www.blogggr.com/api/v" + AppConfig.apiVersion + "/users/");
+    sb.append(": <a href='https://www.blogggr.com/api/v" + AppConfig.API_VERSION + "/users/");
     sb.append(userId);
     sb.append("/enable?challenge=");
     sb.append(challenge);
@@ -210,7 +210,7 @@ public class UsersController {
         simpleBundleMessageSource.getMessage("UserService.createUser.emailSubject"),
         buildEmailHtml(user.getUserId(), user.getChallenge()));
     return ResponseBuilder.postSuccessResponse(
-        AppConfig.fullBaseUrl + USER_PATH + '/' + String.valueOf(user.getUserId()));
+        AppConfig.FULL_BASE_URL + USER_PATH + '/' + String.valueOf(user.getUserId()));
   }
 
   /**

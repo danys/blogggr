@@ -86,7 +86,7 @@ public class UserDao extends GenericDaoImpl<User> {
     pageMetaData.setPageId(pageNumber);
     pageMetaData.setPageItemsCount(users.size());
     StringBuilder sb = new StringBuilder();
-    sb.append(AppConfig.fullBaseUrl);
+    sb.append(AppConfig.FULL_BASE_URL);
     sb.append(UsersController.USER_PATH);
     sb.append("?");
     if (searchString != null && searchString.length() > 0) {

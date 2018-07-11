@@ -40,7 +40,7 @@ public class SessionService {
       details.expiration = JwtHelper.getExpirationFromValidJwt(details.jwt);
     } catch(Exception e){
       logger.error(messageSource.getMessage("SessionService.expirationError"), e);
-      details.expiration = ZonedDateTime.now(AppConfig.luxembourgZoneId);
+      details.expiration = ZonedDateTime.now(AppConfig.LUXEMBOURG_ZONE_ID);
     }
     details.email = user.getEmail();
     return details;

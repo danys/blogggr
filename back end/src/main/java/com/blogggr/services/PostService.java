@@ -139,8 +139,8 @@ public class PostService {
     posts.forEach(post -> {
       post.getUser().getImage();
       if (post.getTextBody() != null
-          && post.getTextBody().length() > AppConfig.maxPostBodyLength) {
-        post.setTextBody(post.getTextBody().substring(0, AppConfig.maxPostBodyLength) + "...");
+          && post.getTextBody().length() > AppConfig.MAX_POST_BODY_LENGTH) {
+        post.setTextBody(post.getTextBody().substring(0, AppConfig.MAX_POST_BODY_LENGTH) + "...");
       }
     });
     return postsPage;

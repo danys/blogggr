@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by Daniel Sunnen on 11.12.16.
  */
 @RestController
-@RequestMapping(AppConfig.baseUrl)
+@RequestMapping(AppConfig.BASE_URL)
 public class FriendsController {
 
   public static final String friendsPath = "/friends";
@@ -52,7 +52,7 @@ public class FriendsController {
         friendData.getUserId1(), friendData.getUserId2());
     Friend friend = friendService.createFriend(userPrincipal.getUser().getUserId(), friendData);
     return ResponseBuilder
-        .postSuccessResponse(AppConfig.fullBaseUrl + friendsPath + '/' + friend.getId());
+        .postSuccessResponse(AppConfig.FULL_BASE_URL + friendsPath + '/' + friend.getId());
   }
 
   /**

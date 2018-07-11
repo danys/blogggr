@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by Daniel Sunnen on 19.11.16.
  */
 @RestController
-@RequestMapping(AppConfig.baseUrl)
+@RequestMapping(AppConfig.BASE_URL)
 public class PostsController {
 
   public static final String postsPath = "/posts";
@@ -55,7 +55,7 @@ public class PostsController {
         userPrincipal.getUser().getEmail());
     Post post = postService.createPost(userPrincipal.getUser().getUserId(), postData);
     return ResponseBuilder
-        .postSuccessResponse(AppConfig.fullBaseUrl + postsPath + '/' + post.getPostId());
+        .postSuccessResponse(AppConfig.FULL_BASE_URL + postsPath + '/' + post.getPostId());
   }
 
   /**

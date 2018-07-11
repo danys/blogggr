@@ -27,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
  * Created by Daniel Sunnen on 22.08.17.
  */
 @RestController
-@RequestMapping(AppConfig.baseUrl)
+@RequestMapping(AppConfig.BASE_URL)
 public class UserImageController {
 
   private static final String USER_IMAGE_PATH = "/userimages";
@@ -50,7 +50,7 @@ public class UserImageController {
         "[POST /userimages] User: {}", userPrincipal.getUser().getEmail());
     UserImage userImage = userImageService.postImage(userPrincipal.getUser().getUserId(), file);
     return ResponseBuilder.postSuccessResponse(
-        AppConfig.fullBaseUrl + USER_IMAGE_PATH + '/' + userImage.getName());
+        AppConfig.FULL_BASE_URL + USER_IMAGE_PATH + '/' + userImage.getName());
   }
 
   /**

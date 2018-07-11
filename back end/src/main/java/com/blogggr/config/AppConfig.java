@@ -25,20 +25,20 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 @Configuration
 public class AppConfig {
 
-  private static final String urlPrefix = "/api/v";
-  public static final String apiVersion = "1.0";
-  public static final String baseUrl = urlPrefix + apiVersion;
+  private static final String URL_PREFIX = "/api/v";
+  public static final String API_VERSION = "1.0";
+  public static final String BASE_URL = URL_PREFIX + API_VERSION;
 
-  public static final String domain = "https://www.blogggr.com";
-  public static final String fullBaseUrl = domain + '/' + baseUrl;
+  public static final String DOMAIN = "https://www.blogggr.com";
+  public static final String FULL_BASE_URL = DOMAIN + '/' + BASE_URL;
 
-  public static final String locationHeaderKey = "Location";
+  public static final String LOCATION_HEADER_KEY = "Location";
 
-  public static final int maxPostBodyLength = 100;
+  public static final int MAX_POST_BODY_LENGTH = 100;
 
-  public static final ZoneId luxembourgZoneId = ZoneId.of("Europe/Luxembourg");
+  public static final ZoneId LUXEMBOURG_ZONE_ID = ZoneId.of("Europe/Luxembourg");
 
-  public static final List<String> languages = Arrays.asList("en", "de", "fr");
+  public static final List<String> LANGUAGES = Arrays.asList("en", "de", "fr");
 
   //Image storage
   @Value("${imgapi.key}")

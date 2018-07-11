@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by Daniel Sunnen on 13.11.16.
  */
 @RestController
-@RequestMapping(AppConfig.baseUrl)
+@RequestMapping(AppConfig.BASE_URL)
 public class SessionsController {
 
   public static final String sessionPath = "/sessions";

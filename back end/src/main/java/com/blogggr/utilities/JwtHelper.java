@@ -29,7 +29,7 @@ public class JwtHelper {
    * @return a JWT
    */
   public static String generateJwt(String username) throws UnsupportedEncodingException {
-    ZonedDateTime currentDateTime = LocalDateTime.now().atZone(AppConfig.luxembourgZoneId);
+    ZonedDateTime currentDateTime = LocalDateTime.now().atZone(AppConfig.LUXEMBOURG_ZONE_ID);
     ZonedDateTime validTillDateTime = currentDateTime.plus(Duration.ofHours(maxValidHours));
     Date expirationDate = Date.from(validTillDateTime.toInstant());
     Algorithm algorithm = Algorithm.HMAC512(hmacKey);
@@ -69,6 +69,6 @@ public class JwtHelper {
       throws UnsupportedEncodingException {
     Algorithm algorithm = Algorithm.HMAC512(hmacKey);
     DecodedJWT jwtObject = getDecodedJwt(token, algorithm);
-    return ZonedDateTime.ofInstant(jwtObject.getExpiresAt().toInstant(), AppConfig.luxembourgZoneId);
+    return ZonedDateTime.ofInstant(jwtObject.getExpiresAt().toInstant(), AppConfig.LUXEMBOURG_ZONE_ID);
   }
 }

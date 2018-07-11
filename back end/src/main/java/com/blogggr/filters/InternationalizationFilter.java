@@ -29,12 +29,12 @@ public class InternationalizationFilter extends GenericFilterBean {
   private String getBestLocale(List<LanguageRange> languageRanges) {
     int index;
     for (LanguageRange langRange : languageRanges) {
-      index = AppConfig.languages.indexOf(langRange.getRange());
+      index = AppConfig.LANGUAGES.indexOf(langRange.getRange());
       if (index != -1) {
-        return AppConfig.languages.get(index);
+        return AppConfig.LANGUAGES.get(index);
       }
     }
-    return AppConfig.languages.get(0);
+    return AppConfig.LANGUAGES.get(0);
   }
 
   @Override
