@@ -346,7 +346,7 @@ public class PostDao extends GenericDaoImpl<Post> {
       throw new IllegalArgumentException(
           messageSource.getMessage("PostDao.nextLimitNullException"));
     }
-    return AppConfig.BASE_URL + PostsController.postsPath + "?" +
+    return AppConfig.BASE_URL + PostsController.POSTS_PATH + "?" +
         StringUtilities.buildQueryStringFromListOfKVPairs(
             buildListKV(next, null, limit, postUserID, title, visibility));
   }
@@ -357,7 +357,7 @@ public class PostDao extends GenericDaoImpl<Post> {
       throw new IllegalArgumentException(
           messageSource.getMessage("PostDao.previousLimitNullException"));
     }
-    return AppConfig.BASE_URL + PostsController.postsPath + "?" +
+    return AppConfig.BASE_URL + PostsController.POSTS_PATH + "?" +
         StringUtilities.buildQueryStringFromListOfKVPairs(
             buildListKV(null, previous, limit, postUserID, title, visibility));
   }

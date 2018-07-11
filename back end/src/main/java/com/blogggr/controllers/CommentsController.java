@@ -103,7 +103,7 @@ public class CommentsController {
    * @param userPrincipal the logged in user
    * @return
    */
-  @GetMapping(value = PostsController.postsPath + "/{id:[\\d]+}"
+  @GetMapping(value = PostsController.POSTS_PATH + "/{id:[\\d]+}"
       + COMMENTS_PATH)
   public ResponseEntity getCommentsByPostId(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
