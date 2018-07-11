@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(AppConfig.BASE_URL)
 public class PostsController {
 
-  public static final String postsPath = "/posts";
+  public static final String POSTS_PATH = "/posts";
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -48,14 +48,14 @@ public class PostsController {
    * @param postData the post's data
    * @param userPrincipal the logged in user
    */
-  @PostMapping(value = postsPath)
+  @PostMapping(value = POSTS_PATH)
   public ResponseEntity createPost(@Valid @RequestBody PostData postData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[POST /posts] Post title: {}. User: {}", postData.getTitle(),
         userPrincipal.getUser().getEmail());
     Post post = postService.createPost(userPrincipal.getUser().getUserId(), postData);
     return ResponseBuilder
-        .postSuccessResponse(AppConfig.FULL_BASE_URL + postsPath + '/' + post.getPostId());
+        .postSuccessResponse(AppConfig.FULL_BASE_URL + POSTS_PATH + '/' + post.getPostId());
   }
 
   /**
@@ -65,7 +65,7 @@ public class PostsController {
    * @param postData the updated post's data
    * @param userPrincipal the logged in user
    */
-  @PutMapping(value = postsPath + "/{id:[\\d]+}")
+  @PutMapping(value = POSTS_PATH + "/{id:[\\d]+}")
   public ResponseEntity updatePost(@PathVariable String id, @RequestBody PostDataUpdate postData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[PUT /posts] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
@@ -84,7 +84,7 @@ public class PostsController {
    * @param id the id of the post to delete
    * @param userPrincipal the logged in user
    */
-  @DeleteMapping(value = postsPath + "/{id:[\\d]+}")
+  @DeleteMapping(value = POSTS_PATH + "/{id:[\\d]+}")
   public ResponseEntity deletePost(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[DELETE /posts] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
@@ -98,7 +98,7 @@ public class PostsController {
    * @param id the id of the post to return
    * @param userPrincipal the logged in user
    */
-  @GetMapping(value = postsPath + "/{id:[\\d]+}")
+  @GetMapping(value = POSTS_PATH + "/{id:[\\d]+}")
   public ResponseEntity getPost(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /posts/id] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
@@ -135,7 +135,7 @@ public class PostsController {
    * @param postSearchData the query data
    * @param userPrincipal the logged in user
    */
-  @GetMapping(value = postsPath)
+  @GetMapping(value = POSTS_PATH)
   public ResponseEntity getPosts(@Valid PostSearchData postSearchData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(

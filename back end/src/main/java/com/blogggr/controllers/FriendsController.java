@@ -6,8 +6,6 @@ import com.blogggr.dto.FriendDataUpdate;
 import com.blogggr.dto.out.UserDto;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.NotAuthorizedException;
-import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.FriendService;
@@ -29,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(AppConfig.BASE_URL)
 public class FriendsController {
 
-  public static final String friendsPath = "/friends";
+  public static final String FRIENDS_PATH = "/friends";
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -45,14 +43,14 @@ public class FriendsController {
    * @param friendData the data to create a new friendship
    * @param userPrincipal the logged in user
    */
-  @PostMapping(value = friendsPath)
+  @PostMapping(value = FRIENDS_PATH)
   public ResponseEntity createFriendship(@Valid @RequestBody FriendDataBase friendData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[POST /friends] User: {}, id1: {}, id2: {}", userPrincipal.getUser().getEmail(),
         friendData.getUserId1(), friendData.getUserId2());
     Friend friend = friendService.createFriend(userPrincipal.getUser().getUserId(), friendData);
     return ResponseBuilder
-        .postSuccessResponse(AppConfig.FULL_BASE_URL + friendsPath + '/' + friend.getId());
+        .postSuccessResponse(AppConfig.FULL_BASE_URL + FRIENDS_PATH + '/' + friend.getId());
   }
 
   /**
@@ -63,7 +61,7 @@ public class FriendsController {
    * @param friendData the friendship update data
    * @param userPrincipal the logged in user
    */
-  @PutMapping(path = friendsPath + "/{id:[\\d]+}/{id2:[\\d]+}")
+  @PutMapping(path = FRIENDS_PATH + "/{id:[\\d]+}/{id2:[\\d]+}")
   public ResponseEntity updateFriendship(@PathVariable String id, @PathVariable String id2,
       @Valid @RequestBody FriendDataUpdate friendData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -80,7 +78,7 @@ public class FriendsController {
    *
    * @param userPrincipal the logged in user
    */
-  @GetMapping(path = friendsPath)
+  @GetMapping(path = FRIENDS_PATH)
   public ResponseEntity getFriends(@AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[GET /friends] User: {}", userPrincipal.getUser().getEmail());
@@ -96,7 +94,7 @@ public class FriendsController {
    * @param id the id of the friendship to retrieve
    * @param userPrincipal the logged in user
    */
-  @GetMapping(value = friendsPath + "/{id:[\\d]+}")
+  @GetMapping(value = FRIENDS_PATH + "/{id:[\\d]+}")
   public ResponseEntity getFriendship(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /friends/id] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
@@ -111,7 +109,7 @@ public class FriendsController {
    * @param id the id of the friendship
    * @param userPrincipal the logged in user
    */
-  @DeleteMapping(value = friendsPath + "/{id:[\\d]+}")
+  @DeleteMapping(value = FRIENDS_PATH + "/{id:[\\d]+}")
   public ResponseEntity deleteFriend(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[DELETE /friends/id] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(AppConfig.BASE_URL)
 public class SessionsController {
 
-  public static final String sessionPath = "/sessions";
+  public static final String SESSIONS_PATH = "/sessions";
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -40,7 +40,7 @@ public class SessionsController {
    * @return an object containing a new JWT, an expiration time and a email address of the principal
    * @throws UnsupportedEncodingException
    */
-  @PostMapping(value = sessionPath)
+  @PostMapping(value = SESSIONS_PATH)
   public ResponseEntity createSession(@AuthenticationPrincipal UserPrincipal userPrincipal) throws UnsupportedEncodingException{
     logger.info("[POST /sessions] User: {}", userPrincipal.getUser().getEmail());
     if (userPrincipal.getUser().getStatus() == 0) {

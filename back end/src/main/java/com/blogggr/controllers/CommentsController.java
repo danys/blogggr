@@ -4,8 +4,6 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.dto.CommentData;
 import com.blogggr.dto.out.CommentDto;
 import com.blogggr.entities.Comment;
-import com.blogggr.exceptions.NotAuthorizedException;
-import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.CommentService;
@@ -27,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(AppConfig.BASE_URL)
 public class CommentsController {
 
-  public static final String commentsPath = "/comments";
+  public static final String COMMENTS_PATH = "/comments";
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -43,14 +41,14 @@ public class CommentsController {
    * @param commentData the comment content
    * @param userPrincipal the logged in user
    */
-  @PostMapping(value = commentsPath)
+  @PostMapping(value = COMMENTS_PATH)
   public ResponseEntity createComment(@Valid @RequestBody CommentData commentData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[POST /comments] User: {}", userPrincipal.getUser().getEmail());
     Comment comment = commentService
         .createComment(userPrincipal.getUser().getUserId(), commentData);
     return ResponseBuilder
-        .postSuccessResponse(AppConfig.FULL_BASE_URL + commentsPath + '/' + comment.getCommentId());
+        .postSuccessResponse(AppConfig.FULL_BASE_URL + COMMENTS_PATH + '/' + comment.getCommentId());
   }
 
   /**
@@ -60,7 +58,7 @@ public class CommentsController {
    * @param commentData the updated comment content
    * @param userPrincipal the logged in user
    */
-  @PutMapping(value = commentsPath + "/{id:[\\d]+}")
+  @PutMapping(value = COMMENTS_PATH + "/{id:[\\d]+}")
   public ResponseEntity updateComment(@PathVariable String id, @Valid @RequestBody CommentData commentData,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
@@ -76,7 +74,7 @@ public class CommentsController {
    * @param id the id of the comment to delete
    * @param userPrincipal the logged in user
    */
-  @DeleteMapping(value = commentsPath + "/{id:[\\d]+}")
+  @DeleteMapping(value = COMMENTS_PATH + "/{id:[\\d]+}")
   public ResponseEntity deleteComment(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[DELETE /comments] Id: {}. User: {}", id, userPrincipal.getUser().getEmail());
@@ -90,7 +88,7 @@ public class CommentsController {
    * @param id the id of the comment to fetch
    * @param userPrincipal the logged in user
    */
-  @GetMapping(value = commentsPath + "/{id:[\\d]+}")
+  @GetMapping(value = COMMENTS_PATH + "/{id:[\\d]+}")
   public ResponseEntity getComment(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /comments/id] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
@@ -106,7 +104,7 @@ public class CommentsController {
    * @return
    */
   @GetMapping(value = PostsController.postsPath + "/{id:[\\d]+}"
-      + commentsPath)
+      + COMMENTS_PATH)
   public ResponseEntity getCommentsByPostId(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info("[GET /comments/id/comments] Id: {}. User: {}", id,
