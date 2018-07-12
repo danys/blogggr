@@ -2,6 +2,7 @@ package com.blogggr.dao;
 
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.User;
+import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
