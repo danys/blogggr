@@ -2,7 +2,6 @@ package com.blogggr.dao;
 
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,15 +30,14 @@ public class FriendDao extends GenericDaoImpl<Friend> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  public List<User> getUserFriends(long userID) throws ResourceNotFoundException {
+  public List<User> getUserFriends(long userID) {
     //Combine users from two queries
     List<User> friends = getUserFriendsHalf(userID, true);
     friends.addAll(getUserFriendsHalf(userID, false));
     return friends;
   }
 
-  private List<User> getUserFriendsHalf(long userID, boolean userOne)
-      throws ResourceNotFoundException {
+  private List<User> getUserFriendsHalf(long userID, boolean userOne) {
     /**
      * SQL to produce (userOne boolean selects whether user one or two is selected):
      * SELECT u2.* FROM blogggr.friends f
@@ -76,8 +74,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
     }
   }
 
-  public Friend getFriendByUserIDs(long userID1, long userID2)
-      throws ResourceNotFoundException {
+  public Friend getFriendByUserIDs(long userID1, long userID2) {
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<Friend> query = cb.createQuery(Friend.class);

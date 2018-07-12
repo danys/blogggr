@@ -120,7 +120,7 @@ public class UsersController {
    */
   @GetMapping(value = USER_PATH + "/me")
   public ResponseEntity getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-    logger.info("[GET /users/me] User: {}" + userPrincipal.getUser().getEmail());
+    logger.info("[GET /users/me] User: {}", userPrincipal.getUser().getEmail());
     User user = userService.getUserByIdWithImages(userPrincipal.getUser().getUserId());
     UserWithImageDto userWithImageDto = dtoConverter.toUserWithImageDto(user);
     return ResponseBuilder.getSuccessResponse(userWithImageDto);
