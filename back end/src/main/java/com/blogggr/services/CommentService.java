@@ -44,7 +44,7 @@ public class CommentService {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  private final static String COMMENT_NOT_FOUND = "CommentService.createComment.commentNotFoundException";
+  private static final String COMMENT_NOT_FOUND = "CommentService.createComment.commentNotFoundException";
 
   public Comment createComment(long userId, CommentData commentData) {
     logger.debug("CommentService | createComment - userId {}, commentData: {}", userId, commentData);
