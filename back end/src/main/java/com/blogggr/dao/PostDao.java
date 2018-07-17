@@ -44,7 +44,9 @@ public class PostDao extends GenericDaoImpl<Post> {
   private static final int FRIEND_ACCEPTED = 1;
   private static final int DEFAULT_LIMIT = 50;
   private static final String USER_ID = "userId";
+  private static final String POST_ID = "postId";
   private static final String STATUS = "status";
+  private static final String IS_GLOBAL = "isGlobal";
 
   public PostDao() {
     super(Post.class);
@@ -158,15 +160,15 @@ public class PostDao extends GenericDaoImpl<Post> {
     //After postID condition, Before postID condition
     if (!countOnly) {
       if (after != null) {
-        postAfterCondition = cb.greaterThan(root.get("postId"), after);
+        postAfterCondition = cb.greaterThan(root.get(POST_ID), after);
       } else if (before != null) {
-        postBeforeCondition = cb.lessThan(root.get("postId"), before);
+        postBeforeCondition = cb.lessThan(root.get(POST_ID), before);
       }
     }
     Predicate[] predicatesOr1Array;
     //Visibility global => return all global posts
     if (visibility == Visibility.ONLY_GLOBAL) {
-      predicatesOr1.add(cb.equal(root.get("isGlobal"), true)); //filter on global posts
+      predicatesOr1.add(cb.equal(root.get(IS_GLOBAL), true)); //filter on global posts
       if (titleCondition != null) {
         predicatesOr1.add(titleCondition); //filter on title
       }
@@ -213,13 +215,13 @@ public class PostDao extends GenericDaoImpl<Post> {
       predicatesOr1.add(cb.equal(friendUserJoin2.get(USER_ID), userId)); //only friends
       predicatesOr1
           .add(cb.equal(userFriendJoin1.get(STATUS), FRIEND_ACCEPTED)); //status accepted
-      predicatesOr1.add(cb.equal(root.get("isGlobal"), false)); //no global posts
+      predicatesOr1.add(cb.equal(root.get(IS_GLOBAL), false)); //no global posts
       //AND predicate 2
       predicatesOr2.add(cb.notEqual(postUserJoin.get(USER_ID), userId)); //exclude current user
       predicatesOr2.add(cb.equal(friendUserJoin1.get(USER_ID), userId)); //only friends
       predicatesOr2
           .add(cb.equal(userFriendJoin1.get(STATUS), FRIEND_ACCEPTED)); //status accepted
-      predicatesOr2.add(cb.equal(root.get("isGlobal"), false)); //no global posts
+      predicatesOr2.add(cb.equal(root.get(IS_GLOBAL), false)); //no global posts
       //Other conditions like the title and the filter on the poster's userId
       if (postUserCondition != null) {
         predicatesOr1.add(postUserCondition);
@@ -265,7 +267,7 @@ public class PostDao extends GenericDaoImpl<Post> {
       //OR predicate 3
       predicatesOr3.add(cb.equal(postUserJoin.get(USER_ID), userId)); //either current user
       //OR predicate 4
-      predicatesOr4.add(cb.equal(root.get("isGlobal"), true)); //either global post
+      predicatesOr4.add(cb.equal(root.get(IS_GLOBAL), true)); //either global post
       //Other conditions like the title and the filter on the poster's userId
       if (postUserCondition != null) {
         predicatesOr1.add(postUserCondition);
@@ -312,11 +314,11 @@ public class PostDao extends GenericDaoImpl<Post> {
       query.select(cb.countDistinct(root));
     } else {
       if (after != null) {
-        query.orderBy(cb.asc(root.get("postId")));
+        query.orderBy(cb.asc(root.get(POST_ID)));
       }
       //else before!=null || before==null (=> default to sort from most recent post to oldest post)
       else {
-        query.orderBy(cb.desc(root.get("postId")));
+        query.orderBy(cb.desc(root.get(POST_ID)));
       }
     }
     return query;
