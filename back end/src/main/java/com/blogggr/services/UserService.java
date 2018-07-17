@@ -104,7 +104,7 @@ public class UserService implements UserDetailsService {
   }
 
   public void updateUser(long userResourceId, long userId, UserPutData userData) {
-    logger.debug("UserService | updateUser - userResourceID: {}, userId, userData", userResourceId, userId, userData);
+    logger.debug("UserService | updateUser - userResourceID: {}, userId: {}, userData: {}", userResourceId, userId, userData);
     User user = userDao.findById(userResourceId);
     if (user == null) {
       throw new ResourceNotFoundException(
@@ -145,9 +145,8 @@ public class UserService implements UserDetailsService {
 
   public RandomAccessListPage<User> getUsers(SimpleUserSearchData searchData) {
     logger.debug("UserService | getUsers - searchData: {}", searchData);
-    RandomAccessListPage<User> usersPage = userDao
+    return userDao
         .getUsers(searchData.getSearchString(), searchData.getLimit(), searchData.getPageNumber());
-    return usersPage;
   }
 
   public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData) {
