@@ -31,14 +31,21 @@ public class FriendDao extends GenericDaoImpl<Friend> {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  public List<User> getUserFriends(long userID) {
+  private static final String USER_1 = "user1";
+  private static final String USER_2 = "user2";
+  private static final String STATUS = "status";
+  private static final String NO_RESULT = "FriendDao.noResult";
+
+  public List<User> getUserFriends(long userId) {
+    logger.debug("getUserFriends - userId: {}", userId);
     //Combine users from two queries
-    List<User> friends = getUserFriendsHalf(userID, true);
-    friends.addAll(getUserFriendsHalf(userID, false));
+    List<User> friends = getUserFriendsHalf(userId, true);
+    friends.addAll(getUserFriendsHalf(userId, false));
     return friends;
   }
 
-  private List<User> getUserFriendsHalf(long userID, boolean userOne) {
+  private List<User> getUserFriendsHalf(long userId, boolean userOne) {
+    logger.debug("getUserFriendsHalf - userId: {}, userOne: {}", userId, userOne);
     /**
      * SQL to produce (userOne boolean selects whether user one or two is selected):
      * SELECT u2.* FROM blogggr.friends f
@@ -50,64 +57,65 @@ public class FriendDao extends GenericDaoImpl<Friend> {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<User> query = cb.createQuery(User.class);
       Root<Friend> root = query.from(Friend.class);
-      Join<Friend, User> user1Join = root.join("user1");
-      Join<Friend, User> user2Join = root.join("user2");
+      Join<Friend, User> user1Join = root.join(USER_1);
+      Join<Friend, User> user2Join = root.join(USER_2);
       if (!userOne) {
         query.select(user2Join);
         query.where(
             cb.and(
-                cb.equal(root.get("status"), 1),
-                cb.equal(user1Join.get("userId"), userID)
+                cb.equal(root.get(STATUS), 1),
+                cb.equal(user1Join.get("userId"), userId)
             )
         );
       } else {
         query.select(user1Join);
         query.where(
             cb.and(
-                cb.equal(root.get("status"), 1),
-                cb.equal(user2Join.get("userId"), userID)
+                cb.equal(root.get(STATUS), 1),
+                cb.equal(user2Join.get("userId"), userId)
             )
         );
       }
       return entityManager.createQuery(query).getResultList();
     } catch (NoResultException e) {
-      throw new ResourceNotFoundException(messageSource.getMessage("FriendDao.noResult"));
+      throw new ResourceNotFoundException(messageSource.getMessage(NO_RESULT));
     }
   }
 
-  public Friend getFriendByUserIDs(long userID1, long userID2) {
+  public Friend getFriendByUserIDs(long userId1, long userId2) {
+    logger.debug("getFriendByUserIDs - userId1: {}, userId2: {}", userId1, userId2);
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<Friend> query = cb.createQuery(Friend.class);
       Root<Friend> root = query.from(Friend.class);
       query.where(
           cb.and(
-              cb.equal(root.get("user1"), userID1),
-              cb.equal(root.get("user2"), userID2)
+              cb.equal(root.get(USER_1), userId1),
+              cb.equal(root.get(USER_2), userId2)
           )
       );
       return entityManager.createQuery(query).getSingleResult();
     } catch (NoResultException e) {
-      throw new ResourceNotFoundException(messageSource.getMessage("FriendDao.noResult"));
+      throw new ResourceNotFoundException(messageSource.getMessage(NO_RESULT));
     }
   }
 
-  public Friend getFriendByUserIDsAndState(long userID1, long userID2, int state)
-      throws ResourceNotFoundException {
+  public Friend getFriendByUserIdsAndState(long userId1, long userId2, int state) {
+    logger.debug("getFriendByUserIdsAndState - userId1: {}, userId2: {}, state: {}", userId1, userId2, state);
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<Friend> query = cb.createQuery(Friend.class);
       Root<Friend> root = query.from(Friend.class);
       query.where(
           cb.and(
-              cb.equal(root.get("user1"), userID1),
-              cb.equal(root.get("user2"), userID2),
-              cb.equal(root.get("status"), state)
+              cb.equal(root.get(USER_1), userId1),
+              cb.equal(root.get(USER_2), userId2),
+              cb.equal(root.get(STATUS), state)
           )
       );
       return entityManager.createQuery(query).getSingleResult();
     } catch (NoResultException e) {
-      throw new ResourceNotFoundException(messageSource.getMessage("FriendDao.noResult"));
+      throw new ResourceNotFoundException(messageSource.getMessage(NO_RESULT));
     }
   }
 }
