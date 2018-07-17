@@ -49,6 +49,7 @@ public class PostService {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public Post createPost(long userId, PostData postData) {
+    logger.debug("PostService | createPost - userId: {}, postData: {}", userId, postData);
     User user = userDao.findById(userId);
     if (user == null) {
       throw new ResourceNotFoundException(messageSource.getMessage("PostService.userNotFound"));
@@ -64,8 +65,10 @@ public class PostService {
     return post;
   }
 
-  public Post updatePost(long postID, long userId, PostDataUpdate postData) {
-    Post post = postDao.findById(postID);
+  public Post updatePost(long postId, long userId, PostDataUpdate postData) {
+    logger.debug("PostService | updatePost - postId: {}, userId: {}, postData: {}", userId, userId,
+        postData);
+    Post post = postDao.findById(postId);
     if (post == null) {
       throw new ResourceNotFoundException(messageSource.getMessage("PostService.postNotFound"));
     }
@@ -90,6 +93,7 @@ public class PostService {
 
   //Delete a session by its primary key
   public void deletePost(long postId, long userId) {
+    logger.debug("PostService | deletePost - userId: {}, postData: {}", postId, userId);
     Post post = postDao.findById(postId);
     if (post == null) {
       throw new ResourceNotFoundException(messageSource.getMessage("PostService.postNotFound"));
@@ -103,7 +107,8 @@ public class PostService {
   //Simple function to check that this user is friends with the poster
   private boolean isFriendOfUser(long postUserID, long userId) {
     try {
-      long smallNum, bigNum;
+      long smallNum;
+      long bigNum;
       smallNum = (postUserID < userId) ? postUserID : userId;
       bigNum = (postUserID >= userId) ? postUserID : userId;
       friendDao.getFriendByUserIDs(smallNum, bigNum);
@@ -114,6 +119,7 @@ public class PostService {
   }
 
   public Post getPostById(long postId, long userId) {
+    logger.debug("PostService | getPostById - postId: {}, userId: {}", postId, userId);
     Post post = postDao.findById(postId);
     if (post == null) {
       throw new ResourceNotFoundException(messageSource.getMessage("PostService.postNotFound"));
@@ -132,6 +138,7 @@ public class PostService {
   }
 
   public PrevNextListPage<Post> getPosts(PostSearchData postSearchData, User user) {
+    logger.debug("PostService | getPosts - postSearchData: {}, user: {}", postSearchData, user);
     PrevNextListPage<Post> postsPage = postDao
         .getPosts(postSearchData, user);
     List<Post> posts = postsPage.getPageItems();
@@ -146,17 +153,17 @@ public class PostService {
     return postsPage;
   }
 
-  public Post getPostByUserAndLabel(Long userId, Long postUserID, String postShortTitle) {
+  public Post getPostByUserAndLabel(Long userId, Long postUserId, String postShortTitle) {
+    logger.debug(
+        "PostService | getPostByUserAndLabel - userId: {}, postUserId: {}, postShortTitle: {}",
+        userId, postUserId, postShortTitle);
     try {
-      Post post = postDao.getPostByUserAndLabel(userId, postUserID, postShortTitle);
+      Post post = postDao.getPostByUserAndLabel(userId, postUserId, postShortTitle);
       //Order comments by date
       List<Comment> comments = post.getComments();
-      Collections.sort(comments, new Comparator<Comment>() {
-        @Override
-        public int compare(Comment o1, Comment o2) {
-          return (int) (o1.getTimestamp().getTime() - o2.getTimestamp().getTime());
-        }
-      });
+      Collections.sort(comments,
+          (Comment o1, Comment o2) -> (int) (o1.getTimestamp().getTime() - o2.getTimestamp()
+              .getTime()));
       post.setComments(comments);
       //1. Post can be viewed if current session user is the owner or the post has global flag
       if (post.getUser().getUserId() == userId || post.getIsGlobal()) {
