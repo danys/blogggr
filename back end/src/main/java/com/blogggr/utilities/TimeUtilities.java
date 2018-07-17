@@ -8,6 +8,10 @@ import java.util.Calendar;
  */
 public class TimeUtilities {
 
+  private TimeUtilities(){
+    //hide otherwise implicit public constructor
+  }
+
   public static Timestamp getCurrentTimestamp() {
     Calendar calendar = Calendar.getInstance();
     java.util.Date now = calendar.getTime();

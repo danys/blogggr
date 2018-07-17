@@ -11,6 +11,10 @@ import javax.imageio.ImageIO;
  */
 public abstract class ImageScaler {
 
+  private ImageScaler(){
+    //hide otherwise implicit public constructor
+  }
+
   public static void scaleImageFile(Path inPath, Path outPath, int width, int height) throws IOException {
     BufferedImage originalImage = ImageIO.read(inPath.toFile());
     BufferedImage scaledImage = scaleImage(originalImage, width, height);
