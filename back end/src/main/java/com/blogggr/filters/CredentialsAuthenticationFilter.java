@@ -1,13 +1,10 @@
 package com.blogggr.filters;
 
-import com.blogggr.config.AppConfig;
-import com.blogggr.responses.ErrorResponseBody;
 import com.blogggr.responses.ResponseBuilder;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.FilterChain;
