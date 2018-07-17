@@ -46,12 +46,13 @@ public class UserImageService {
 
   private static final int MAX_TRIES = 100;
 
-  private final String IMG_EXTENSION = ".png";
-  private final String ORIGINAL_IMG_EXTENSION = "_original" + IMG_EXTENSION;
-  private final int IMG_HEIGHT = 128;
-  private final int IMG_WIDTH = 128;
+  private static final String IMG_EXTENSION = ".png";
+  private static final String ORIGINAL_IMG_EXTENSION = "_original" + IMG_EXTENSION;
+  private static final int IMG_HEIGHT = 128;
+  private static final int IMG_WIDTH = 128;
 
   public UserImage postImage(long userId, MultipartFile file) {
+    logger.debug("UserImageService | postImage - userId: {}, file: {}", userId, file);
     User user = userDao.findById(userId);
     if (user == null) {
       throw new IllegalArgumentException(simpleBundleMessageSource.getMessage("exception.authentication.userNotFound"));
@@ -122,6 +123,7 @@ public class UserImageService {
   }
 
   public Resource getUserImage(String fileName) {
+    logger.debug("UserImageService | getUserImage - fileName: {}", fileName);
     UserImage userImage = userImageDao.findByName(fileName);
     if (userImage == null) {
       throw new ResourceNotFoundException(simpleBundleMessageSource.getMessage("UserImageService.getUserImage.notFoundException"));

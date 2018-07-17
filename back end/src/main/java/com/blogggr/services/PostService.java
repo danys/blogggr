@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
