@@ -31,13 +31,14 @@ import java.util.List;
 @Repository
 public class UserDao extends GenericDaoImpl<User> {
 
-  private final int defaultLimit = 50;
+  private static final int DEFAULT_LIMIT = 50;
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private static final String SEARCH_KEY = "searchString";
   private static final String LIMIT_KEY = "limit";
   private static final String PAGE_NUMBER_KEY = "pageNumber";
+  private static final String USER_ID = "userId";
 
   @Autowired
   private SimpleBundleMessageSource simpleBundleMessageSource;
@@ -47,12 +48,13 @@ public class UserDao extends GenericDaoImpl<User> {
   }
 
   public User findByIdWithImages(Long id) {
+    logger.debug("UserDao | findByIdWithImages - id: {}", id);
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<User> query = cb.createQuery(User.class);
       Root<User> root = query.from(User.class);
       root.fetch("userImages", JoinType.LEFT);
-      query.where(cb.equal(root.get("userId"), id));
+      query.where(cb.equal(root.get(USER_ID), id));
       return entityManager.createQuery(query).getSingleResult();
     } catch (NoResultException e) {
       throw new ResourceNotFoundException(simpleBundleMessageSource
@@ -62,9 +64,10 @@ public class UserDao extends GenericDaoImpl<User> {
 
   public RandomAccessListPage<User> getUsers(String searchString, Integer limit,
       Integer pageNumber) {
+    logger.debug("UserDao | getUsers - searchString: {}, limit: {}, pageNumber: {}", searchString, limit, pageNumber);
     //Check and maybe adjust limit, set default limit
-    if (limit == null || limit.intValue() > defaultLimit) {
-      limit = Integer.valueOf(defaultLimit);
+    if (limit == null || limit.intValue() > DEFAULT_LIMIT) {
+      limit = Integer.valueOf(DEFAULT_LIMIT);
     }
     if (pageNumber == null || pageNumber < 0) {
       pageNumber = 1;
@@ -103,8 +106,7 @@ public class UserDao extends GenericDaoImpl<User> {
     sb.append("=");
     sb.append(Integer.toString(limit));
     pageMetaData.setPageUrl(sb.toString());
-    RandomAccessListPage<User> page = new RandomAccessListPage<>(users, pageMetaData);
-    return page;
+    return new RandomAccessListPage<>(users, pageMetaData);
   }
 
   private CriteriaQuery generateQuery(String searchString, boolean countOnly) {
@@ -133,12 +135,13 @@ public class UserDao extends GenericDaoImpl<User> {
     if (countOnly) {
       query.select(cb.countDistinct(root));
     } else {
-      query.orderBy(cb.asc(root.get("userId")));
+      query.orderBy(cb.asc(root.get(USER_ID)));
     }
     return query;
   }
 
   public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData) {
+    logger.debug("UserDao | getUsersBySearchTerms - searchData : {}", searchData);
     List<User> users = generateSearchTermQuery(searchData, User.class, true).getResultList();
     Long usersCountFiltered = generateSearchTermQuery(searchData, Long.class, true)
         .getSingleResult();
@@ -178,13 +181,13 @@ public class UserDao extends GenericDaoImpl<User> {
     Predicate beforeAfter = null;
     //Before and after cannot be set at the same time
     if (searchData.getBefore() != null) {
-      beforeAfter = cb.lessThan(root.get("userId"), searchData.getBefore());
+      beforeAfter = cb.lessThan(root.get(USER_ID), searchData.getBefore());
     } else if (searchData.getAfter() != null) {
-      beforeAfter = cb.greaterThan(root.get("userId"), searchData.getAfter());
+      beforeAfter = cb.greaterThan(root.get(USER_ID), searchData.getAfter());
     }
 
-    Predicate predicatesArray[];
-    if (predicates.size() > 0) {
+    Predicate[] predicatesArray;
+    if (!predicates.isEmpty()) {
       predicatesArray = new Predicate[predicates.size()];
       predicates.toArray(predicatesArray);
 
@@ -206,7 +209,7 @@ public class UserDao extends GenericDaoImpl<User> {
       query.where(beforeAfter);
     }
     if (resultClass != Long.class) {
-      query.orderBy(cb.asc(root.get("userId")));
+      query.orderBy(cb.asc(root.get(USER_ID)));
     } else {
       query.select(cb.count(root));
     }
