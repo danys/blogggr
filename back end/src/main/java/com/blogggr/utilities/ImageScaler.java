@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 /**
  * Created by Daniel Sunnen on 15.09.17.
  */
-public abstract class ImageScaler {
+public class ImageScaler {
 
   private ImageScaler(){
     //hide otherwise implicit public constructor
