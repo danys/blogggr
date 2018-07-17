@@ -24,24 +24,20 @@ public class DtoConverter {
 
   public UserDto toUserDto(User user) {
     user.getImage();
-    UserDto userDto = modelMapper.map(user, UserDto.class);
-    return userDto;
+    return modelMapper.map(user, UserDto.class);
   }
 
   public UserWithImageDto toUserWithImageDto(User user) {
     user.getImage();
-    UserWithImageDto userWithImageDto = modelMapper.map(user, UserWithImageDto.class);
-    return userWithImageDto;
+    return modelMapper.map(user, UserWithImageDto.class);
   }
 
   public PostDto toPostDto(Post post) {
-    PostDto postDto = modelMapper.map(post, PostDto.class);
-    return postDto;
+    return modelMapper.map(post, PostDto.class);
   }
 
   public CommentDto toCommentDto(Comment comment){
-    CommentDto commentDto = modelMapper.map(comment, CommentDto.class);
-    return commentDto;
+    return modelMapper.map(comment, CommentDto.class);
   }
 
   public FriendDto toFriendDto(Friend friend){
