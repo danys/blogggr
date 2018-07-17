@@ -50,7 +50,7 @@ public class PostDao extends GenericDaoImpl<Post> {
 
   //Get posts by userId, title and visibility
   public PrevNextListPage<Post> getPosts(PostSearchData postSearchData, User user) {
-    logger.debug("PostDao | getPosts - postSearchData: {}, user: {}", postSearchData.toString(), user.toString());
+    logger.debug("PostDao | getPosts - postSearchData: {}, user: {}", postSearchData, user);
     //Check and maybe adjust limit, set default limit
     if (postSearchData.getMaxRecordsCount() == null
         || postSearchData.getMaxRecordsCount().intValue() > DEFAULT_LIMIT) {
