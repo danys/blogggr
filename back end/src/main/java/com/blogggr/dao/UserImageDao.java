@@ -22,7 +22,8 @@ public class UserImageDao extends GenericDaoImpl<UserImage>{
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  public UserImage findByName(String name) throws NoResultException{
+  public UserImage findByName(String name) {
+    logger.debug("UserImageDao | findbyName - name: {}", name);
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<UserImage> query = cb.createQuery(UserImage.class);
     Root<UserImage> root = query.from(UserImage.class);
@@ -33,6 +34,7 @@ public class UserImageDao extends GenericDaoImpl<UserImage>{
   }
 
   public void unsetCurrent(Long userId){
+    logger.debug("UserImageDao | unsetCurrent - userId: {}", userId);
     Query q = entityManager.createNativeQuery("UPDATE blogggr.user_images SET is_current = ? WHERE user_id = ?");
     q.setParameter(1, false);
     q.setParameter(2, userId);
