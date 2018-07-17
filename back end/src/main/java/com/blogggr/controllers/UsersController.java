@@ -153,7 +153,7 @@ public class UsersController {
     logger.info("[GET /users/id/posts] Id: {}, user: {}", id, userPrincipal.getUser().getEmail());
     PostSearchData postSearchData = new PostSearchData();
     postSearchData.setPosterUserId(Long.parseLong(id));
-    postSearchData.setVisibility(Visibility.all);
+    postSearchData.setVisibility(Visibility.ALL);
     postSearchData.setMaxRecordsCount(searchData.getMaxRecordsCount());
     postSearchData.setBefore(searchData.getBefore());
     postSearchData.setAfter(searchData.getAfter());

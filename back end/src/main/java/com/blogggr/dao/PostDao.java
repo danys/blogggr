@@ -72,7 +72,7 @@ public class PostDao extends GenericDaoImpl<Post> {
     Long nextAfter = null;
     Long nextBefore = null;
     //Figure out if a post is before or after the posts of this page
-    if (totalCount > 0 && posts.size() > 0) {
+    if (totalCount > 0 && !posts.isEmpty()) {
       CriteriaQuery<Post> beforePostQuery = generateQuery(user.getUserId(),
           postSearchData.getPosterUserId(), postSearchData.getTitle(),
           postSearchData.getVisibility(),
@@ -107,8 +107,7 @@ public class PostDao extends GenericDaoImpl<Post> {
               postSearchData.getPosterUserId(), postSearchData.getTitle(),
               postSearchData.getVisibility()));
     }
-    PrevNextListPage<Post> page = new PrevNextListPage<>(posts, pData);
-    return page;
+    return new PrevNextListPage<>(posts, pData);
   }
 
   private CriteriaQuery generateQuery(long userId, Long postUserId, String title,
@@ -140,7 +139,7 @@ public class PostDao extends GenericDaoImpl<Post> {
     Predicate titleCondition = null;
     if (title != null) {
       title = "%" + title.toLowerCase() + "%"; //substring of title is enough for a match
-      titleCondition = cb.like(cb.lower(root.get("title")), title);
+      titleCondition = cb.like(cb.lower(root.get(TITLE_KEY)), title);
     }
     if (before != null && after != null) {
       //Can have either before or after but not both set
