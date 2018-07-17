@@ -44,8 +44,11 @@ public class CommentService {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  public Comment createComment(long userID, CommentData commentData) {
-    User user = userDao.findById(userID);
+  private final static String COMMENT_NOT_FOUND = "CommentService.createComment.commentNotFoundException";
+
+  public Comment createComment(long userId, CommentData commentData) {
+    logger.debug("CommentService | createComment - userId {}, commentData: {}", userId, commentData);
+    User user = userDao.findById(userId);
     if (user == null) {
       throw new ResourceNotFoundException(messageSource.getMessage("CommentService.createComment.userNotFoundException"));
     }
@@ -54,10 +57,10 @@ public class CommentService {
       throw new ResourceNotFoundException(messageSource.getMessage("CommentService.createComment.postNotFoundException"));
     }
     //If post is not global then user must be friends with the poster (or be the poster)
-    if (!post.getIsGlobal() && post.getUser().getUserId() != userID) {
+    if (!post.getIsGlobal() && post.getUser().getUserId() != userId) {
       long posterUserID = post.getUser().getUserId();
-      long smaller = (posterUserID < userID) ? posterUserID : userID;
-      long bigger = (posterUserID >= userID) ? posterUserID : userID;
+      long smaller = (posterUserID < userId) ? posterUserID : userId;
+      long bigger = (posterUserID >= userId) ? posterUserID : userId;
       try {
         friendDao.getFriendByUserIDs(smaller, bigger);
       } catch (ResourceNotFoundException e) {
@@ -74,53 +77,58 @@ public class CommentService {
     return comment;
   }
 
-  public void updateComment(long commentID, long userID, CommentData commentData) {
-    Comment comment = commentDao.findById(commentID);
+  public void updateComment(long commentId, long userId, CommentData commentData) {
+    logger.debug("CommentService | updateComment - commentId: {}, userId {}, commentData: {}", commentId, userId, commentData);
+    Comment comment = commentDao.findById(commentId);
     if (comment == null) {
-      throw new ResourceNotFoundException(messageSource.getMessage("CommentService.createComment.commentNotFoundException"));
+      throw new ResourceNotFoundException(messageSource.getMessage(COMMENT_NOT_FOUND));
     }
-    if (comment.getUser().getUserId() != userID) {
+    if (comment.getUser().getUserId() != userId) {
       throw new NotAuthorizedException(messageSource.getMessage("CommentService.updateComment.notAuthorized"));
     }
     comment.setTimestamp(TimeUtilities.getCurrentTimestamp()); //update timestamp
     comment.setText(commentData.getText());
   }
 
-  public void deleteComment(long commentID, long userID) {
-    Comment comment = commentDao.findById(commentID);
+  public void deleteComment(long commentId, long userId) {
+    logger.debug("CommentService | deleteComment - commentId: {}, userId {}", commentId, userId);
+    Comment comment = commentDao.findById(commentId);
     if (comment == null) {
-      throw new ResourceNotFoundException(messageSource.getMessage("CommentService.createComment.commentNotFoundException"));
+      throw new ResourceNotFoundException(messageSource.getMessage(COMMENT_NOT_FOUND));
     }
-    if (comment.getUser().getUserId() != userID) {
+    if (comment.getUser().getUserId() != userId) {
       throw new NotAuthorizedException(messageSource.getMessage("CommentService.deleteComment.notAuthorized"));
     }
-    commentDao.deleteById(commentID);
+    commentDao.deleteById(commentId);
   }
 
-  public Comment getCommentById(long commentID, long userID) {
-    Comment comment = commentDao.findById(commentID);
+  public Comment getCommentById(long commentId, long userId) {
+    logger.debug("CommentService | getCommentById - commentId: {}, userId {}", commentId, userId);
+    Comment comment = commentDao.findById(commentId);
     //Everybody can read the comment
     if (comment == null) {
-      throw new ResourceNotFoundException(messageSource.getMessage("CommentService.createComment.commentNotFoundException"));
+      throw new ResourceNotFoundException(messageSource.getMessage(COMMENT_NOT_FOUND));
     }
     return comment;
   }
 
-  public List<Comment> getCommentsByPostId(long postID, long userID) {
+  public List<Comment> getCommentsByPostId(long postId, long userId) {
+    logger.debug("CommentService | getCommentsByPostId - postId: {}, userId {}", postId, userId);
     //Fetch the post first
-    Post post = postDao.findById(postID);
+    Post post = postDao.findById(postId);
     if (post == null) {
       throw new ResourceNotFoundException(messageSource.getMessage("CommentService.getCommentsByPostId.notFound"));
     }
     User postAuthor = post.getUser();
     //1. Comments of the post can be viewed if current session user is the owner or the post has global flag
-    if (postAuthor.getUserId() == userID || post.getIsGlobal()) {
+    if (postAuthor.getUserId() == userId || post.getIsGlobal()) {
       return post.getComments();
     }
     //2. Post and comments can be viewed if the current user is friends with the poster
-    long smallNum, bigNum;
-    smallNum = (postAuthor.getUserId() < userID) ? postAuthor.getUserId() : userID;
-    bigNum = (postAuthor.getUserId() >= userID) ? postAuthor.getUserId() : userID;
+    long smallNum;
+    long bigNum;
+    smallNum = (postAuthor.getUserId() < userId) ? postAuthor.getUserId() : userId;
+    bigNum = (postAuthor.getUserId() >= userId) ? postAuthor.getUserId() : userId;
     try {
       friendDao.getFriendByUserIDs(smallNum, bigNum);
       return post.getComments();
