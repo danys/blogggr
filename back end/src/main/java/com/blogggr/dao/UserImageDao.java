@@ -1,7 +1,6 @@
 package com.blogggr.dao;
 
 import com.blogggr.entities.UserImage;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
