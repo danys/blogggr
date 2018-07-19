@@ -107,16 +107,11 @@ public class PostService {
 
   //Simple function to check that this user is friends with the poster
   private boolean isFriendOfUser(long postUserID, long userId) {
-    try {
       long smallNum;
       long bigNum;
       smallNum = (postUserID < userId) ? postUserID : userId;
       bigNum = (postUserID >= userId) ? postUserID : userId;
-      friendDao.getFriendByUserIds(smallNum, bigNum);
-      return true;
-    } catch (ResourceNotFoundException e) {
-      return false;
-    }
+      return (friendDao.getFriendByUserIds(smallNum, bigNum) != null);
   }
 
   public Post getPostById(long postId, long userId) {

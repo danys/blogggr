@@ -42,6 +42,11 @@ public class FriendDao extends GenericDaoImpl<Friend> {
     if (user1.getUserId() == null || user2.getUserId() == null || user1.getUserId().equals(user2.getUserId())) {
       throw new IllegalArgumentException(messageSource.getMessage("FriendDao.createFriendship.userNull"));
     }
+    //First check if the friendship exists already
+    if (getFriendByUserIds(user1.getUserId(), user2.getUserId())!=null){
+      throw new IllegalArgumentException(messageSource.getMessage("FriendDao.createFriendship.existAlready"));
+    }
+    //Create the friendship
     Friend friend = new Friend();
     if (user1.getUserId() < user2.getUserId()){
       friend.setUser1(user1);
@@ -107,19 +112,31 @@ public class FriendDao extends GenericDaoImpl<Friend> {
 
   public Friend getFriendByUserIds(long userId1, long userId2) {
     logger.debug("getFriendByUserIDs - userId1: {}, userId2: {}", userId1, userId2);
+    if (userId1 == userId2) {
+      throw new ResourceNotFoundException(messageSource.getMessage(NO_RESULT));
+    }
+    long userSmall;
+    long userBig;
+    if (userId1 < userId2){
+      userSmall = userId1;
+      userBig = userId2;
+    } else {
+      userSmall = userId2;
+      userBig = userId1;
+    }
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<Friend> query = cb.createQuery(Friend.class);
       Root<Friend> root = query.from(Friend.class);
       query.where(
           cb.and(
-              cb.equal(root.get(USER_1), userId1),
-              cb.equal(root.get(USER_2), userId2)
+              cb.equal(root.get(USER_1), userSmall),
+              cb.equal(root.get(USER_2), userBig)
           )
       );
       return entityManager.createQuery(query).getSingleResult();
     } catch (NoResultException e) {
-      throw new ResourceNotFoundException(messageSource.getMessage(NO_RESULT));
+      return null;
     }
   }
 
