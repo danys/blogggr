@@ -1,10 +1,15 @@
 package com.blogggr.entities;
 
+import com.blogggr.dto.UserEnums.Lang;
+import com.blogggr.dto.UserEnums.Sex;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +18,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.Version;
+import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -47,35 +53,41 @@ public class User implements Serializable {
 
   private String email;
 
-  @Column(name = "password_hash", columnDefinition = "bpchar(64)")
+  @Column(name = "password_hash")
+  @Size(max=60)
   private String passwordHash;
 
-  @Column(columnDefinition = "bpchar(64)")
+  @Column
+  @Size(max=64)
   private String challenge;
 
   private Integer status;
 
-  private String sex; //m=male, f=female
+  @Enumerated(EnumType.STRING)
+  private Sex sex; //m=male, f=female
 
-  private String lang;
+  @Enumerated(EnumType.STRING)
+  private Lang lang;
 
   @Column(name = "last_change")
   private Timestamp lastChange;
 
+  //Additional fields that are not persisted in this table
+
   @OneToMany(mappedBy = "user")
-  private List<Comment> comments;
+  private List<Comment> comments = new ArrayList<>();
 
   @OneToMany(mappedBy = "user1")
-  private List<Friend> friends1;
+  private List<Friend> friends1 = new ArrayList<>();
 
   @OneToMany(mappedBy = "user2")
-  private List<Friend> friends2;
+  private List<Friend> friends2 = new ArrayList<>();
 
   @OneToMany(mappedBy = "lastActionUserId")
-  private List<Friend> friends3;
+  private List<Friend> friends3 = new ArrayList<>();
 
   @OneToMany(mappedBy = "user")
-  private List<Post> posts;
+  private List<Post> posts = new ArrayList<>();
 
   @OneToMany(mappedBy = "user")
   private List<UserImage> userImages;
@@ -85,6 +97,8 @@ public class User implements Serializable {
 
   @Version
   private Long version;
+
+  //Helper methods
 
   public UserImage getImage() {
     if (this.userImages == null) {
@@ -101,7 +115,7 @@ public class User implements Serializable {
       womanImage.setWidth(IMG_WIDTH);
       womanImage.setHeight(IMG_HEIGHT);
       womanImage.setName(WOMAN_NAME);
-      this.image = (this.sex.compareTo("m") == 0) ? manImage : womanImage;
+      this.image = (this.sex.name().compareTo("m") == 0) ? manImage : womanImage;
     }
     return image;
   }

@@ -26,7 +26,7 @@ public class Friend implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @EmbeddedId
-  private FriendPk id;
+  private FriendPk id = new FriendPk();
 
   /**
    * Status meaning: 0 = pending 1 = accepted 2 = declined 3 = blocked.
@@ -35,12 +35,12 @@ public class Friend implements Serializable {
 
   @ManyToOne
   @JoinColumn(name = "user_one_id")
-  @MapsId("userOneID")
+  @MapsId("userOneId")
   private User user1;
 
   @ManyToOne
   @JoinColumn(name = "user_two_id")
-  @MapsId("userTwoID")
+  @MapsId("userTwoId")
   private User user2;
 
   @ManyToOne

@@ -89,8 +89,8 @@ public class UserService implements UserDetailsService {
     user.setFirstName(userData.getFirstName());
     user.setLastName(userData.getLastName());
     user.setEmail(userData.getEmail());
-    user.setSex(userData.getSex().name());
-    user.setLang(userData.getLang().name().toLowerCase());
+    user.setSex(userData.getSex());
+    user.setLang(userData.getLang());
     user.setPasswordHash(passwordEncoder.encode(userData.getPassword()));
     //Compute a 64 character challenge
     String challenge = Cryptography

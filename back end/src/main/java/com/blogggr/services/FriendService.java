@@ -61,21 +61,7 @@ public class FriendService {
     if (userBig == null) {
       throw new ResourceNotFoundException(messageSource.getMessage(USER_NOT_FOUND));
     }
-    Friend friend = new Friend();
-    friend.setUser1(userSmall);
-    friend.setUser2(userBig);
-    friend.setStatus(0); //initial status => pending friendship state
-    if (userSmall.getUserId() == userId) {
-      friend.setLastActionUserId(userSmall);
-    } else {
-      friend.setLastActionUserId(userBig);
-    }
-    FriendPk fPk = new FriendPk();
-    fPk.setUserOneId(userSmall.getUserId());
-    fPk.setUserTwoId(userBig.getUserId());
-    friend.setId(fPk);
-    friendDao.save(friend);
-    return friend;
+    return friendDao.createFriendship(userSmall, userBig);
   }
 
   public void updateFriend(long userId, long user1, long user2, FriendDataUpdate friendData) {
@@ -87,7 +73,7 @@ public class FriendService {
     long big;
     small = (user1 < user2) ? user1 : user2;
     big = (user1 > user2) ? user1 : user2;
-    Friend friend = friendDao.getFriendByUserIDs(small, big);
+    Friend friend = friendDao.getFriendByUserIds(small, big);
     if (friend == null) {
       throw new ResourceNotFoundException(messageSource.getMessage(FRIEND_NOT_FOUND));
     }

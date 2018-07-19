@@ -112,7 +112,7 @@ public class PostService {
       long bigNum;
       smallNum = (postUserID < userId) ? postUserID : userId;
       bigNum = (postUserID >= userId) ? postUserID : userId;
-      friendDao.getFriendByUserIDs(smallNum, bigNum);
+      friendDao.getFriendByUserIds(smallNum, bigNum);
       return true;
     } catch (ResourceNotFoundException e) {
       return false;

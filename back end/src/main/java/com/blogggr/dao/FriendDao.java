@@ -1,9 +1,12 @@
 package com.blogggr.dao;
 
 import com.blogggr.entities.Friend;
+import com.blogggr.entities.FriendPk;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.utilities.SimpleBundleMessageSource;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +39,31 @@ public class FriendDao extends GenericDaoImpl<Friend> {
   private static final String STATUS = "status";
   private static final String NO_RESULT = "FriendDao.noResult";
 
+  public Friend createFriendship(User user1, User user2){
+    if (user1.getUserId() == null || user2.getUserId() == null || user1.getUserId().equals(user2.getUserId())) {
+      throw new IllegalArgumentException(messageSource.getMessage("FriendDao.createFriendship.userNull"));
+    }
+    Friend friend = new Friend();
+    if (user1.getUserId() < user2.getUserId()){
+      friend.setUser1(user1);
+      friend.setUser2(user2);
+    } else {
+      friend.setUser1(user2);
+      friend.setUser2(user1);
+    }
+    friend.setLastActionTimestamp(Timestamp.valueOf(LocalDateTime.now()));
+    friend.setStatus(0); //pending friendship status
+    if (user1.getUserId() < user2.getUserId()) {
+      user1.getFriends1().add(friend);
+      user2.getFriends2().add(friend);
+    } else {
+      user1.getFriends2().add(friend);
+      user2.getFriends1().add(friend);
+    }
+    save(friend);
+    return friend;
+  }
+
   public List<User> getUserFriends(long userId) {
     logger.debug("getUserFriends - userId: {}", userId);
     //Combine users from two queries
@@ -53,7 +81,6 @@ public class FriendDao extends GenericDaoImpl<Friend> {
      * JOIN blogggr.users u2 ON f.usertwoid=u2.userid
      * WHERE f.status=2 AND u1.userID=userID;
      */
-    try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<User> query = cb.createQuery(User.class);
       Root<Friend> root = query.from(Friend.class);
@@ -63,7 +90,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
         query.select(user2Join);
         query.where(
             cb.and(
-                cb.equal(root.get(STATUS), 1),
+                cb.equal(root.get(STATUS), 2),
                 cb.equal(user1Join.get("userId"), userId)
             )
         );
@@ -71,18 +98,15 @@ public class FriendDao extends GenericDaoImpl<Friend> {
         query.select(user1Join);
         query.where(
             cb.and(
-                cb.equal(root.get(STATUS), 1),
+                cb.equal(root.get(STATUS), 2),
                 cb.equal(user2Join.get("userId"), userId)
             )
         );
       }
       return entityManager.createQuery(query).getResultList();
-    } catch (NoResultException e) {
-      throw new ResourceNotFoundException(messageSource.getMessage(NO_RESULT));
-    }
   }
 
-  public Friend getFriendByUserIDs(long userId1, long userId2) {
+  public Friend getFriendByUserIds(long userId1, long userId2) {
     logger.debug("getFriendByUserIDs - userId1: {}, userId2: {}", userId1, userId2);
     try {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();

@@ -62,7 +62,7 @@ public class CommentService {
       long smaller = (posterUserID < userId) ? posterUserID : userId;
       long bigger = (posterUserID >= userId) ? posterUserID : userId;
       try {
-        friendDao.getFriendByUserIDs(smaller, bigger);
+        friendDao.getFriendByUserIds(smaller, bigger);
       } catch (ResourceNotFoundException e) {
         throw new NotAuthorizedException(
             messageSource.getMessage("CommentService.createComment.authorizationRestrictionException"));
@@ -130,7 +130,7 @@ public class CommentService {
     smallNum = (postAuthor.getUserId() < userId) ? postAuthor.getUserId() : userId;
     bigNum = (postAuthor.getUserId() >= userId) ? postAuthor.getUserId() : userId;
     try {
-      friendDao.getFriendByUserIDs(smallNum, bigNum);
+      friendDao.getFriendByUserIds(smallNum, bigNum);
       return post.getComments();
     } catch (ResourceNotFoundException e) {
       throw new NotAuthorizedException(messageSource.getMessage("CommentService.getCommentsByPostId.notAuthorized"));

@@ -47,7 +47,7 @@ public class InternationalizationFilter extends GenericFilterBean {
         .getAuthentication() instanceof AnonymousAuthenticationToken)) {
       UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext()
           .getAuthentication().getPrincipal();
-      Locale locale = new Locale(userPrincipal.getUser().getLang());
+      Locale locale = new Locale(userPrincipal.getUser().getLang().name().toLowerCase());
       WebUtils.setSessionAttribute(request, SessionLocaleResolver.LOCALE_SESSION_ATTRIBUTE_NAME,
           locale);
     } else if (!StringUtils.isBlank(request.getHeader(ACCEPT_LANG))) {
