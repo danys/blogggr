@@ -5,7 +5,6 @@ import com.blogggr.dao.UserDao;
 import com.blogggr.dto.FriendDataBase;
 import com.blogggr.dto.FriendDataUpdate;
 import com.blogggr.entities.Friend;
-import com.blogggr.entities.FriendPk;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;

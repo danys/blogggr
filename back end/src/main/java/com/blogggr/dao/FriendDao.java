@@ -1,7 +1,6 @@
 package com.blogggr.dao;
 
 import com.blogggr.entities.Friend;
-import com.blogggr.entities.FriendPk;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.utilities.SimpleBundleMessageSource;
