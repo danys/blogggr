@@ -1,8 +1,8 @@
 package com.blogggr.dao;
 
 import com.blogggr.entities.UserImage;
+import java.util.List;
 import javax.persistence.NoResultException;
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -37,12 +37,27 @@ public class UserImageDao extends GenericDaoImpl<UserImage> {
     }
   }
 
-  public void unsetCurrent(Long userId) {
+  public List<UserImage> findUserImagesByUserId(Long userId) {
+    logger.debug("UserImageDao | findUserImagesByUserId - userId: {}", userId);
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserImage> query = cb.createQuery(UserImage.class);
+    Root<UserImage> root = query.from(UserImage.class);
+    query.where(
+        cb.equal(root.get("user").get("userId"), userId)
+    );
+    return entityManager.createQuery(query).getResultList();
+  }
+
+  public int unsetCurrent(Long userId) {
     logger.debug("UserImageDao | unsetCurrent - userId: {}", userId);
-    Query q = entityManager
-        .createNativeQuery("UPDATE blogggr.user_images SET is_current = ? WHERE user_id = ?");
-    q.setParameter(1, false);
-    q.setParameter(2, userId);
-    q.executeUpdate();
+    List<UserImage> userImages = findUserImagesByUserId(userId);
+    int nRecordsModified = 0;
+    for(UserImage userImage: userImages){
+      if (userImage.getIsCurrent()){
+        userImage.setIsCurrent(false);
+        nRecordsModified++;
+      }
+    }
+    return nRecordsModified;
   }
 }

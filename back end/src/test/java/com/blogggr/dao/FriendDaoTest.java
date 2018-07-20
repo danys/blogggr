@@ -1,15 +1,12 @@
 package com.blogggr.dao;
 
+import static com.blogggr.dao.UserDaoTest.createUser;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import com.blogggr.dto.UserEnums;
-import com.blogggr.dto.UserEnums.Sex;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.User;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,20 +28,6 @@ public class FriendDaoTest {
 
   @Autowired
   private UserDao userDao;
-
-  private User createUser(String firstName, String lastName, String email, int status){
-    User user = new User();
-    user.setFirstName(firstName);
-    user.setLastName(lastName);
-    user.setEmail(email);
-    user.setPasswordHash("hash");
-    user.setChallenge("challenge");
-    user.setStatus(status);
-    user.setLastChange(Timestamp.valueOf(LocalDateTime.now()));
-    user.setSex(Sex.M);
-    user.setLang(UserEnums.Lang.DE);
-    return user;
-  }
 
   @Test
   @Transactional
