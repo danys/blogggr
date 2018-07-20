@@ -35,7 +35,6 @@ public class FriendDao extends GenericDaoImpl<Friend> {
   private static final String USER_1 = "user1";
   private static final String USER_2 = "user2";
   private static final String STATUS = "status";
-  private static final String NO_RESULT = "FriendDao.noResult";
 
   public Friend createFriendship(User user1, User user2){
     if (user1.getUserId() == null || user2.getUserId() == null || user1.getUserId().equals(user2.getUserId())) {
