@@ -1,6 +1,7 @@
 package com.blogggr.dao;
 
 import com.blogggr.entities.UserImage;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -13,9 +14,9 @@ import org.springframework.stereotype.Repository;
  * Created by Daniel Sunnen on 25.08.17.
  */
 @Repository
-public class UserImageDao extends GenericDaoImpl<UserImage>{
+public class UserImageDao extends GenericDaoImpl<UserImage> {
 
-  public UserImageDao(){
+  public UserImageDao() {
     super(UserImage.class);
   }
 
@@ -27,14 +28,19 @@ public class UserImageDao extends GenericDaoImpl<UserImage>{
     CriteriaQuery<UserImage> query = cb.createQuery(UserImage.class);
     Root<UserImage> root = query.from(UserImage.class);
     query.where(
-              cb.equal(root.get("name"), name)
+        cb.equal(root.get("name"), name)
     );
-    return entityManager.createQuery(query).getSingleResult();
+    try {
+      return entityManager.createQuery(query).getSingleResult();
+    } catch (NoResultException e) {
+      return null;
+    }
   }
 
-  public void unsetCurrent(Long userId){
+  public void unsetCurrent(Long userId) {
     logger.debug("UserImageDao | unsetCurrent - userId: {}", userId);
-    Query q = entityManager.createNativeQuery("UPDATE blogggr.user_images SET is_current = ? WHERE user_id = ?");
+    Query q = entityManager
+        .createNativeQuery("UPDATE blogggr.user_images SET is_current = ? WHERE user_id = ?");
     q.setParameter(1, false);
     q.setParameter(2, userId);
     q.executeUpdate();

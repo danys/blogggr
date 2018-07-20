@@ -8,6 +8,7 @@ import com.blogggr.responses.PageData;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.StringUtilities;
+import javax.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -366,7 +367,8 @@ public class PostDao extends GenericDaoImpl<Post> {
   }
 
   public Post getPostByUserAndLabel(Long userId, Long postUserId, String postShortTitle) {
-    logger.debug("PostDao | getPostByUserAndLabel - userId: {}, postUserId: {}, postShortTitle: {}", userId, postUserId, postShortTitle);
+    logger.debug("PostDao | getPostByUserAndLabel - userId: {}, postUserId: {}, postShortTitle: {}",
+        userId, postUserId, postShortTitle);
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<Post> query = cb.createQuery(Post.class);
     Root<Post> root = query.from(Post.class);
@@ -377,6 +379,10 @@ public class PostDao extends GenericDaoImpl<Post> {
             cb.equal(postUserJoin.get(USER_ID), postUserId)
         )
     );
-    return entityManager.createQuery(query).getSingleResult();
+    try {
+      return entityManager.createQuery(query).getSingleResult();
+    } catch (NoResultException e) {
+      return null;
+    }
   }
 }

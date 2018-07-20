@@ -3,17 +3,14 @@ package com.blogggr.dao;
 import com.blogggr.config.AppConfig;
 import com.blogggr.controllers.UsersController;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.PageData;
 import com.blogggr.responses.PageMetaData;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.responses.RandomAccessListPage;
 import com.blogggr.dto.UserSearchData;
-import com.blogggr.utilities.SimpleBundleMessageSource;
 import javax.persistence.criteria.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -40,9 +37,6 @@ public class UserDao extends GenericDaoImpl<User> {
   private static final String PAGE_NUMBER_KEY = "pageNumber";
   private static final String USER_ID = "userId";
 
-  @Autowired
-  private SimpleBundleMessageSource simpleBundleMessageSource;
-
   public UserDao() {
     super(User.class);
   }
@@ -57,8 +51,7 @@ public class UserDao extends GenericDaoImpl<User> {
       query.where(cb.equal(root.get(USER_ID), id));
       return entityManager.createQuery(query).getSingleResult();
     } catch (NoResultException e) {
-      throw new ResourceNotFoundException(simpleBundleMessageSource
-          .getMessage("UserDao.findByIdWithImages.notFound"));
+      return null;
     }
   }
 

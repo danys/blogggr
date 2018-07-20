@@ -2,7 +2,6 @@ package com.blogggr.dao;
 
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.User;
-import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -113,7 +112,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
   public Friend getFriendByUserIds(long userId1, long userId2) {
     logger.debug("getFriendByUserIDs - userId1: {}, userId2: {}", userId1, userId2);
     if (userId1 == userId2) {
-      throw new ResourceNotFoundException(messageSource.getMessage(NO_RESULT));
+      return null;
     }
     long userSmall;
     long userBig;
@@ -155,7 +154,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
       );
       return entityManager.createQuery(query).getSingleResult();
     } catch (NoResultException e) {
-      throw new ResourceNotFoundException(messageSource.getMessage(NO_RESULT));
+      return null;
     }
   }
 }

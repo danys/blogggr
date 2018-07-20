@@ -14,11 +14,13 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.dto.PostData;
 import com.blogggr.utilities.SimpleBundleMessageSource;
+import com.blogggr.utilities.SpringHelper;
 import com.blogggr.utilities.StringUtilities;
 import com.blogggr.utilities.TimeUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -135,8 +137,13 @@ public class PostService {
 
   public PrevNextListPage<Post> getPosts(PostSearchData postSearchData, User user) {
     logger.debug("PostService | getPosts - postSearchData: {}, user: {}", postSearchData, user);
-    PrevNextListPage<Post> postsPage = postDao
-        .getPosts(postSearchData, user);
+    PrevNextListPage<Post> postsPage;
+    try {
+      postsPage = postDao
+          .getPosts(postSearchData, user);
+    }catch(DataAccessException e){
+      throw SpringHelper.convertException(e);
+    }
     List<Post> posts = postsPage.getPageItems();
     //Shorten and append ... if the post's text is too long. Load image.
     posts.forEach(post -> {

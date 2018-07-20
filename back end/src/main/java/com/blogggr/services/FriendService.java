@@ -9,9 +9,11 @@ import com.blogggr.entities.User;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.utilities.SimpleBundleMessageSource;
+import com.blogggr.utilities.SpringHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,9 +45,11 @@ public class FriendService {
     long userID1 = friendData.getUserId1();
     long userID2 = friendData.getUserId2();
     if (userID1 != userId && userID2 != userId) {
-      throw new NotAuthorizedException(messageSource.getMessage("FriendService.createFriend.currentUserNotPresentException"));
+      throw new NotAuthorizedException(
+          messageSource.getMessage("FriendService.createFriend.currentUserNotPresentException"));
     } else if (userID1 == userID2) {
-      throw new NotAuthorizedException(messageSource.getMessage("FriendService.createFriend.oneSelfFriendException"));
+      throw new NotAuthorizedException(
+          messageSource.getMessage("FriendService.createFriend.oneSelfFriendException"));
     }
     long small;
     long big;
@@ -60,13 +64,19 @@ public class FriendService {
     if (userBig == null) {
       throw new ResourceNotFoundException(messageSource.getMessage(USER_NOT_FOUND));
     }
-    return friendDao.createFriendship(userSmall, userBig);
+    try {
+      return friendDao.createFriendship(userSmall, userBig);
+    } catch (DataAccessException e) {
+      throw SpringHelper.convertException(e);
+    }
   }
 
   public void updateFriend(long userId, long user1, long user2, FriendDataUpdate friendData) {
-    logger.debug("FriendService | updateFriend - userId: {}, user1: {}, user2: {}", userId, user1, user2);
+    logger.debug("FriendService | updateFriend - userId: {}, user1: {}, user2: {}", userId, user1,
+        user2);
     if (user1 != userId && user2 != userId) {
-      throw new NotAuthorizedException(messageSource.getMessage("FriendService.createFriend.currentUserNotPresentException"));
+      throw new NotAuthorizedException(
+          messageSource.getMessage("FriendService.createFriend.currentUserNotPresentException"));
     }
     long small;
     long big;
@@ -77,7 +87,8 @@ public class FriendService {
       throw new ResourceNotFoundException(messageSource.getMessage(FRIEND_NOT_FOUND));
     }
     if (friend.getUser1().getUserId() != userId && friend.getUser2().getUserId() != userId) {
-      throw new NotAuthorizedException(messageSource.getMessage("FriendService.updateFriend.notAuthorizedException"));
+      throw new NotAuthorizedException(
+          messageSource.getMessage("FriendService.updateFriend.notAuthorizedException"));
     }
     User currentUser = userDao.findById(userId);
     if (currentUser == null) {
@@ -90,7 +101,8 @@ public class FriendService {
         friend.setLastActionUserId(currentUser);
         friendDao.update(friend);
       } else {
-        throw new NotAuthorizedException(messageSource.getMessage("FriendService.updateFriend.unableUpdateException"));
+        throw new NotAuthorizedException(
+            messageSource.getMessage("FriendService.updateFriend.unableUpdateException"));
       }
     } else if (friend.getStatus() == 1 && friendData.getAction() == 3) { //set status to blocked
       friend.setStatus(friendData.getAction());
@@ -104,7 +116,8 @@ public class FriendService {
         friendDao.update(friend);
       }
     } else {
-      throw new NotAuthorizedException(messageSource.getMessage("FriendService.updateFriend.unableUpdateException"));
+      throw new NotAuthorizedException(
+          messageSource.getMessage("FriendService.updateFriend.unableUpdateException"));
     }
   }
 
@@ -115,7 +128,8 @@ public class FriendService {
       throw new ResourceNotFoundException(messageSource.getMessage(FRIEND_NOT_FOUND));
     }
     if (friend.getUser1().getUserId() != userId || friend.getUser2().getUserId() != userId) {
-      throw new NotAuthorizedException(messageSource.getMessage("FriendService.deleteFriend.notAuthorizedException"));
+      throw new NotAuthorizedException(
+          messageSource.getMessage("FriendService.deleteFriend.notAuthorizedException"));
     }
     friendDao.delete(friend);
   }
@@ -125,8 +139,9 @@ public class FriendService {
     Friend friend = friendDao.findById(friendId);
     if (friend == null) {
       throw new ResourceNotFoundException(messageSource.getMessage(FRIEND_NOT_FOUND));
-    } else if (friend.getUser1().getUserId() != userId || friend.getUser2().getUserId() != userId){
-      throw new NotAuthorizedException(messageSource.getMessage("FriendService.getFriend.notAuthorizedException"));
+    } else if (friend.getUser1().getUserId() != userId || friend.getUser2().getUserId() != userId) {
+      throw new NotAuthorizedException(
+          messageSource.getMessage("FriendService.getFriend.notAuthorizedException"));
     }
     return friend;
   }

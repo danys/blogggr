@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,11 +100,20 @@ public class FriendDaoTest {
     User user2 = createUser("Dan", "Sun", "dan@sun.com", 1);
     userDao.save(user2);
     Friend friendship = friendDao.createFriendship(user1, user2);
+    //Try if inserting a duplicate friendship works
     try {
       friendDao.createFriendship(user1, user2);
       fail();
-    }catch(InvalidDataAccessApiUsageException e){
-      assertThat(e.getMessage()).contains("exists already");
+    }catch(DataAccessException e){
+      Throwable t = e.getCause();
+      assertThat(e.getCause().getMessage()).contains("exists already");
+    }
+    //Try it if users are inverted
+    try {
+      friendDao.createFriendship(user2, user1);
+      fail();
+    }catch(DataAccessException e){
+      assertThat(e.getCause().getMessage()).contains("exists already");
     }
   }
 
