@@ -242,6 +242,9 @@ CAUTION: Do not modify this file unless you know what you are doing.
 	<constraint name="user_image_image_id_pk" type="pk-constr" table="blogggr.user_images">
 		<columns names="user_image_id" ref-type="src-columns"/>
 	</constraint>
+	<constraint name="name_unique" type="uq-constr" table="blogggr.user_images">
+		<columns names="name" ref-type="src-columns"/>
+	</constraint>
 </table>
 
 <constraint name="friends_useroneid_pk" type="fk-constr" comparison-type="MATCH FULL"
