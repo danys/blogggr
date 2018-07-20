@@ -5,6 +5,8 @@ import com.blogggr.entities.User;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import javax.persistence.criteria.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,17 +38,20 @@ public class FriendDao extends GenericDaoImpl<Friend> {
   private static final String USER_2 = "user2";
   private static final String STATUS = "status";
 
-  public Friend createFriendship(User user1, User user2){
-    if (user1.getUserId() == null || user2.getUserId() == null || user1.getUserId().equals(user2.getUserId())) {
-      throw new IllegalArgumentException(messageSource.getMessage("FriendDao.createFriendship.userNull"));
+  public Friend createFriendship(User user1, User user2) {
+    if (user1.getUserId() == null || user2.getUserId() == null || user1.getUserId()
+        .equals(user2.getUserId())) {
+      throw new IllegalArgumentException(
+          messageSource.getMessage("FriendDao.createFriendship.userNull"));
     }
     //First check if the friendship exists already
-    if (getFriendByUserIds(user1.getUserId(), user2.getUserId())!=null){
-      throw new IllegalArgumentException(messageSource.getMessage("FriendDao.createFriendship.existAlready"));
+    if (getFriendByUserIds(user1.getUserId(), user2.getUserId()) != null) {
+      throw new IllegalArgumentException(
+          messageSource.getMessage("FriendDao.createFriendship.existAlready"));
     }
     //Create the friendship
     Friend friend = new Friend();
-    if (user1.getUserId() < user2.getUserId()){
+    if (user1.getUserId() < user2.getUserId()) {
       friend.setUser1(user1);
       friend.setUser2(user2);
     } else {
@@ -83,39 +88,39 @@ public class FriendDao extends GenericDaoImpl<Friend> {
      * JOIN blogggr.users u2 ON f.usertwoid=u2.userid
      * WHERE f.status=2 AND u1.userID=userID;
      */
-      CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-      CriteriaQuery<User> query = cb.createQuery(User.class);
-      Root<Friend> root = query.from(Friend.class);
-      Join<Friend, User> user1Join = root.join(USER_1);
-      Join<Friend, User> user2Join = root.join(USER_2);
-      if (!userOne) {
-        query.select(user2Join);
-        query.where(
-            cb.and(
-                cb.equal(root.get(STATUS), 2),
-                cb.equal(user1Join.get("userId"), userId)
-            )
-        );
-      } else {
-        query.select(user1Join);
-        query.where(
-            cb.and(
-                cb.equal(root.get(STATUS), 2),
-                cb.equal(user2Join.get("userId"), userId)
-            )
-        );
-      }
-      return entityManager.createQuery(query).getResultList();
+    CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+    CriteriaQuery<User> query = cb.createQuery(User.class);
+    Root<Friend> root = query.from(Friend.class);
+    Join<Friend, User> user1Join = root.join(USER_1);
+    Join<Friend, User> user2Join = root.join(USER_2);
+    if (!userOne) {
+      query.select(user2Join);
+      query.where(
+          cb.and(
+              cb.equal(root.get(STATUS), 2),
+              cb.equal(user1Join.get("userId"), userId)
+          )
+      );
+    } else {
+      query.select(user1Join);
+      query.where(
+          cb.and(
+              cb.equal(root.get(STATUS), 2),
+              cb.equal(user2Join.get("userId"), userId)
+          )
+      );
+    }
+    return entityManager.createQuery(query).getResultList();
   }
 
-  public Friend getFriendByUserIds(long userId1, long userId2) {
+  private Friend getFriendByUserIdsGeneric(long userId1, long userId2, Integer state) {
     logger.debug("getFriendByUserIDs - userId1: {}, userId2: {}", userId1, userId2);
     if (userId1 == userId2) {
       return null;
     }
     long userSmall;
     long userBig;
-    if (userId1 < userId2){
+    if (userId1 < userId2) {
       userSmall = userId1;
       userBig = userId2;
     } else {
@@ -126,10 +131,15 @@ public class FriendDao extends GenericDaoImpl<Friend> {
       CriteriaBuilder cb = entityManager.getCriteriaBuilder();
       CriteriaQuery<Friend> query = cb.createQuery(Friend.class);
       Root<Friend> root = query.from(Friend.class);
+      List<Predicate> predicates = new ArrayList<>();
+      predicates.add(cb.equal(root.get(USER_1), userSmall));
+      predicates.add(cb.equal(root.get(USER_2), userBig));
+      if (state != null) {
+        predicates.add(cb.equal(root.get(STATUS), state));
+      }
       query.where(
           cb.and(
-              cb.equal(root.get(USER_1), userSmall),
-              cb.equal(root.get(USER_2), userBig)
+            predicates.toArray(new Predicate[predicates.size()])
           )
       );
       return entityManager.createQuery(query).getSingleResult();
@@ -138,22 +148,15 @@ public class FriendDao extends GenericDaoImpl<Friend> {
     }
   }
 
+  public Friend getFriendByUserIds(long userId1, long userId2) {
+    logger.debug("getFriendByUserIDs - userId1: {}, userId2: {}", userId1, userId2);
+    return getFriendByUserIdsGeneric(userId1, userId2, null);
+  }
+
   public Friend getFriendByUserIdsAndState(long userId1, long userId2, int state) {
-    logger.debug("getFriendByUserIdsAndState - userId1: {}, userId2: {}, state: {}", userId1, userId2, state);
-    try {
-      CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-      CriteriaQuery<Friend> query = cb.createQuery(Friend.class);
-      Root<Friend> root = query.from(Friend.class);
-      query.where(
-          cb.and(
-              cb.equal(root.get(USER_1), userId1),
-              cb.equal(root.get(USER_2), userId2),
-              cb.equal(root.get(STATUS), state)
-          )
-      );
-      return entityManager.createQuery(query).getSingleResult();
-    } catch (NoResultException e) {
-      return null;
-    }
+    logger
+        .debug("getFriendByUserIdsAndState - userId1: {}, userId2: {}, state: {}", userId1, userId2,
+            state);
+    return getFriendByUserIdsGeneric(userId1, userId2, state);
   }
 }
