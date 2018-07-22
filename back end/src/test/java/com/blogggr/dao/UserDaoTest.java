@@ -12,6 +12,7 @@ import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.responses.RandomAccessListPage;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,12 @@ public class UserDaoTest {
 
   @Autowired
   private UserImageDao userImageDao;
+
+  private User user1;
+  private User user2;
+  private User user3;
+  private User user4;
+  private User user5;
 
   public static User createUser(String firstName, String lastName, String email, int status){
     User user = new User();
@@ -74,14 +81,19 @@ public class UserDaoTest {
   private void initUsers(){
     User user1 = createUser("Daniel", "Schmidt", "dan@schmidt.com", 1);
     userDao.save(user1);
+    this.user1 = user1;
     User user2 = createUser("Claude", "Shannon", "claude@abc.com", 1);
     userDao.save(user2);
+    this.user2 = user2;
     User user3 = createUser("Bill", "Gates", "bill@microsoft.com", 1);
     userDao.save(user3);
+    this.user3 = user3;
     User user4 = createUser("Larry", "Page", "larry@page.com", 1);
     userDao.save(user4);
+    this.user4 = user4;
     User user5 = createUser("Billy", "Mega", "billy@mega.com", 1);
     userDao.save(user5);
+    this.user5 = user5;
   }
 
   @Test
@@ -159,20 +171,21 @@ public class UserDaoTest {
     assertThat(users.getPageData().getFilteredCount()).isEqualTo(2);
     assertThat(users.getPageData().getPageItemsCount()).isEqualTo(1);
     assertThat(users.getPageData().getTotalCount()).isEqualTo(5);
-    assertThat(users.getPageData().getNext()).contains("/users?firstName=Bill&after=3&maxRecordsCount=1");
+    List<User> dbUsers = userDao.findAll();
+    assertThat(users.getPageData().getNext()).contains("/users?firstName=Bill&after="+user3.getUserId()+"&maxRecordsCount=1");
     assertThat(users.getPageData().getPrevious()).isNull();
     //Test case 3: two results only one returned
     searchData = new UserSearchData();
     searchData.setMaxRecordsCount(1);
     searchData.setFirstName("Bill");
-    searchData.setAfter(3L);
+    searchData.setAfter(user3.getUserId());
     users = userDao.getUsersBySearchTerms(searchData);
     assertThat(users.getPageItems().size()).isEqualTo(1);
     assertThat(users.getPageData().getFilteredCount()).isEqualTo(2);
     assertThat(users.getPageData().getPageItemsCount()).isEqualTo(1);
     assertThat(users.getPageData().getTotalCount()).isEqualTo(5);
     assertThat(users.getPageData().getNext()).isNull();
-    assertThat(users.getPageData().getPrevious()).contains("/users?firstName=Bill&before=5&maxRecordsCount=1");
+    assertThat(users.getPageData().getPrevious()).contains("/users?firstName=Bill&before="+user5.getUserId()+"&maxRecordsCount=1");
   }
 
   @Test
