@@ -138,8 +138,8 @@ public class UserDao extends GenericDaoImpl<User> {
       query.where(
           cb.or(
               cb.like(cb.lower(root.get("email")), searchVar),
-              cb.like(cb.lower(root.get("firstName")), searchVar),
-              cb.like(cb.lower(root.get("lastName")), searchVar)
+              cb.like(cb.lower(root.get(FIRST_NAME_KEY)), searchVar),
+              cb.like(cb.lower(root.get(LAST_NAME_KEY)), searchVar)
           )
       );
     }
@@ -273,11 +273,11 @@ public class UserDao extends GenericDaoImpl<User> {
     List<Predicate> predicates = new LinkedList<>();
     if (doFilter) {
       if (searchData.getFirstName() != null) {
-        predicates.add(cb.like(cb.lower(root.get("firstName")),
+        predicates.add(cb.like(cb.lower(root.get(FIRST_NAME_KEY)),
             searchData.getFirstName().toLowerCase() + "%"));
       }
       if (searchData.getLastName() != null) {
-        predicates.add(cb.like(cb.lower(root.get("lastName")),
+        predicates.add(cb.like(cb.lower(root.get(LAST_NAME_KEY)),
             searchData.getLastName().toLowerCase() + "%"));
       }
       if (searchData.getEmail() != null) {
