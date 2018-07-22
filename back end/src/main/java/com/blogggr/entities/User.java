@@ -90,7 +90,7 @@ public class User implements Serializable {
   private List<Post> posts = new ArrayList<>();
 
   @OneToMany(mappedBy = "user")
-  private List<UserImage> userImages;
+  private List<UserImage> userImages = new ArrayList<>();
 
   @Transient
   private UserImage image;
@@ -101,7 +101,7 @@ public class User implements Serializable {
   //Helper methods
 
   public UserImage getImage() {
-    if (this.userImages == null) {
+    if (this.userImages.size() == 0) {
       return null;
     }
     this.image = this.userImages.stream().filter(UserImage::getIsCurrent).findFirst()

@@ -8,9 +8,15 @@ import com.blogggr.responses.PageMetaData;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.responses.RandomAccessListPage;
 import com.blogggr.dto.UserSearchData;
+import com.blogggr.utilities.SimpleBundleMessageSource;
+import com.blogggr.utilities.StringUtilities;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Map;
 import javax.persistence.criteria.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -37,6 +43,17 @@ public class UserDao extends GenericDaoImpl<User> {
   private static final String PAGE_NUMBER_KEY = "pageNumber";
   private static final String USER_ID = "userId";
 
+  private static final String FIRST_NAME_KEY = "firstName";
+  private static final String LAST_NAME_KEY = "lastName";
+  private static final String EMAIL_KEY = "emailName";
+  private static final String MAX_RECORDS_COUNT_KEY = "maxRecordsCount";
+  private static final String BEFORE_KEY = "before";
+  private static final String AFTER_KEY = "after";
+
+
+  @Autowired
+  private SimpleBundleMessageSource messageSource;
+
   public UserDao() {
     super(User.class);
   }
@@ -57,7 +74,8 @@ public class UserDao extends GenericDaoImpl<User> {
 
   public RandomAccessListPage<User> getUsers(String searchString, Integer limit,
       Integer pageNumber) {
-    logger.debug("UserDao | getUsers - searchString: {}, limit: {}, pageNumber: {}", searchString, limit, pageNumber);
+    logger.debug("UserDao | getUsers - searchString: {}, limit: {}, pageNumber: {}", searchString,
+        limit, pageNumber);
     //Check and maybe adjust limit, set default limit
     if (limit == null || limit.intValue() > DEFAULT_LIMIT) {
       limit = Integer.valueOf(DEFAULT_LIMIT);
@@ -128,6 +146,7 @@ public class UserDao extends GenericDaoImpl<User> {
     if (countOnly) {
       query.select(cb.countDistinct(root));
     } else {
+      query.distinct(true);
       query.orderBy(cb.asc(root.get(USER_ID)));
     }
     return query;
@@ -143,7 +162,103 @@ public class UserDao extends GenericDaoImpl<User> {
     page.setTotalCount(usersCountAll);
     page.setPageItemsCount(users.size());
     page.setFilteredCount(usersCountFiltered);
+    //Figure out if a user is before or after the users of this page
+    Long nextAfter = null;
+    Long nextBefore = null;
+    if (page.getFilteredCount() > 0 && !users.isEmpty()) {
+      //Get the user before the first one
+      UserSearchData prevUserSearchData = new UserSearchData();
+      prevUserSearchData.setBefore(users.get(0).getUserId());
+      prevUserSearchData.setFirstName(searchData.getFirstName());
+      prevUserSearchData.setLastName(searchData.getLastName());
+      prevUserSearchData.setEmail(searchData.getEmail());
+      prevUserSearchData.setMaxRecordsCount(1);
+      TypedQuery<User> beforeUserQuery = generateSearchTermQuery(prevUserSearchData, User.class,
+          true);
+      List<User> beforeUsers = beforeUserQuery
+          .getResultList();
+      if (beforeUsers.size() == 1) {
+        nextBefore = users.get(0).getUserId();
+      }
+      //Get the user after the last one
+      UserSearchData afterUserSearchData = new UserSearchData();
+      afterUserSearchData.setAfter(users.get(users.size() - 1).getUserId());
+      afterUserSearchData.setFirstName(searchData.getFirstName());
+      afterUserSearchData.setLastName(searchData.getLastName());
+      afterUserSearchData.setEmail(searchData.getEmail());
+      afterUserSearchData.setMaxRecordsCount(1);
+      TypedQuery<User> afterUserQuery = generateSearchTermQuery(afterUserSearchData, User.class,
+          true);
+      List<User> afterUsers = afterUserQuery
+          .getResultList();
+      if (afterUsers.size() == 1) {
+        nextAfter = users.get(users.size()-1).getUserId();
+      }
+    }
+    if (nextAfter != null) {
+      page.setNext(buildNextPageUrl(searchData, nextAfter));
+    }
+    if (nextBefore != null) {
+      page.setPrevious(buildPreviousPageUrl(searchData, nextBefore));
+    }
     return new PrevNextListPage(users, page);
+  }
+
+  private String buildNextPageUrl(UserSearchData userSearchData, Long afterUserId) {
+    UserSearchData nextSearchData = new UserSearchData();
+    nextSearchData.setEmail(userSearchData.getEmail());
+    nextSearchData.setFirstName(userSearchData.getFirstName());
+    nextSearchData.setLastName(userSearchData.getLastName());
+    nextSearchData.setMaxRecordsCount(userSearchData.getMaxRecordsCount());
+    nextSearchData.setBefore(null);
+    nextSearchData.setAfter(afterUserId);
+    return AppConfig.BASE_URL + UsersController.USER_PATH + "?" +
+        StringUtilities.buildQueryStringFromListOfKVPairs(
+            buildListKV(nextSearchData));
+  }
+
+  private String buildPreviousPageUrl(UserSearchData userSearchData, Long beforeUserId) {
+    UserSearchData nextSearchData = new UserSearchData();
+    nextSearchData.setEmail(userSearchData.getEmail());
+    nextSearchData.setFirstName(userSearchData.getFirstName());
+    nextSearchData.setLastName(userSearchData.getLastName());
+    nextSearchData.setMaxRecordsCount(userSearchData.getMaxRecordsCount());
+    nextSearchData.setBefore(beforeUserId);
+    nextSearchData.setAfter(null);
+    return AppConfig.BASE_URL + UsersController.USER_PATH + "?" +
+        StringUtilities.buildQueryStringFromListOfKVPairs(
+            buildListKV(nextSearchData));
+  }
+
+  private List<Map.Entry<String, String>> buildListKV(UserSearchData userSearchData) {
+    List<Map.Entry<String, String>> l = new ArrayList<>(5);
+    Map.Entry<String, String> entry;
+    if (userSearchData.getFirstName() != null) {
+      entry = new AbstractMap.SimpleEntry<>(FIRST_NAME_KEY, userSearchData.getFirstName());
+      l.add(entry);
+    }
+    if (userSearchData.getLastName() != null) {
+      entry = new AbstractMap.SimpleEntry<>(LAST_NAME_KEY, userSearchData.getLastName());
+      l.add(entry);
+    }
+    if (userSearchData.getEmail() != null) {
+      entry = new AbstractMap.SimpleEntry<>(EMAIL_KEY, userSearchData.getEmail());
+      l.add(entry);
+    }
+    if (userSearchData.getAfter() != null) {
+      entry = new AbstractMap.SimpleEntry<>(AFTER_KEY, String.valueOf(userSearchData.getAfter()));
+      l.add(entry);
+    }
+    if (userSearchData.getBefore() != null) {
+      entry = new AbstractMap.SimpleEntry<>(BEFORE_KEY, String.valueOf(userSearchData.getBefore()));
+      l.add(entry);
+    }
+    if (userSearchData.getMaxRecordsCount() != null) {
+      entry = new AbstractMap.SimpleEntry<>(MAX_RECORDS_COUNT_KEY,
+          String.valueOf(userSearchData.getMaxRecordsCount()));
+      l.add(entry);
+    }
+    return l;
   }
 
   private <T> TypedQuery<T> generateSearchTermQuery(UserSearchData searchData, Class<T> resultClass,
@@ -173,9 +288,9 @@ public class UserDao extends GenericDaoImpl<User> {
 
     Predicate beforeAfter = null;
     //Before and after cannot be set at the same time
-    if (searchData.getBefore() != null) {
+    if (searchData.getBefore() != null && resultClass != Long.class) {
       beforeAfter = cb.lessThan(root.get(USER_ID), searchData.getBefore());
-    } else if (searchData.getAfter() != null) {
+    } else if (searchData.getAfter() != null && resultClass != Long.class) {
       beforeAfter = cb.greaterThan(root.get(USER_ID), searchData.getAfter());
     }
 

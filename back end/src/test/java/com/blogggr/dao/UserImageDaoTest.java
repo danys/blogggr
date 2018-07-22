@@ -25,7 +25,7 @@ public class UserImageDaoTest {
   @Autowired
   private UserDao userDao;
 
-  private UserImage createUserImage(User user, String name, boolean isCurrent, int width, int height){
+  public static UserImage createUserImage(User user, String name, boolean isCurrent, int width, int height){
     UserImage userImage = new UserImage();
     userImage.setUser(user);
     userImage.setName(name);
