@@ -101,7 +101,7 @@ public class User implements Serializable {
   //Helper methods
 
   public UserImage getImage() {
-    if (this.userImages.size() == 0) {
+    if (this.userImages.isEmpty()) {
       return null;
     }
     this.image = this.userImages.stream().filter(UserImage::getIsCurrent).findFirst()
