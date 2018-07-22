@@ -50,10 +50,6 @@ public class UserDao extends GenericDaoImpl<User> {
   private static final String BEFORE_KEY = "before";
   private static final String AFTER_KEY = "after";
 
-
-  @Autowired
-  private SimpleBundleMessageSource messageSource;
-
   public UserDao() {
     super(User.class);
   }
