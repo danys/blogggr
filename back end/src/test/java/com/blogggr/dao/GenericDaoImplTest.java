@@ -31,7 +31,7 @@ public class GenericDaoImplTest {
     assertThat(userDb1.getEmail()).isEqualTo("dan@schmidt.com");
     user1.setEmail("d@schmidt.com");
     dao.update(user1);
-    dao.delete(user1);
+    dao.deleteById(id);
     assertThat(dao.findById(id)).isNull();
     user1 = createUser("Daniel", "Schmidt", "dan@schmidt.com", 1);
     dao.save(user1);
