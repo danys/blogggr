@@ -328,19 +328,32 @@ public class PostDao extends GenericDaoImpl<Post> {
   private List<Map.Entry<String, String>> buildListKV(Long previous, Long next, Integer limit,
       Long postUserId, String title, Visibility visibility) {
     List<Map.Entry<String, String>> l = new ArrayList<>(5);
-    Map.Entry<String, String> entry = new AbstractMap.SimpleEntry<>(
-        POSTER_USER_ID_KEY, String.valueOf(postUserId));
-    l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(TITLE_KEY, title);
-    l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(VISIBILITY_KEY, visibility.name());
-    l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(AFTER_KEY, String.valueOf(next));
-    l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(BEFORE_KEY, String.valueOf(previous));
-    l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(MAX_RECORDS_COUNT_KEY, String.valueOf(limit));
-    l.add(entry);
+    Map.Entry<String, String> entry;
+    if (postUserId != null) {
+      entry = new AbstractMap.SimpleEntry<>(
+          POSTER_USER_ID_KEY, String.valueOf(postUserId));
+      l.add(entry);
+    }
+    if (title != null) {
+      entry = new AbstractMap.SimpleEntry<>(TITLE_KEY, title);
+      l.add(entry);
+    }
+    if (visibility != null) {
+      entry = new AbstractMap.SimpleEntry<>(VISIBILITY_KEY, visibility.name());
+      l.add(entry);
+    }
+    if (next != null) {
+      entry = new AbstractMap.SimpleEntry<>(AFTER_KEY, String.valueOf(next));
+      l.add(entry);
+    }
+    if (previous != null) {
+      entry = new AbstractMap.SimpleEntry<>(BEFORE_KEY, String.valueOf(previous));
+      l.add(entry);
+    }
+    if (limit != null) {
+      entry = new AbstractMap.SimpleEntry<>(MAX_RECORDS_COUNT_KEY, String.valueOf(limit));
+      l.add(entry);
+    }
     return l;
   }
 
