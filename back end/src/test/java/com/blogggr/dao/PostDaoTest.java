@@ -39,7 +39,7 @@ public class PostDaoTest {
 
   @Test
   @Transactional
-  public void getPosts_Normal(){
+  public void getPosts_DefaultVisibilityAllByTitle(){
     User user = new User();
     userDao.save(user);
     Post post1 = createPost("title1", "shortTitle1", "text1", true, user);
@@ -55,7 +55,43 @@ public class PostDaoTest {
     postSearchData.setMaxRecordsCount(100);
     postSearchData.setTitle("title");
     PrevNextListPage<Post> postsResponse = postDao.getPosts(postSearchData, user);
-    List<Post> posts = postsResponse.getPageItems();
     assertThat(postsResponse.getPageItems().size()).isEqualTo(3);
+    assertThat(postsResponse.getPageData().getFilteredCount()).isEqualTo(3);
+    assertThat(postsResponse.getPageData().getTotalCount()).isEqualTo(4);
+    assertThat(postsResponse.getPageData().getPageItemsCount()).isEqualTo(3);
+    assertThat(postsResponse.getPageItems().get(0).getTitle()).isEqualTo("atitle");
+    assertThat(postsResponse.getPageItems().get(1).getTitle()).isEqualTo("title2");
+    assertThat(postsResponse.getPageItems().get(2).getTitle()).isEqualTo("title1");
+  }
+
+  @Test
+  @Transactional
+  public void getPosts_DefaultVisibilityAllByTitleAndPostUser(){
+    User user = new User();
+    user.setEmail("jo@domain.com");
+    userDao.save(user);
+    User user2 = new User();
+    user2.setEmail("dan@domain.com");
+    userDao.save(user2);
+    Post post1 = createPost("title1", "shortTitle1", "text1", true, user);
+    postDao.save(post1);
+    Post post2 = createPost("title2", "shortTitle2", "text2", true, user2);
+    postDao.save(post2);
+    Post post3 = createPost("t3", "shortTitle3", "text3", true, user2);
+    postDao.save(post3);
+    Post post4 = createPost("atitle", "shortTitle4", "text4", true, user);
+    postDao.save(post4);
+    //Test case 1: search by title
+    PostSearchData postSearchData = new PostSearchData();
+    postSearchData.setMaxRecordsCount(100);
+    postSearchData.setTitle("title");
+    postSearchData.setPosterUserId(user2.getUserId());
+    PrevNextListPage<Post> postsResponse = postDao.getPosts(postSearchData, user);
+    assertThat(postsResponse.getPageItems().size()).isEqualTo(1);
+    assertThat(postsResponse.getPageItems().get(0).getTitle()).isEqualTo("title2");
+    assertThat(postsResponse.getPageItems().get(0).getUser().getEmail()).isEqualTo("dan@domain.com");
+    assertThat(postsResponse.getPageData().getFilteredCount()).isEqualTo(1);
+    assertThat(postsResponse.getPageData().getTotalCount()).isEqualTo(4);
+    assertThat(postsResponse.getPageData().getPageItemsCount()).isEqualTo(1);
   }
 }

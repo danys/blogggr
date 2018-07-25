@@ -72,12 +72,13 @@ public class PostDao extends GenericDaoImpl<Post> {
         postSearchData.getPosterUserId(), postSearchData.getTitle(),
         postSearchData.getVisibility(),
         null, null, true);
-    Long totalCount = entityManager.createQuery(postsCountQuery).getSingleResult();
+    Long filteredCount = entityManager.createQuery(postsCountQuery).getSingleResult();
+    Long totalCount = (Long) entityManager.createQuery("SELECT COUNT(p.postId) FROM Post p").getSingleResult();
     Integer numberPageItems = posts.size();
     Long nextAfter = null;
     Long nextBefore = null;
     //Figure out if a post is before or after the posts of this page
-    if (totalCount > 0 && !posts.isEmpty()) {
+    if (filteredCount > 0 && !posts.isEmpty()) {
       CriteriaQuery<Post> beforePostQuery = generateQuery(user.getUserId(),
           postSearchData.getPosterUserId(), postSearchData.getTitle(),
           postSearchData.getVisibility(),
@@ -99,6 +100,7 @@ public class PostDao extends GenericDaoImpl<Post> {
       }
     }
     PageData pData = new PageData();
+    pData.setFilteredCount(filteredCount);
     pData.setPageItemsCount(numberPageItems);
     pData.setTotalCount(totalCount);
     if (nextAfter != null) {
