@@ -117,6 +117,9 @@ public class PostDao extends GenericDaoImpl<Post> {
 
   private CriteriaQuery generateQuery(long userId, Long postUserId, String title,
       Visibility visibility, Long before, Long after, boolean countOnly) {
+    if (visibility == null) {
+      visibility = Visibility.ALL;
+    }
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery query;
     if (!countOnly) {
@@ -251,6 +254,8 @@ public class PostDao extends GenericDaoImpl<Post> {
           query.where(
               cb.and(friendsPredicate, postBeforeCondition)
           );
+        } else {
+          query.where(friendsPredicate);
         }
       }
     }
@@ -307,6 +312,8 @@ public class PostDao extends GenericDaoImpl<Post> {
           query.where(
               cb.and(friendsUserGlobalPredicate, postBeforeCondition)
           );
+        } else {
+          query.where(friendsUserGlobalPredicate);
         }
       }
     }
