@@ -6,10 +6,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * Created by Daniel Sunnen on 29.05.18.
+ * Created by Daniel Sunnen on 27.07.18.
  */
 @Controller
-public class RedirectController {
+public class IndexController {
 
   @GetMapping(value = "/signup")
   public String signUpPage(HttpServletRequest request, HttpServletResponse response) {
