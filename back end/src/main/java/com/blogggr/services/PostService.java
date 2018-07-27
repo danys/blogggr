@@ -14,17 +14,18 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.dto.PostData;
 import com.blogggr.utilities.SimpleBundleMessageSource;
+import com.blogggr.utilities.SpringHelper;
 import com.blogggr.utilities.StringUtilities;
 import com.blogggr.utilities.TimeUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -48,7 +49,10 @@ public class PostService {
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+  private static final String POST_NOT_FOUND = "PostService.postNotFound";
+
   public Post createPost(long userId, PostData postData) {
+    logger.debug("PostService | createPost - userId: {}, postData: {}", userId, postData);
     User user = userDao.findById(userId);
     if (user == null) {
       throw new ResourceNotFoundException(messageSource.getMessage("PostService.userNotFound"));
@@ -64,10 +68,12 @@ public class PostService {
     return post;
   }
 
-  public Post updatePost(long postID, long userId, PostDataUpdate postData) {
-    Post post = postDao.findById(postID);
+  public Post updatePost(long postId, long userId, PostDataUpdate postData) {
+    logger.debug("PostService | updatePost - postId: {}, userId: {}, postData: {}", userId, userId,
+        postData);
+    Post post = postDao.findById(postId);
     if (post == null) {
-      throw new ResourceNotFoundException(messageSource.getMessage("PostService.postNotFound"));
+      throw new ResourceNotFoundException(messageSource.getMessage(POST_NOT_FOUND));
     }
     if (post.getUser().getUserId() != userId) {
       throw new NotAuthorizedException(messageSource.getMessage("PostService.notAuthorizedModify"));
@@ -90,9 +96,10 @@ public class PostService {
 
   //Delete a session by its primary key
   public void deletePost(long postId, long userId) {
+    logger.debug("PostService | deletePost - userId: {}, postData: {}", postId, userId);
     Post post = postDao.findById(postId);
     if (post == null) {
-      throw new ResourceNotFoundException(messageSource.getMessage("PostService.postNotFound"));
+      throw new ResourceNotFoundException(messageSource.getMessage(POST_NOT_FOUND));
     }
     if (post.getUser().getUserId() != userId) {
       throw new NotAuthorizedException(messageSource.getMessage("PostService.notAuthorizedModify"));
@@ -102,21 +109,18 @@ public class PostService {
 
   //Simple function to check that this user is friends with the poster
   private boolean isFriendOfUser(long postUserID, long userId) {
-    try {
-      long smallNum, bigNum;
+      long smallNum;
+      long bigNum;
       smallNum = (postUserID < userId) ? postUserID : userId;
       bigNum = (postUserID >= userId) ? postUserID : userId;
-      friendDao.getFriendByUserIDs(smallNum, bigNum);
-      return true;
-    } catch (ResourceNotFoundException e) {
-      return false;
-    }
+      return (friendDao.getFriendByUserIds(smallNum, bigNum) != null);
   }
 
   public Post getPostById(long postId, long userId) {
+    logger.debug("PostService | getPostById - postId: {}, userId: {}", postId, userId);
     Post post = postDao.findById(postId);
     if (post == null) {
-      throw new ResourceNotFoundException(messageSource.getMessage("PostService.postNotFound"));
+      throw new ResourceNotFoundException(messageSource.getMessage(POST_NOT_FOUND));
     }
     User postAuthor = post.getUser();
     //1. Post can be viewed if current session user is the owner or the post has global flag
@@ -132,8 +136,14 @@ public class PostService {
   }
 
   public PrevNextListPage<Post> getPosts(PostSearchData postSearchData, User user) {
-    PrevNextListPage<Post> postsPage = postDao
-        .getPosts(postSearchData, user);
+    logger.debug("PostService | getPosts - postSearchData: {}, user: {}", postSearchData, user);
+    PrevNextListPage<Post> postsPage;
+    try {
+      postsPage = postDao
+          .getPosts(postSearchData, user);
+    }catch(DataAccessException e){
+      throw SpringHelper.convertException(e);
+    }
     List<Post> posts = postsPage.getPageItems();
     //Shorten and append ... if the post's text is too long. Load image.
     posts.forEach(post -> {
@@ -146,17 +156,17 @@ public class PostService {
     return postsPage;
   }
 
-  public Post getPostByUserAndLabel(Long userId, Long postUserID, String postShortTitle) {
+  public Post getPostByUserAndLabel(Long userId, Long postUserId, String postShortTitle) {
+    logger.debug(
+        "PostService | getPostByUserAndLabel - userId: {}, postUserId: {}, postShortTitle: {}",
+        userId, postUserId, postShortTitle);
     try {
-      Post post = postDao.getPostByUserAndLabel(userId, postUserID, postShortTitle);
+      Post post = postDao.getPostByUserAndLabel(userId, postUserId, postShortTitle);
       //Order comments by date
       List<Comment> comments = post.getComments();
-      Collections.sort(comments, new Comparator<Comment>() {
-        @Override
-        public int compare(Comment o1, Comment o2) {
-          return (int) (o1.getTimestamp().getTime() - o2.getTimestamp().getTime());
-        }
-      });
+      Collections.sort(comments,
+          (Comment o1, Comment o2) -> (int) (o1.getTimestamp().getTime() - o2.getTimestamp()
+              .getTime()));
       post.setComments(comments);
       //1. Post can be viewed if current session user is the owner or the post has global flag
       if (post.getUser().getUserId() == userId || post.getIsGlobal()) {
@@ -169,7 +179,7 @@ public class PostService {
       //Otherwise access denied
       throw new NotAuthorizedException(messageSource.getMessage("PostService.notAuthorizedView"));
     } catch (NoResultException e) {
-      throw new ResourceNotFoundException(messageSource.getMessage("PostService.postNotFound"));
+      throw new ResourceNotFoundException(messageSource.getMessage(POST_NOT_FOUND));
     }
   }
 }

@@ -8,6 +8,10 @@ import java.util.Map;
  */
 public class StringUtilities {
 
+  private StringUtilities(){
+    //hide otherwise implicit public constructor
+  }
+
   //Compacts a title. Truncation occurs if the title is too long
   public static String compactTitle(String title) {
     title = title.toLowerCase();

@@ -120,7 +120,7 @@ public class UsersController {
    */
   @GetMapping(value = USER_PATH + "/me")
   public ResponseEntity getCurrentUser(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-    logger.info("[GET /users/me] User: {}" + userPrincipal.getUser().getEmail());
+    logger.info("[GET /users/me] User: {}", userPrincipal.getUser().getEmail());
     User user = userService.getUserByIdWithImages(userPrincipal.getUser().getUserId());
     UserWithImageDto userWithImageDto = dtoConverter.toUserWithImageDto(user);
     return ResponseBuilder.getSuccessResponse(userWithImageDto);
@@ -153,7 +153,7 @@ public class UsersController {
     logger.info("[GET /users/id/posts] Id: {}, user: {}", id, userPrincipal.getUser().getEmail());
     PostSearchData postSearchData = new PostSearchData();
     postSearchData.setPosterUserId(Long.parseLong(id));
-    postSearchData.setVisibility(Visibility.all);
+    postSearchData.setVisibility(Visibility.ALL);
     postSearchData.setMaxRecordsCount(searchData.getMaxRecordsCount());
     postSearchData.setBefore(searchData.getBefore());
     postSearchData.setAfter(searchData.getAfter());

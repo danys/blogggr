@@ -12,7 +12,6 @@ import com.blogggr.utilities.ImageScaler;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.TimeUtilities;
 import java.io.IOException;
-import javax.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,15 +45,17 @@ public class UserImageService {
 
   private static final int MAX_TRIES = 100;
 
-  private final String IMG_EXTENSION = ".png";
-  private final String ORIGINAL_IMG_EXTENSION = "_original" + IMG_EXTENSION;
-  private final int IMG_HEIGHT = 128;
-  private final int IMG_WIDTH = 128;
+  private static final String IMG_EXTENSION = ".png";
+  private static final String ORIGINAL_IMG_EXTENSION = "_original" + IMG_EXTENSION;
+  private static final int IMG_HEIGHT = 128;
+  private static final int IMG_WIDTH = 128;
 
   public UserImage postImage(long userId, MultipartFile file) {
+    logger.debug("UserImageService | postImage - userId: {}, file: {}", userId, file);
     User user = userDao.findById(userId);
     if (user == null) {
-      throw new IllegalArgumentException(simpleBundleMessageSource.getMessage("exception.authentication.userNotFound"));
+      throw new IllegalArgumentException(
+          simpleBundleMessageSource.getMessage("exception.authentication.userNotFound"));
     }
     //Generate img name: 64 char sequence
     String name = "";
@@ -67,14 +68,13 @@ public class UserImageService {
           .substring(0, 51);
       scaledImageName = name + IMG_EXTENSION;
       tries++;
-      try {
-        userImageDao.findByName(scaledImageName);
-      } catch (NoResultException e) {
+      if (userImageDao.findByName(scaledImageName) == null) {
         ok = true;
       }
     }
     if (tries == MAX_TRIES) {
-      throw new IllegalStateException(simpleBundleMessageSource.getMessage("UserImageService.postImage.tooManyTries"));
+      throw new IllegalStateException(
+          simpleBundleMessageSource.getMessage("UserImageService.postImage.tooManyTries"));
     }
     String originalImageName = name + ORIGINAL_IMG_EXTENSION;
     scaledImageName = name + IMG_EXTENSION;
@@ -89,14 +89,16 @@ public class UserImageService {
           fileStorageManager.getStorageDirectory().resolve(scaledImageName),
           IMG_WIDTH, IMG_HEIGHT);
     } catch (IOException e) {
-      throw new StorageException(simpleBundleMessageSource.getMessage("UserImageService.postImage.scalingException"), e);
+      throw new StorageException(
+          simpleBundleMessageSource.getMessage("UserImageService.postImage.scalingException"), e);
     }
 
     //Store image in the cloud
     try {
       fileStorageManager.storeOnCloud(scaledImageName, name);
     } catch (IOException e) {
-      throw new StorageException(simpleBundleMessageSource.getMessage("UserImageService.postImage.storageError"), e);
+      throw new StorageException(
+          simpleBundleMessageSource.getMessage("UserImageService.postImage.storageError"), e);
     }
 
     //Remove the the original as well as the scaled image
@@ -104,7 +106,8 @@ public class UserImageService {
       fileStorageManager
           .delete(fileStorageManager.getStorageDirectory().resolve(originalImageName));
     } catch (IOException e) {
-      throw new StorageException(simpleBundleMessageSource.getMessage("UserImageService.postImage.temporaryFileError"), e);
+      throw new StorageException(
+          simpleBundleMessageSource.getMessage("UserImageService.postImage.temporaryFileError"), e);
     }
 
     //Update isCurrent to false on all user images
@@ -122,9 +125,11 @@ public class UserImageService {
   }
 
   public Resource getUserImage(String fileName) {
+    logger.debug("UserImageService | getUserImage - fileName: {}", fileName);
     UserImage userImage = userImageDao.findByName(fileName);
     if (userImage == null) {
-      throw new ResourceNotFoundException(simpleBundleMessageSource.getMessage("UserImageService.getUserImage.notFoundException"));
+      throw new ResourceNotFoundException(
+          simpleBundleMessageSource.getMessage("UserImageService.getUserImage.notFoundException"));
     }
     return this.fileStorageManager.getImageResourceFromCloud(fileName);
   }

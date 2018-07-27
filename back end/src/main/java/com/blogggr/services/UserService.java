@@ -49,11 +49,9 @@ public class UserService implements UserDetailsService {
   @Autowired
   private SimpleBundleMessageSource simpleBundleMessageSource;
 
-  @Autowired
-  private EmailService emailService;
-
   @Override
   public UserDetails loadUserByUsername(String username) {
+    logger.debug("UserService | loadUserByUsername - username: {}", username);
     User user = userRepository.findByEmail(username);
     if (user == null) {
       throw new UsernameNotFoundException(username);
@@ -62,19 +60,23 @@ public class UserService implements UserDetailsService {
   }
 
   public User getUserById(long id) {
+    logger.debug("UserService | getUserById - id: {}", id);
     return userDao.findById(id);
   }
 
   public User getUserByIdWithImages(long id) {
+    logger.debug("UserService | getUserByIdWithImages - id: {}", id);
     return userDao.findByIdWithImages(id);
   }
 
   public User getUserByEmail(String email) {
+    logger.debug("UserService | getUserByEmail - email: {}", email);
     return userRepository.findByEmail(email);
   }
 
   //For POST request
   public User createUser(UserPostData userData) {
+    logger.debug("UserService | createUser - userData: {}", userData);
     if (userData.getEmail().compareTo(userData.getEmailRepeat()) != 0) {
       throw new IllegalArgumentException(
           simpleBundleMessageSource.getMessage("UserService.createUser.emailMismatch"));
@@ -87,8 +89,8 @@ public class UserService implements UserDetailsService {
     user.setFirstName(userData.getFirstName());
     user.setLastName(userData.getLastName());
     user.setEmail(userData.getEmail());
-    user.setSex(userData.getSex().name());
-    user.setLang(userData.getLang().name().toLowerCase());
+    user.setSex(userData.getSex());
+    user.setLang(userData.getLang());
     user.setPasswordHash(passwordEncoder.encode(userData.getPassword()));
     //Compute a 64 character challenge
     String challenge = Cryptography
@@ -101,14 +103,15 @@ public class UserService implements UserDetailsService {
     return userRepository.save(user);
   }
 
-  public void updateUser(long userResourceID, long userID, UserPutData userData) {
-    User user = userDao.findById(userResourceID);
+  public void updateUser(long userResourceId, long userId, UserPutData userData) {
+    logger.debug("UserService | updateUser - userResourceID: {}, userId: {}, userData: {}", userResourceId, userId, userData);
+    User user = userDao.findById(userResourceId);
     if (user == null) {
       throw new ResourceNotFoundException(
           simpleBundleMessageSource.getMessage("UserService.userNotFound"));
     }
     //A user can only change his own data
-    if (user.getUserId() != userID) {
+    if (user.getUserId() != userId) {
       throw new NotAuthorizedException(
           simpleBundleMessageSource.getMessage("UserService.updateUser.notAuthorizedModify"));
     }
@@ -141,16 +144,18 @@ public class UserService implements UserDetailsService {
   }
 
   public RandomAccessListPage<User> getUsers(SimpleUserSearchData searchData) {
-    RandomAccessListPage<User> usersPage = userDao
+    logger.debug("UserService | getUsers - searchData: {}", searchData);
+    return userDao
         .getUsers(searchData.getSearchString(), searchData.getLimit(), searchData.getPageNumber());
-    return usersPage;
   }
 
   public PrevNextListPage<User> getUsersBySearchTerms(UserSearchData searchData) {
+    logger.debug("UserService | getUsersBySearchTerms - searchData: {}", searchData);
     return userDao.getUsersBySearchTerms(searchData);
   }
 
   public String confirmEmail(Long userId, String challenge){
+    logger.debug("UserService | confirmEmail - userID: {}, challenge: {}", userId, challenge);
     Optional<User> userOptional = userRepository.findById(userId);
     if (!userOptional.isPresent()){
       throw new IllegalArgumentException(simpleBundleMessageSource.getMessage("UserService.userNotFound"));

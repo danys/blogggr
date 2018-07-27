@@ -2,7 +2,6 @@ package com.blogggr.utilities;
 
 import com.blogggr.exceptions.StorageException;
 import com.cloudinary.Cloudinary;
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,10 +11,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,7 +39,7 @@ public class FileStorageManager {
     this.simpleBundleMessageSource = simpleBundleMessageSource;
   }
 
-  public void store(MultipartFile file, String newFileName) throws StorageException {
+  public void store(MultipartFile file, String newFileName) {
     String filename = StringUtils.cleanPath(file.getOriginalFilename());
     try {
       if (file.isEmpty()) {
@@ -69,7 +66,7 @@ public class FileStorageManager {
     Files.delete(filePath);
   }
 
-  public Resource getImageResourceFromCloud(String imageTag) throws StorageException {
+  public Resource getImageResourceFromCloud(String imageTag) {
     String url = CLOUDINARY_IMG_ROOT + imageTag;
     Resource resource;
     try {

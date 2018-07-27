@@ -6,6 +6,7 @@ import com.blogggr.filters.InternationalizationFilter;
 import com.blogggr.filters.JwtAuthenticationFilter;
 import com.blogggr.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -86,7 +87,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .csrf().disable()
         .httpBasic().disable()
         .authorizeRequests()
-        .antMatchers("/login", "/signup", "/index.html").permitAll()
+        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+        .antMatchers(HttpMethod.GET, "/*").permitAll()
         .antMatchers(HttpMethod.POST, "/api/v*/sessions", "/api/v*/users").permitAll()
         .antMatchers(HttpMethod.GET, "/api/v*/users/*/enable").permitAll()
         .anyRequest().authenticated()

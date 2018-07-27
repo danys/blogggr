@@ -5,7 +5,6 @@ import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.util.ArrayList;
 import java.util.List;
 import javax.mail.MessagingException;
-import javax.servlet.ServletException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -26,7 +25,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -285,6 +283,7 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
   /**
    * For all other exceptions
    */
+  @Override
   protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body,
       HttpHeaders headers, HttpStatus status, WebRequest request) {
     return logAndRespond("exception.other.error", ex, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -115,8 +115,10 @@ def gitBranch() {
 }
 
 sonarqube {
+  String projectKey = project.name + "-" + gitBranch()
   String projectName = project.name + " " + gitBranch()
   properties {
+        property "sonar.projectKey", projectKey
         property "sonar.projectName", projectName
     }
 }

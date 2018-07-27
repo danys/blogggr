@@ -8,6 +8,7 @@ import com.blogggr.responses.PageData;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.StringUtilities;
+import javax.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +29,10 @@ public class PostDao extends GenericDaoImpl<Post> {
   private SimpleBundleMessageSource messageSource;
 
   public enum Visibility {
-    onlyGlobal,
-    all,
-    onlyFriends,
-    onlyCurrentUser
+    ONLY_GLOBAL,
+    ALL,
+    ONLY_FRIENDS,
+    ONLY_CURRENT_USER
   }
 
   public static final String POSTER_USER_ID_KEY = "posterUserId";
@@ -41,20 +42,24 @@ public class PostDao extends GenericDaoImpl<Post> {
   public static final String BEFORE_KEY = "before";
   public static final String AFTER_KEY = "after";
 
+  private static final int FRIEND_ACCEPTED = 1;
+  private static final int DEFAULT_LIMIT = 50;
+  private static final String USER_ID = "userId";
+  private static final String POST_ID = "postId";
+  private static final String STATUS = "status";
+  private static final String IS_GLOBAL = "isGlobal";
+
   public PostDao() {
     super(Post.class);
   }
 
-  private final int friendAccepted = 1;
-  private final int defaultLimit = 50;
-  private final long defaultMinimumID = -1;
-
-  //Get posts by userID, title and visibility
+  //Get posts by userId, title and visibility
   public PrevNextListPage<Post> getPosts(PostSearchData postSearchData, User user) {
+    logger.debug("PostDao | getPosts - postSearchData: {}, user: {}", postSearchData, user);
     //Check and maybe adjust limit, set default limit
     if (postSearchData.getMaxRecordsCount() == null
-        || postSearchData.getMaxRecordsCount().intValue() > defaultLimit) {
-      postSearchData.setMaxRecordsCount(defaultLimit);
+        || postSearchData.getMaxRecordsCount().intValue() > DEFAULT_LIMIT) {
+      postSearchData.setMaxRecordsCount(DEFAULT_LIMIT);
     }
     //Generate query
     CriteriaQuery<Post> postsQuery = generateQuery(user.getUserId(),
@@ -67,12 +72,13 @@ public class PostDao extends GenericDaoImpl<Post> {
         postSearchData.getPosterUserId(), postSearchData.getTitle(),
         postSearchData.getVisibility(),
         null, null, true);
-    Long totalCount = entityManager.createQuery(postsCountQuery).getSingleResult();
+    Long filteredCount = entityManager.createQuery(postsCountQuery).getSingleResult();
+    Long totalCount = (Long) entityManager.createQuery("SELECT COUNT(p.postId) FROM Post p").getSingleResult();
     Integer numberPageItems = posts.size();
     Long nextAfter = null;
     Long nextBefore = null;
     //Figure out if a post is before or after the posts of this page
-    if (totalCount > 0 && posts.size() > 0) {
+    if (filteredCount > 0 && !posts.isEmpty()) {
       CriteriaQuery<Post> beforePostQuery = generateQuery(user.getUserId(),
           postSearchData.getPosterUserId(), postSearchData.getTitle(),
           postSearchData.getVisibility(),
@@ -94,6 +100,7 @@ public class PostDao extends GenericDaoImpl<Post> {
       }
     }
     PageData pData = new PageData();
+    pData.setFilteredCount(filteredCount);
     pData.setPageItemsCount(numberPageItems);
     pData.setTotalCount(totalCount);
     if (nextAfter != null) {
@@ -107,12 +114,14 @@ public class PostDao extends GenericDaoImpl<Post> {
               postSearchData.getPosterUserId(), postSearchData.getTitle(),
               postSearchData.getVisibility()));
     }
-    PrevNextListPage<Post> page = new PrevNextListPage<>(posts, pData);
-    return page;
+    return new PrevNextListPage<>(posts, pData);
   }
 
-  private CriteriaQuery generateQuery(long userID, Long postUserID, String title,
+  private CriteriaQuery generateQuery(long userId, Long postUserId, String title,
       Visibility visibility, Long before, Long after, boolean countOnly) {
+    if (visibility == null) {
+      visibility = Visibility.ALL;
+    }
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery query;
     if (!countOnly) {
@@ -140,7 +149,7 @@ public class PostDao extends GenericDaoImpl<Post> {
     Predicate titleCondition = null;
     if (title != null) {
       title = "%" + title.toLowerCase() + "%"; //substring of title is enough for a match
-      titleCondition = cb.like(cb.lower(root.get("title")), title);
+      titleCondition = cb.like(cb.lower(root.get(TITLE_KEY)), title);
     }
     if (before != null && after != null) {
       //Can have either before or after but not both set
@@ -149,28 +158,28 @@ public class PostDao extends GenericDaoImpl<Post> {
     }
     //Post user condition
     Predicate postUserCondition = null;
-    if (postUserID != null && visibility != Visibility.onlyCurrentUser) {
-      postUserCondition = cb.equal(postUserJoin.get("userId"), postUserID);
+    if (postUserId != null && visibility != Visibility.ONLY_CURRENT_USER) {
+      postUserCondition = cb.equal(postUserJoin.get(USER_ID), postUserId);
     }
     Predicate postAfterCondition = null;
     Predicate postBeforeCondition = null;
     //After postID condition, Before postID condition
     if (!countOnly) {
       if (after != null) {
-        postAfterCondition = cb.greaterThan(root.get("postId"), after);
+        postAfterCondition = cb.greaterThan(root.get(POST_ID), after);
       } else if (before != null) {
-        postBeforeCondition = cb.lessThan(root.get("postId"), before);
+        postBeforeCondition = cb.lessThan(root.get(POST_ID), before);
       }
     }
     Predicate[] predicatesOr1Array;
     //Visibility global => return all global posts
-    if (visibility == Visibility.onlyGlobal) {
-      predicatesOr1.add(cb.equal(root.get("isGlobal"), true)); //filter on global posts
+    if (visibility == Visibility.ONLY_GLOBAL) {
+      predicatesOr1.add(cb.equal(root.get(IS_GLOBAL), true)); //filter on global posts
       if (titleCondition != null) {
         predicatesOr1.add(titleCondition); //filter on title
       }
       if (postUserCondition != null) {
-        predicatesOr1.add(postUserCondition); //filter on userID of poster
+        predicatesOr1.add(postUserCondition); //filter on userId of poster
       }
       if (!countOnly) {
         if (postAfterCondition != null) {
@@ -186,8 +195,8 @@ public class PostDao extends GenericDaoImpl<Post> {
       );
     }
     //Visibility current user
-    else if (visibility == Visibility.onlyCurrentUser) { //postUserID is ignored
-      predicatesOr1.add(cb.equal(postUserJoin.get("userId"), userID)); //filter on current user
+    else if (visibility == Visibility.ONLY_CURRENT_USER) { //postUserId is ignored
+      predicatesOr1.add(cb.equal(postUserJoin.get(USER_ID), userId)); //filter on current user
       if (titleCondition != null) {
         predicatesOr1.add(titleCondition); //filter on title
       }
@@ -205,21 +214,21 @@ public class PostDao extends GenericDaoImpl<Post> {
       );
     }
     //Visibility is friend
-    else if (visibility == Visibility.onlyFriends) {
+    else if (visibility == Visibility.ONLY_FRIENDS) {
       //Visibility friend => filter friend posts and exclude current user posts
       //AND predicate 1
-      predicatesOr1.add(cb.notEqual(postUserJoin.get("userId"), userID)); //exclude current user
-      predicatesOr1.add(cb.equal(friendUserJoin2.get("userId"), userID)); //only friends
+      predicatesOr1.add(cb.notEqual(postUserJoin.get(USER_ID), userId)); //exclude current user
+      predicatesOr1.add(cb.equal(friendUserJoin2.get(USER_ID), userId)); //only friends
       predicatesOr1
-          .add(cb.equal(userFriendJoin1.get("status"), friendAccepted)); //status accepted
-      predicatesOr1.add(cb.equal(root.get("isGlobal"), false)); //no global posts
+          .add(cb.equal(userFriendJoin1.get(STATUS), FRIEND_ACCEPTED)); //status accepted
+      predicatesOr1.add(cb.equal(root.get(IS_GLOBAL), false)); //no global posts
       //AND predicate 2
-      predicatesOr2.add(cb.notEqual(postUserJoin.get("userId"), userID)); //exclude current user
-      predicatesOr2.add(cb.equal(friendUserJoin1.get("userId"), userID)); //only friends
+      predicatesOr2.add(cb.notEqual(postUserJoin.get(USER_ID), userId)); //exclude current user
+      predicatesOr2.add(cb.equal(friendUserJoin1.get(USER_ID), userId)); //only friends
       predicatesOr2
-          .add(cb.equal(userFriendJoin1.get("status"), friendAccepted)); //status accepted
-      predicatesOr2.add(cb.equal(root.get("isGlobal"), false)); //no global posts
-      //Other conditions like the title and the filter on the poster's userID
+          .add(cb.equal(userFriendJoin1.get(STATUS), FRIEND_ACCEPTED)); //status accepted
+      predicatesOr2.add(cb.equal(root.get(IS_GLOBAL), false)); //no global posts
+      //Other conditions like the title and the filter on the poster's userId
       if (postUserCondition != null) {
         predicatesOr1.add(postUserCondition);
         predicatesOr2.add(postUserCondition);
@@ -247,25 +256,27 @@ public class PostDao extends GenericDaoImpl<Post> {
           query.where(
               cb.and(friendsPredicate, postBeforeCondition)
           );
+        } else {
+          query.where(friendsPredicate);
         }
       }
     }
     //Visibility all: friends + global + this user
-    else if (visibility == Visibility.all) {
+    else if (visibility == Visibility.ALL) {
       //Visibility friend => filter friend posts and exclude current user posts
       //OR predicate 1
-      predicatesOr1.add(cb.equal(friendUserJoin2.get("userId"), userID)); //only friends
+      predicatesOr1.add(cb.equal(friendUserJoin2.get(USER_ID), userId)); //only friends
       predicatesOr1
-          .add(cb.equal(userFriendJoin1.get("status"), friendAccepted)); //status accepted
+          .add(cb.equal(userFriendJoin1.get(STATUS), FRIEND_ACCEPTED)); //status accepted
       //OR predicate 2
-      predicatesOr2.add(cb.equal(friendUserJoin1.get("userId"), userID)); //only friends
+      predicatesOr2.add(cb.equal(friendUserJoin1.get(USER_ID), userId)); //only friends
       predicatesOr2
-          .add(cb.equal(userFriendJoin1.get("status"), friendAccepted)); //status accepted
+          .add(cb.equal(userFriendJoin1.get(STATUS), FRIEND_ACCEPTED)); //status accepted
       //OR predicate 3
-      predicatesOr3.add(cb.equal(postUserJoin.get("userId"), userID)); //either current user
+      predicatesOr3.add(cb.equal(postUserJoin.get(USER_ID), userId)); //either current user
       //OR predicate 4
-      predicatesOr4.add(cb.equal(root.get("isGlobal"), true)); //either global post
-      //Other conditions like the title and the filter on the poster's userID
+      predicatesOr4.add(cb.equal(root.get(IS_GLOBAL), true)); //either global post
+      //Other conditions like the title and the filter on the poster's userId
       if (postUserCondition != null) {
         predicatesOr1.add(postUserCondition);
         predicatesOr2.add(postUserCondition);
@@ -303,6 +314,8 @@ public class PostDao extends GenericDaoImpl<Post> {
           query.where(
               cb.and(friendsUserGlobalPredicate, postBeforeCondition)
           );
+        } else {
+          query.where(friendsUserGlobalPredicate);
         }
       }
     }
@@ -311,36 +324,49 @@ public class PostDao extends GenericDaoImpl<Post> {
       query.select(cb.countDistinct(root));
     } else {
       if (after != null) {
-        query.orderBy(cb.asc(root.get("postId")));
+        query.orderBy(cb.asc(root.get(POST_ID)));
       }
       //else before!=null || before==null (=> default to sort from most recent post to oldest post)
       else {
-        query.orderBy(cb.desc(root.get("postId")));
+        query.orderBy(cb.desc(root.get(POST_ID)));
       }
     }
     return query;
   }
 
   private List<Map.Entry<String, String>> buildListKV(Long previous, Long next, Integer limit,
-      Long postUserID, String title, Visibility visibility) {
+      Long postUserId, String title, Visibility visibility) {
     List<Map.Entry<String, String>> l = new ArrayList<>(5);
-    Map.Entry<String, String> entry = new AbstractMap.SimpleEntry<>(
-        POSTER_USER_ID_KEY, String.valueOf(postUserID));
-    l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(TITLE_KEY, title);
-    l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(VISIBILITY_KEY, visibility.name());
-    l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(AFTER_KEY, String.valueOf(next));
-    l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(BEFORE_KEY, String.valueOf(previous));
-    l.add(entry);
-    entry = new AbstractMap.SimpleEntry<>(MAX_RECORDS_COUNT_KEY, String.valueOf(limit));
-    l.add(entry);
+    Map.Entry<String, String> entry;
+    if (postUserId != null) {
+      entry = new AbstractMap.SimpleEntry<>(
+          POSTER_USER_ID_KEY, String.valueOf(postUserId));
+      l.add(entry);
+    }
+    if (title != null) {
+      entry = new AbstractMap.SimpleEntry<>(TITLE_KEY, title);
+      l.add(entry);
+    }
+    if (visibility != null) {
+      entry = new AbstractMap.SimpleEntry<>(VISIBILITY_KEY, visibility.name());
+      l.add(entry);
+    }
+    if (next != null) {
+      entry = new AbstractMap.SimpleEntry<>(AFTER_KEY, String.valueOf(next));
+      l.add(entry);
+    }
+    if (previous != null) {
+      entry = new AbstractMap.SimpleEntry<>(BEFORE_KEY, String.valueOf(previous));
+      l.add(entry);
+    }
+    if (limit != null) {
+      entry = new AbstractMap.SimpleEntry<>(MAX_RECORDS_COUNT_KEY, String.valueOf(limit));
+      l.add(entry);
+    }
     return l;
   }
 
-  private String buildNextPageUrl(Long next, Integer limit, Long postUserID, String title,
+  private String buildNextPageUrl(Long next, Integer limit, Long postUserId, String title,
       Visibility visibility) {
     if (next == null || limit == null) {
       throw new IllegalArgumentException(
@@ -348,10 +374,10 @@ public class PostDao extends GenericDaoImpl<Post> {
     }
     return AppConfig.BASE_URL + PostsController.POSTS_PATH + "?" +
         StringUtilities.buildQueryStringFromListOfKVPairs(
-            buildListKV(next, null, limit, postUserID, title, visibility));
+            buildListKV(next, null, limit, postUserId, title, visibility));
   }
 
-  private String buildPreviousPageUrl(Long previous, Integer limit, Long postUserID, String title,
+  private String buildPreviousPageUrl(Long previous, Integer limit, Long postUserId, String title,
       Visibility visibility) {
     if (previous == null || limit == null) {
       throw new IllegalArgumentException(
@@ -359,10 +385,12 @@ public class PostDao extends GenericDaoImpl<Post> {
     }
     return AppConfig.BASE_URL + PostsController.POSTS_PATH + "?" +
         StringUtilities.buildQueryStringFromListOfKVPairs(
-            buildListKV(null, previous, limit, postUserID, title, visibility));
+            buildListKV(null, previous, limit, postUserId, title, visibility));
   }
 
-  public Post getPostByUserAndLabel(Long userID, Long postUserID, String postShortTitle) {
+  public Post getPostByUserAndLabel(Long userId, Long postUserId, String postShortTitle) {
+    logger.debug("PostDao | getPostByUserAndLabel - userId: {}, postUserId: {}, postShortTitle: {}",
+        userId, postUserId, postShortTitle);
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<Post> query = cb.createQuery(Post.class);
     Root<Post> root = query.from(Post.class);
@@ -370,9 +398,13 @@ public class PostDao extends GenericDaoImpl<Post> {
     query.where(
         cb.and(
             cb.equal(root.get("shortTitle"), postShortTitle),
-            cb.equal(postUserJoin.get("userId"), postUserID)
+            cb.equal(postUserJoin.get(USER_ID), postUserId)
         )
     );
-    return entityManager.createQuery(query).getSingleResult();
+    try {
+      return entityManager.createQuery(query).getSingleResult();
+    } catch (NoResultException e) {
+      return null;
+    }
   }
 }
