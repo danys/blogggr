@@ -6,12 +6,14 @@ import com.blogggr.filters.InternationalizationFilter;
 import com.blogggr.filters.JwtAuthenticationFilter;
 import com.blogggr.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -86,7 +88,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .csrf().disable()
         .httpBasic().disable()
         .authorizeRequests()
-        .antMatchers("/login", "/signup", "/index.html").permitAll()
+        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+        .antMatchers(HttpMethod.GET, "/*").permitAll()
         .antMatchers(HttpMethod.POST, "/api/v*/sessions", "/api/v*/users").permitAll()
         .antMatchers(HttpMethod.GET, "/api/v*/users/*/enable").permitAll()
         .anyRequest().authenticated()
