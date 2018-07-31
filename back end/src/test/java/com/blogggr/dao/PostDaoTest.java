@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -225,6 +226,44 @@ public class PostDaoTest {
 
   @Test
   @Transactional
+  public void getPosts_FriendVisibility_WithPoster__Normal(){
+    User user2 = new User();
+    user2.setEmail("joe@domain.com");
+    userDao.save(user2);
+    User user = new User();
+    user.setEmail("jo@domain.com");
+    userDao.save(user);
+    User user3 = new User();
+    user3.setEmail("john@domain.com");
+    userDao.save(user3);
+    Friend friendShip1 = friendDao.createFriendship(user, user2);
+    friendShip1.setStatus(1);
+    Friend friendShip2 = friendDao.createFriendship(user, user3);
+    friendShip2.setStatus(1);
+    Post post1 = createPost("title1", "shortTitle1", "text1", false, user);
+    postDao.save(post1);
+    Post post2 = createPost("title2", "shortTitle2", "text2", false, user2);
+    postDao.save(post2);
+    Post post3 = createPost("t3", "shortTitle3", "text3", false, user3);
+    postDao.save(post3);
+    Post post4 = createPost("atitle", "shortTitle4", "text4", false, user);
+    postDao.save(post4);
+    //Test case 1
+    PostSearchData postSearchData = new PostSearchData();
+    postSearchData.setMaxRecordsCount(100);
+    postSearchData.setVisibility(Visibility.ONLY_FRIENDS);
+    postSearchData.setPosterUserId(user2.getUserId());
+    PrevNextListPage<Post> postsResponse = postDao.getPosts(postSearchData, user);
+    assertThat(postsResponse.getPageItems().size()).isEqualTo(1);
+    assertThat(postsResponse.getPageData().getFilteredCount()).isEqualTo(1);
+    assertThat(postsResponse.getPageData().getTotalCount()).isEqualTo(4);
+    assertThat(postsResponse.getPageData().getPageItemsCount()).isEqualTo(1);
+    assertThat(postsResponse.getPageItems().get(0).getTitle()).isEqualTo("title2");
+    assertThat(postsResponse.getPageItems().get(0).getUser().getEmail()).isEqualTo("joe@domain.com");
+  }
+
+  @Test
+  @Transactional
   public void getPosts_OnlyGlobal_Normal(){
     User user2 = new User();
     user2.setEmail("joe@domain.com");
@@ -271,6 +310,44 @@ public class PostDaoTest {
 
   @Test
   @Transactional
+  public void getPosts_OnlyGlobal_WithPoster_Normal(){
+    User user2 = new User();
+    user2.setEmail("joe@domain.com");
+    userDao.save(user2);
+    User user = new User();
+    user.setEmail("jo@domain.com");
+    userDao.save(user);
+    User user3 = new User();
+    user3.setEmail("john@domain.com");
+    userDao.save(user3);
+    Friend friendShip1 = friendDao.createFriendship(user, user2);
+    friendShip1.setStatus(1);
+    Friend friendShip2 = friendDao.createFriendship(user, user3);
+    friendShip2.setStatus(1);
+    Post post1 = createPost("title1", "shortTitle1", "text1", true, user);
+    postDao.save(post1);
+    Post post2 = createPost("title2", "shortTitle2", "text2", false, user2);
+    postDao.save(post2);
+    Post post3 = createPost("t3", "shortTitle3", "text3", true, user3);
+    postDao.save(post3);
+    Post post4 = createPost("atitle", "shortTitle4", "text4", false, user);
+    postDao.save(post4);
+    //Test case 1: search without title
+    PostSearchData postSearchData = new PostSearchData();
+    postSearchData.setMaxRecordsCount(100);
+    postSearchData.setVisibility(Visibility.ONLY_GLOBAL);
+    postSearchData.setPosterUserId(user3.getUserId());
+    PrevNextListPage<Post> postsResponse = postDao.getPosts(postSearchData, user);
+    assertThat(postsResponse.getPageItems().size()).isEqualTo(1);
+    assertThat(postsResponse.getPageData().getFilteredCount()).isEqualTo(1);
+    assertThat(postsResponse.getPageData().getTotalCount()).isEqualTo(4);
+    assertThat(postsResponse.getPageData().getPageItemsCount()).isEqualTo(1);
+    assertThat(postsResponse.getPageItems().get(0).getTitle()).isEqualTo("t3");
+    assertThat(postsResponse.getPageItems().get(0).getUser().getEmail()).isEqualTo("john@domain.com");
+  }
+
+  @Test
+  @Transactional
   public void getPosts_OnlyCurrent_Normal(){
     User user2 = new User();
     user2.setEmail("joe@domain.com");
@@ -313,5 +390,66 @@ public class PostDaoTest {
     assertThat(postsResponse.getPageData().getFilteredCount()).isEqualTo(1);
     assertThat(postsResponse.getPageData().getTotalCount()).isEqualTo(4);
     assertThat(postsResponse.getPageData().getPageItemsCount()).isEqualTo(1);
+  }
+
+  @Test
+  @Transactional
+  public void getPosts_After_Posts(){
+    User user = new User();
+    user.setEmail("joe@domain.com");
+    userDao.save(user);
+    Post post1 = createPost("title1", "shortTitle1", "text1", true, user);
+    postDao.save(post1);
+    Post post2 = createPost("title2", "shortTitle2", "text2", false, user);
+    postDao.save(post2);
+    Post post3 = createPost("t3", "shortTitle3", "text3", true, user);
+    postDao.save(post3);
+    Post post4 = createPost("atitle", "shortTitle4", "text4", false, user);
+    postDao.save(post4);
+    //Test case 1: search without title
+    PostSearchData postSearchData = new PostSearchData();
+    postSearchData.setMaxRecordsCount(1);
+    postSearchData.setVisibility(Visibility.ONLY_CURRENT_USER);
+    postSearchData.setAfter(post1.getPostId());
+    PrevNextListPage<Post> postsResponse = postDao.getPosts(postSearchData, user);
+    assertThat(postsResponse.getPageItems().size()).isEqualTo(1);
+    assertThat(postsResponse.getPageItems().get(0).getPostId()).isEqualTo(post2.getPostId());
+    assertThat(postsResponse.getPageData().getPageItemsCount()).isEqualTo(1);
+    assertThat(postsResponse.getPageData().getTotalCount()).isEqualTo(4);
+    assertThat(postsResponse.getPageData().getFilteredCount()).isEqualTo(4);
+    assertThat(postsResponse.getPageData().getNext()).isNotNull();
+    assertThat(postsResponse.getPageData().getPrevious()).isNotNull();
+    assertThat(postsResponse.getPageData().getNext()).contains("before="+post2.getPostId());
+    assertThat(postsResponse.getPageData().getPrevious()).contains("after="+post2.getPostId());
+    //Test case 2
+    postSearchData.setAfter(null);
+    postsResponse = postDao.getPosts(postSearchData, user);
+    assertThat(postsResponse.getPageItems().size()).isEqualTo(1);
+    assertThat(postsResponse.getPageItems().get(0).getPostId()).isEqualTo(post4.getPostId());
+    assertThat(postsResponse.getPageData().getPageItemsCount()).isEqualTo(1);
+    assertThat(postsResponse.getPageData().getTotalCount()).isEqualTo(4);
+    assertThat(postsResponse.getPageData().getFilteredCount()).isEqualTo(4);
+    assertThat(postsResponse.getPageData().getNext()).isNotNull();
+    assertThat(postsResponse.getPageData().getPrevious()).isNull();
+    assertThat(postsResponse.getPageData().getNext()).contains("before="+post4.getPostId());
+  }
+
+  @Test
+  @Transactional
+  public void getPosts_After_Before_Posts_Exception(){
+    User user = new User();
+    user.setEmail("joe@domain.com");
+    userDao.save(user);
+    //Test case 1: search without title
+    PostSearchData postSearchData = new PostSearchData();
+    postSearchData.setMaxRecordsCount(1);
+    postSearchData.setVisibility(Visibility.ONLY_CURRENT_USER);
+    postSearchData.setAfter(1L);
+    postSearchData.setBefore(2L);
+    try {
+      postDao.getPosts(postSearchData, user);
+    }catch(InvalidDataAccessApiUsageException e){
+      assertThat(e.getCause().getMessage()).contains("Cannot set both before and after");
+    }
   }
 }
