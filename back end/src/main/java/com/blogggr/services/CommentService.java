@@ -66,7 +66,7 @@ public class CommentService {
       long smaller = (posterUserID < userId) ? posterUserID : userId;
       long bigger = (posterUserID >= userId) ? posterUserID : userId;
       Friend friendship = friendDao.getFriendByUserIds(smaller, bigger);
-      if (friendship == null) {
+      if (friendship == null || friendship.getStatus().intValue() != 1) {
         throw new NotAuthorizedException(
             messageSource
                 .getMessage("CommentService.createComment.authorizationRestrictionException"));
