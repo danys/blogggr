@@ -97,7 +97,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
       query.select(user2Join);
       query.where(
           cb.and(
-              cb.equal(root.get(STATUS), 2),
+              cb.equal(root.get(STATUS), 1),
               cb.equal(user1Join.get("userId"), userId)
           )
       );
@@ -105,7 +105,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
       query.select(user1Join);
       query.where(
           cb.and(
-              cb.equal(root.get(STATUS), 2),
+              cb.equal(root.get(STATUS), 1),
               cb.equal(user2Join.get("userId"), userId)
           )
       );

@@ -208,7 +208,7 @@ public class FriendDaoTest {
     assertTrue(friendUsers.isEmpty());
     //Test case 2
     Friend friendship = friendDao.createFriendship(user1, user2);
-    friendship.setStatus(2);
+    friendship.setStatus(1);
     List<Friend> friends = friendDao.findAll();
     assertThat(friends.size()).isEqualTo(1);
     List<User> user1Friends = friendDao.getUserFriends(user1.getUserId());
@@ -258,8 +258,8 @@ public class FriendDaoTest {
     User user2 = createUser("Dan", "Sun", "dan@sun.com", 1);
     userDao.save(user2);
     Friend friend = friendDao.createFriendship(user1, user2);
-    friend.setStatus(2);
-    assertThat(friendDao.getFriendByUserIdsAndState(user1.getUserId(), user2.getUserId(), 2)).isNotNull();
+    friend.setStatus(1);
+    assertThat(friendDao.getFriendByUserIdsAndState(user1.getUserId(), user2.getUserId(), 1)).isNotNull();
     assertThat(friendDao.getFriendByUserIdsAndState(user1.getUserId(), user2.getUserId(), 0)).isNull();
     friend.setStatus(0);
     assertThat(friendDao.getFriendByUserIdsAndState(user1.getUserId(), user2.getUserId(), 0)).isNotNull();
