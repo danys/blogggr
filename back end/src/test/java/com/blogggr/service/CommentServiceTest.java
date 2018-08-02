@@ -4,6 +4,9 @@ import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.blogggr.dao.CommentDao;
@@ -18,8 +21,12 @@ import com.blogggr.entities.User;
 import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.services.CommentService;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -151,6 +158,221 @@ public class CommentServiceTest {
       fail();
     }catch(ResourceNotFoundException e){
       assertThat(e.getMessage()).contains("Post not found");
+    }
+  }
+
+  @Test
+  public void updateComment_Normal(){
+    CommentData commentData = new CommentData();
+    commentData.setText("comment");
+    commentData.setPostId(1L);
+    User user = new User();
+    user.setUserId(1L);
+    Comment comment = mock(Comment.class);
+    when(comment.getUser()).thenReturn(user);
+    ArgumentCaptor<String> textArg = ArgumentCaptor.forClass(String.class);
+    ArgumentCaptor<Timestamp> timeArg = ArgumentCaptor.forClass(Timestamp.class);
+    when(commentDao.findById(any(Long.class))).thenReturn(comment);
+    commentService.updateComment(1L,1L, commentData);
+    verify(comment).setText(textArg.capture());
+    verify(comment).setTimestamp(timeArg.capture());
+    assertThat(textArg.getValue()).isEqualTo("comment");
+    assertThat(System.currentTimeMillis()-timeArg.getValue().getTime()).isLessThan(10000);
+  }
+
+  @Test
+  public void updateComment_Null_Comment(){
+    CommentData commentData = new CommentData();
+    commentData.setText("comment");
+    commentData.setPostId(1L);
+    User user = new User();
+    user.setUserId(1L);
+    when(commentDao.findById(any(Long.class))).thenReturn(null);
+    try {
+      commentService.updateComment(1L, 1L, commentData);
+      fail();
+    }catch(ResourceNotFoundException e){
+      assertThat(e.getMessage()).contains("Comment not found");
+    }
+  }
+
+  @Test
+  public void updateComment_Unauthorized_UserId(){
+    CommentData commentData = new CommentData();
+    commentData.setText("comment");
+    commentData.setPostId(2L);
+    User user = new User();
+    user.setUserId(1L);
+    Comment comment = new Comment();
+    comment.setUser(user);
+    when(commentDao.findById(any(Long.class))).thenReturn(comment);
+    try {
+      commentService.updateComment(1L, 10L, commentData);
+      fail();
+    }catch(NotAuthorizedException e){
+      assertThat(e.getMessage()).contains("Not allowed to change comment");
+    }
+  }
+
+  @Test
+  public void deleteComment_Normal(){
+    CommentData commentData = new CommentData();
+    commentData.setText("comment");
+    commentData.setPostId(2L);
+    User user = new User();
+    user.setUserId(1L);
+    Comment comment = new Comment();
+    comment.setUser(user);
+    when(commentDao.findById(any(Long.class))).thenReturn(comment);
+    commentService.deleteComment(10L, 1L);
+    verify(commentDao, times(1)).deleteById(10L);
+  }
+
+  @Test
+  public void deleteComment_Comment_Null(){
+    CommentData commentData = new CommentData();
+    commentData.setText("comment");
+    commentData.setPostId(2L);
+    when(commentDao.findById(any(Long.class))).thenReturn(null);
+    try {
+      commentService.deleteComment(10L, 1L);
+      fail();
+    }catch(ResourceNotFoundException e){
+      assertThat(e.getMessage()).contains("Comment not found");
+    }
+  }
+
+  @Test
+  public void deleteComment_NotAuthorized_User(){
+    CommentData commentData = new CommentData();
+    commentData.setText("comment");
+    commentData.setPostId(2L);
+    User user = new User();
+    user.setUserId(1L);
+    Comment comment = new Comment();
+    comment.setUser(user);
+    when(commentDao.findById(any(Long.class))).thenReturn(comment);
+    try {
+      commentService.deleteComment(10L, 10L);
+      fail();
+    }catch(NotAuthorizedException e){
+      assertThat(e.getMessage()).contains("Not allowed to delete comment");
+    }
+  }
+
+  @Test
+  public void getCommentById_Normal(){
+    User user = new User();
+    user.setUserId(1L);
+    Comment comment = new Comment();
+    comment.setUser(user);
+    comment.setText("commentText");
+    when(commentDao.findById(any(Long.class))).thenReturn(comment);
+    Comment dbComment = commentService.getCommentById(1L, 1L);
+    assertThat(dbComment.getText()).isEqualTo("commentText");
+  }
+
+  @Test
+  public void getCommentById_Null_Comment(){
+    when(commentDao.findById(any(Long.class))).thenReturn(null);
+    try {
+      commentService.getCommentById(1L, 1L);
+    }catch(ResourceNotFoundException e){
+      assertThat(e.getMessage()).contains("Comment not found");
+    }
+  }
+
+  @Test
+  public void getCommentsByPostId_Normal(){
+    Comment comment = new Comment();
+    comment.setText("comment1");
+    comment.setCommentId(100L);
+    List<Comment> comments = new ArrayList<>();
+    comments.add(comment);
+    User user = new User();
+    user.setUserId(1L);
+    Post post = new Post();
+    post.setPostId(1L);
+    post.setUser(user);
+    post.setIsGlobal(false);
+    post.setComments(comments);
+    when(postDao.findById(any(Long.class))).thenReturn(post);
+    Friend friend = new Friend();
+    friend.setStatus(1);
+    when(friendDao.getFriendByUserIds(any(Long.class),any(Long.class))).thenReturn(friend);
+    List<Comment> dbComments = commentService.getCommentsByPostId(1L, 1L);
+    assertThat(dbComments.size()).isEqualTo(1);
+    assertThat(dbComments.get(0).getText()).isEqualTo("comment1");
+    assertThat(dbComments.get(0).getCommentId()).isEqualTo(100L);
+  }
+
+  @Test
+  public void getCommentsByPostId_Post_Null(){
+    when(postDao.findById(any(Long.class))).thenReturn(null);
+    Friend friend = new Friend();
+    friend.setStatus(1);
+    when(friendDao.getFriendByUserIds(any(Long.class),any(Long.class))).thenReturn(friend);
+    try {
+      commentService.getCommentsByPostId(1L, 1L);
+    }catch(ResourceNotFoundException e){
+      assertThat(e.getMessage()).contains("Did not find post");
+    }
+  }
+
+  @Test
+  public void getCommentsByPostId_User_Friends_With_Poster(){
+    Comment comment = new Comment();
+    comment.setText("comment1");
+    comment.setCommentId(100L);
+    List<Comment> comments = new ArrayList<>();
+    comments.add(comment);
+    User user = new User();
+    user.setUserId(10L);
+    Post post = new Post();
+    post.setPostId(1L);
+    post.setUser(user);
+    post.setIsGlobal(false);
+    post.setComments(comments);
+    when(postDao.findById(any(Long.class))).thenReturn(post);
+    Friend friend = new Friend();
+    friend.setStatus(1);
+    when(friendDao.getFriendByUserIds(any(Long.class),any(Long.class))).thenReturn(friend);
+    List<Comment> dbComments = commentService.getCommentsByPostId(1L, 1L);
+    assertThat(dbComments.size()).isEqualTo(1);
+    assertThat(dbComments.get(0).getText()).isEqualTo("comment1");
+    assertThat(dbComments.get(0).getCommentId()).isEqualTo(100L);
+  }
+
+  @Test
+  public void getCommentsByPostId_User_No_Friends_With_Poster(){
+    Comment comment = new Comment();
+    comment.setText("comment1");
+    comment.setCommentId(100L);
+    List<Comment> comments = new ArrayList<>();
+    comments.add(comment);
+    User user = new User();
+    user.setUserId(10L);
+    Post post = new Post();
+    post.setPostId(1L);
+    post.setUser(user);
+    post.setIsGlobal(false);
+    post.setComments(comments);
+    when(postDao.findById(any(Long.class))).thenReturn(post);
+    //First test case
+    Friend friend = new Friend();
+    friend.setStatus(0);
+    when(friendDao.getFriendByUserIds(any(Long.class),any(Long.class))).thenReturn(friend);
+    try{
+      commentService.getCommentsByPostId(1L, 1L);
+    }catch (NotAuthorizedException e){
+      assertThat(e.getMessage()).contains("Not allowed to view this post and its comments");
+    }
+    //Another test case
+    when(friendDao.getFriendByUserIds(any(Long.class),any(Long.class))).thenReturn(null);
+    try{
+      commentService.getCommentsByPostId(1L, 1L);
+    }catch (NotAuthorizedException e){
+      assertThat(e.getMessage()).contains("Not allowed to view this post and its comments");
     }
   }
 }

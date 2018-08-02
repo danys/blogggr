@@ -138,7 +138,7 @@ public class CommentService {
     smallNum = (postAuthor.getUserId() < userId) ? postAuthor.getUserId() : userId;
     bigNum = (postAuthor.getUserId() >= userId) ? postAuthor.getUserId() : userId;
     Friend friendship = friendDao.getFriendByUserIds(smallNum, bigNum);
-    if (friendship == null) {
+    if (friendship == null || friendship.getStatus().intValue() != 1) {
       throw new NotAuthorizedException(
           messageSource.getMessage("CommentService.getCommentsByPostId.notAuthorized"));
     }
