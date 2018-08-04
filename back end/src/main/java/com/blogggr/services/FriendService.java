@@ -64,8 +64,9 @@ public class FriendService {
     if (userBig == null) {
       throw new ResourceNotFoundException(messageSource.getMessage(USER_NOT_FOUND));
     }
+    User userInit = (userId == small) ? userSmall : userBig;
     try {
-      return friendDao.createFriendship(userSmall, userBig);
+      return friendDao.createFriendship(userInit, userSmall, userBig);
     } catch (DataAccessException e) {
       throw SpringHelper.convertException(e);
     }
@@ -85,10 +86,6 @@ public class FriendService {
     Friend friend = friendDao.getFriendByUserIds(small, big);
     if (friend == null) {
       throw new ResourceNotFoundException(messageSource.getMessage(FRIEND_NOT_FOUND));
-    }
-    if (friend.getUser1().getUserId() != userId && friend.getUser2().getUserId() != userId) {
-      throw new NotAuthorizedException(
-          messageSource.getMessage("FriendService.updateFriend.notAuthorizedException"));
     }
     User currentUser = userDao.findById(userId);
     if (currentUser == null) {
@@ -127,7 +124,7 @@ public class FriendService {
     if (friend == null) {
       throw new ResourceNotFoundException(messageSource.getMessage(FRIEND_NOT_FOUND));
     }
-    if (friend.getUser1().getUserId() != userId || friend.getUser2().getUserId() != userId) {
+    if (friend.getUser1().getUserId() != userId && friend.getUser2().getUserId() != userId) {
       throw new NotAuthorizedException(
           messageSource.getMessage("FriendService.deleteFriend.notAuthorizedException"));
     }
@@ -139,7 +136,7 @@ public class FriendService {
     Friend friend = friendDao.findById(friendId);
     if (friend == null) {
       throw new ResourceNotFoundException(messageSource.getMessage(FRIEND_NOT_FOUND));
-    } else if (friend.getUser1().getUserId() != userId || friend.getUser2().getUserId() != userId) {
+    } else if (friend.getUser1().getUserId() != userId && friend.getUser2().getUserId() != userId) {
       throw new NotAuthorizedException(
           messageSource.getMessage("FriendService.getFriend.notAuthorizedException"));
     }

@@ -38,7 +38,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
   private static final String USER_2 = "user2";
   private static final String STATUS = "status";
 
-  public Friend createFriendship(User user1, User user2) {
+  public Friend createFriendship(User initUser, User user1, User user2) {
     if (user1.getUserId() == null || user2.getUserId() == null || user1.getUserId()
         .equals(user2.getUserId())) {
       throw new IllegalArgumentException(
@@ -60,6 +60,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
     }
     friend.setLastActionTimestamp(Timestamp.valueOf(LocalDateTime.now()));
     friend.setStatus(0); //pending friendship status
+    friend.setLastActionUserId(initUser);
     if (user1.getUserId() < user2.getUserId()) {
       user1.getFriends1().add(friend);
       user2.getFriends2().add(friend);
