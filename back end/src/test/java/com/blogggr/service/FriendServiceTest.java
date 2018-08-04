@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,7 +28,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -205,6 +203,7 @@ public class FriendServiceTest {
     when(friendDao.update(any(Friend.class))).thenReturn(null);
     try {
       friendService.updateFriend(1L, 1L, 2L, friendDataUpdate);
+      fail();
     } catch (NotAuthorizedException e) {
       assertThat(e.getMessage()).contains("Cannot update friend status");
     }
@@ -214,6 +213,7 @@ public class FriendServiceTest {
   public void updateFriend_User_Not_In_Friendship() {
     try {
       friendService.updateFriend(10L, 1L, 2L, null);
+      fail();
     } catch (NotAuthorizedException e) {
       assertThat(e.getMessage()).contains("Current user must be a part of the new friendship");
     }
@@ -226,6 +226,7 @@ public class FriendServiceTest {
     when(friendDao.getFriendByUserIds(1L, 2L)).thenReturn(null);
     try {
       friendService.updateFriend(2L, 1L, 2L, friendDataUpdate);
+      fail();
     }catch(ResourceNotFoundException e){
       assertThat(e.getMessage()).contains("Friendship not found");
     }
@@ -249,6 +250,7 @@ public class FriendServiceTest {
     when(friendDao.update(any(Friend.class))).thenReturn(null);
     try {
       friendService.updateFriend(1L, 1L, 2L, friendDataUpdate);
+      fail();
     }catch(ResourceNotFoundException e){
       assertThat(e.getMessage().contains("User not found"));
     }
@@ -340,6 +342,7 @@ public class FriendServiceTest {
     when(friendDao.getFriendByUserIds(1L, 2L)).thenReturn(friend);
     try {
       friendService.updateFriend(1L, 1L, 2L, friendDataUpdate);
+      fail();
     }catch(NotAuthorizedException e){
       assertThat(e.getMessage()).contains("Cannot update friend status");
     }
@@ -365,6 +368,7 @@ public class FriendServiceTest {
     doNothing().when(friendDao).delete(any(Friend.class));
     try {
       friendService.deleteFriend(1L, 1L);
+      fail();
     }catch(ResourceNotFoundException e){
       assertThat(e.getMessage()).contains("Friendship not found");
     }
@@ -383,6 +387,7 @@ public class FriendServiceTest {
     doNothing().when(friendDao).delete(any(Friend.class));
     try {
       friendService.deleteFriend(1L, 10L);
+      fail();
     }catch(NotAuthorizedException e){
       assertThat(e.getMessage()).contains("Not authorized to delete friendship");
     }
@@ -408,6 +413,7 @@ public class FriendServiceTest {
     when(friendDao.findById(any(Long.class))).thenReturn(null);
     try {
       friendService.getFriend(1L, 1L);
+      fail();
     }catch(ResourceNotFoundException e) {
       assertThat(e.getMessage()).contains("Friendship not found");
     }
@@ -426,6 +432,7 @@ public class FriendServiceTest {
     when(friendDao.findById(any(Long.class))).thenReturn(friend);
     try {
       friendService.getFriend(1L, 10L);
+      fail();
     }catch(NotAuthorizedException e){
       assertThat(e.getMessage()).contains("Not allowed to view this friendship");
     }
