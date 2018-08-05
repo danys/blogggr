@@ -321,6 +321,8 @@ public class PostServiceTest {
     when(postDao.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
     Post dbPost = postService.getPostByUserAndLabel(1L, 10L, "title1");
     assertThat(dbPost.getTextBody()).isEqualTo("text1");
+    assertThat(dbPost.getComments().size()).isEqualTo(2);
+    assertThat(dbPost.getComments().get(1).getTimestamp().getTime()-dbPost.getComments().get(0).getTimestamp().getTime()).isGreaterThan(0);
   }
 
   @Test
