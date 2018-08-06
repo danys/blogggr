@@ -1,5 +1,6 @@
 package com.blogggr.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -81,17 +82,9 @@ public class UserImageServiceTest {
     }
   }
 
-  //Minimal 1 pixel PNG image
-  /*private static final byte[] FILE_BYTES = new byte[]{(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A,
-      0x1A, 0x0A, 0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00,
-      0x00, 0x00, 0x01, 0x08, 0x04, 0x00, 0x00, 0x00, (byte) 0xB5, 0x1C, 0x0C, 0x02, 0x00, 0x00,
-      0x00, 0x0B, 0x49, 0x44, 0x41, 0x54, 0x78, (byte) 0x9C, 0x63, 0x62, 0x38, 0x03, 0x00, 0x00,
-      (byte) 0xD5, 0x00, (byte) 0xCF, (byte) 0x99, (byte) 0xFE, 0x4E, 0x55, 0x00, 0x00, 0x00, 0x00,
-      0x49, 0x45, 0x4E, 0x44, (byte) 0xAE, 0x42, 0x60, (byte) 0x82};*/
-
   @Test
   public void postImage_Normal() throws URISyntaxException, IOException {
-    byte[] fileBytes = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("testImage.png").toURI()));
+    byte[] fileBytes = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("man.png").toURI()));
     MultipartFile file = new MockMultipartFile("file", fileBytes);
     User user = new User();
     user.setUserId(1L);
@@ -101,5 +94,7 @@ public class UserImageServiceTest {
     when(userImageDao.unsetCurrent(any(Long.class))).thenReturn(1);
     doNothing().when(userImageDao).save(any(UserImage.class));
     UserImage userImage = userImageService.postImage(1L, file);
+    assertThat(userImage.getIsCurrent()).isTrue();
+    assertThat(userImage.getUser().getEmail()).isEqualTo("dan@dan.com");
   }
 }
