@@ -62,20 +62,20 @@ public class AppConfig {
   @Value("${smtp.password}")
   private String smtpPassword;
 
-  @Autowired
-  private StorageConfig storageConfig;
+  private static final String USER_IMAGES_LOCATION = "userimages";
+  private static final String POST_IMAGES_LOCATION = "postimages";
 
   @Bean
   @Qualifier("userimage")
   public FileStorageManager userImageFileStorageManager(SimpleBundleMessageSource messageSource) {
-    return new FileStorageManager(storageConfig.getUserImagesLocation(), imageApiKey,
+    return new FileStorageManager(USER_IMAGES_LOCATION, imageApiKey,
         imageApiSecret, messageSource);
   }
 
   @Bean
   @Qualifier("postimage")
   public FileStorageManager postImageFileStorageManager(SimpleBundleMessageSource messageSource) {
-    return new FileStorageManager(storageConfig.getPostImagesLocation(), imageApiKey,
+    return new FileStorageManager(POST_IMAGES_LOCATION, imageApiKey,
         imageApiSecret, messageSource);
   }
 
