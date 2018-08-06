@@ -1,5 +1,6 @@
 package com.blogggr.service;
 
+import static junit.framework.TestCase.fail;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -54,7 +55,8 @@ public class UserImageServiceTest {
   private UserImageService userImageService;
 
   @Configuration
-  @ComponentScan(basePackages = {"com.blogggr.services", "com.blogggr.dao", "com.blogggr.utilities", "com.blogggr.fakes"})
+  @ComponentScan(basePackages = {"com.blogggr.services", "com.blogggr.dao", "com.blogggr.utilities",
+      "com.blogggr.fakes"})
   @EnableJpaRepositories(basePackages = {"com.blogggr.dao"})
   @EnableAutoConfiguration
   @EntityScan("com.blogggr.entities")
@@ -62,13 +64,17 @@ public class UserImageServiceTest {
 
     @Bean
     @Qualifier("userimage")
-    public FileStorageManager fakeStorageManager() throws IOException{
-      return new FakeFileStorageManager(Files.createTempDirectory("test").toFile().getAbsolutePath());
+    public FileStorageManager fakeStorageManager() throws IOException {
+      return new FakeFileStorageManager(
+          Files.createTempDirectory("test").toFile().getAbsolutePath());
     }
 
     @Bean
     public SimpleBundleMessageSource messageSource() {
-      return new SimpleBundleMessageSource();
+      SimpleBundleMessageSource messageSource = new SimpleBundleMessageSource();
+      messageSource.setBasename("messages");
+      messageSource.setDefaultEncoding("UTF-8");
+      return messageSource;
     }
 
     @Bean
@@ -84,7 +90,8 @@ public class UserImageServiceTest {
 
   @Test
   public void postImage_Normal() throws URISyntaxException, IOException {
-    byte[] fileBytes = Files.readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("man.png").toURI()));
+    byte[] fileBytes = Files
+        .readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("man.png").toURI()));
     MultipartFile file = new MockMultipartFile("file", fileBytes);
     User user = new User();
     user.setUserId(1L);
@@ -96,5 +103,38 @@ public class UserImageServiceTest {
     UserImage userImage = userImageService.postImage(1L, file);
     assertThat(userImage.getIsCurrent()).isTrue();
     assertThat(userImage.getUser().getEmail()).isEqualTo("dan@dan.com");
+  }
+
+  @Test
+  public void postImage_User_Null() throws URISyntaxException, IOException {
+    byte[] fileBytes = Files
+        .readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("man.png").toURI()));
+    MultipartFile file = new MockMultipartFile("file", fileBytes);
+    when(userDao.findById(1L)).thenReturn(null);
+    try {
+      userImageService.postImage(1L, file);
+      fail();
+    } catch (IllegalArgumentException e) {
+      assertThat(e.getMessage()).contains("Authentication failed: User not found");
+    }
+  }
+
+  @Test
+  public void postImage_Too_Many_Tries() throws URISyntaxException, IOException {
+    byte[] fileBytes = Files
+        .readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("man.png").toURI()));
+    MultipartFile file = new MockMultipartFile("file", fileBytes);
+    User user = new User();
+    user.setUserId(1L);
+    user.setEmail("dan@dan.com");
+    when(userDao.findById(1L)).thenReturn(user);
+    UserImage userImage = new UserImage();
+    when(userImageDao.findByName(any(String.class))).thenReturn(userImage);
+    try {
+      userImageService.postImage(1L, file);
+      fail();
+    } catch (IllegalStateException e) {
+      assertThat(e.getMessage()).contains("Too many tries");
+    }
   }
 }
