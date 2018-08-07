@@ -118,11 +118,9 @@ public class UserService implements UserDetailsService {
           simpleBundleMessageSource.getMessage("UserService.updateUser.notAuthorizedModify"));
     }
     //If an old password has been provided check it!
-    if (userData.getOldPassword() != null) {
-      if (!passwordEncoder.matches(userData.getOldPassword(), user.getPasswordHash())) {
+    if (userData.getOldPassword() != null && !passwordEncoder.matches(userData.getOldPassword(), user.getPasswordHash())) {
         throw new NotAuthorizedException(
             simpleBundleMessageSource.getMessage("UserService.updateUser.wrongOldPassword"));
-      }
     }
     if (userData.getPassword() != null) {
       if (userData.getOldPassword() == null) {
