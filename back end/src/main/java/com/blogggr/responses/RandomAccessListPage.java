@@ -9,8 +9,8 @@ import lombok.Getter;
 @Getter
 public class RandomAccessListPage<T> {
 
-  List<T> pageItems;
-  PageMetaData pageData;
+  private List<T> pageItems;
+  private PageMetaData pageData;
 
   public RandomAccessListPage(List<T> pageItems, PageMetaData pageData) {
     this.pageItems = pageItems;
