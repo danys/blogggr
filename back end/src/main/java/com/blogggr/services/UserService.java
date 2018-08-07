@@ -54,7 +54,8 @@ public class UserService implements UserDetailsService {
     logger.debug("UserService | loadUserByUsername - username: {}", username);
     User user = userRepository.findByEmail(username);
     if (user == null) {
-      throw new UsernameNotFoundException(username);
+      throw new UsernameNotFoundException(
+          username + " " + simpleBundleMessageSource.getMessage("UserService.userNotFoundShort"));
     }
     return new UserPrincipal(user);
   }
@@ -104,7 +105,8 @@ public class UserService implements UserDetailsService {
   }
 
   public void updateUser(long userResourceId, long userId, UserPutData userData) {
-    logger.debug("UserService | updateUser - userResourceID: {}, userId: {}, userData: {}", userResourceId, userId, userData);
+    logger.debug("UserService | updateUser - userResourceID: {}, userId: {}, userData: {}",
+        userResourceId, userId, userData);
     User user = userDao.findById(userResourceId);
     if (user == null) {
       throw new ResourceNotFoundException(
@@ -154,15 +156,17 @@ public class UserService implements UserDetailsService {
     return userDao.getUsersBySearchTerms(searchData);
   }
 
-  public String confirmEmail(Long userId, String challenge){
+  public String confirmEmail(Long userId, String challenge) {
     logger.debug("UserService | confirmEmail - userID: {}, challenge: {}", userId, challenge);
     Optional<User> userOptional = userRepository.findById(userId);
-    if (!userOptional.isPresent()){
-      throw new IllegalArgumentException(simpleBundleMessageSource.getMessage("UserService.userNotFound"));
+    if (!userOptional.isPresent()) {
+      throw new IllegalArgumentException(
+          simpleBundleMessageSource.getMessage("UserService.userNotFound"));
     }
     User user = userOptional.get();
-    if (!user.getChallenge().equals(challenge)){
-      throw new IllegalArgumentException(simpleBundleMessageSource.getMessage("UserService.confirmEmail.wrongChallenge"));
+    if (!user.getChallenge().equals(challenge)) {
+      throw new IllegalArgumentException(
+          simpleBundleMessageSource.getMessage("UserService.confirmEmail.wrongChallenge"));
     }
     user.setStatus(1);
     return user.getEmail();
