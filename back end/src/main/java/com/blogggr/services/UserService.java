@@ -104,7 +104,7 @@ public class UserService implements UserDetailsService {
     return userRepository.save(user);
   }
 
-  public void updateUser(long userResourceId, long userId, UserPutData userData) {
+  public User updateUser(long userResourceId, long userId, UserPutData userData) {
     logger.debug("UserService | updateUser - userResourceID: {}, userId: {}, userData: {}",
         userResourceId, userId, userData);
     User user = userDao.findById(userResourceId);
@@ -119,8 +119,7 @@ public class UserService implements UserDetailsService {
     }
     //If an old password has been provided check it!
     if (userData.getOldPassword() != null) {
-      String oldHash = passwordEncoder.encode(userData.getOldPassword());
-      if (oldHash.compareTo(user.getPasswordHash()) != 0) {
+      if (!passwordEncoder.matches(userData.getOldPassword(), user.getPasswordHash())) {
         throw new NotAuthorizedException(
             simpleBundleMessageSource.getMessage("UserService.updateUser.wrongOldPassword"));
       }
@@ -132,9 +131,6 @@ public class UserService implements UserDetailsService {
       }
       user.setPasswordHash(passwordEncoder.encode(userData.getPassword()));
     }
-    if (userData.getEmail() != null) {
-      user.setEmail(userData.getEmail());
-    }
     if (userData.getLastName() != null) {
       user.setLastName(userData.getLastName());
     }
@@ -142,7 +138,7 @@ public class UserService implements UserDetailsService {
       user.setFirstName(userData.getFirstName());
     }
     user.setLastChange(TimeUtilities.getCurrentTimestamp());
-    userDao.save(user);
+    return userRepository.save(user);
   }
 
   public RandomAccessListPage<User> getUsers(SimpleUserSearchData searchData) {
