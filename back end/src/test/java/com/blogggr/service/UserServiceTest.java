@@ -2,6 +2,7 @@ package com.blogggr.service;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -15,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
@@ -54,7 +57,7 @@ public class UserServiceTest {
     when(userRepository.findById(any(Long.class))).thenReturn(optionalUser);
     try {
       userService.confirmEmail(1L, "ab");
-      Assert.fail();
+      fail();
     } catch(IllegalArgumentException e){
       assertThat(e.getMessage()).contains("wrong challenge");
     }
@@ -66,9 +69,30 @@ public class UserServiceTest {
     when(userRepository.findById(any(Long.class))).thenReturn(optionalUser);
     try {
       userService.confirmEmail(1L, "abc");
-      Assert.fail();
+      fail();
     } catch(IllegalArgumentException e){
       assertThat(e.getMessage()).contains("User not found");
+    }
+  }
+
+  @Test
+  public void loadUserByUsername_Normal(){
+    User user = new User();
+    user.setUserId(1L);
+    user.setEmail("dan@dan.com");
+    when(userRepository.findByEmail(any(String.class))).thenReturn(user);
+    UserDetails userDetails = userService.loadUserByUsername("dan");
+    assertThat(userDetails.getUsername()).isEqualTo("dan@dan.com");
+  }
+
+  @Test
+  public void loadUserByUsername_User_Null(){
+    when(userRepository.findByEmail(any(String.class))).thenReturn(null);
+    try{
+      userService.loadUserByUsername("dan");
+      fail();
+    }catch(UsernameNotFoundException e){
+      assertThat(e.getMessage()).contains("dan not found");
     }
   }
 }
