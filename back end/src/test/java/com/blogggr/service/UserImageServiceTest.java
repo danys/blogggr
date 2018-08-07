@@ -10,6 +10,7 @@ import com.blogggr.dao.UserDao;
 import com.blogggr.dao.UserImageDao;
 import com.blogggr.entities.User;
 import com.blogggr.entities.UserImage;
+import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.exceptions.StorageException;
 import com.blogggr.fakes.FakeFileStorageManager;
 import com.blogggr.services.UserImageService;
@@ -136,6 +137,24 @@ public class UserImageServiceTest {
       fail();
     } catch (IllegalStateException e) {
       assertThat(e.getMessage()).contains("Too many tries");
+    }
+  }
+
+  @Test
+  public void getUserImage_Normal(){
+    UserImage userImage = new UserImage();
+    when(userImageDao.findByName(any(String.class))).thenReturn(userImage);
+    assertThat(userImageService.getUserImage("file")).isNull();
+  }
+
+  @Test
+  public void getUserImage_UserImage_Null(){
+    when(userImageDao.findByName(any(String.class))).thenReturn(null);
+    try{
+      userImageService.getUserImage("file");
+      fail();
+    }catch (ResourceNotFoundException e){
+      assertThat(e.getMessage()).contains("UserImage not found");
     }
   }
 }
