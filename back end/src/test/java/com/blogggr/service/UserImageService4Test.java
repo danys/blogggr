@@ -11,12 +11,15 @@ import com.blogggr.dao.UserImageDao;
 import com.blogggr.entities.User;
 import com.blogggr.entities.UserImage;
 import com.blogggr.exceptions.StorageException;
-import com.blogggr.fakes.DoNothingFakeStorageManager;
+import com.blogggr.fakes.DeleteExceptionStorageManager;
+import com.blogggr.fakes.ThrowStoreExceptionStorageManager;
 import com.blogggr.services.UserImageService;
 import com.blogggr.utilities.FileStorageManager;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UserImageService2Test {
+public class UserImageService4Test {
 
   @MockBean
   private UserImageDao userImageDao;
@@ -64,7 +67,7 @@ public class UserImageService2Test {
     @Bean
     @Qualifier("userimage")
     public FileStorageManager fakeStorageManager() throws IOException {
-      return new DoNothingFakeStorageManager(
+      return new DeleteExceptionStorageManager(
           Files.createTempDirectory("test").toFile().getAbsolutePath());
     }
 
@@ -88,12 +91,13 @@ public class UserImageService2Test {
   }
 
   @Test
-  public void postImage_IOException() {
-    byte[] fileBytes = new byte[0];
+  public void postImage_Store_Exception() throws URISyntaxException, IOException{
+    byte[] fileBytes = Files
+        .readAllBytes(Paths.get(this.getClass().getClassLoader().getResource("man.png").toURI()));
     MultipartFile file = new MockMultipartFile("file", fileBytes);
     User user = new User();
     user.setUserId(1L);
-    user.setEmail("dan@dan.com");
+    user.setEmail("dan@dany.com");
     when(userDao.findById(1L)).thenReturn(user);
     when(userImageDao.findByName(any(String.class))).thenReturn(null);
     when(userImageDao.unsetCurrent(any(Long.class))).thenReturn(1);
@@ -102,7 +106,7 @@ public class UserImageService2Test {
       userImageService.postImage(1L, file);
       fail();
     }catch(StorageException e){
-      assertThat(e.getMessage().contains("Exception scaling image"));
+      assertThat(e.getCause().getMessage().contains("IOException"));
     }
   }
 }
