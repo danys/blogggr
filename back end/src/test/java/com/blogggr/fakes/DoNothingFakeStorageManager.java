@@ -7,12 +7,18 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Created by Daniel Sünnen on 06/08/2018
+ * Created by Daniel Sünnen on 07/08/2018
  */
-public class FakeFileStorageManager extends FileStorageManager {
+public class DoNothingFakeStorageManager extends FileStorageManager {
 
-  public FakeFileStorageManager(String folderName){
+  public DoNothingFakeStorageManager(String folderName){
     super(folderName, null, null, null);
+  }
+
+
+  @Override
+  public void store(MultipartFile file, String newFileName){
+    //do nothing
   }
 
   @Override

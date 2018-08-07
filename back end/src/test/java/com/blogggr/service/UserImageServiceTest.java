@@ -10,6 +10,7 @@ import com.blogggr.dao.UserDao;
 import com.blogggr.dao.UserImageDao;
 import com.blogggr.entities.User;
 import com.blogggr.entities.UserImage;
+import com.blogggr.exceptions.StorageException;
 import com.blogggr.fakes.FakeFileStorageManager;
 import com.blogggr.services.UserImageService;
 import com.blogggr.utilities.FileStorageManager;
