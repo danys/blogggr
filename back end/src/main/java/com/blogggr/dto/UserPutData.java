@@ -22,10 +22,6 @@ public class UserPutData {
 
   @Email
   @Size(min = 6, max = 100)
-  private String email;
-
-  @Email
-  @Size(min = 6, max = 100)
   private String emailRepeat;
 
   @Size(min = 8, max = 100)
