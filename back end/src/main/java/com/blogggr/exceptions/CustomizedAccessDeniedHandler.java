@@ -1,0 +1,33 @@
+package com.blogggr.exceptions;
+
+import com.blogggr.responses.ResponseBuilder;
+import com.blogggr.utilities.SimpleBundleMessageSource;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
+
+/**
+ * Created by Daniel Sunnen on 08.08.18.
+ */
+public class CustomizedAccessDeniedHandler implements AccessDeniedHandler {
+
+  public final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+  @Autowired
+  private SimpleBundleMessageSource simpleBundleMessageSource;
+
+  @Override
+  public void handle(HttpServletRequest request, HttpServletResponse response,
+      AccessDeniedException accessDeniedException) throws IOException, ServletException {
+    String message = simpleBundleMessageSource.getMessage("exception.authentication.accessDenied");
+    logger.warn(message);
+    ResponseBuilder.filterResponse(response, message, HttpStatus.UNAUTHORIZED);
+  }
+}
