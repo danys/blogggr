@@ -57,7 +57,7 @@ public class UserServiceTest {
   private PasswordEncoder passwordEncoder;
 
   @Test
-  public void confirmEmail_Normal(){
+  public void confirmEmail_Normal() {
     User user = new User();
     user.setUserId(1L);
     user.setEmail("netfox@domain.com");
@@ -70,7 +70,7 @@ public class UserServiceTest {
   }
 
   @Test
-  public void confirmEmail_InvalidChallenge(){
+  public void confirmEmail_InvalidChallenge() {
     User user = new User();
     user.setUserId(1L);
     user.setEmail("netfox@domain.com");
@@ -81,25 +81,25 @@ public class UserServiceTest {
     try {
       userService.confirmEmail(1L, "ab");
       fail();
-    } catch(IllegalArgumentException e){
+    } catch (IllegalArgumentException e) {
       assertThat(e.getMessage()).contains("wrong challenge");
     }
   }
 
   @Test
-  public void confirmEmail_UserNotFound(){
+  public void confirmEmail_UserNotFound() {
     Optional<User> optionalUser = Optional.empty();
     when(userRepository.findById(any(Long.class))).thenReturn(optionalUser);
     try {
       userService.confirmEmail(1L, "abc");
       fail();
-    } catch(IllegalArgumentException e){
+    } catch (IllegalArgumentException e) {
       assertThat(e.getMessage()).contains("User not found");
     }
   }
 
   @Test
-  public void loadUserByUsername_Normal(){
+  public void loadUserByUsername_Normal() {
     User user = new User();
     user.setUserId(1L);
     user.setEmail("dan@dan.com");
@@ -109,18 +109,18 @@ public class UserServiceTest {
   }
 
   @Test
-  public void loadUserByUsername_User_Null(){
+  public void loadUserByUsername_User_Null() {
     when(userRepository.findByEmail(any(String.class))).thenReturn(null);
-    try{
+    try {
       userService.loadUserByUsername("dan");
       fail();
-    }catch(UsernameNotFoundException e){
+    } catch (UsernameNotFoundException e) {
       assertThat(e.getMessage()).contains("dan not found");
     }
   }
 
   @Test
-  public void getUserById_Normal(){
+  public void getUserById_Normal() {
     User user = new User();
     user.setEmail("dan@dan.com");
     when(userDao.findById(any(Long.class))).thenReturn(user);
@@ -128,7 +128,18 @@ public class UserServiceTest {
   }
 
   @Test
-  public void getUserByIdWithImages_Normal(){
+  public void getUserById_User_Null() {
+    when(userDao.findById(any(Long.class))).thenReturn(null);
+    try {
+      userService.getUserById(1L);
+      fail();
+    } catch (ResourceNotFoundException e) {
+      assertThat(e.getMessage()).contains("User not found");
+    }
+  }
+
+  @Test
+  public void getUserByIdWithImages_Normal() {
     User user = new User();
     user.setEmail("dan@dan.com");
     List<UserImage> userImages = new ArrayList<>();
@@ -144,7 +155,18 @@ public class UserServiceTest {
   }
 
   @Test
-  public void getUserByEmail_Normal(){
+  public void getUserByIdWithImages_User_Null() {
+    when(userDao.findByIdWithImages(any(Long.class))).thenReturn(null);
+    try {
+      userService.getUserByIdWithImages(1L);
+      fail();
+    } catch (ResourceNotFoundException e) {
+      assertThat(e.getMessage()).contains("User not found");
+    }
+  }
+
+  @Test
+  public void getUserByEmail_Normal() {
     User user = new User();
     user.setEmail("dan@dan.com");
     user.setUserId(100L);
@@ -153,7 +175,18 @@ public class UserServiceTest {
   }
 
   @Test
-  public void createUser_Normal(){
+  public void getUserByEmail_User_Null() {
+    when(userRepository.findByEmail(any(String.class))).thenReturn(null);
+    try {
+      userService.getUserByEmail("dan@dan.com");
+      fail();
+    } catch (ResourceNotFoundException e) {
+      assertThat(e.getMessage()).contains("User not found");
+    }
+  }
+
+  @Test
+  public void createUser_Normal() {
     UserPostData userData = new UserPostData();
     userData.setEmail("dan@dan.com");
     userData.setEmailRepeat("dan@dan.com");
@@ -168,37 +201,37 @@ public class UserServiceTest {
   }
 
   @Test
-  public void createUser_Email_Mismatch(){
+  public void createUser_Email_Mismatch() {
     UserPostData userData = new UserPostData();
     userData.setEmail("dan@dany.com");
     userData.setEmailRepeat("dan@dan.com");
     userData.setPassword("password");
     userData.setPasswordRepeat("password");
-    try{
+    try {
       userService.createUser(userData);
       fail();
-    }catch(IllegalArgumentException e){
+    } catch (IllegalArgumentException e) {
       assertThat(e.getMessage()).contains("The two e-mail fields must have the same value");
     }
   }
 
   @Test
-  public void createUser_Password_Mismatch(){
+  public void createUser_Password_Mismatch() {
     UserPostData userData = new UserPostData();
     userData.setEmail("dan@dan.com");
     userData.setEmailRepeat("dan@dan.com");
     userData.setPassword("passwor");
     userData.setPasswordRepeat("password");
-    try{
+    try {
       userService.createUser(userData);
       fail();
-    }catch(IllegalArgumentException e){
+    } catch (IllegalArgumentException e) {
       assertThat(e.getMessage()).contains("The two password fields must have the same value");
     }
   }
 
   @Test
-  public void updateUser_Normal(){
+  public void updateUser_Normal() {
     //Test case 1
     User user = new User();
     user.setEmail("dan@dan.com");
@@ -225,18 +258,18 @@ public class UserServiceTest {
   }
 
   @Test
-  public void updateUser_User_Null(){
+  public void updateUser_User_Null() {
     when(userDao.findById(any(Long.class))).thenReturn(null);
     try {
       userService.updateUser(1L, 1L, null);
       fail();
-    }catch(ResourceNotFoundException e){
+    } catch (ResourceNotFoundException e) {
       assertThat(e.getMessage()).contains("User not found");
     }
   }
 
   @Test
-  public void updateUser_Not_Authorized(){
+  public void updateUser_Not_Authorized() {
     User user = new User();
     user.setEmail("dan@dan.com");
     user.setFirstName("daniel");
@@ -246,19 +279,20 @@ public class UserServiceTest {
     try {
       userService.updateUser(2L, 1L, null);
       fail();
-    }catch(NotAuthorizedException e){
+    } catch (NotAuthorizedException e) {
       assertThat(e.getMessage()).contains("Not authorized to change this user");
     }
   }
 
   @Test
-  public void updateUser_Wrong_Old_Password(){
+  public void updateUser_Wrong_Old_Password() {
     //Test case 1
     User user = new User();
     user.setEmail("dan@dan.com");
     user.setFirstName("daniel");
     user.setLastName("sun");
-    user.setPasswordHash("$2a$11$PDQ5CYdOtW/t1oCu.2ZoV.RcDY5Hhx2x4FFRbRN9AvT5hMaXUIdAO"); //is the hash of the plaintext 'password'
+    user.setPasswordHash(
+        "$2a$11$PDQ5CYdOtW/t1oCu.2ZoV.RcDY5Hhx2x4FFRbRN9AvT5hMaXUIdAO"); //is the hash of the plaintext 'password'
     user.setUserId(1L);
     when(userDao.findById(any(Long.class))).thenReturn(user);
     UserPutData userData = new UserPutData();
@@ -269,7 +303,7 @@ public class UserServiceTest {
     try {
       userService.updateUser(1L, 1L, userData);
       fail();
-    }catch(NotAuthorizedException e){
+    } catch (NotAuthorizedException e) {
       assertThat(e.getMessage()).contains("Old password is wrong");
     }
     //Test case 2: no new password provided
@@ -277,18 +311,19 @@ public class UserServiceTest {
     try {
       userService.updateUser(1L, 1L, userData);
       fail();
-    }catch(NotAuthorizedException e){
+    } catch (NotAuthorizedException e) {
       assertThat(e.getMessage()).contains("Old password is wrong");
     }
   }
 
   @Test
-  public void updateUser_New_Password_Without_Old_Password(){
+  public void updateUser_New_Password_Without_Old_Password() {
     User user = new User();
     user.setEmail("dan@dan.com");
     user.setFirstName("daniel");
     user.setLastName("sun");
-    user.setPasswordHash("$2a$11$PDQ5CYdOtW/t1oCu.2ZoV.RcDY5Hhx2x4FFRbRN9AvT5hMaXUIdAO"); //is the hash of the plaintext 'password'
+    user.setPasswordHash(
+        "$2a$11$PDQ5CYdOtW/t1oCu.2ZoV.RcDY5Hhx2x4FFRbRN9AvT5hMaXUIdAO"); //is the hash of the plaintext 'password'
     user.setUserId(1L);
     when(userDao.findById(any(Long.class))).thenReturn(user);
     UserPutData userData = new UserPutData();
@@ -298,13 +333,13 @@ public class UserServiceTest {
     try {
       userService.updateUser(1L, 1L, userData);
       fail();
-    }catch(NotAuthorizedException e){
+    } catch (NotAuthorizedException e) {
       assertThat(e.getMessage()).contains("Old password must be provided");
     }
   }
 
   @Test
-  public void getUsers_Normal(){
+  public void getUsers_Normal() {
     SimpleUserSearchData searchData = new SimpleUserSearchData();
     searchData.setSearchString("user1");
     searchData.setLimit(10);
@@ -314,14 +349,15 @@ public class UserServiceTest {
     List<User> users = new ArrayList<>();
     users.add(user1);
     RandomAccessListPage<User> usersPage = new RandomAccessListPage<>(users, new PageMetaData());
-    when(userDao.getUsers(any(String.class), any(Integer.class), any(Integer.class))).thenReturn(usersPage);
+    when(userDao.getUsers(any(String.class), any(Integer.class), any(Integer.class)))
+        .thenReturn(usersPage);
     RandomAccessListPage<User> page = userService.getUsers(searchData);
     assertThat(page.getPageItems().size()).isEqualTo(1);
     assertThat(page.getPageItems().get(0).getEmail()).isEqualTo("user1@domain.com");
   }
 
   @Test
-  public void getUsersBySearchTerms_Normal(){
+  public void getUsersBySearchTerms_Normal() {
     UserSearchData searchData = new UserSearchData();
     User user1 = new User();
     user1.setEmail("user1@domain.com");

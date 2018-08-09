@@ -15,6 +15,8 @@ import com.blogggr.entities.User;
 import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.CommentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -158,5 +160,29 @@ public class CommentsControllerTest {
         .with(user(createUserPrincipal("dan@dan.com",1L))))
         .andExpect(status().isOk())
         .andExpect(content().json("{'apiVersion': '1.0', 'data': {'commentId': 100, 'text': 'text1'}}"));
+  }
+
+  @Test
+  public void getCommentsByPostId_AccessDenied_Without_Authentication() throws Exception{
+    mvc.perform(get(BASE_URL + "/posts/1/comments")
+        .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnauthorized())
+        .andExpect(content().json("{'apiVersion': '1.0', 'errors': ['Access denied: Unauthenticated access not allowed!']}"));
+  }
+
+  @Test
+  public void getCommentsByPostId_Normal() throws Exception{
+    List<Comment> comments = new ArrayList<>();
+    Comment comment = new Comment();
+    comment.setText("commentText");
+    comment.setCommentId(1L);
+    comments.add(comment);
+    when(commentService
+        .getCommentsByPostId(any(Long.class),any(Long.class))).thenReturn(comments);
+    mvc.perform(get(BASE_URL + "/posts/1/comments")
+        .contentType(MediaType.APPLICATION_JSON)
+        .with(user(createUserPrincipal("dan@dan.com",1L))))
+        .andExpect(status().isOk())
+        .andExpect(content().json("{'apiVersion': '1.0', 'data': [{'commentId': 1, 'text': 'commentText'}]}"));
   }
 }

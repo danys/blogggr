@@ -62,17 +62,32 @@ public class UserService implements UserDetailsService {
 
   public User getUserById(long id) {
     logger.debug("UserService | getUserById - id: {}", id);
-    return userDao.findById(id);
+    User user = userDao.findById(id);
+    if (user == null) {
+      throw new ResourceNotFoundException(
+          simpleBundleMessageSource.getMessage("UserService.userNotFound"));
+    }
+    return user;
   }
 
   public User getUserByIdWithImages(long id) {
     logger.debug("UserService | getUserByIdWithImages - id: {}", id);
-    return userDao.findByIdWithImages(id);
+    User user = userDao.findByIdWithImages(id);
+    if (user == null) {
+      throw new ResourceNotFoundException(
+          simpleBundleMessageSource.getMessage("UserService.userNotFound"));
+    }
+    return user;
   }
 
   public User getUserByEmail(String email) {
     logger.debug("UserService | getUserByEmail - email: {}", email);
-    return userRepository.findByEmail(email);
+    User user = userRepository.findByEmail(email);
+    if (user == null) {
+      throw new ResourceNotFoundException(
+          simpleBundleMessageSource.getMessage("UserService.userNotFound"));
+    }
+    return user;
   }
 
   //For POST request
