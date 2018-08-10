@@ -50,7 +50,7 @@ public class FriendsController {
         friendData.getUserId1(), friendData.getUserId2());
     Friend friend = friendService.createFriend(userPrincipal.getUser().getUserId(), friendData);
     return ResponseBuilder
-        .postSuccessResponse(AppConfig.FULL_BASE_URL + FRIENDS_PATH + '/' + friend.getId());
+        .postSuccessResponse(AppConfig.FULL_BASE_URL + FRIENDS_PATH + '/' + friend.getId().getUserOneId() + '/' + friend.getId().getUserTwoId());
   }
 
   /**
@@ -89,31 +89,33 @@ public class FriendsController {
   }
 
   /**
-   * GET /friends/id Retrieve a single friendship
-   *
-   * @param id the id of the friendship to retrieve
-   * @param userPrincipal the logged in user
+   * GET /friends/id1/id2 Retrieve a single friendship
+   * @param id1 id1 of the friendship
+   * @param id2 id2 of the friendship
+   * @param userPrincipal
+   * @return
    */
-  @GetMapping(value = FRIENDS_PATH + "/{id:[\\d]+}")
-  public ResponseEntity getFriendship(@PathVariable String id,
+  @GetMapping(value = FRIENDS_PATH + "/{id1:[\\d]+}/{id2:[\\d]+}")
+  public ResponseEntity getFriendship(@PathVariable String id1,@PathVariable String id2,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    logger.info("[GET /friends/id] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
+    logger.info("[GET /friends/{}/{}] - User: {}", id1, id2, userPrincipal.getUser().getEmail());
     Friend friend = friendService
-        .getFriend(Long.parseLong(id), userPrincipal.getUser().getUserId());
+        .getFriend(Long.parseLong(id1),Long.parseLong(id2), userPrincipal.getUser().getUserId());
     return ResponseBuilder.getSuccessResponse(dtoConverter.toFriendDto(friend));
   }
 
   /**
-   * DELETE /friends/id
+   * DELETE /friends/id1/id2
    *
-   * @param id the id of the friendship
+   * @param id1 the id1 of the friendship
+   * @param id2 the id2 of the friendship
    * @param userPrincipal the logged in user
    */
-  @DeleteMapping(value = FRIENDS_PATH + "/{id:[\\d]+}")
-  public ResponseEntity deleteFriend(@PathVariable String id,
+  @DeleteMapping(value = FRIENDS_PATH + "/{id1:[\\d]+}//{id2:[\\d]+}")
+  public ResponseEntity deleteFriend(@PathVariable String id1, @PathVariable String id2,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    logger.info("[DELETE /friends/id] Id: {}, User: {}", id, userPrincipal.getUser().getEmail());
-    friendService.deleteFriend(Long.parseLong(id), userPrincipal.getUser().getUserId());
+    logger.info("[DELETE /friends/{}/{}] User: {}", id1, id2, userPrincipal.getUser().getEmail());
+    friendService.deleteFriend(Long.parseLong(id1),Long.parseLong(id2), userPrincipal.getUser().getUserId());
     return ResponseBuilder.deleteSuccessResponse();
   }
 }

@@ -265,4 +265,25 @@ public class FriendDaoTest {
     friend.setStatus(0);
     assertThat(friendDao.getFriendByUserIdsAndState(user1.getUserId(), user2.getUserId(), 0)).isNotNull();
   }
+
+  @Test
+  @Transactional
+  public void findByIds_Normal(){
+    //Test case 1: find existing user
+    User user1 = createUser("Daniel", "Sunnen", "dan@sunnen.me", 1);
+    userDao.save(user1);
+    User user2 = createUser("Dan", "Sun", "dan@sun.com", 1);
+    userDao.save(user2);
+    Friend friend = friendDao.createFriendship(user1, user1, user2);
+    friend.setStatus(1);
+    Friend dbFriend = friendDao.findByIds(user1.getUserId(), user2.getUserId());
+    assertThat(dbFriend.getUser1().getUserId()).isEqualTo(user1.getUserId());
+    assertThat(dbFriend.getUser2().getUserId()).isEqualTo(user2.getUserId());
+    assertThat(dbFriend.getStatus()).isEqualTo(1);
+    //Test case 2: Find non existing user
+    assertThat(friendDao.findByIds(1, 3)).isNull();
+    //Test case 2: Find friendship that is not yet confirmed
+    friend.setStatus(0);
+    assertThat(friendDao.findByIds(user1.getUserId(), user2.getUserId())).isNotNull();
+  }
 }

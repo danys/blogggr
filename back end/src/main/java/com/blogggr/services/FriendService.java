@@ -118,9 +118,9 @@ public class FriendService {
     }
   }
 
-  public void deleteFriend(long friendId, long userId) {
-    logger.debug("FriendService | deleteFriend - friendId: {}, userId: {}", friendId, userId);
-    Friend friend = friendDao.findById(friendId);
+  public void deleteFriend(long friendId1, long friendId2, long userId) {
+    logger.debug("FriendService | deleteFriend - friendId1: {},friendId2: {}, userId: {}", friendId1,friendId2, userId);
+    Friend friend = friendDao.findByIds(friendId1, friendId2);
     if (friend == null) {
       throw new ResourceNotFoundException(messageSource.getMessage(FRIEND_NOT_FOUND));
     }
@@ -131,14 +131,15 @@ public class FriendService {
     friendDao.delete(friend);
   }
 
-  public Friend getFriend(long friendId, long userId) {
-    logger.debug("FriendService | getFriend - friendId: {}, userId: {}", friendId, userId);
-    Friend friend = friendDao.findById(friendId);
-    if (friend == null) {
-      throw new ResourceNotFoundException(messageSource.getMessage(FRIEND_NOT_FOUND));
-    } else if (friend.getUser1().getUserId() != userId && friend.getUser2().getUserId() != userId) {
+  public Friend getFriend(long friendId1, long friendId2, long userId) {
+    logger.debug("FriendService | getFriend - friendId1: {},friendId2: {}, userId: {}", friendId1, friendId2, userId);
+    if (friendId1 != userId && friendId2 != userId) {
       throw new NotAuthorizedException(
           messageSource.getMessage("FriendService.getFriend.notAuthorizedException"));
+    }
+    Friend friend = friendDao.findByIds(friendId1, friendId2);
+    if (friend == null) {
+      throw new ResourceNotFoundException(messageSource.getMessage(FRIEND_NOT_FOUND));
     }
     return friend;
   }

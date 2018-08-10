@@ -357,9 +357,9 @@ public class FriendServiceTest {
     Friend friend = new Friend();
     friend.setUser1(user1);
     friend.setUser2(user2);
-    when(friendDao.findById(any(Long.class))).thenReturn(friend);
+    when(friendDao.findByIds(any(Long.class),any(Long.class))).thenReturn(friend);
     doNothing().when(friendDao).delete(any(Friend.class));
-    friendService.deleteFriend(1L,1L);
+    friendService.deleteFriend(1L,2L, 1L);
   }
 
   @Test
@@ -367,7 +367,7 @@ public class FriendServiceTest {
     when(friendDao.findById(any(Long.class))).thenReturn(null);
     doNothing().when(friendDao).delete(any(Friend.class));
     try {
-      friendService.deleteFriend(1L, 1L);
+      friendService.deleteFriend(1L, 2L, 1L);
       fail();
     }catch(ResourceNotFoundException e){
       assertThat(e.getMessage()).contains("Friendship not found");
@@ -383,10 +383,10 @@ public class FriendServiceTest {
     Friend friend = new Friend();
     friend.setUser1(user1);
     friend.setUser2(user2);
-    when(friendDao.findById(any(Long.class))).thenReturn(friend);
+    when(friendDao.findByIds(any(Long.class),any(Long.class))).thenReturn(friend);
     doNothing().when(friendDao).delete(any(Friend.class));
     try {
-      friendService.deleteFriend(1L, 10L);
+      friendService.deleteFriend(1L, 2L, 10L);
       fail();
     }catch(NotAuthorizedException e){
       assertThat(e.getMessage()).contains("Not authorized to delete friendship");
@@ -403,16 +403,16 @@ public class FriendServiceTest {
     friend.setUser1(user1);
     friend.setUser2(user2);
     friend.setStatus(1);
-    when(friendDao.findById(any(Long.class))).thenReturn(friend);
-    Friend dbFriend = friendService.getFriend(1L, 1L);
+    when(friendDao.findByIds(any(Long.class),any(Long.class))).thenReturn(friend);
+    Friend dbFriend = friendService.getFriend(1L, 2L, 1L);
     assertThat(dbFriend.getStatus()).isEqualTo(1);
   }
 
   @Test
   public void getFriend_Friend_Null(){
-    when(friendDao.findById(any(Long.class))).thenReturn(null);
+    when(friendDao.findByIds(any(Long.class),any(Long.class))).thenReturn(null);
     try {
-      friendService.getFriend(1L, 1L);
+      friendService.getFriend(1L, 1L, 1L);
       fail();
     }catch(ResourceNotFoundException e) {
       assertThat(e.getMessage()).contains("Friendship not found");
@@ -429,9 +429,9 @@ public class FriendServiceTest {
     friend.setUser1(user1);
     friend.setUser2(user2);
     friend.setStatus(1);
-    when(friendDao.findById(any(Long.class))).thenReturn(friend);
+    when(friendDao.findByIds(any(Long.class),any(Long.class))).thenReturn(friend);
     try {
-      friendService.getFriend(1L, 10L);
+      friendService.getFriend(1L, 2L, 10L);
       fail();
     }catch(NotAuthorizedException e){
       assertThat(e.getMessage()).contains("Not allowed to view this friendship");
