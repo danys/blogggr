@@ -49,6 +49,8 @@ public class UserService implements UserDetailsService {
   @Autowired
   private SimpleBundleMessageSource simpleBundleMessageSource;
 
+  private static final String USER_NOT_FOUND = "UserService.userNotFound";
+
   @Override
   public UserDetails loadUserByUsername(String username) {
     logger.debug("UserService | loadUserByUsername - username: {}", username);
@@ -65,7 +67,7 @@ public class UserService implements UserDetailsService {
     User user = userDao.findById(id);
     if (user == null) {
       throw new ResourceNotFoundException(
-          simpleBundleMessageSource.getMessage("UserService.userNotFound"));
+          simpleBundleMessageSource.getMessage(USER_NOT_FOUND));
     }
     return user;
   }
@@ -75,7 +77,7 @@ public class UserService implements UserDetailsService {
     User user = userDao.findByIdWithImages(id);
     if (user == null) {
       throw new ResourceNotFoundException(
-          simpleBundleMessageSource.getMessage("UserService.userNotFound"));
+          simpleBundleMessageSource.getMessage(USER_NOT_FOUND));
     }
     return user;
   }
@@ -85,7 +87,7 @@ public class UserService implements UserDetailsService {
     User user = userRepository.findByEmail(email);
     if (user == null) {
       throw new ResourceNotFoundException(
-          simpleBundleMessageSource.getMessage("UserService.userNotFound"));
+          simpleBundleMessageSource.getMessage(USER_NOT_FOUND));
     }
     return user;
   }
@@ -125,7 +127,7 @@ public class UserService implements UserDetailsService {
     User user = userDao.findById(userResourceId);
     if (user == null) {
       throw new ResourceNotFoundException(
-          simpleBundleMessageSource.getMessage("UserService.userNotFound"));
+          simpleBundleMessageSource.getMessage(USER_NOT_FOUND));
     }
     //A user can only change his own data
     if (user.getUserId() != userId) {
@@ -170,7 +172,7 @@ public class UserService implements UserDetailsService {
     Optional<User> userOptional = userRepository.findById(userId);
     if (!userOptional.isPresent()) {
       throw new IllegalArgumentException(
-          simpleBundleMessageSource.getMessage("UserService.userNotFound"));
+          simpleBundleMessageSource.getMessage(USER_NOT_FOUND));
     }
     User user = userOptional.get();
     if (!user.getChallenge().equals(challenge)) {
