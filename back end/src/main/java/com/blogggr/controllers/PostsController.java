@@ -114,14 +114,14 @@ public class PostsController {
    * @param userPrincipal the logged in user
    */
   @GetMapping(value = UsersController.USER_PATH
-      + "/{userID:[\\d]+]}/posts/{postShortName:[\\.]+}")
-  public ResponseEntity getPost(@PathVariable String userId, @PathVariable String postShortName,
+      + "/{userId:[\\d]+}/posts/{postShortName:[A-Za-z-]+}")
+  public ResponseEntity getPost(@PathVariable("userId") String userId, @PathVariable("postShortName") String postShortName,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[GET /users/{}/posts/{}] User:{}", userId, postShortName,
         userPrincipal.getUser().getEmail());
     if (postShortName.length() < 3) {
-      throw new IllegalArgumentException(simpleBundleMessageSource.getMessage(""));
+      throw new IllegalArgumentException(simpleBundleMessageSource.getMessage("PostService.titleTooShort"));
     }
     Post post = postService
         .getPostByUserAndLabel(userPrincipal.getUser().getUserId(), Long.parseLong(userId),
