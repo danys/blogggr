@@ -214,6 +214,34 @@ public class PostsControllerTest {
   }
 
   @Test
+  public void getPostByException_Normal() throws Exception {
+    User user = new User();
+    user.setUserId(1L);
+    user.setEmail("email");
+    user.setFirstName("first");
+    user.setLastName("last");
+    List<Comment> comments = new ArrayList<>();
+    List<PostImage> userImages = new ArrayList<>();
+    Comment comment = new Comment();
+    UserImage userImage = new UserImage();
+    //comments.add(comment);
+    //userImages.add(userImage);
+    Post post = new Post();
+    post.setPostId(1L);
+    post.setTitle("title");
+    post.setShortTitle("shortTitle");
+    post.setTextBody("textBody");
+    post.setTimestamp(TimeUtilities.getCurrentTimestamp());
+    post.setComments(comments);
+    post.setPostImages(userImages);
+    post.setUser(user);
+    when(postService.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
+    mvc.perform(get(BASE_URL + "/users/1/posts/bl")
+        .with(user(createUserPrincipal("dan@dan.com", 1L))))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
   public void getPostSearchData_Not_Authorized() throws Exception{
     PostSearchData postSearchData = new PostSearchData();
     mvc.perform(get(BASE_URL + "/posts", postSearchData)
