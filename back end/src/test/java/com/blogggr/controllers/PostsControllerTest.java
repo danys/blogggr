@@ -139,6 +139,18 @@ public class PostsControllerTest {
   }
 
   @Test
+  public void updatePost_All_Null() throws Exception {
+    PostDataUpdate postData = new PostDataUpdate();
+    when(postService.updatePost(any(Long.class),any(Long.class),any(PostDataUpdate.class))).thenReturn(null);
+    mvc.perform(put(BASE_URL + "/posts/1")
+        .with(user(createUserPrincipal("dan@dan.com", 1L)))
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(mapper.writeValueAsString(postData)))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().json("{'apiVersion': '1.0', 'errors': ['At least one field must be non null!']}"));
+  }
+
+  @Test
   public void deletePost_Not_Authorized() throws Exception{
     mvc.perform(delete(BASE_URL + "/posts/1")
         .contentType(MediaType.APPLICATION_JSON))
