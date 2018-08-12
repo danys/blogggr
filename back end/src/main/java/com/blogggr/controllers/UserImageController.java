@@ -63,7 +63,7 @@ public class UserImageController {
    */
   @GetMapping("/userimages/{filename:.+}")
   @ResponseBody
-  public ResponseEntity<Resource> getUserImage(@PathVariable String fileName,
+  public ResponseEntity<Resource> getUserImage(@PathVariable("filename") String fileName,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(
         "[GET /userimages/{}. User: {}]", fileName, userPrincipal.getUser().getEmail());

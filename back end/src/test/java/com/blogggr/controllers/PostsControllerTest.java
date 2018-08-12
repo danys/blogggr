@@ -15,14 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.blogggr.config.AppConfig;
-import com.blogggr.dao.PostDao.Visibility;
-import com.blogggr.dto.FriendDataBase;
 import com.blogggr.dto.PostData;
 import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
 import com.blogggr.entities.Comment;
-import com.blogggr.entities.Friend;
-import com.blogggr.entities.FriendPk;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.PostImage;
 import com.blogggr.entities.User;

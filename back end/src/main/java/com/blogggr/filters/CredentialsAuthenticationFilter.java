@@ -58,6 +58,10 @@ public class CredentialsAuthenticationFilter extends AbstractAuthenticationProce
       sb.append(line);
     }
     br.close();
+    if (sb.length() == 0){
+      logger.debug("No login information provided!");
+      return null;
+    }
     Map<String, String> parameterMap =
         new ObjectMapper().readValue(sb.toString(), HashMap.class);
     String username = parameterMap.get(USERNAME_KEY);

@@ -6,6 +6,7 @@ import com.blogggr.utilities.JwtHelper;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.time.ZonedDateTime;
 import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 public class SessionService {
 
   @Getter
+  @Setter
   public static class SessionDetails {
     private String jwt;
     private ZonedDateTime expiration;
