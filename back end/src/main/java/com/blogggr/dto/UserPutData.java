@@ -20,10 +20,6 @@ public class UserPutData {
   @Size(min = 3, max = 100)
   private String lastName;
 
-  @Email
-  @Size(min = 6, max = 100)
-  private String emailRepeat;
-
   @Size(min = 8, max = 100)
   private String oldPassword;
 
