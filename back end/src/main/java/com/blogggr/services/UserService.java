@@ -49,29 +49,47 @@ public class UserService implements UserDetailsService {
   @Autowired
   private SimpleBundleMessageSource simpleBundleMessageSource;
 
+  private static final String USER_NOT_FOUND = "UserService.userNotFound";
+
   @Override
   public UserDetails loadUserByUsername(String username) {
     logger.debug("UserService | loadUserByUsername - username: {}", username);
     User user = userRepository.findByEmail(username);
     if (user == null) {
-      throw new UsernameNotFoundException(username);
+      throw new UsernameNotFoundException(
+          username + " " + simpleBundleMessageSource.getMessage("UserService.userNotFoundShort"));
     }
     return new UserPrincipal(user);
   }
 
   public User getUserById(long id) {
     logger.debug("UserService | getUserById - id: {}", id);
-    return userDao.findById(id);
+    User user = userDao.findById(id);
+    if (user == null) {
+      throw new ResourceNotFoundException(
+          simpleBundleMessageSource.getMessage(USER_NOT_FOUND));
+    }
+    return user;
   }
 
   public User getUserByIdWithImages(long id) {
     logger.debug("UserService | getUserByIdWithImages - id: {}", id);
-    return userDao.findByIdWithImages(id);
+    User user = userDao.findByIdWithImages(id);
+    if (user == null) {
+      throw new ResourceNotFoundException(
+          simpleBundleMessageSource.getMessage(USER_NOT_FOUND));
+    }
+    return user;
   }
 
   public User getUserByEmail(String email) {
     logger.debug("UserService | getUserByEmail - email: {}", email);
-    return userRepository.findByEmail(email);
+    User user = userRepository.findByEmail(email);
+    if (user == null) {
+      throw new ResourceNotFoundException(
+          simpleBundleMessageSource.getMessage(USER_NOT_FOUND));
+    }
+    return user;
   }
 
   //For POST request
@@ -103,12 +121,13 @@ public class UserService implements UserDetailsService {
     return userRepository.save(user);
   }
 
-  public void updateUser(long userResourceId, long userId, UserPutData userData) {
-    logger.debug("UserService | updateUser - userResourceID: {}, userId: {}, userData: {}", userResourceId, userId, userData);
+  public User updateUser(long userResourceId, long userId, UserPutData userData) {
+    logger.debug("UserService | updateUser - userResourceID: {}, userId: {}, userData: {}",
+        userResourceId, userId, userData);
     User user = userDao.findById(userResourceId);
     if (user == null) {
       throw new ResourceNotFoundException(
-          simpleBundleMessageSource.getMessage("UserService.userNotFound"));
+          simpleBundleMessageSource.getMessage(USER_NOT_FOUND));
     }
     //A user can only change his own data
     if (user.getUserId() != userId) {
@@ -116,12 +135,9 @@ public class UserService implements UserDetailsService {
           simpleBundleMessageSource.getMessage("UserService.updateUser.notAuthorizedModify"));
     }
     //If an old password has been provided check it!
-    if (userData.getOldPassword() != null) {
-      String oldHash = passwordEncoder.encode(userData.getOldPassword());
-      if (oldHash.compareTo(user.getPasswordHash()) != 0) {
+    if (userData.getOldPassword() != null && !passwordEncoder.matches(userData.getOldPassword(), user.getPasswordHash())) {
         throw new NotAuthorizedException(
             simpleBundleMessageSource.getMessage("UserService.updateUser.wrongOldPassword"));
-      }
     }
     if (userData.getPassword() != null) {
       if (userData.getOldPassword() == null) {
@@ -130,9 +146,6 @@ public class UserService implements UserDetailsService {
       }
       user.setPasswordHash(passwordEncoder.encode(userData.getPassword()));
     }
-    if (userData.getEmail() != null) {
-      user.setEmail(userData.getEmail());
-    }
     if (userData.getLastName() != null) {
       user.setLastName(userData.getLastName());
     }
@@ -140,7 +153,7 @@ public class UserService implements UserDetailsService {
       user.setFirstName(userData.getFirstName());
     }
     user.setLastChange(TimeUtilities.getCurrentTimestamp());
-    userDao.save(user);
+    return userRepository.save(user);
   }
 
   public RandomAccessListPage<User> getUsers(SimpleUserSearchData searchData) {
@@ -154,15 +167,17 @@ public class UserService implements UserDetailsService {
     return userDao.getUsersBySearchTerms(searchData);
   }
 
-  public String confirmEmail(Long userId, String challenge){
+  public String confirmEmail(Long userId, String challenge) {
     logger.debug("UserService | confirmEmail - userID: {}, challenge: {}", userId, challenge);
     Optional<User> userOptional = userRepository.findById(userId);
-    if (!userOptional.isPresent()){
-      throw new IllegalArgumentException(simpleBundleMessageSource.getMessage("UserService.userNotFound"));
+    if (!userOptional.isPresent()) {
+      throw new IllegalArgumentException(
+          simpleBundleMessageSource.getMessage(USER_NOT_FOUND));
     }
     User user = userOptional.get();
-    if (!user.getChallenge().equals(challenge)){
-      throw new IllegalArgumentException(simpleBundleMessageSource.getMessage("UserService.confirmEmail.wrongChallenge"));
+    if (!user.getChallenge().equals(challenge)) {
+      throw new IllegalArgumentException(
+          simpleBundleMessageSource.getMessage("UserService.confirmEmail.wrongChallenge"));
     }
     user.setStatus(1);
     return user.getEmail();

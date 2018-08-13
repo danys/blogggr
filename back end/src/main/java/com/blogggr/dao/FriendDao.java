@@ -38,7 +38,27 @@ public class FriendDao extends GenericDaoImpl<Friend> {
   private static final String USER_2 = "user2";
   private static final String STATUS = "status";
 
-  public Friend createFriendship(User user1, User user2) {
+  public Friend findByIds(long id1, long id2) {
+    logger.debug("findByIds - id1: {}, id2: {}", id1, id2);
+    try {
+      CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+      CriteriaQuery<Friend> query = cb.createQuery(Friend.class);
+      Root<Friend> root = query.from(Friend.class);
+      query.where(
+          cb.and(
+              cb.equal(root.get("id").get("userOneId"), id1),
+              cb.equal(root.get("id").get("userTwoId"), id2)
+          )
+      );
+      return entityManager.createQuery(query).getSingleResult();
+    } catch (NoResultException e) {
+      return null;
+    }
+  }
+
+  public Friend createFriendship(User initUser, User user1, User user2) {
+    logger.debug("createFriendship - initUser: {}, user1: {}, user2: {}", initUser.getUserId(),
+        user1.getUserId(), user2.getUserId());
     if (user1.getUserId() == null || user2.getUserId() == null || user1.getUserId()
         .equals(user2.getUserId())) {
       throw new IllegalArgumentException(
@@ -60,6 +80,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
     }
     friend.setLastActionTimestamp(Timestamp.valueOf(LocalDateTime.now()));
     friend.setStatus(0); //pending friendship status
+    friend.setLastActionUserId(initUser);
     if (user1.getUserId() < user2.getUserId()) {
       user1.getFriends1().add(friend);
       user2.getFriends2().add(friend);
@@ -97,7 +118,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
       query.select(user2Join);
       query.where(
           cb.and(
-              cb.equal(root.get(STATUS), 2),
+              cb.equal(root.get(STATUS), 1),
               cb.equal(user1Join.get("userId"), userId)
           )
       );
@@ -105,7 +126,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
       query.select(user1Join);
       query.where(
           cb.and(
-              cb.equal(root.get(STATUS), 2),
+              cb.equal(root.get(STATUS), 1),
               cb.equal(user2Join.get("userId"), userId)
           )
       );
@@ -139,7 +160,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
       }
       query.where(
           cb.and(
-            predicates.toArray(new Predicate[predicates.size()])
+              predicates.toArray(new Predicate[predicates.size()])
           )
       );
       return entityManager.createQuery(query).getSingleResult();

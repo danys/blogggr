@@ -36,11 +36,12 @@ public class FriendDaoTest {
     userDao.save(user1);
     User user2 = createUser("Dan", "Sun", "dan@sun.com", 1);
     userDao.save(user2);
-    Friend friendship = friendDao.createFriendship(user1, user2);
+    Friend friendship = friendDao.createFriendship(user1, user1, user2);
     assertThat(friendship.getUser1()).isNotNull();
     assertThat(friendship.getUser1().getUserId()).isEqualTo(user1.getUserId());
     assertThat(friendship.getUser2()).isNotNull();
     assertThat(friendship.getUser2().getUserId()).isEqualTo(user2.getUserId());
+    assertThat(friendship.getLastActionUserId().getUserId()).isEqualTo(user1.getUserId());
     //Check user 1
     List<Friend> leftFriendsU1 = user1.getFriends1();
     List<Friend> rightFriendsU1 = user1.getFriends2();
@@ -58,7 +59,7 @@ public class FriendDaoTest {
     //Add a third user
     User user3 = createUser("John", "Smith", "john@smith.com", 1);
     userDao.save(user3);
-    Friend friendship13 = friendDao.createFriendship(user1, user3);
+    Friend friendship13 = friendDao.createFriendship(user1, user1, user3);
     assertThat(friendship13.getUser1()).isNotNull();
     assertThat(friendship13.getUser1().getUserId()).isEqualTo(user1.getUserId());
     assertThat(friendship13.getUser2()).isNotNull();
@@ -81,7 +82,7 @@ public class FriendDaoTest {
     User user2 = createUser("Dan", "Sun", "dan@sun.com", 1);
     userDao.save(user2);
     userDao.save(user1);
-    Friend friendship = friendDao.createFriendship(user1, user2);
+    Friend friendship = friendDao.createFriendship(user1, user1, user2);
     assertThat(friendship.getUser1()).isNotNull();
     assertThat(friendship.getUser1().getUserId()).isEqualTo(user2.getUserId());
     assertThat(friendship.getUser2()).isNotNull();
@@ -103,7 +104,7 @@ public class FriendDaoTest {
     //Add a third user
     User user3 = createUser("John", "Smith", "john@smith.com", 1);
     userDao.save(user3);
-    Friend friendship13 = friendDao.createFriendship(user1, user3);
+    Friend friendship13 = friendDao.createFriendship(user1, user1, user3);
     assertThat(friendship13.getUser1()).isNotNull();
     assertThat(friendship13.getUser1().getUserId()).isEqualTo(user1.getUserId());
     assertThat(friendship13.getUser2()).isNotNull();
@@ -126,17 +127,17 @@ public class FriendDaoTest {
     userDao.save(user1);
     User user2 = createUser("Dan", "Sun", "dan@sun.com", 1);
     userDao.save(user2);
-    Friend friendship = friendDao.createFriendship(user1, user2);
+    Friend friendship = friendDao.createFriendship(user1, user1, user2);
     //Try if inserting a duplicate friendship works
     try {
-      friendDao.createFriendship(user1, user2);
+      friendDao.createFriendship(user1, user1, user2);
       fail();
     }catch(DataAccessException e){
       assertThat(e.getCause().getMessage()).contains("exists already");
     }
     //Try it if users are inverted
     try {
-      friendDao.createFriendship(user2, user1);
+      friendDao.createFriendship(user1, user2, user1);
       fail();
     }catch(DataAccessException e){
       assertThat(e.getCause().getMessage()).contains("exists already");
@@ -151,7 +152,7 @@ public class FriendDaoTest {
     Friend friendship;
     //Two users null id
     try {
-      friendDao.createFriendship(user1, user2);
+      friendDao.createFriendship(user1, user1, user2);
       fail();
     }catch(DataAccessException e){
       assertThat(e.getCause().getMessage()).contains("Persisted user must be provided");
@@ -159,7 +160,7 @@ public class FriendDaoTest {
     //One user null id
     user1.setUserId(1L);
     try {
-      friendDao.createFriendship(user1, user2);
+      friendDao.createFriendship(user1, user1, user2);
       fail();
     }catch(DataAccessException e){
       Throwable t = e.getCause();
@@ -169,7 +170,7 @@ public class FriendDaoTest {
     user1.setUserId(null);
     user2.setUserId(1L);
     try {
-      friendDao.createFriendship(user1, user2);
+      friendDao.createFriendship(user1, user1, user2);
       fail();
     }catch(DataAccessException e){
       assertThat(e.getCause().getMessage()).contains("Persisted user must be provided");
@@ -185,7 +186,7 @@ public class FriendDaoTest {
     user1.setUserId(1L);
     user2.setUserId(1L);
     try {
-      friendDao.createFriendship(user1, user2);
+      friendDao.createFriendship(user1, user1, user2);
       fail();
     }catch(DataAccessException e){
       assertThat(e.getCause().getMessage()).contains("Persisted user must be provided");
@@ -207,8 +208,8 @@ public class FriendDaoTest {
     friendUsers = friendDao.getUserFriends(user2.getUserId());
     assertTrue(friendUsers.isEmpty());
     //Test case 2
-    Friend friendship = friendDao.createFriendship(user1, user2);
-    friendship.setStatus(2);
+    Friend friendship = friendDao.createFriendship(user1, user1, user2);
+    friendship.setStatus(1);
     List<Friend> friends = friendDao.findAll();
     assertThat(friends.size()).isEqualTo(1);
     List<User> user1Friends = friendDao.getUserFriends(user1.getUserId());
@@ -226,7 +227,7 @@ public class FriendDaoTest {
     userDao.save(user1);
     User user2 = createUser("Dan", "Sun", "dan@sun.com", 1);
     userDao.save(user2);
-    friendDao.createFriendship(user1, user2);
+    friendDao.createFriendship(user1, user1, user2);
     Friend friendship = friendDao.getFriendByUserIds(user1.getUserId(), user2.getUserId());
     assertThat(friendship).isNotNull();
     Friend friendship2 = friendDao.getFriendByUserIds(user2.getUserId(), user1.getUserId());
@@ -257,11 +258,32 @@ public class FriendDaoTest {
     userDao.save(user1);
     User user2 = createUser("Dan", "Sun", "dan@sun.com", 1);
     userDao.save(user2);
-    Friend friend = friendDao.createFriendship(user1, user2);
-    friend.setStatus(2);
-    assertThat(friendDao.getFriendByUserIdsAndState(user1.getUserId(), user2.getUserId(), 2)).isNotNull();
+    Friend friend = friendDao.createFriendship(user1, user1, user2);
+    friend.setStatus(1);
+    assertThat(friendDao.getFriendByUserIdsAndState(user1.getUserId(), user2.getUserId(), 1)).isNotNull();
     assertThat(friendDao.getFriendByUserIdsAndState(user1.getUserId(), user2.getUserId(), 0)).isNull();
     friend.setStatus(0);
     assertThat(friendDao.getFriendByUserIdsAndState(user1.getUserId(), user2.getUserId(), 0)).isNotNull();
+  }
+
+  @Test
+  @Transactional
+  public void findByIds_Normal(){
+    //Test case 1: find existing user
+    User user1 = createUser("Daniel", "Sunnen", "dan@sunnen.me", 1);
+    userDao.save(user1);
+    User user2 = createUser("Dan", "Sun", "dan@sun.com", 1);
+    userDao.save(user2);
+    Friend friend = friendDao.createFriendship(user1, user1, user2);
+    friend.setStatus(1);
+    Friend dbFriend = friendDao.findByIds(user1.getUserId(), user2.getUserId());
+    assertThat(dbFriend.getUser1().getUserId()).isEqualTo(user1.getUserId());
+    assertThat(dbFriend.getUser2().getUserId()).isEqualTo(user2.getUserId());
+    assertThat(dbFriend.getStatus()).isEqualTo(1);
+    //Test case 2: Find non existing user
+    assertThat(friendDao.findByIds(1, 3)).isNull();
+    //Test case 2: Find friendship that is not yet confirmed
+    friend.setStatus(0);
+    assertThat(friendDao.findByIds(user1.getUserId(), user2.getUserId())).isNotNull();
   }
 }

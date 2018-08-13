@@ -107,7 +107,7 @@ public class CommentsController {
       + COMMENTS_PATH)
   public ResponseEntity getCommentsByPostId(@PathVariable String id,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    logger.info("[GET /comments/id/comments] Id: {}. User: {}", id,
+    logger.info("[GET /posts/id/comments] Id: {}. User: {}", id,
         userPrincipal.getUser().getEmail());
     List<Comment> comments = commentService
         .getCommentsByPostId(Long.parseLong(id), userPrincipal.getUser().getUserId());

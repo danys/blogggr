@@ -29,7 +29,7 @@ public class Friend implements Serializable {
   private FriendPk id = new FriendPk();
 
   /**
-   * Status meaning: 0 = pending 1 = accepted 2 = declined 3 = blocked.
+   * Status meaning: 0 = pending, 1 = accepted, 2 = declined, 3 = blocked.
    */
   private Integer status;
 

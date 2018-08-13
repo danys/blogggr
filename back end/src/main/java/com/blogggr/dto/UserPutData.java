@@ -2,7 +2,6 @@ package com.blogggr.dto;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,14 +18,6 @@ public class UserPutData {
 
   @Size(min = 3, max = 100)
   private String lastName;
-
-  @Email
-  @Size(min = 6, max = 100)
-  private String email;
-
-  @Email
-  @Size(min = 6, max = 100)
-  private String emailRepeat;
 
   @Size(min = 8, max = 100)
   private String oldPassword;

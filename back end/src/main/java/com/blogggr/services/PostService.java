@@ -7,6 +7,7 @@ import com.blogggr.dao.UserDao;
 import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
 import com.blogggr.entities.Comment;
+import com.blogggr.entities.Friend;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
 import com.blogggr.exceptions.NotAuthorizedException;
@@ -24,7 +25,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.NoResultException;
 import java.util.Collections;
 import java.util.List;
 
@@ -109,11 +109,15 @@ public class PostService {
 
   //Simple function to check that this user is friends with the poster
   private boolean isFriendOfUser(long postUserID, long userId) {
-      long smallNum;
-      long bigNum;
-      smallNum = (postUserID < userId) ? postUserID : userId;
-      bigNum = (postUserID >= userId) ? postUserID : userId;
-      return (friendDao.getFriendByUserIds(smallNum, bigNum) != null);
+    long smallNum;
+    long bigNum;
+    smallNum = (postUserID < userId) ? postUserID : userId;
+    bigNum = (postUserID >= userId) ? postUserID : userId;
+    Friend friend = friendDao.getFriendByUserIds(smallNum, bigNum);
+    if (friend == null) {
+      return false;
+    }
+    return (friend.getStatus().intValue() == 1);
   }
 
   public Post getPostById(long postId, long userId) {
@@ -141,7 +145,7 @@ public class PostService {
     try {
       postsPage = postDao
           .getPosts(postSearchData, user);
-    }catch(DataAccessException e){
+    } catch (DataAccessException e) {
       throw SpringHelper.convertException(e);
     }
     List<Post> posts = postsPage.getPageItems();
@@ -160,8 +164,10 @@ public class PostService {
     logger.debug(
         "PostService | getPostByUserAndLabel - userId: {}, postUserId: {}, postShortTitle: {}",
         userId, postUserId, postShortTitle);
-    try {
       Post post = postDao.getPostByUserAndLabel(userId, postUserId, postShortTitle);
+      if (post == null){
+        throw new ResourceNotFoundException(messageSource.getMessage(POST_NOT_FOUND));
+      }
       //Order comments by date
       List<Comment> comments = post.getComments();
       Collections.sort(comments,
@@ -178,8 +184,5 @@ public class PostService {
       }
       //Otherwise access denied
       throw new NotAuthorizedException(messageSource.getMessage("PostService.notAuthorizedView"));
-    } catch (NoResultException e) {
-      throw new ResourceNotFoundException(messageSource.getMessage(POST_NOT_FOUND));
-    }
   }
 }

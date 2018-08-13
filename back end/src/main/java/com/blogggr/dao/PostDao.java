@@ -226,7 +226,7 @@ public class PostDao extends GenericDaoImpl<Post> {
       predicatesOr2.add(cb.notEqual(postUserJoin.get(USER_ID), userId)); //exclude current user
       predicatesOr2.add(cb.equal(friendUserJoin1.get(USER_ID), userId)); //only friends
       predicatesOr2
-          .add(cb.equal(userFriendJoin1.get(STATUS), FRIEND_ACCEPTED)); //status accepted
+          .add(cb.equal(userFriendJoin2.get(STATUS), FRIEND_ACCEPTED)); //status accepted
       predicatesOr2.add(cb.equal(root.get(IS_GLOBAL), false)); //no global posts
       //Other conditions like the title and the filter on the poster's userId
       if (postUserCondition != null) {

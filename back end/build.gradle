@@ -54,6 +54,7 @@ dependencies {
         exclude(module: 'commons-logging')
     }
     testCompile 'com.h2database:h2:1.4.196'
+    testCompile 'org.springframework.security:spring-security-test:5.0.7.RELEASE'
     compileOnly 'org.projectlombok:lombok:1.16.22'
     apt "org.projectlombok:lombok:1.16.22"
 }
