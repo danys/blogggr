@@ -57,8 +57,7 @@ CREATE TABLE blogggr.friends(
 	status integer NOT NULL,
 	last_action_user_id bigint,
 	last_action_timestamp timestamp NOT NULL,
-	version bigint NOT NULL,
-
+	version bigint NOT NULL
 );
 -- ddl-end --
 ALTER TABLE blogggr.friends OWNER TO postgres;
