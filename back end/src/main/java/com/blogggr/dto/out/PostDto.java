@@ -25,6 +25,10 @@ public class PostDto {
   private UserDto user;
 
   public void setTimestamp(Timestamp ts) {
-    this.timestamp = dateFormat.format(ts);
+    if (ts == null) {
+      this.timestamp = "";
+    } else {
+      this.timestamp = dateFormat.format(ts);
+    }
   }
 }

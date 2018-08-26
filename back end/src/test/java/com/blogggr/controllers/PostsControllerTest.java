@@ -125,13 +125,15 @@ public class PostsControllerTest {
     postData.setTitle("title");
     postData.setTextBody("bodybodybodybody");
     postData.setIsGlobal(true);
-    when(postService.updatePost(any(Long.class),any(Long.class),any(PostDataUpdate.class))).thenReturn(null);
+    Post post = new Post();
+    post.setTitle("title");
+    when(postService.updatePost(any(Long.class),any(Long.class),any(PostDataUpdate.class))).thenReturn(post);
     mvc.perform(put(BASE_URL + "/posts/1")
         .with(user(createUserPrincipal("dan@dan.com", 1L)))
         .contentType(MediaType.APPLICATION_JSON)
         .content(mapper.writeValueAsString(postData)))
         .andExpect(status().isOk())
-        .andExpect(content().json("{'apiVersion': '1.0', 'data': null}"));
+        .andExpect(content().json("{'apiVersion': '1.0', 'data': {'title': 'title'}}"));
   }
 
   @Test
