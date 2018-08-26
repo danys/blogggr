@@ -5,6 +5,7 @@ import {post} from '../utils/ajax'
 import {red}  from '../consts/Constants'
 import Link from '../components/navigation/Link'
 import {withRouter} from 'react-router-dom'
+import {getErrorMessage} from '../utils/errorExtractor';
 
 export class Login extends React.Component{
 
@@ -31,9 +32,7 @@ export class Login extends React.Component{
             this.props.storeToken(authToken, data.data.ValidUntil, data.data.email);
             this.props.history.push('/');
         }, (jqXHR)=>{
-                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.props.showOverlayMsg('Login error', errorMsg, red);
+                this.props.showOverlayMsg('Login error', getErrorMessage(jqXHR.responseText), red);
                 jQuery("input[name=email]").val('');
                 jQuery("input[name=password]").val('');
                 jQuery("input[name=remember]").prop('checked',false);

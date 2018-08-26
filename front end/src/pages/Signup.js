@@ -2,6 +2,7 @@ import React from 'react'
 import {post} from '../utils/ajax'
 import {red, green}  from '../consts/Constants'
 import Link from '../components/navigation/Link';
+import {getErrorMessage} from '../utils/errorExtractor';
 
 export class Signup extends React.Component{
 
@@ -49,9 +50,7 @@ export class Signup extends React.Component{
             this.props.showOverlayMsg('Success', 'Successfully created user!', green);
             this.resetForm();
             }, (jqXHR)=>{
-                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.props.showOverlayMsg('Error creating user', errorMsg, red);
+                this.props.showOverlayMsg('Error creating user', getErrorMessage(jqXHR.responseText), red);
                 this.resetForm();
             }
         );
@@ -120,7 +119,7 @@ export class Signup extends React.Component{
                                             <option>French</option>
                                         </select>
                                     </div>
-                                    <Link url="/signup" cssClass="btn btn-lg btn-success btn-block" onClick={this.handleSignupClick} text="Sign up" tabIndex="7"/>
+                                    <Link url="/signup" cssClass="btn btn-lg btn-success btn-block" onClick={this.handleSignupClick} text="Sign up" tabIndex="9"/>
                                     <Link url="/" cssClass="btn btn-sm btn-primary btn-block" text="Back" />
                                 </fieldset>
                             </form>

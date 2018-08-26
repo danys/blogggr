@@ -6,6 +6,7 @@ import {red}  from '../consts/Constants';
 import {InputHeaderCell} from "../components/table/Cells";
 import debounce from 'lodash/debounce';
 import {TextCell} from '../components/table/Cells';
+import {getErrorMessage} from '../utils/errorExtractor';
 
 import { Table, Column, Cell } from 'fixed-data-table-2';
 
@@ -55,9 +56,7 @@ class Friends extends React.Component{
                 this.setState({friendsSearchData: friendsData});
             },
             (jqXHR)=>{
-                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.props.showOverlayMsg('Error retrieving users!', errorMsg, red);
+                this.props.showOverlayMsg('Error retrieving users!', getErrorMessage(jqXHR.responseText), red);
             },{'Authorization': this.props.token});
     }
 

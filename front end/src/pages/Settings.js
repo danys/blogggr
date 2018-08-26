@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {get, put, postFile} from '../utils/ajax';
 import {green, red} from '../consts/Constants';
+import {getErrorMessage} from '../utils/errorExtractor';
 
 class Settings extends React.Component {
 
@@ -25,10 +26,7 @@ class Settings extends React.Component {
           this.setState({userMe: data.data})
         },
         (jqXHR) => {
-          let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-          errorMsg = errorMsg.substring(1, errorMsg.length - 1);
-          this.props.showOverlayMsg('Error retrieving details of the post!',
-              errorMsg, red);
+          this.props.showOverlayMsg('Error retrieving details of the post!', getErrorMessage(jqXHR.responseText), red);
         }, {'Authorization': this.props.token});
   }
 
@@ -78,9 +76,7 @@ class Settings extends React.Component {
           this.props.showOverlayMsg('Success', successMsg, green);
         },
         (jqXHR) => {
-          let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-          errorMsg = errorMsg.substring(1, errorMsg.length - 1);
-          this.props.showOverlayMsg('Error updating user!', errorMsg, red);
+          this.props.showOverlayMsg('Error updating user!', getErrorMessage(jqXHR.responseText), red);
         },
         {'Authorization': this.props.token});
   }
@@ -103,9 +99,7 @@ class Settings extends React.Component {
           this.setState({passwordData: null});
         },
         (jqXHR) => {
-          let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-          errorMsg = errorMsg.substring(1, errorMsg.length - 1);
-          this.props.showOverlayMsg('Error changing password!', errorMsg, red);
+          this.props.showOverlayMsg('Error changing password!', getErrorMessage(jqXHR.responseText), red);
           this.setState({passwordData: null});
         },
         {'Authorization': this.props.token});
@@ -135,10 +129,7 @@ class Settings extends React.Component {
             this.fetchUserMe();
           },
           (jqXHR) => {
-            let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-            errorMsg = errorMsg.substring(1, errorMsg.length - 1);
-            this.props.showOverlayMsg('Error uploading new user image!', errorMsg,
-                red);
+            this.props.showOverlayMsg('Error uploading new user image!', getErrorMessage(jqXHR.responseText), red);
           },
           {'Authorization': this.props.token});
     });
