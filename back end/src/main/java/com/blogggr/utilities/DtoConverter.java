@@ -33,7 +33,9 @@ public class DtoConverter {
   }
 
   public PostDto toPostDto(Post post) {
-    return modelMapper.map(post, PostDto.class);
+    PostDto postDto = modelMapper.map(post, PostDto.class);
+    postDto.setTimestamp(post.getTimestamp());
+    return postDto;
   }
 
   public CommentDto toCommentDto(Comment comment){

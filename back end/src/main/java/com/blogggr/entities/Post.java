@@ -49,10 +49,10 @@ public class Post implements Serializable {
   @Column(name = "is_global")
   private Boolean isGlobal;
 
-  @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, orphanRemoval=true)
   private List<Comment> comments;
 
-  @OneToMany(mappedBy = "post")
+  @OneToMany(mappedBy = "post", orphanRemoval=true)
   private List<PostImage> postImages;
 
   @ManyToOne

@@ -124,9 +124,10 @@ class Post extends React.Component{
             //Update comment
             let modalTitle = 'Edit comment';
             let requestData = {};
-            requestData.commentID=this.state.updateCommentData.commentID;
+            requestData.commentId=this.state.updateCommentData.commentId;
             requestData.text=this.state.updateCommentData.text;
-            put(this.commentsURL+'/'+this.state.updateCommentData.commentID, requestData,
+            requestData.postId=this.state.postData.postId;
+            put(this.commentsURL+'/'+this.state.updateCommentData.commentId, requestData,
                 (data, status, request)=>{
                     this.props.showOverlayMsg(modalTitle, 'Successfully updated comment!', green);
                     this.fetchPost(this.props);
@@ -138,7 +139,7 @@ class Post extends React.Component{
         } else if (this.state.commentAction==='Delete'){
             //DELETE post
             let modalTitle = 'Delete comment';
-            del(this.commentsURL+'/'+this.state.updateCommentData.commentID,
+            del(this.commentsURL+'/'+this.state.updateCommentData.commentId,
                 (data, status, request)=>{
                     this.props.showOverlayMsg(modalTitle, 'Successfully deleted comment!', green);
                     this.fetchPost(this.props);

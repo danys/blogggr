@@ -74,8 +74,8 @@ public class PostsController {
       throw new IllegalArgumentException(
           simpleBundleMessageSource.getMessage("PostController.updatePost.allFieldsNil"));
     }
-    postService.updatePost(Long.parseLong(id), userPrincipal.getUser().getUserId(), postData);
-    return ResponseBuilder.putSuccessResponse();
+    Post post = postService.updatePost(Long.parseLong(id), userPrincipal.getUser().getUserId(), postData);
+    return ResponseBuilder.putSuccessResponse(dtoConverter.toPostDto(post));
   }
 
   /**

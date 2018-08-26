@@ -1,7 +1,7 @@
 package com.blogggr.dto.out;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import java.security.Timestamp;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,13 +13,18 @@ import lombok.Setter;
 @Setter
 public class PostDto {
 
+  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+
   private Long postId;
   private String shortTitle;
   private String textBody;
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
-  private Timestamp timestamp;
+  private String timestamp;
   private String title;
   private List<CommentDto> comments;
   private List<PostImageDto> postImages;
   private UserDto user;
+
+  public void setTimestamp(Timestamp ts) {
+    this.timestamp = dateFormat.format(ts);
+  }
 }

@@ -42,10 +42,16 @@ public class ResponseBuilder {
         HttpStatus.CREATED);
   }
 
+  //HTTP PUT OK response with data
+  public static ResponseEntity putSuccessResponse(Object data) {
+    return new ResponseEntity(new DataResponseBody(AppConfig.API_VERSION, data), HttpStatus.OK);
+  }
+
   //HTTP PUT OK response
   public static ResponseEntity putSuccessResponse() {
     return new ResponseEntity(new DataResponseBody(AppConfig.API_VERSION, null), HttpStatus.OK);
   }
+
 
   //HTTP DELETE OK response
   public static ResponseEntity deleteSuccessResponse() {
