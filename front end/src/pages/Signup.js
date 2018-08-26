@@ -47,7 +47,7 @@ export class Signup extends React.Component{
         };
         post(this.signUpURL, requestData,
             (data, status, request)=>{
-            this.props.showOverlayMsg('Success', 'Successfully created user!', green);
+            this.props.showOverlayMsg('Success', 'Successfully created user! Verify your e-mail to login!', green);
             this.resetForm();
             }, (jqXHR)=>{
                 this.props.showOverlayMsg('Error creating user', getErrorMessage(jqXHR.responseText), red);

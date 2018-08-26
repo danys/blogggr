@@ -28,8 +28,8 @@ export class Login extends React.Component{
         post(this.sessionsURL, requestData,
             (data, status, request)=>{
             //Extract the auth token, update the redux store and redirect the user
-            let authToken = data.data.Auth;
-            this.props.storeToken(authToken, data.data.ValidUntil, data.data.email);
+            let authToken = data.data.jwt;
+            this.props.storeToken(authToken, data.data.expiration, data.data.email);
             this.props.history.push('/');
         }, (jqXHR)=>{
                 this.props.showOverlayMsg('Login error', getErrorMessage(jqXHR.responseText), red);
