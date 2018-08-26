@@ -27,7 +27,7 @@ export class HomePosts extends React.Component {
             title: this.props.title,
             poster: {}, //gets label and value keys
             visibility: this.props.visibility,
-            limit: 10,
+            maxRecordsCount: 10,
             newPost: {global: true}
         }
     }
@@ -69,7 +69,7 @@ export class HomePosts extends React.Component {
         if (this.state.title!=undefined && this.state.title!=='') requestData['title']=this.state.title;
         if (this.state.poster!=undefined && 'value' in this.state.poster) requestData['posteruserId']=this.state.poster.value;
         if (this.state.visibility!=undefined && this.state.visibility!='') requestData['visibility']=this.state.visibility;
-        if (this.state.limit!=undefined && this.state.limit!='') requestData['limit']=this.state.limit;
+        if (this.state.maxRecordsCount!=undefined && this.state.maxRecordsCount!='') requestData['maxRecordsCount']=this.state.maxRecordsCount;
         get(this.postsURL,
             requestData,
             (data)=>{this.setState({postsData: data.data});},
