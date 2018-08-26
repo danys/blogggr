@@ -83,7 +83,7 @@ class SearchSidebar extends React.Component{
                 <label htmlFor="posterSearchKey">Post visibility</label>
                 <div className="radio">
                     <label>
-                        <input type="radio" name="searchVisibility" id="searchVisibilityAll" value="all"
+                        <input type="radio" name="searchVisibility" id="searchVisibilityAll" value="ALL"
                                checked={this.props.visibility==='ALL'} onChange={this.handleRadio}/>
                         All posts
                     </label>
@@ -91,21 +91,21 @@ class SearchSidebar extends React.Component{
                 <div className="radio">
                     <label>
                         <input type="radio" name="searchVisibility" id="searchVisibilityOnlyGlobal"
-                               value="onlyGlobal" checked={this.props.visibility==='ONLY_GLOBAL'} onChange={this.handleRadio}/>
+                               value="ONLY_GLOBAL" checked={this.props.visibility==='ONLY_GLOBAL'} onChange={this.handleRadio}/>
                         Only global
                     </label>
                 </div>
                 <div className="radio">
                     <label>
                         <input type="radio" name="searchVisibility" id="searchVisibilityOnlyFriends"
-                               value="onlyFriends" checked={this.props.visibility==='ONLY_FRIENDS'} onChange={this.handleRadio}/>
+                               value="ONLY_FRIENDS" checked={this.props.visibility==='ONLY_FRIENDS'} onChange={this.handleRadio}/>
                         Only friends
                     </label>
                 </div>
                 <div className="radio">
                     <label>
                         <input type="radio" name="searchVisibility" id="searchVisibilityOnlyMe"
-                               value="onlyCurrentUser" checked={this.props.visibility==='ONLY_CURRENT_USER'} onChange={this.handleRadio}/>
+                               value="ONLY_CURRENT_USER" checked={this.props.visibility==='ONLY_CURRENT_USER'} onChange={this.handleRadio}/>
                         Only my posts
                     </label>
                 </div>

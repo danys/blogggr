@@ -3,7 +3,7 @@ import { SET_TITLE, SET_POSTER, SET_VISIBILITY } from '../actions/BlogSearchFilt
 const initialState = {
     title: '',
     poster: null,
-    visibility: 'all'
+    visibility: 'ALL'
 };
 
 export function BlogSearchFilterReducer(state = initialState, action) {
