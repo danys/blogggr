@@ -10,7 +10,7 @@ import { updateUserData } from '../actions/UserDataActions'
 import { setTitle, setPoster, setVisibility } from '../actions/BlogSearchFilterActions'
 import {PostFormModal} from './modal/PostFormModal'
 import PrevNext from './navigation/PrevNext'
-import {getErrorMessage} from '../../utils/errorExtractor';
+import {getErrorMessage} from '../utils/errorExtractor';
 
 export class HomePosts extends React.Component {
 
