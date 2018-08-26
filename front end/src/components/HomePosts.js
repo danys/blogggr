@@ -91,7 +91,7 @@ export class HomePosts extends React.Component {
         post(this.postsURL, requestData,
             (data)=>{
                 this.props.showOverlayMsg('Success', 'Successfully created post!', green);
-                const initVisibility = {global: 'ONLY_GLOBAL'};
+                const initVisibility = {global: true};
                 this.setState({newPost: initVisibility});
                 this.searchPosts();
             },
@@ -102,7 +102,7 @@ export class HomePosts extends React.Component {
 
     updateNewPost(key, value){
         const newPost = this.state.newPost;
-        if (key==='isGlobal') newPost.global = (value==='ONLY_GLOBAL')?true:false;
+        if (key==='isGlobal') newPost.global = (value==='Global')?true:false;
         else newPost[key] = value;
         this.setState({newPost: newPost});
     }
