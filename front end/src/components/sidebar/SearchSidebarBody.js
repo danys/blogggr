@@ -84,28 +84,28 @@ class SearchSidebar extends React.Component{
                 <div className="radio">
                     <label>
                         <input type="radio" name="searchVisibility" id="searchVisibilityAll" value="all"
-                               checked={this.props.visibility==='all'} onChange={this.handleRadio}/>
+                               checked={this.props.visibility==='ALL'} onChange={this.handleRadio}/>
                         All posts
                     </label>
                 </div>
                 <div className="radio">
                     <label>
                         <input type="radio" name="searchVisibility" id="searchVisibilityOnlyGlobal"
-                               value="onlyGlobal" checked={this.props.visibility==='onlyGlobal'} onChange={this.handleRadio}/>
+                               value="onlyGlobal" checked={this.props.visibility==='ONLY_GLOBAL'} onChange={this.handleRadio}/>
                         Only global
                     </label>
                 </div>
                 <div className="radio">
                     <label>
                         <input type="radio" name="searchVisibility" id="searchVisibilityOnlyFriends"
-                               value="onlyFriends" checked={this.props.visibility==='onlyFriends'} onChange={this.handleRadio}/>
+                               value="onlyFriends" checked={this.props.visibility==='ONLY_FRIENDS'} onChange={this.handleRadio}/>
                         Only friends
                     </label>
                 </div>
                 <div className="radio">
                     <label>
                         <input type="radio" name="searchVisibility" id="searchVisibilityOnlyMe"
-                               value="onlyCurrentUser" checked={this.props.visibility==='onlyCurrentUser'} onChange={this.handleRadio}/>
+                               value="onlyCurrentUser" checked={this.props.visibility==='ONLY_CURRENT_USER'} onChange={this.handleRadio}/>
                         Only my posts
                     </label>
                 </div>
