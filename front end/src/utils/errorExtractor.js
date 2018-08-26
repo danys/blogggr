@@ -4,7 +4,7 @@ export function getErrorMessage(responseText) {
     let jsonErrors = jsonObject.errors;
     if ((jsonErrors instanceof Array) && (jsonErrors.length >= 1)){
       let firstError = jsonErrors[0];
-      if (firstError instanceof String){
+      if (typeof firstError === 'string'){
         let firstErrorString = JSON.stringify(firstError);
         return firstErrorString.substring(1,firstErrorString.length-1);
       } else {
