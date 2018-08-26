@@ -11,8 +11,8 @@ export class Signup extends React.Component{
         this.resetForm = this.resetForm.bind(this);
         this.signUpURL = "/api/v1.0/users";
         this.state = {
-            sex: '0',
-            lang: 'en'
+            sex: 'M',
+            lang: 'EN'
         };
     }
 
@@ -38,6 +38,7 @@ export class Signup extends React.Component{
             "firstName": this.state.firstName,
             "lastName": this.state.lastName,
             "email": this.state.email,
+            "emailRepeat": this.state.emailRepeat,
             "password": this.state.password,
             "passwordRepeat": this.state.passwordRepeat,
             "lang": this.state.lang,
