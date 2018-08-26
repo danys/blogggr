@@ -5,6 +5,7 @@ import com.blogggr.entities.User;
 import com.blogggr.utilities.JwtHelper;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ public class SessionService {
   @Setter
   public static class SessionDetails {
     private String jwt;
-    private ZonedDateTime expiration;
+    private String expiration;
     private String email;
   }
 
@@ -40,10 +41,10 @@ public class SessionService {
     SessionDetails details = new SessionDetails();
     details.jwt = JwtHelper.generateJwt(user.getEmail());
     try {
-      details.expiration = JwtHelper.getExpirationFromValidJwt(details.jwt);
+      details.expiration = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(JwtHelper.getExpirationFromValidJwt(details.jwt));
     } catch(Exception e){
       logger.error(messageSource.getMessage("SessionService.expirationError"), e);
-      details.expiration = ZonedDateTime.now(AppConfig.LUXEMBOURG_ZONE_ID);
+      details.expiration = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(ZonedDateTime.now(AppConfig.LUXEMBOURG_ZONE_ID));
     }
     details.email = user.getEmail();
     return details;

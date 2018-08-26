@@ -77,7 +77,7 @@ public class SessionsControllerTest {
     userService.createUser(userPostData);
     SessionDetails sessionDetails = new SessionDetails();
     sessionDetails.setEmail("dan@dan.com");
-    sessionDetails.setExpiration(ZonedDateTime.of(2000,1,1,0,0,0,0,AppConfig.LUXEMBOURG_ZONE_ID));
+    sessionDetails.setExpiration(ZonedDateTime.of(2000,1,1,0,0,0,0,AppConfig.LUXEMBOURG_ZONE_ID).toString());
     when(sessionService.createSession(any(User.class))).thenReturn(sessionDetails);
     mvc.perform(post(BASE_URL + "/sessions")
         .contentType(MediaType.APPLICATION_JSON)
@@ -101,7 +101,7 @@ public class SessionsControllerTest {
     userService.confirmEmail(user.getUserId(), user.getChallenge());
     SessionDetails sessionDetails = new SessionDetails();
     sessionDetails.setEmail("dan@dan.com");
-    sessionDetails.setExpiration(ZonedDateTime.of(2000,1,1,0,0,0,0,AppConfig.LUXEMBOURG_ZONE_ID));
+    sessionDetails.setExpiration(ZonedDateTime.of(2000,1,1,0,0,0,0,AppConfig.LUXEMBOURG_ZONE_ID).toString());
     when(sessionService.createSession(any(User.class))).thenReturn(sessionDetails);
     mvc.perform(post(BASE_URL + "/sessions")
         .contentType(MediaType.APPLICATION_JSON)
