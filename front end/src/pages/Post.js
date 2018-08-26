@@ -10,6 +10,7 @@ import {PostFormModal} from '../components/modal/PostFormModal'
 import {CommentFormModal} from '../components/modal/CommentFormModal'
 import {blue, green} from '../consts/Constants'
 import {put, del} from '../utils/ajax'
+import {getErrorMessage} from '../utils/errorExtractor';
 
 class Post extends React.Component{
 
@@ -38,9 +39,7 @@ class Post extends React.Component{
             {},
             (data)=>{this.setState({postData: data.data})},
             (jqXHR)=>{
-                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                props.showOverlayMsg('Error retrieving details of the post!', errorMsg, red);
+              this.props.showOverlayMsg('Error retrieving details of the post!', getErrorMessage(jqXHR.responseText), red);
             },{'Authorization': props.token});
     }
 
@@ -61,9 +60,7 @@ class Post extends React.Component{
             requestData,
             ()=>{this.setState({commentText: ''},this.fetchPost(this.props))},
             (jqXHR)=>{
-                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.props.showOverlayMsg('Error posting comment!', errorMsg, red);
+              this.props.showOverlayMsg('Error posting comment!', getErrorMessage(jqXHR.responseText), red);
             },{'Authorization': this.props.token});
     }
 
@@ -102,9 +99,7 @@ class Post extends React.Component{
                     url += data.data.shortTitle;
                     this.props.history.push(url);
                 }, (jqXHR)=>{
-                    let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                    errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                    this.props.showOverlayMsg(modalTitle, errorMsg, red);
+                    this.props.showOverlayMsg(modalTitle, getErrorMessage(jqXHR.responseText), red);
                 },
                 {'Authorization': this.props.token}
             );
@@ -116,9 +111,7 @@ class Post extends React.Component{
                     this.props.showOverlayMsg(modalTitle, 'Successfully deleted post!', green);
                     this.props.history.push('/');
                 }, (jqXHR)=>{
-                    let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                    errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                    this.props.showOverlayMsg(modalTitle, errorMsg, red);
+                   this.props.showOverlayMsg(modalTitle, getErrorMessage(jqXHR.responseText), red);
                 },
                 {'Authorization': this.props.token}
             );
@@ -138,9 +131,7 @@ class Post extends React.Component{
                     this.props.showOverlayMsg(modalTitle, 'Successfully updated comment!', green);
                     this.fetchPost(this.props);
                 }, (jqXHR)=>{
-                    let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                    errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                    this.props.showOverlayMsg(modalTitle, errorMsg, red);
+                   this.props.showOverlayMsg(modalTitle, getErrorMessage(jqXHR.responseText), red);
                 },
                 {'Authorization': this.props.token}
             );
@@ -152,9 +143,7 @@ class Post extends React.Component{
                     this.props.showOverlayMsg(modalTitle, 'Successfully deleted comment!', green);
                     this.fetchPost(this.props);
                 }, (jqXHR)=>{
-                    let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                    errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                    this.props.showOverlayMsg(modalTitle, errorMsg, red);
+                    this.props.showOverlayMsg(modalTitle, getErrorMessage(jqXHR.responseText), red);
                 },
                 {'Authorization': this.props.token}
             );

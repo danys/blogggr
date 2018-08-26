@@ -10,6 +10,7 @@ import { updateUserData } from '../actions/UserDataActions'
 import { setTitle, setPoster, setVisibility } from '../actions/BlogSearchFilterActions'
 import {PostFormModal} from './modal/PostFormModal'
 import PrevNext from './navigation/PrevNext'
+import {getErrorMessage} from '../../utils/errorExtractor';
 
 export class HomePosts extends React.Component {
 
@@ -38,9 +39,7 @@ export class HomePosts extends React.Component {
                 ()=>{this.props.storeUserData(this.state.userData.firstName, this.state.userData.lastName);});
             },
             (jqXHR)=>{
-                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.props.showOverlayMsg('Error retrieving details of the current user!', errorMsg, red);
+                this.props.showOverlayMsg('Error retrieving details of the current user!', getErrorMessage(jqXHR.responseText), red);
             },{'Authorization': this.props.token});
     }
 
@@ -75,9 +74,7 @@ export class HomePosts extends React.Component {
             requestData,
             (data)=>{this.setState({postsData: data.data});},
             (jqXHR)=>{
-                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.props.showOverlayMsg('Posts search error', errorMsg, red);
+                this.props.showOverlayMsg('Posts search error', getErrorMessage(jqXHR.responseText), red);
             },{'Authorization': this.props.token});
     }
 
@@ -99,9 +96,7 @@ export class HomePosts extends React.Component {
                 this.searchPosts();
             },
             (jqXHR)=>{
-                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.props.showOverlayMsg('Error creating post', errorMsg, red);
+                this.props.showOverlayMsg('Error creating post', getErrorMessage(jqXHR.responseText), red);
             },{'Authorization': this.props.token});
     }
 
@@ -117,9 +112,7 @@ export class HomePosts extends React.Component {
             {},
             (data)=>{this.setState({postsData: data.data});},
             (jqXHR)=>{
-                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.props.showOverlayMsg('Posts search error', errorMsg, red);
+                this.props.showOverlayMsg('Posts search error', getErrorMessage(jqXHR.responseText), red);
             },{'Authorization': this.props.token});
     }
 
@@ -128,9 +121,7 @@ export class HomePosts extends React.Component {
             {},
             (data)=>{this.setState({postsData: data.data});},
             (jqXHR)=>{
-                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.props.showOverlayMsg('Posts search error', errorMsg, red);
+                this.props.showOverlayMsg('Posts search error', getErrorMessage(jqXHR.responseText), red);
             },{'Authorization': this.props.token});
     }
 

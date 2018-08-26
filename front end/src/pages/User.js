@@ -22,9 +22,7 @@ class User extends React.Component{
             {},
             (data)=>{this.setState({user: data.data})},
             (jqXHR)=>{
-                let errorMsg = JSON.stringify(JSON.parse(jqXHR.responseText).error);
-                errorMsg = errorMsg.substring(1,errorMsg.length-1);
-                this.props.showOverlayMsg('Error retrieving details of the post!', errorMsg, red);
+                this.props.showOverlayMsg('Error retrieving details of the post!', getErrorMessage(jqXHR.responseText), red);
             },{'Authorization': this.props.token});
     }
 
