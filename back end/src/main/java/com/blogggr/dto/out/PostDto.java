@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class PostDto {
 
-  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+  private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
 
   private Long postId;
   private String shortTitle;
