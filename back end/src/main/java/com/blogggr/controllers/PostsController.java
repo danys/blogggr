@@ -75,7 +75,7 @@ public class PostsController {
           simpleBundleMessageSource.getMessage("PostController.updatePost.allFieldsNil"));
     }
     Post post = postService.updatePost(Long.parseLong(id), userPrincipal.getUser().getUserId(), postData);
-    return ResponseBuilder.putSuccessResponse(dtoConverter.toPostDto(post));
+    return ResponseBuilder.putSuccessResponse(dtoConverter.toOnlyPostDto(post));
   }
 
   /**

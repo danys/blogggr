@@ -2,6 +2,7 @@ package com.blogggr.utilities;
 
 import com.blogggr.dto.out.CommentDto;
 import com.blogggr.dto.out.FriendDto;
+import com.blogggr.dto.out.OnlyPostDto;
 import com.blogggr.dto.out.PostDto;
 import com.blogggr.dto.out.PostImageDto;
 import com.blogggr.dto.out.SimplePostDto;
@@ -49,6 +50,12 @@ public class DtoConverter {
     postDto.setTimestamp(post.getTimestamp());
     postDto.setImage(post.getPostImages().stream().map(postImage -> modelMapper.map(postImage, PostImageDto.class)).collect(
         Collectors.toList()));
+    return postDto;
+  }
+
+  public OnlyPostDto toOnlyPostDto(Post post) {
+    OnlyPostDto postDto = modelMapper.map(post, OnlyPostDto.class);
+    postDto.setTimestamp(post.getTimestamp());
     return postDto;
   }
 
