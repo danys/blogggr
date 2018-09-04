@@ -114,7 +114,7 @@ public class PostsController {
    * @param userPrincipal the logged in user
    */
   @GetMapping(value = UsersController.USER_PATH
-      + "/{userId:[\\d]+}/posts/{postShortName:[A-Za-z-]+}")
+      + "/{userId:[\\d]+}/posts/{postShortName:[-A-Za-z0-9]+}")
   public ResponseEntity getPost(@PathVariable("userId") String userId, @PathVariable("postShortName") String postShortName,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
     logger.info(

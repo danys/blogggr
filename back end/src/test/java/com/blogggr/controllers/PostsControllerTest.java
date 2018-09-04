@@ -29,6 +29,7 @@ import com.blogggr.services.PostService;
 import com.blogggr.utilities.TimeUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -215,7 +216,7 @@ public class PostsControllerTest {
     post.setTextBody("textBody");
     post.setTimestamp(TimeUtilities.getCurrentTimestamp());
     post.setComments(comments);
-    post.setPostImages(userImages);
+    post.setPostImages(new HashSet<>(userImages));
     post.setUser(user);
     when(postService.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
     mvc.perform(get(BASE_URL + "/users/1/posts/blablabla")
@@ -243,7 +244,7 @@ public class PostsControllerTest {
     post.setTextBody("textBody");
     post.setTimestamp(TimeUtilities.getCurrentTimestamp());
     post.setComments(comments);
-    post.setPostImages(userImages);
+    post.setPostImages(new HashSet<>(userImages));
     post.setUser(user);
     when(postService.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
     mvc.perform(get(BASE_URL + "/users/1/posts/bl")
@@ -275,7 +276,7 @@ public class PostsControllerTest {
     post.setTextBody("textBody");
     post.setTimestamp(TimeUtilities.getCurrentTimestamp());
     post.setComments(new ArrayList<>());
-    post.setPostImages(new ArrayList<>());
+    post.setPostImages(new HashSet<>());
     post.setUser(user);
     List<Post> posts = new ArrayList<>();
     posts.add(post);
