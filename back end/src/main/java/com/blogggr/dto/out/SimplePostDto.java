@@ -1,13 +1,11 @@
 package com.blogggr.dto.out;
 
-import com.blogggr.entities.PostImage;
-import com.blogggr.utilities.DtoConverter;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.modelmapper.ModelMapper;
 
 /**
  * Created by Daniel Sunnen on 27.08.18.
@@ -16,6 +14,8 @@ import org.modelmapper.ModelMapper;
 @Setter
 public class SimplePostDto {
 
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
 
   private Long postId;
@@ -33,7 +33,7 @@ public class SimplePostDto {
   }
 
   public void setImage(List<PostImageDto> postImages){
-    if ((postImages != null) && (postImages.size()>0)){
+    if ((postImages != null) && (!postImages.isEmpty())){
       postImage = postImages.get(0);
     }
   }

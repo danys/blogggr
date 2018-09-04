@@ -4,7 +4,6 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.dto.PostData;
 import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
-import com.blogggr.dto.out.PostDto;
 import com.blogggr.dto.out.SimplePostDto;
 import com.blogggr.entities.Post;
 import com.blogggr.responses.PrevNextListPage;
