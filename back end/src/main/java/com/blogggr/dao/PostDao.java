@@ -8,7 +8,6 @@ import com.blogggr.responses.PageData;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.StringUtilities;
-import javax.persistence.FetchType;
 import javax.persistence.NoResultException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -399,6 +398,7 @@ public class PostDao extends GenericDaoImpl<Post> {
     CriteriaQuery<Post> query = cb.createQuery(Post.class);
     Root<Post> root = query.from(Post.class);
     root.fetch("postImages", JoinType.LEFT);
+    root.fetch("comments", JoinType.LEFT);
     Join<Post, User> postUserJoin = root.join("user", JoinType.LEFT);
     query.where(
         cb.and(
