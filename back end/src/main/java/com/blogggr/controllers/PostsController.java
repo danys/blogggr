@@ -5,6 +5,7 @@ import com.blogggr.dto.PostData;
 import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
 import com.blogggr.dto.out.PostDto;
+import com.blogggr.dto.out.SimplePostDto;
 import com.blogggr.entities.Post;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.responses.ResponseBuilder;
@@ -142,10 +143,10 @@ public class PostsController {
         "[GET /posts] User: {}", userPrincipal.getUser().getEmail());
     PrevNextListPage<Post> page = postService
         .getPosts(postSearchData, userPrincipal.getUser());
-    List<PostDto> postDtos = page.getPageItems().stream().map(post -> dtoConverter.toPostDto(post))
+    List<SimplePostDto> postDtos = page.getPageItems().stream().map(post -> dtoConverter.toSimplePostDto(post))
         .collect(
             Collectors.toList());
-    PrevNextListPage<PostDto> dtoPage = new PrevNextListPage<>(postDtos, page.getPageData());
+    PrevNextListPage<SimplePostDto> dtoPage = new PrevNextListPage<>(postDtos, page.getPageData());
     return ResponseBuilder.getSuccessResponse(dtoPage);
   }
 }

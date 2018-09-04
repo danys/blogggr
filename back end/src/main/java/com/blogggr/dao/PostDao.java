@@ -134,6 +134,9 @@ public class PostDao extends GenericDaoImpl<Post> {
           true); //for count: query must be select count (distinct column name), not select distinct column name...
     }
     Root<Post> root = query.from(Post.class);
+    if (!countOnly) {
+      root.fetch("postImages", JoinType.LEFT);
+    }
     //Join from Post over User over Friend over User
     Join<Post, User> postUserJoin = root.join("user");
     Join<User, Friend> userFriendJoin1 = postUserJoin.join("friends1", JoinType.LEFT);
