@@ -3,6 +3,7 @@ package com.blogggr.entities;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -53,7 +54,7 @@ public class Post implements Serializable {
   private List<Comment> comments;
 
   @OneToMany(mappedBy = "post", orphanRemoval=true)
-  private List<PostImage> postImages;
+  private Set<PostImage> postImages;
 
   @ManyToOne
   @JoinColumn(name = "user_id")

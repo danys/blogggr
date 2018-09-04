@@ -174,7 +174,6 @@ public class PostService {
           (Comment o1, Comment o2) -> (int) (o1.getTimestamp().getTime() - o2.getTimestamp()
               .getTime()));
       post.setComments(comments);
-      post.getPostImages(); //fetch post images
       //1. Post can be viewed if current session user is the owner or the post has global flag
       if (post.getUser().getUserId() == userId || post.getIsGlobal()) {
         return post;
