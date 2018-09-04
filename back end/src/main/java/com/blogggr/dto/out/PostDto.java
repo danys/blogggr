@@ -3,6 +3,7 @@ package com.blogggr.dto.out;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,8 @@ import lombok.Setter;
 @Setter
 public class PostDto {
 
+  @Getter(AccessLevel.NONE)
+  @Setter(AccessLevel.NONE)
   private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
 
   private Long postId;
