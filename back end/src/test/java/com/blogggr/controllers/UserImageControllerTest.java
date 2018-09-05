@@ -94,12 +94,6 @@ public class UserImageControllerTest {
   }
 
   @Test
-  public void getUserImage_Not_Authorized() throws Exception{
-    mvc.perform(get(BASE_URL + "/userimages/file1"))
-        .andExpect(status().isUnauthorized());
-  }
-
-  @Test
   public void getUserImage_Normal() throws Exception{
     byte[] fileContent = new byte[]{0};
     Resource file = new ByteArrayResource(fileContent);

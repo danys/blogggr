@@ -13,6 +13,7 @@ import com.blogggr.dao.UserDao;
 import com.blogggr.dto.PostData;
 import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
+import com.blogggr.dto.UserEnums.Sex;
 import com.blogggr.entities.Comment;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.Post;
@@ -253,6 +254,7 @@ public class PostServiceTest {
     User user = new User();
     user.setUserId(1L);
     user.setUserImages(new ArrayList<>());
+    user.setSex(Sex.M);
     List<Post> posts = new ArrayList<>();
     Post post = new Post();
     post.setPostId(1L);
@@ -273,6 +275,7 @@ public class PostServiceTest {
     User user = new User();
     user.setUserId(1L);
     user.setUserImages(new ArrayList<>());
+    user.setSex(Sex.M);
     List<Post> posts = new ArrayList<>();
     Post post = new Post();
     post.setPostId(1L);
