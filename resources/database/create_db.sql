@@ -239,3 +239,6 @@ ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
 
 
+-- Seed data
+insert into blogggr.user_images (name, is_current, width, height, version) values ('man.png', false, 128, 128, 1);
+insert into blogggr.user_images (name, is_current, width, height, version) values ('woman.png', false, 128, 128, 1);

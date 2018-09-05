@@ -18,6 +18,7 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.dto.FriendDataBase;
 import com.blogggr.dto.FriendDataUpdate;
 import com.blogggr.dto.PostData;
+import com.blogggr.dto.UserEnums.Sex;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.FriendPk;
 import com.blogggr.entities.User;
@@ -143,6 +144,7 @@ public class FriendsControllerTest {
     user.setEmail("dany@dan.com");
     user.setFirstName("daniel");
     user.setLastName("Müller");
+    user.setSex(Sex.M);
     users.add(user);
     when(friendService.getFriends(any(Long.class))).thenReturn(users);
     mvc.perform(get(BASE_URL + "/friends")
@@ -164,8 +166,10 @@ public class FriendsControllerTest {
   public void getFriendship_Normal() throws Exception {
     User user1 = new User();
     user1.setUserId(1L);
+    user1.setSex(Sex.M);
     User user2 = new User();
     user2.setUserId(2L);
+    user2.setSex(Sex.F);
     Friend friend = new Friend();
     friend.setUser1(user1);
     friend.setUser2(user2);

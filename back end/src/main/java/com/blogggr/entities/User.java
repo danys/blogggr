@@ -101,9 +101,6 @@ public class User implements Serializable {
   //Helper methods
 
   public UserImage getImage() {
-    if (this.userImages.isEmpty()) {
-      return null;
-    }
     this.image = this.userImages.stream().filter(UserImage::getIsCurrent).findFirst()
         .orElse(null);
     if (this.image == null) { //set a default image
@@ -115,7 +112,7 @@ public class User implements Serializable {
       womanImage.setWidth(IMG_WIDTH);
       womanImage.setHeight(IMG_HEIGHT);
       womanImage.setName(WOMAN_NAME);
-      this.image = (this.sex.name().compareTo("m") == 0) ? manImage : womanImage;
+      this.image = (this.sex.name().compareTo("M") == 0) ? manImage : womanImage;
     }
     return image;
   }

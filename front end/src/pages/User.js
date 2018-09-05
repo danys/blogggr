@@ -71,7 +71,7 @@ class User extends React.Component{
                         <div className="panel-body">
                             <div className="profile-header-container">
                                 <div className="profile-header-img">
-                                    <img src={this.state.user && this.state.user.image ? this.userImagesBaseURL+'/'+this.state.user.image.name : ''} />
+                                    <img src={this.state.user && this.state.user.image ? this.userImagesBaseURL+this.state.user.image.name : ''} />
                                 </div>
                             </div>
                         </div>

@@ -75,7 +75,7 @@ public class FileStorageManager {
       throw new StorageException(simpleBundleMessageSource
           .getMessage("FileStorageManager.getImageResourceFromCloud.malformedUrlException"), e);
     }
-    if (resource.exists() || resource.isReadable()) {
+    if (resource.exists() && resource.isReadable()) {
       return resource;
     } else {
       throw new StorageException(

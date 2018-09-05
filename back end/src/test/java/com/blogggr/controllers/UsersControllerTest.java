@@ -102,6 +102,7 @@ public class UsersControllerTest {
     user.setFirstName("Dan");
     user.setUserId(10L);
     user.setImage(null);
+    user.setSex(Sex.M);
     List<User> users = new ArrayList<>();
     users.add(user);
     PrevNextListPage<User> page = new PrevNextListPage<>(users, new PageData());
@@ -155,6 +156,7 @@ public class UsersControllerTest {
     user.setLastName("Sun");
     user.setFirstName("Dan");
     user.setUserId(1L);
+    user.setSex(Sex.M);
     List<User> list = new ArrayList<>();
     list.add(user);
     when(userService.getUsers(any(SimpleUserSearchData.class))).thenReturn(new RandomAccessListPage<>(list, new PageMetaData()));
@@ -180,6 +182,7 @@ public class UsersControllerTest {
     user.setLastName("Sun");
     user.setFirstName("Dan");
     user.setUserId(1L);
+    user.setSex(Sex.M);
     when(userService.getUserByIdWithImages(any(Long.class))).thenReturn(user);
     mvc.perform(get(BASE_URL + "/users/me")
         .with(user(createUserPrincipal("dan@dan.com", 1L))))
@@ -206,6 +209,7 @@ public class UsersControllerTest {
     user.setLastName("Sun");
     user.setFirstName("Dan");
     user.setUserId(1L);
+    user.setSex(Sex.M);
     when(userService.getUserByIdWithImages(any(Long.class))).thenReturn(user);
     mvc.perform(get(BASE_URL + "/users/1")
         .with(user(createUserPrincipal("dan@dan.com", 1L))))

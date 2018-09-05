@@ -65,8 +65,8 @@ public class UserImageController {
   @ResponseBody
   public ResponseEntity<Resource> getUserImage(@PathVariable("filename") String fileName,
       @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    logger.info(
-        "[GET /userimages/{}. User: {}]", fileName, userPrincipal.getUser().getEmail());
+    /*logger.info(
+        "[GET /userimages/{}. User: {}]", fileName, userPrincipal.getUser().getEmail());*/
 
     Resource file = userImageService.getUserImage(fileName);
     return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
