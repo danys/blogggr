@@ -56,18 +56,13 @@ public class UserImageController {
   /**
    * GET /userimages/filename
    * @param fileName the filename of the file to retrieve
-   * @param userPrincipal the logged in user
    * @return
    * @throws StorageException
    * @throws ResourceNotFoundException
    */
   @GetMapping("/userimages/{filename:.+}")
   @ResponseBody
-  public ResponseEntity<Resource> getUserImage(@PathVariable("filename") String fileName,
-      @AuthenticationPrincipal UserPrincipal userPrincipal) {
-    /*logger.info(
-        "[GET /userimages/{}. User: {}]", fileName, userPrincipal.getUser().getEmail());*/
-
+  public ResponseEntity<Resource> getUserImage(@PathVariable("filename") String fileName) {
     Resource file = userImageService.getUserImage(fileName);
     return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
         "attachment; filename=\"" + file.getFilename() + "\"").body(file);
