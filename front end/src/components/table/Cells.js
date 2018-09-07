@@ -61,3 +61,15 @@ export class InputHeaderCell extends React.Component {
         );
     }
 }
+
+export class FixedHeaderCell extends React.Component {
+
+  render() {
+    const {field, ...props} = this.props;
+    return (
+        <Cell {...props}>
+          {field}
+        </Cell>
+    );
+  }
+}

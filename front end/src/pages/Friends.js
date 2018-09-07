@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import {get} from '../utils/ajax';
 import {red}  from '../consts/Constants';
-import {InputHeaderCell} from "../components/table/Cells";
+import {FixedHeaderCell, InputHeaderCell} from "../components/table/Cells";
 import debounce from 'lodash/debounce';
 import {TextCell} from '../components/table/Cells';
 import {getErrorMessage} from '../utils/errorExtractor';
@@ -14,10 +14,12 @@ class Friends extends React.Component{
 
     constructor(props){
         super(props);
-        this.friendsURL = "/api/v1.0/friends/";
+        this.friendsURL = "/api/v1.0/friends";
         this.usersURL = "/api/v1.0/users";
         this.state = {
-            friendsSearchData: null,
+            friendsData: null,
+            friendsMaxPageItems: 1000,
+            userSearchData: null,
             searchParams: {
                 firstName: '',
                 lastName: '',
@@ -28,6 +30,7 @@ class Friends extends React.Component{
         this.pagesInTransit={};
         this.debouncedFetchUsers = debounce(this.fetchUsers,200);
         this.fetchUsers = this.fetchUsers.bind(this);
+        this.fetchFriends = this.fetchFriends.bind(this);
     }
 
     fetchUsers(pageNumber, clear){
@@ -39,10 +42,10 @@ class Friends extends React.Component{
             const pageN = parseInt(pageNumber);
             const nextPageN = (pageN+1).toString();
             const previousPageN = (pageN-1).toString();
-            if (this.state.friendsSearchData!=null && this.state.friendsSearchData.hasOwnProperty(previousPageN)){
-                requestParams.after = this.state.friendsSearchData[previousPageN].pageItems[this.state.searchParams.maxRecordsCount-1].userId;
-            } else if (this.state.friendsSearchData!=null && this.state.friendsSearchData.hasOwnProperty(nextPageN)){
-                requestParams.before = this.state.friendsSearchData[nextPageN].pageItems[0].userId;
+            if (this.state.userSearchData!=null && this.state.userSearchData.hasOwnProperty(previousPageN)){
+                requestParams.after = this.state.userSearchData[previousPageN].pageItems[this.state.searchParams.maxRecordsCount-1].userId;
+            } else if (this.state.userSearchData!=null && this.state.userSearchData.hasOwnProperty(nextPageN)){
+                requestParams.before = this.state.userSearchData[nextPageN].pageItems[0].userId;
             } else {
                 throw "Invalid pageNumber: previous or next pageNumber does not exist!";
             }
@@ -50,18 +53,30 @@ class Friends extends React.Component{
         get(this.usersURL,
             requestParams,
             (data)=>{
-                let friendsData = (this.state.friendsSearchData==null || clear)?{}:this.state.friendsSearchData;
-                friendsData[pageNumber] = data.data;
+                let usersData = (this.state.userSearchData==null || clear)?{}:this.state.userSearchData;
+                usersData[pageNumber] = data.data;
                 delete this.pagesInTransit[pageNumber];
-                this.setState({friendsSearchData: friendsData});
+                this.setState({userSearchData: usersData});
             },
             (jqXHR)=>{
                 this.props.showOverlayMsg('Error retrieving users!', getErrorMessage(jqXHR.responseText), red);
             },{'Authorization': this.props.token});
     }
 
+    fetchFriends(){
+     get(this.friendsURL,
+        {},
+        (data)=>{
+          this.setState({friendsData: data.data});
+        },
+        (jqXHR)=>{
+          this.props.showOverlayMsg('Error retrieving friends!', getErrorMessage(jqXHR.responseText), red);
+        },{'Authorization': this.props.token});
+    }
+
     componentDidMount(){
         this.fetchUsers('0');
+        this.fetchFriends();
     }
 
     searchFormChange(field, value){
@@ -71,10 +86,13 @@ class Friends extends React.Component{
     }
 
     render() {
-        const rowsCount = (this.state.friendsSearchData!=null && this.state.friendsSearchData['0'].pageData)?this.state.friendsSearchData['0'].pageData.filteredCount:0;
-        const rowData = (this.state.friendsSearchData!=null)?this.state.friendsSearchData:null;
+        const rowsCount = (this.state.userSearchData!=null && this.state.userSearchData['0'].pageData)?this.state.userSearchData['0'].pageData.filteredCount:0;
+        const rowData = (this.state.userSearchData!=null)?this.state.userSearchData:null;
+        const friendsRowsCount = (this.state.friendsData!=null)?this.state.friendsData.length:0;
+        const friendsRowData = (this.state.friendsData!=null)?this.state.friendsData:null;
         return (
-            <div className="row">
+            <div>
+              <div className="row">
                 <div className="col-lg-6">
                     <h1>Search for a user</h1>
                     <Table
@@ -119,6 +137,53 @@ class Friends extends React.Component{
                         />
                     </Table>
                 </div>
+              </div>
+              <div className="row">
+                <div className="col-lg-6">
+                  <h1>Your friends</h1>
+                  <Table
+                      rowsCount={friendsRowsCount}
+                      rowHeight={50}
+                      width={650}
+                      height={250}
+                      headerHeight={50}>
+                    <Column
+                        header={<Cell>Image</Cell>}
+                        cell={props => (
+                            <Cell {...props}>
+                              image
+                            </Cell>
+                        )}
+                        width={100}
+                    />
+                    <Column
+                        header={<FixedHeaderCell field="First name" />}
+                        cell={props => (
+                            <TextCell {...props} loadUsers={this.fetchFriends} field='firstName' data={friendsRowData} itemsPerPage={this.state.friendsMaxPageItems}/>
+                        )}
+                        width={130}
+                    />
+                    <Column
+                        header={<FixedHeaderCell field="Last name" />}
+                        cell={props => (
+                            <Cell {...props}>
+                              <TextCell {...props} loadUsers={this.fetchFriends} field='lastName' data={friendsRowData} itemsPerPage={this.state.friendsMaxPageItems}/>
+                            </Cell>
+                        )}
+                        width={130}
+                    />
+                    <Column
+                        header={<FixedHeaderCell field="E-mail" />}
+                        cell={props => (
+                            <Cell {...props}>
+                              <TextCell {...props} loadUsers={this.fetchFriends} field='email' data={friendsRowData} itemsPerPage={this.state.friendsMaxPageItems}/>
+                            </Cell>
+                        )}
+                        width={250}
+                    />
+                  </Table>
+                </div>
+              </div>
             </div>
         );
     }
