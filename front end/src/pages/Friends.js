@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import {get} from '../utils/ajax';
 import {red}  from '../consts/Constants';
-import {FixedHeaderCell, InputHeaderCell} from "../components/table/Cells";
+import {FixedHeaderCell, InputHeaderCell, ImageCell} from "../components/table/Cells";
 import debounce from 'lodash/debounce';
 import {TextCell} from '../components/table/Cells';
 import {getErrorMessage} from '../utils/errorExtractor';
@@ -16,6 +16,7 @@ class Friends extends React.Component{
         super(props);
         this.friendsURL = "/api/v1.0/friends";
         this.usersURL = "/api/v1.0/users";
+        this.userImageURL = "/api/v1.0/userimages";
         this.state = {
             friendsData: null,
             friendsMaxPageItems: 1000,
@@ -104,9 +105,9 @@ class Friends extends React.Component{
                         <Column
                             header={<Cell>Image</Cell>}
                             cell={props => (
-                                <Cell {...props}>
+                                <ImageCell {...props} loadUsers={this.fetchUsers} baseUrl={this.userImageURL} field='image' width={40} height={40} data={rowData} itemsPerPage={this.state.searchParams.maxRecordsCount} >
                                     image
-                                </Cell>
+                                </ImageCell>
                             )}
                             width={100}
                         />
