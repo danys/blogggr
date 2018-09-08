@@ -32,6 +32,7 @@ class Friends extends React.Component{
         this.debouncedFetchUsers = debounce(this.fetchUsers,200);
         this.fetchUsers = this.fetchUsers.bind(this);
         this.fetchFriends = this.fetchFriends.bind(this);
+        this.handleUserImageClick = this.handleUserImageClick.bind(this);
     }
 
     fetchUsers(pageNumber, clear){
@@ -86,6 +87,10 @@ class Friends extends React.Component{
         this.setState({searchParams: searchParams}, () => {this.debouncedFetchUsers('0',true)});
     }
 
+    handleUserImageClick(userId){
+      this.props.history.push('/users/'+userId);
+    }
+
     render() {
         const rowsCount = (this.state.userSearchData!=null && this.state.userSearchData['0'].pageData)?this.state.userSearchData['0'].pageData.filteredCount:0;
         const rowData = (this.state.userSearchData!=null)?this.state.userSearchData:null;
@@ -105,7 +110,7 @@ class Friends extends React.Component{
                         <Column
                             header={<Cell>Image</Cell>}
                             cell={props => (
-                                <ImageCell {...props} loadUsers={this.fetchUsers} baseUrl={this.userImageURL} field='image' width={40} height={40} data={rowData} itemsPerPage={this.state.searchParams.maxRecordsCount} >
+                                <ImageCell {...props} loadUsers={this.fetchUsers} imageBaseUrl={this.userImageURL} field='image' width={40} height={40} clickHandler={this.handleUserImageClick} data={rowData} isPaged={true} itemsPerPage={this.state.searchParams.maxRecordsCount} >
                                     image
                                 </ImageCell>
                             )}
@@ -114,7 +119,7 @@ class Friends extends React.Component{
                         <Column
                             header={<InputHeaderCell field="First name" onChange={this.searchFormChange.bind(this, 'firstName')} />}
                             cell={props => (
-                                <TextCell {...props} loadUsers={this.fetchUsers} field='firstName' data={rowData} itemsPerPage={this.state.searchParams.maxRecordsCount}/>
+                                <TextCell {...props} loadUsers={this.fetchUsers} field='firstName' data={rowData} isPaged={true} itemsPerPage={this.state.searchParams.maxRecordsCount}/>
                             )}
                             width={130}
                         />
@@ -122,7 +127,7 @@ class Friends extends React.Component{
                             header={<InputHeaderCell field="Last name" onChange={this.searchFormChange.bind(this, 'lastName')} />}
                             cell={props => (
                                 <Cell {...props}>
-                                    <TextCell {...props} loadUsers={this.fetchUsers} field='lastName' data={rowData} itemsPerPage={this.state.searchParams.maxRecordsCount}/>
+                                    <TextCell {...props} loadUsers={this.fetchUsers} field='lastName' data={rowData} isPaged={true} itemsPerPage={this.state.searchParams.maxRecordsCount}/>
                                 </Cell>
                             )}
                             width={130}
@@ -131,7 +136,7 @@ class Friends extends React.Component{
                             header={<InputHeaderCell field="E-mail" onChange={this.searchFormChange.bind(this, 'email')} />}
                             cell={props => (
                                 <Cell {...props}>
-                                    <TextCell {...props} loadUsers={this.fetchUsers} field='email' data={rowData} itemsPerPage={this.state.searchParams.maxRecordsCount}/>
+                                    <TextCell {...props} loadUsers={this.fetchUsers} field='email' data={rowData} isPaged={true} itemsPerPage={this.state.searchParams.maxRecordsCount}/>
                                 </Cell>
                             )}
                             width={250}
@@ -151,16 +156,16 @@ class Friends extends React.Component{
                     <Column
                         header={<Cell>Image</Cell>}
                         cell={props => (
-                            <Cell {...props}>
+                            <ImageCell {...props} loadUsers={this.fetchFriends} imageBaseUrl={this.userImageURL} field='image' width={40} height={40} clickHandler={this.handleUserImageClick} data={rowData} isPaged={false} itemsPerPage={this.state.friendsMaxPageItems} >
                               image
-                            </Cell>
+                            </ImageCell>
                         )}
                         width={100}
                     />
                     <Column
                         header={<FixedHeaderCell field="First name" />}
                         cell={props => (
-                            <TextCell {...props} loadUsers={this.fetchFriends} field='firstName' data={friendsRowData} itemsPerPage={this.state.friendsMaxPageItems}/>
+                            <TextCell {...props} loadUsers={this.fetchFriends} field='firstName' data={friendsRowData} isPaged={false} itemsPerPage={this.state.friendsMaxPageItems}/>
                         )}
                         width={130}
                     />
@@ -168,7 +173,7 @@ class Friends extends React.Component{
                         header={<FixedHeaderCell field="Last name" />}
                         cell={props => (
                             <Cell {...props}>
-                              <TextCell {...props} loadUsers={this.fetchFriends} field='lastName' data={friendsRowData} itemsPerPage={this.state.friendsMaxPageItems}/>
+                              <TextCell {...props} loadUsers={this.fetchFriends} field='lastName' data={friendsRowData} isPaged={false} itemsPerPage={this.state.friendsMaxPageItems}/>
                             </Cell>
                         )}
                         width={130}

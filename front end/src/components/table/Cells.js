@@ -15,10 +15,10 @@ export function getCellData(data, index, field, itemsPerPage, loadData){
 export class TextCell extends React.Component {
 
     render() {
-        const {rowIndex, field, data, itemsPerPage, loadUsers, ...props} = this.props;
+        const {rowIndex, field, data, itemsPerPage, loadUsers, isPaged, ...props} = this.props;
         return (
             <Cell {...props}>
-                {getCellData(data, rowIndex, field, itemsPerPage, loadUsers)}
+                {isPaged ? getCellData(data, rowIndex, field, itemsPerPage, loadUsers) : data[rowIndex][field]}
             </Cell>
         );
     }
@@ -61,12 +61,13 @@ export class FixedHeaderCell extends React.Component {
 export class ImageCell extends React.Component {
 
   render() {
-    const {rowIndex, field, data, itemsPerPage, loadUsers, baseUrl, width, height, ...props} = this.props;
-    const imageData = getCellData(data, rowIndex, field, itemsPerPage, loadUsers);
-    const imageURL = (imageData!=null && imageData.hasOwnProperty('name'))? baseUrl+'/'+getCellData(data, rowIndex, field, itemsPerPage, loadUsers)['name']:'';
+    const {rowIndex, field, data, itemsPerPage, loadUsers, imageBaseUrl, width, height, clickHandler, isPaged, ...props} = this.props;
+    const imageData = (isPaged) ? getCellData(data, rowIndex, field, itemsPerPage, loadUsers) : data[rowIndex][field];
+    const userId = (isPaged) ? getCellData(data, rowIndex, 'userId', itemsPerPage, loadUsers) : data[rowIndex][field];
+    const imageURL = (imageData!=null && imageData.hasOwnProperty('name'))? imageBaseUrl + '/' + getCellData(data, rowIndex, field, itemsPerPage, loadUsers)['name']:'';
     return (
         <Cell {...props}>
-          <img src={imageURL} width={width} height={height} />
+          <img src={imageURL} width={width} height={height} onClick={() => clickHandler(userId)} style={{cursor: 'pointer'}}/>
         </Cell>
     );
   }
