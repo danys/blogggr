@@ -1,8 +1,6 @@
 package com.blogggr.dto.out;
 
 import com.blogggr.entities.User;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import java.sql.Timestamp;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +12,7 @@ public class FriendDto {
   @Getter
   private Long userId1;
 
-  @Setter
+  @Getter
   private Long userId2;
 
   @Getter
@@ -22,9 +20,7 @@ public class FriendDto {
   private Integer status;
 
   @Getter
-  @Setter
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
-  private Timestamp lastActionTimestamp;
+  private Long lastActionUserId;
 
   public void setUserId1(User user){
     this.userId1 = user.getUserId();
@@ -32,5 +28,9 @@ public class FriendDto {
 
   public void setUserId2(User user){
     this.userId2 = user.getUserId();
+  }
+
+  public void setLastActionUserId(User user){
+    this.lastActionUserId = user.getUserId();
   }
 }

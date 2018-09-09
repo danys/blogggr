@@ -174,6 +174,7 @@ public class FriendsControllerTest {
     friend.setUser1(user1);
     friend.setUser2(user2);
     friend.setStatus(1);
+    friend.setLastActionUserId(user1);
     friend.setLastActionTimestamp(TimeUtilities.getCurrentTimestamp());
     when(friendService.getFriend(any(Long.class), any(Long.class), any(Long.class)))
         .thenReturn(friend);
