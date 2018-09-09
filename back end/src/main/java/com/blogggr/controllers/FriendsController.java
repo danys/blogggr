@@ -3,7 +3,6 @@ package com.blogggr.controllers;
 import com.blogggr.config.AppConfig;
 import com.blogggr.dto.FriendDataBase;
 import com.blogggr.dto.FriendDataUpdate;
-import com.blogggr.dto.out.UserDto;
 import com.blogggr.dto.out.UserWithImageDto;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.User;

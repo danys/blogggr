@@ -1,8 +1,6 @@
 package com.blogggr.dto.out;
 
 import com.blogggr.entities.User;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import java.sql.Timestamp;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -6,7 +6,6 @@ import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import javax.persistence.FetchType;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import org.slf4j.Logger;
