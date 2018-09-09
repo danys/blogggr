@@ -6,6 +6,8 @@ import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import javax.persistence.FetchType;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,6 +117,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
     Join<Friend, User> user1Join = root.join(USER_1);
     Join<Friend, User> user2Join = root.join(USER_2);
     if (!userOne) {
+      user2Join.fetch("userImages", JoinType.LEFT);
       query.select(user2Join);
       query.where(
           cb.and(
@@ -123,6 +126,7 @@ public class FriendDao extends GenericDaoImpl<Friend> {
           )
       );
     } else {
+      user1Join.fetch("userImages", JoinType.LEFT);
       query.select(user1Join);
       query.where(
           cb.and(

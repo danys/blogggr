@@ -64,9 +64,10 @@ public class DtoConverter {
   }
 
   public FriendDto toFriendDto(Friend friend){
-    FriendDto friendDto = modelMapper.map(friend, FriendDto.class);
+    FriendDto friendDto = new FriendDto();
     friendDto.setUserId1(friend.getUser1());
     friendDto.setUserId2(friend.getUser2());
+    friendDto.setStatus(friend.getStatus());
     friendDto.setLastActionUserId(friend.getLastActionUserId());
     return friendDto;
   }

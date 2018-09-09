@@ -4,6 +4,7 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.dto.FriendDataBase;
 import com.blogggr.dto.FriendDataUpdate;
 import com.blogggr.dto.out.UserDto;
+import com.blogggr.dto.out.UserWithImageDto;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.User;
 import com.blogggr.responses.ResponseBuilder;
@@ -83,7 +84,7 @@ public class FriendsController {
     logger.info(
         "[GET /friends] User: {}", userPrincipal.getUser().getEmail());
     List<User> friends = friendService.getFriends(userPrincipal.getUser().getUserId());
-    List<UserDto> userDtos = friends.stream().map(user -> dtoConverter.toUserDto(user))
+    List<UserWithImageDto> userDtos = friends.stream().map(user -> dtoConverter.toUserWithImageDto(user))
         .collect(Collectors.toList());
     return ResponseBuilder.getSuccessResponse(userDtos);
   }
