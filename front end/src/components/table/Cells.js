@@ -63,8 +63,8 @@ export class ImageCell extends React.Component {
   render() {
     const {rowIndex, field, data, itemsPerPage, loadUsers, imageBaseUrl, width, height, clickHandler, isPaged, ...props} = this.props;
     const imageData = (isPaged) ? getCellData(data, rowIndex, field, itemsPerPage, loadUsers) : data[rowIndex][field];
-    const userId = (isPaged) ? getCellData(data, rowIndex, 'userId', itemsPerPage, loadUsers) : data[rowIndex][field];
-    const imageURL = (imageData!=null && imageData.hasOwnProperty('name'))? imageBaseUrl + '/' + getCellData(data, rowIndex, field, itemsPerPage, loadUsers)['name']:'';
+    const userId = (isPaged) ? getCellData(data, rowIndex, 'userId', itemsPerPage, loadUsers) : data[rowIndex]['userId'];
+    const imageURL = (imageData!=null && imageData.hasOwnProperty('name'))? imageBaseUrl + '/' + imageData['name'] : imageBaseUrl + '/' + imageData['name'];
     return (
         <Cell {...props}>
           <img src={imageURL} width={width} height={height} onClick={() => clickHandler(userId)} style={{cursor: 'pointer'}}/>

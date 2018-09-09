@@ -21,6 +21,7 @@ class User extends React.Component{
         };
         this.fetchUser = this.fetchUser.bind(this);
         this.updateFriendship = this.updateFriendship.bind(this);
+        this.addFriendship = this.addFriendship.bind(this);
     }
 
     fetchUser(){
@@ -56,9 +57,9 @@ class User extends React.Component{
 
     updateFriendship(status, message){
       if (this.state.user==null || this.state.userMe==null) return;
-      const userId1 = this.state.user.userId;
-      const userId2 = this.state.userMe.userId;
-      const friendIdsOrdered = (parseInt(userId1)<parseInt(userId2)) ? userId1+'/'+userId2 : userId2+'/'+userId1;
+      const userId1 = (this.state.user.userId < this.state.userMe.userId) ? this.state.user.userId : this.state.userMe.userId;
+      const userId2 = (this.state.user.userId < this.state.userMe.userId) ? this.state.userMe.userId : this.state.user.userId;
+      const friendIdsOrdered = userId1+'/'+userId2;
       let request = {};
       request['action']=status;
       request['userId1']=userId1;
@@ -71,19 +72,34 @@ class User extends React.Component{
           },{'Authorization': this.props.token});
     }
 
+    addFriendship(message){
+     if (this.state.user==null || this.state.userMe==null) return;
+     const userId1 = (this.state.user.userId < this.state.userMe.userId) ? this.state.user.userId : this.state.userMe.userId;
+     const userId2 = (this.state.user.userId < this.state.userMe.userId) ? this.state.userMe.userId : this.state.user.userId;
+     let request = {};
+     request['userId1']=userId1;
+     request['userId2']=userId2;
+     post(this.friendsBaseURL,
+        request,
+        (data)=>{this.props.history.push('/users/'+this.state.user.userId);},
+        (jqXHR)=>{
+          this.props.showOverlayMsg(message, getErrorMessage(jqXHR.responseText), red);
+        },{'Authorization': this.props.token});
+    }
+
     componentDidMount(){
         this.fetchUser();
     }
 
     render() {
         let disabledProp = {disabled:true};
-        const addFriendButton = <button type="button" className="btn btn-primary btn-block" onClick={() => this.updateFriendship(0, 'Error adding friend!')}>Add friend</button>;
+        const addFriendButton = <button type="button" className="btn btn-primary btn-block" onClick={() => this.addFriendship('Error adding friend!')}>Add friend</button>;
         const confirmFriendButton = <button type="button" className="btn btn-primary btn-block" onClick={() => this.updateFriendship(1, 'Error confirming friend!')}>Confirm friend</button>;
         const unblockFriendButton = <button type="button" className="btn btn-primary btn-block" onClick={() => this.updateFriendship(1, 'Error unblocking friend!')}>Unblock friend</button>;
         const declineFriendButton = <button type="button" className="btn btn-primary btn-block" onClick={() => this.updateFriendship(2, 'Error declining friend!')}>Decline friendship</button>;
         const blockFriendButton = <button type="button" className="btn btn-primary btn-block" onClick={() => this.updateFriendship(3, 'Error blocking friend!')}>Block friend</button>;
         const pendingRequestLabel = <span>Pending friend request</span>;
-        const acceptedLabel = <span>Accepted</span>;
+        const acceptedLabel = <span>You are friends!</span>;
         const declinedLabel = <span>Declined</span>;
         const notFriendsLabel = <span>Not friends</span>;
         let friendActions = '';

@@ -18,7 +18,7 @@ class Friends extends React.Component{
         this.usersURL = "/api/v1.0/users";
         this.userImageURL = "/api/v1.0/userimages";
         this.state = {
-            friendsData: null,
+            friendsData: [],
             friendsMaxPageItems: 1000,
             userSearchData: null,
             searchParams: {
@@ -110,9 +110,7 @@ class Friends extends React.Component{
                         <Column
                             header={<Cell>Image</Cell>}
                             cell={props => (
-                                <ImageCell {...props} loadUsers={this.fetchUsers} imageBaseUrl={this.userImageURL} field='image' width={40} height={40} clickHandler={this.handleUserImageClick} data={rowData} isPaged={true} itemsPerPage={this.state.searchParams.maxRecordsCount} >
-                                    image
-                                </ImageCell>
+                                <ImageCell {...props} loadUsers={this.fetchUsers} imageBaseUrl={this.userImageURL} field='image' width={40} height={40} clickHandler={this.handleUserImageClick} data={rowData} isPaged={true} itemsPerPage={this.state.searchParams.maxRecordsCount} />
                             )}
                             width={100}
                         />
@@ -156,9 +154,7 @@ class Friends extends React.Component{
                     <Column
                         header={<Cell>Image</Cell>}
                         cell={props => (
-                            <ImageCell {...props} loadUsers={this.fetchFriends} imageBaseUrl={this.userImageURL} field='image' width={40} height={40} clickHandler={this.handleUserImageClick} data={rowData} isPaged={false} itemsPerPage={this.state.friendsMaxPageItems} >
-                              image
-                            </ImageCell>
+                            <ImageCell {...props} loadUsers={this.fetchFriends} imageBaseUrl={this.userImageURL} field='image' width={40} height={40} clickHandler={this.handleUserImageClick} data={friendsRowData} isPaged={false} itemsPerPage={this.state.friendsMaxPageItems} />
                         )}
                         width={100}
                     />
