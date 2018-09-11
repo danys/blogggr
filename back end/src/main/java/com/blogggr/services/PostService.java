@@ -6,7 +6,6 @@ import com.blogggr.dao.PostDao;
 import com.blogggr.dao.UserDao;
 import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
-import com.blogggr.entities.Comment;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
@@ -18,10 +17,6 @@ import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.SpringHelper;
 import com.blogggr.utilities.StringUtilities;
 import com.blogggr.utilities.TimeUtilities;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +24,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 /**

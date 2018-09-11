@@ -47,7 +47,7 @@ public class DtoConverter {
   }
 
   public PostWithCommentImageDto toFullPostDto(Post post) {
-    post.getComments().stream().forEach(comment -> {comment.getUser().getImage();});
+    post.getComments().stream().forEach(comment -> comment.getUser().getImage());
     PostWithCommentImageDto postDto = modelMapper.map(post, PostWithCommentImageDto.class);
     postDto.setTimestamp(post.getTimestamp());
     return postDto;

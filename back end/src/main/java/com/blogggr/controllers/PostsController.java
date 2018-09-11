@@ -7,7 +7,6 @@ import com.blogggr.dto.PostSearchData;
 import com.blogggr.dto.out.CommentWithImageDto;
 import com.blogggr.dto.out.PostWithCommentImageDto;
 import com.blogggr.dto.out.SimplePostDto;
-import com.blogggr.entities.Comment;
 import com.blogggr.entities.Post;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.responses.ResponseBuilder;
