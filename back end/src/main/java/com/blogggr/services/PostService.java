@@ -18,6 +18,10 @@ import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.SpringHelper;
 import com.blogggr.utilities.StringUtilities;
 import com.blogggr.utilities.TimeUtilities;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,12 +172,6 @@ public class PostService {
       if (post == null){
         throw new ResourceNotFoundException(messageSource.getMessage(POST_NOT_FOUND));
       }
-      //Order comments by date
-      List<Comment> comments = post.getComments();
-      Collections.sort(comments,
-          (Comment o1, Comment o2) -> (int) (o1.getTimestamp().getTime() - o2.getTimestamp()
-              .getTime()));
-      post.setComments(comments);
       //1. Post can be viewed if current session user is the owner or the post has global flag
       if (post.getUser().getUserId() == userId || post.getIsGlobal()) {
         return post;

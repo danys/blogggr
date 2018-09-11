@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,7 +52,7 @@ public class Post implements Serializable {
   private Boolean isGlobal;
 
   @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, orphanRemoval=true)
-  private List<Comment> comments;
+  private Set<Comment> comments;
 
   @OneToMany(mappedBy = "post", orphanRemoval=true)
   private Set<PostImage> postImages;

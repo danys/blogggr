@@ -398,7 +398,9 @@ public class PostDao extends GenericDaoImpl<Post> {
     CriteriaQuery<Post> query = cb.createQuery(Post.class);
     Root<Post> root = query.from(Post.class);
     root.fetch("postImages", JoinType.LEFT);
-    root.fetch("comments", JoinType.LEFT);
+    root.fetch("comments", JoinType.LEFT)
+        .fetch("user", JoinType.LEFT)
+        .fetch("userImages", JoinType.LEFT);
     Join<Post, User> postUserJoin = root.join("user", JoinType.LEFT);
     query.where(
         cb.and(

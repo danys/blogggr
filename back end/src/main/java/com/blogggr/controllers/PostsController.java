@@ -4,7 +4,10 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.dto.PostData;
 import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
+import com.blogggr.dto.out.CommentWithImageDto;
+import com.blogggr.dto.out.PostWithCommentImageDto;
 import com.blogggr.dto.out.SimplePostDto;
+import com.blogggr.entities.Comment;
 import com.blogggr.entities.Post;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.responses.ResponseBuilder;
@@ -12,6 +15,7 @@ import com.blogggr.security.UserPrincipal;
 import com.blogggr.services.PostService;
 import com.blogggr.utilities.DtoConverter;
 import com.blogggr.utilities.SimpleBundleMessageSource;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -126,7 +130,11 @@ public class PostsController {
     Post post = postService
         .getPostByUserAndLabel(userPrincipal.getUser().getUserId(), Long.parseLong(userId),
             postShortName);
-    return ResponseBuilder.getSuccessResponse(dtoConverter.toPostDto(post));
+    PostWithCommentImageDto fullPost = dtoConverter.toFullPostDto(post);
+    Collections.sort(fullPost.getComments(),
+        (CommentWithImageDto o1, CommentWithImageDto o2) -> (int) (o1.getTimestamp().getTime() - o2.getTimestamp()
+            .getTime()));
+    return ResponseBuilder.getSuccessResponse(fullPost);
   }
 
   /**
