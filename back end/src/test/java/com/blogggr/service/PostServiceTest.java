@@ -318,10 +318,11 @@ public class PostServiceTest {
     post.setTextBody("text1");
     post.setUser(user);
     post.setIsGlobal(false);
+    long millis = System.currentTimeMillis();
     Comment comment = new Comment();
-    comment.setTimestamp(TimeUtilities.getCurrentTimestamp());
+    comment.setTimestamp(new Timestamp(millis));
     Comment comment2 = new Comment();
-    comment2.setTimestamp(new Timestamp(System.currentTimeMillis()+10000L));
+    comment2.setTimestamp(new Timestamp(millis+10000L));
     post.setComments(new HashSet<>(){{add(comment);add(comment2);}});
     when(postDao.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
     Post dbPost = postService.getPostByUserAndLabel(1L, 10L, "title1");
