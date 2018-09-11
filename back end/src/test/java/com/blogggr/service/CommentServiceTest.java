@@ -24,6 +24,7 @@ import com.blogggr.services.CommentService;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -295,7 +296,7 @@ public class CommentServiceTest {
     post.setPostId(1L);
     post.setUser(user);
     post.setIsGlobal(false);
-    post.setComments(comments);
+    post.setComments(comments.stream().collect(Collectors.toSet()));
     when(postDao.findById(any(Long.class))).thenReturn(post);
     Friend friend = new Friend();
     friend.setStatus(1);
@@ -332,7 +333,7 @@ public class CommentServiceTest {
     post.setPostId(1L);
     post.setUser(user);
     post.setIsGlobal(false);
-    post.setComments(comments);
+    post.setComments(comments.stream().collect(Collectors.toSet()));
     when(postDao.findById(any(Long.class))).thenReturn(post);
     Friend friend = new Friend();
     friend.setStatus(1);
@@ -356,7 +357,7 @@ public class CommentServiceTest {
     post.setPostId(1L);
     post.setUser(user);
     post.setIsGlobal(false);
-    post.setComments(comments);
+    post.setComments(comments.stream().collect(Collectors.toSet()));
     when(postDao.findById(any(Long.class))).thenReturn(post);
     //First test case
     Friend friend = new Friend();

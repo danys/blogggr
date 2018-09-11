@@ -198,25 +198,25 @@ public class PostsControllerTest {
 
   @Test
   public void getPostBy_Normal() throws Exception {
+    UserImage userImage = new UserImage();
+    userImage.setIsCurrent(true);
+    List<UserImage> userImages = new ArrayList<>();
+    userImages.add(userImage);
     User user = new User();
     user.setUserId(1L);
     user.setEmail("email");
     user.setFirstName("first");
     user.setLastName("last");
+    user.setUserImages(userImages);
     List<Comment> comments = new ArrayList<>();
-    List<PostImage> userImages = new ArrayList<>();
-    Comment comment = new Comment();
-    UserImage userImage = new UserImage();
-    //comments.add(comment);
-    //userImages.add(userImage);
     Post post = new Post();
     post.setPostId(1L);
     post.setTitle("title");
     post.setShortTitle("shortTitle");
     post.setTextBody("textBody");
     post.setTimestamp(TimeUtilities.getCurrentTimestamp());
-    post.setComments(comments);
-    post.setPostImages(new HashSet<>(userImages));
+    post.setComments(new HashSet<>(comments));
+    post.setPostImages(new HashSet<>());
     post.setUser(user);
     when(postService.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
     mvc.perform(get(BASE_URL + "/users/1/posts/blablabla")
@@ -243,7 +243,7 @@ public class PostsControllerTest {
     post.setShortTitle("shortTitle");
     post.setTextBody("textBody");
     post.setTimestamp(TimeUtilities.getCurrentTimestamp());
-    post.setComments(comments);
+    post.setComments(new HashSet<>(comments));
     post.setPostImages(new HashSet<>(userImages));
     post.setUser(user);
     when(postService.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
@@ -275,7 +275,7 @@ public class PostsControllerTest {
     post.setShortTitle("shortTitle");
     post.setTextBody("textBody");
     post.setTimestamp(TimeUtilities.getCurrentTimestamp());
-    post.setComments(new ArrayList<>());
+    post.setComments(new HashSet<>());
     post.setPostImages(new HashSet<>());
     post.setUser(user);
     List<Post> posts = new ArrayList<>();
