@@ -6,7 +6,6 @@ import com.blogggr.dao.PostDao;
 import com.blogggr.dao.UserDao;
 import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
-import com.blogggr.entities.Comment;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
@@ -25,7 +24,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -168,12 +166,6 @@ public class PostService {
       if (post == null){
         throw new ResourceNotFoundException(messageSource.getMessage(POST_NOT_FOUND));
       }
-      //Order comments by date
-      List<Comment> comments = post.getComments();
-      Collections.sort(comments,
-          (Comment o1, Comment o2) -> (int) (o1.getTimestamp().getTime() - o2.getTimestamp()
-              .getTime()));
-      post.setComments(comments);
       //1. Post can be viewed if current session user is the owner or the post has global flag
       if (post.getUser().getUserId() == userId || post.getIsGlobal()) {
         return post;

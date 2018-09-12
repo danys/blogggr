@@ -26,7 +26,9 @@ import com.blogggr.services.PostService;
 import com.blogggr.utilities.TimeUtilities;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -316,16 +318,16 @@ public class PostServiceTest {
     post.setTextBody("text1");
     post.setUser(user);
     post.setIsGlobal(false);
+    long millis = System.currentTimeMillis();
     Comment comment = new Comment();
-    comment.setTimestamp(TimeUtilities.getCurrentTimestamp());
+    comment.setTimestamp(new Timestamp(millis));
     Comment comment2 = new Comment();
-    comment2.setTimestamp(new Timestamp(System.currentTimeMillis()+10000L));
-    post.setComments(new ArrayList<>(){{add(comment);add(comment2);}});
+    comment2.setTimestamp(new Timestamp(millis+10000L));
+    post.setComments(new HashSet<>(){{add(comment);add(comment2);}});
     when(postDao.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
     Post dbPost = postService.getPostByUserAndLabel(1L, 10L, "title1");
     assertThat(dbPost.getTextBody()).isEqualTo("text1");
     assertThat(dbPost.getComments().size()).isEqualTo(2);
-    assertThat(dbPost.getComments().get(1).getTimestamp().getTime()-dbPost.getComments().get(0).getTimestamp().getTime()).isGreaterThan(0);
   }
 
   @Test
@@ -337,7 +339,7 @@ public class PostServiceTest {
     post.setTextBody("text1");
     post.setIsGlobal(true);
     post.setUser(user);
-    post.setComments(new ArrayList<>());
+    post.setComments(new HashSet<>());
     when(postDao.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
     Post dbPost = postService.getPostByUserAndLabel(1L, 10L, "title1");
     assertThat(dbPost.getTextBody()).isEqualTo("text1");
@@ -352,7 +354,7 @@ public class PostServiceTest {
     post.setTextBody("text1");
     post.setUser(user);
     post.setIsGlobal(false);
-    post.setComments(new ArrayList<>());
+    post.setComments(new HashSet<>());
     when(postDao.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
     Friend friend = new Friend();
     friend.setStatus(1);
@@ -370,7 +372,7 @@ public class PostServiceTest {
     post.setTextBody("text1");
     post.setUser(user);
     post.setIsGlobal(false);
-    post.setComments(new ArrayList<>());
+    post.setComments(new HashSet<>());
     when(postDao.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
     Friend friend = new Friend();
     friend.setStatus(0);

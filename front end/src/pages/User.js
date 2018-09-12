@@ -66,7 +66,7 @@ class User extends React.Component{
       request['userId2']=userId2;
       put(this.friendsBaseURL+friendIdsOrdered,
           request,
-          (data)=>{this.props.history.push('/users/'+this.state.user.userId);},
+          (data)=>{this.fetchFriendship();},
           (jqXHR)=>{
             this.props.showOverlayMsg(message, getErrorMessage(jqXHR.responseText), red);
           },{'Authorization': this.props.token});
@@ -81,7 +81,7 @@ class User extends React.Component{
      request['userId2']=userId2;
      post(this.friendsBaseURL,
         request,
-        (data)=>{this.props.history.push('/users/'+this.state.user.userId);},
+        (data)=>{this.fetchFriendship();},
         (jqXHR)=>{
           this.props.showOverlayMsg(message, getErrorMessage(jqXHR.responseText), red);
         },{'Authorization': this.props.token});

@@ -13,6 +13,7 @@ import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.dto.CommentData;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.TimeUtilities;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,7 +131,7 @@ public class CommentService {
     User postAuthor = post.getUser();
     //1. Comments of the post can be viewed if current session user is the owner or the post has global flag
     if (postAuthor.getUserId() == userId || post.getIsGlobal()) {
-      return post.getComments();
+      return post.getComments().stream().collect(Collectors.toList());
     }
     //2. Post and comments can be viewed if the current user is friends with the poster
     long smallNum;
@@ -142,6 +143,6 @@ public class CommentService {
       throw new NotAuthorizedException(
           messageSource.getMessage("CommentService.getCommentsByPostId.notAuthorized"));
     }
-    return post.getComments();
+    return post.getComments().stream().collect(Collectors.toList());
   }
 }

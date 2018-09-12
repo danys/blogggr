@@ -2,7 +2,6 @@ package com.blogggr.entities;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -51,7 +50,7 @@ public class Post implements Serializable {
   private Boolean isGlobal;
 
   @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, orphanRemoval=true)
-  private List<Comment> comments;
+  private Set<Comment> comments;
 
   @OneToMany(mappedBy = "post", orphanRemoval=true)
   private Set<PostImage> postImages;

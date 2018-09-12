@@ -5,6 +5,7 @@ import com.blogggr.dto.out.FriendDto;
 import com.blogggr.dto.out.OnlyPostDto;
 import com.blogggr.dto.out.PostDto;
 import com.blogggr.dto.out.PostImageDto;
+import com.blogggr.dto.out.PostWithCommentImageDto;
 import com.blogggr.dto.out.SimplePostDto;
 import com.blogggr.dto.out.UserDto;
 import com.blogggr.dto.out.UserImageDto;
@@ -41,6 +42,13 @@ public class DtoConverter {
 
   public PostDto toPostDto(Post post) {
     PostDto postDto = modelMapper.map(post, PostDto.class);
+    postDto.setTimestamp(post.getTimestamp());
+    return postDto;
+  }
+
+  public PostWithCommentImageDto toFullPostDto(Post post) {
+    post.getComments().stream().forEach(comment -> comment.getUser().getImage());
+    PostWithCommentImageDto postDto = modelMapper.map(post, PostWithCommentImageDto.class);
     postDto.setTimestamp(post.getTimestamp());
     return postDto;
   }

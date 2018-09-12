@@ -19,6 +19,7 @@ class Post extends React.Component{
         this.userPostsURL = "/api/v1.0/users/";
         this.postsURL = "/api/v1.0/posts/";
         this.commentsURL = "/api/v1.0/comments";
+        this.userImagesURL = "/api/v1.0/userimages";
         this.state = {
             commentText: '',
             modalTitle: '',
@@ -177,7 +178,7 @@ class Post extends React.Component{
             return (
                 <div key={index} className="media">
                     <Link cssClass="pull-left" url="#">
-                        <img className="media-object" src="/blogCommentImage.png" alt="" />
+                        <img className="media-object" src={this.userImagesURL+'/'+comment.user.image.name} width={50} height={50} alt="" />
                     </Link>
                     <div className="media-body">
                         <h4 className="media-heading">{comment.user.firstName+' '+comment.user.lastName}
