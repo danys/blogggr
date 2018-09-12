@@ -328,7 +328,6 @@ public class PostServiceTest {
     Post dbPost = postService.getPostByUserAndLabel(1L, 10L, "title1");
     assertThat(dbPost.getTextBody()).isEqualTo("text1");
     assertThat(dbPost.getComments().size()).isEqualTo(2);
-    assertThat(dbPost.getComments().stream().collect(Collectors.toList()).get(1).getTimestamp().getTime()-dbPost.getComments().stream().collect(Collectors.toList()).get(0).getTimestamp().getTime()).isGreaterThan(0);
   }
 
   @Test
