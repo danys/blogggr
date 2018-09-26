@@ -40,17 +40,17 @@ repositories {
 }
 
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-web:2.0.4.RELEASE'
-    compile 'org.springframework.boot:spring-boot-starter-data-jpa:2.0.4.RELEASE'
-    compile 'org.springframework.boot:spring-boot-starter-security:2.0.4.RELEASE'
-    compile 'org.springframework.boot:spring-boot-starter-mail:2.0.4.RELEASE'
-    compile 'org.springframework.boot:spring-boot-starter-webflux:2.0.4.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-web:2.0.5.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa:2.0.5.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-security:2.0.5.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-mail:2.0.5.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-webflux:2.0.5.RELEASE'
     compile 'org.modelmapper:modelmapper:2.0.0'
     compile 'com.auth0:java-jwt:3.3.0'
     compile 'com.cloudinary:cloudinary-http44:1.18.0'
     compile 'javax.xml.bind:jaxb-api:2.3.0'
-    runtime 'org.postgresql:postgresql:42.2.4'
-    testCompile('org.springframework.boot:spring-boot-starter-test:2.0.4.RELEASE') {
+    runtime 'org.postgresql:postgresql:42.2.5'
+    testCompile('org.springframework.boot:spring-boot-starter-test:2.0.5.RELEASE') {
         exclude(module: 'commons-logging')
     }
     testCompile 'com.h2database:h2:1.4.196'
@@ -116,10 +116,15 @@ def gitBranch() {
 }
 
 sonarqube {
-  String projectKey = project.name + "-" + gitBranch()
-  String projectName = project.name + " " + gitBranch()
-  properties {
+    String projectKey = project.name + "-" + gitBranch()
+    String projectName = project.name + " " + gitBranch()
+    properties {
         property "sonar.projectKey", projectKey
         property "sonar.projectName", projectName
     }
+}
+
+jacoco {
+    toolVersion = "0.8.1"
+    reportsDir = file("$buildDir/jacocoReportDir")
 }
