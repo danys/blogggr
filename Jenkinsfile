@@ -132,7 +132,7 @@ pipeline {
         }
       }
     }
-    /*stage('Deploy') {
+    stage('Deploy') {
       steps {
           script {
             if(!noOp && env.BRANCH_NAME == 'master') {
@@ -142,6 +142,6 @@ pipeline {
             }
           }
       }
-    }*/
+    }
   }
 }
