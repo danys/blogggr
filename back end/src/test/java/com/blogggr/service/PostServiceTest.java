@@ -14,6 +14,7 @@ import com.blogggr.dto.PostData;
 import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
 import com.blogggr.dto.UserEnums.Sex;
+import com.blogggr.dto.out.PostWithCommentImageDto;
 import com.blogggr.entities.Comment;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.Post;
@@ -313,6 +314,7 @@ public class PostServiceTest {
   public void getPostByUserAndLabel_User_Read_Own_Post(){
     User user = new User();
     user.setUserId(1L);
+    user.setSex(Sex.M);
     Post post = new Post();
     post.setTitle("title1");
     post.setTextBody("text1");
@@ -321,11 +323,13 @@ public class PostServiceTest {
     long millis = System.currentTimeMillis();
     Comment comment = new Comment();
     comment.setTimestamp(new Timestamp(millis));
+    comment.setUser(user);
     Comment comment2 = new Comment();
     comment2.setTimestamp(new Timestamp(millis+10000L));
+    comment2.setUser(user);
     post.setComments(new HashSet<>(){{add(comment);add(comment2);}});
     when(postDao.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
-    Post dbPost = postService.getPostByUserAndLabel(1L, 10L, "title1");
+    PostWithCommentImageDto dbPost = postService.getPostByUserAndLabel(1L, 10L, "title1");
     assertThat(dbPost.getTextBody()).isEqualTo("text1");
     assertThat(dbPost.getComments().size()).isEqualTo(2);
   }
@@ -334,6 +338,7 @@ public class PostServiceTest {
   public void getPostByUserAndLabel_Global_Post(){
     User user = new User();
     user.setUserId(2L);
+    user.setSex(Sex.M);
     Post post = new Post();
     post.setTitle("title1");
     post.setTextBody("text1");
@@ -341,7 +346,7 @@ public class PostServiceTest {
     post.setUser(user);
     post.setComments(new HashSet<>());
     when(postDao.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
-    Post dbPost = postService.getPostByUserAndLabel(1L, 10L, "title1");
+    PostWithCommentImageDto dbPost = postService.getPostByUserAndLabel(1L, 10L, "title1");
     assertThat(dbPost.getTextBody()).isEqualTo("text1");
   }
 
@@ -349,6 +354,7 @@ public class PostServiceTest {
   public void getPostByUserAndLabel_Friend(){
     User user = new User();
     user.setUserId(2L);
+    user.setSex(Sex.M);
     Post post = new Post();
     post.setTitle("title1");
     post.setTextBody("text1");
@@ -359,7 +365,7 @@ public class PostServiceTest {
     Friend friend = new Friend();
     friend.setStatus(1);
     when(friendDao.getFriendByUserIds(any(Long.class),any(Long.class))).thenReturn(friend);
-    Post dbPost = postService.getPostByUserAndLabel(1L, 10L, "title1");
+    PostWithCommentImageDto dbPost = postService.getPostByUserAndLabel(1L, 10L, "title1");
     assertThat(dbPost.getTextBody()).isEqualTo("text1");
   }
 

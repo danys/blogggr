@@ -6,6 +6,7 @@ import com.blogggr.dao.PostDao;
 import com.blogggr.dao.UserDao;
 import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
+import com.blogggr.dto.out.PostWithCommentImageDto;
 import com.blogggr.entities.Friend;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.User;
@@ -13,6 +14,7 @@ import com.blogggr.exceptions.NotAuthorizedException;
 import com.blogggr.exceptions.ResourceNotFoundException;
 import com.blogggr.responses.PrevNextListPage;
 import com.blogggr.dto.PostData;
+import com.blogggr.utilities.DtoConverter;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import com.blogggr.utilities.SpringHelper;
 import com.blogggr.utilities.StringUtilities;
@@ -44,6 +46,9 @@ public class PostService {
 
   @Autowired
   private SimpleBundleMessageSource messageSource;
+
+  @Autowired
+  private DtoConverter dtoConverter;
 
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -158,7 +163,7 @@ public class PostService {
     return postsPage;
   }
 
-  public Post getPostByUserAndLabel(Long userId, Long postUserId, String postShortTitle) {
+  public PostWithCommentImageDto getPostByUserAndLabel(Long userId, Long postUserId, String postShortTitle) {
     logger.debug(
         "PostService | getPostByUserAndLabel - userId: {}, postUserId: {}, postShortTitle: {}",
         userId, postUserId, postShortTitle);
@@ -168,11 +173,11 @@ public class PostService {
       }
       //1. Post can be viewed if current session user is the owner or the post has global flag
       if (post.getUser().getUserId() == userId || post.getIsGlobal()) {
-        return post;
+        return dtoConverter.toFullPostDto(post);
       }
       //2. Post can be viewed if the current user is friends with the poster
       if (isFriendOfUser(post.getUser().getUserId(), userId)) {
-        return post;
+        return dtoConverter.toFullPostDto(post);
       }
       //Otherwise access denied
       throw new NotAuthorizedException(messageSource.getMessage("PostService.notAuthorizedView"));

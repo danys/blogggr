@@ -126,14 +126,13 @@ public class PostsController {
     if (postShortName.length() < 3) {
       throw new IllegalArgumentException(simpleBundleMessageSource.getMessage("PostService.titleTooShort"));
     }
-    Post post = postService
+    PostWithCommentImageDto post = postService
         .getPostByUserAndLabel(userPrincipal.getUser().getUserId(), Long.parseLong(userId),
             postShortName);
-    PostWithCommentImageDto fullPost = dtoConverter.toFullPostDto(post);
-    Collections.sort(fullPost.getComments(),
+    Collections.sort(post.getComments(),
         (CommentWithImageDto o1, CommentWithImageDto o2) -> (int) (o1.getTimestamp().getTime() - o2.getTimestamp()
             .getTime()));
-    return ResponseBuilder.getSuccessResponse(fullPost);
+    return ResponseBuilder.getSuccessResponse(post);
   }
 
   /**
