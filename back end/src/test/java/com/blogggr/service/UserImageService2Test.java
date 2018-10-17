@@ -13,14 +13,17 @@ import com.blogggr.entities.UserImage;
 import com.blogggr.exceptions.StorageException;
 import com.blogggr.fakes.DoNothingFakeStorageManager;
 import com.blogggr.services.UserImageService;
+import com.blogggr.utilities.DtoConverter;
 import com.blogggr.utilities.FileStorageManager;
 import com.blogggr.utilities.SimpleBundleMessageSource;
 import java.io.IOException;
 import java.nio.file.Files;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -85,6 +88,17 @@ public class UserImageService2Test {
     public PasswordEncoder encoder() {
       return new BCryptPasswordEncoder(11);
     }
+
+    @Bean
+    public ModelMapper modelMapper() {
+      return new ModelMapper();
+    }
+
+    @Bean
+    public DtoConverter dtoConverter() {
+      return new DtoConverter(modelMapper());
+    }
+
   }
 
   @Test

@@ -18,6 +18,10 @@ import com.blogggr.config.AppConfig;
 import com.blogggr.dto.PostData;
 import com.blogggr.dto.PostDataUpdate;
 import com.blogggr.dto.PostSearchData;
+import com.blogggr.dto.out.CommentWithImageDto;
+import com.blogggr.dto.out.PostWithCommentImageDto;
+import com.blogggr.dto.out.UserImageDto;
+import com.blogggr.dto.out.UserWithImageDto;
 import com.blogggr.entities.Comment;
 import com.blogggr.entities.Post;
 import com.blogggr.entities.PostImage;
@@ -199,33 +203,23 @@ public class PostsControllerTest {
 
   @Test
   public void getPostBy_Normal() throws Exception {
-    UserImage userImage = new UserImage();
-    userImage.setIsCurrent(true);
-    List<UserImage> userImages = new ArrayList<>();
-    userImages.add(userImage);
-    User user = new User();
+    UserImageDto userImage = new UserImageDto();
+    UserWithImageDto user = new UserWithImageDto();
     user.setUserId(1L);
     user.setEmail("email");
     user.setFirstName("first");
     user.setLastName("last");
-    user.setUserImages(userImages);
-    Post post = new Post();
-    post.setPostId(1L);
-    post.setTitle("title");
-    post.setShortTitle("shortTitle");
-    post.setTextBody("textBody");
-    post.setTimestamp(TimeUtilities.getCurrentTimestamp());
+    user.setImage(userImage);
     long millis = System.currentTimeMillis();
-    Comment comment = new Comment();
+    CommentWithImageDto comment = new CommentWithImageDto();
     comment.setUser(user);
     comment.setTimestamp(new Timestamp(millis));
-    Comment comment2 = new Comment();
+    CommentWithImageDto comment2 = new CommentWithImageDto();
     comment2.setTimestamp(new Timestamp(millis+10000L));
     comment2.setUser(user);
-    post.setComments(new HashSet<>(){{add(comment);add(comment2);}});
-    post.setPostImages(new HashSet<>());
-    post.setUser(user);
-    when(postService.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
+    PostWithCommentImageDto fullPost = new PostWithCommentImageDto();
+    fullPost.setComments(new ArrayList<>(){{add(comment);add(comment2);}});
+    when(postService.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(fullPost);
     mvc.perform(get(BASE_URL + "/users/1/posts/blablabla")
         .with(user(createUserPrincipal("dan@dan.com", 1L))))
         .andExpect(status().isOk());
@@ -253,7 +247,8 @@ public class PostsControllerTest {
     post.setComments(new HashSet<>(comments));
     post.setPostImages(new HashSet<>(userImages));
     post.setUser(user);
-    when(postService.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(post);
+    PostWithCommentImageDto fullPost = new PostWithCommentImageDto();
+    when(postService.getPostByUserAndLabel(any(Long.class), any(Long.class), any(String.class))).thenReturn(fullPost);
     mvc.perform(get(BASE_URL + "/users/1/posts/bl")
         .with(user(createUserPrincipal("dan@dan.com", 1L))))
         .andExpect(status().isBadRequest());
